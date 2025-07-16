@@ -8,7 +8,7 @@ const Footer = () => {
     >
       <Container sx={{ color: "white" }}>
         <Grid container>
-          <Grid size={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Typography
               fontWeight={600}
               color="inherit"
@@ -20,7 +20,7 @@ const Footer = () => {
             <Typography color="inherit">+420 731 146 894</Typography>
             <Typography color="inherit">info@sousedskeskupinky.cz</Typography>
           </Grid>
-          <Grid size={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Typography
               fontWeight={600}
               color="inherit"
@@ -44,7 +44,7 @@ const Footer = () => {
               </Typography>
             </Stack>
           </Grid>
-          <Grid size={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Typography
               fontWeight={600}
               color="inherit"
@@ -63,13 +63,20 @@ const Footer = () => {
         </Grid>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           sx={{
             borderTop: 1,
             borderColor: "primary.light",
             pt: "24px",
             mt: "48px",
+            gap: "20px",
+            justifyContent: {
+              xs: "flex-start",
+              sm: "space-between",
+            },
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
           }}
         >
           <Typography color="inherit">LOGO</Typography>

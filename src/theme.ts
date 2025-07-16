@@ -1,48 +1,21 @@
 "use client";
 import { createTheme } from "@mui/material/styles";
 import { Fredoka } from "next/font/google";
+import { alpha } from "@mui/material";
+import { autoClamp } from "@/utilites/strings";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
 });
 
-const theme = createTheme({
+const baseTheme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 600,
-      md: 900,
+      sm: 768,
+      md: 1024,
       lg: 1280,
       xl: 1536,
-    },
-  },
-  typography: {
-    fontFamily: fredoka.style.fontFamily,
-    body1: {
-      color: "#6C7685",
-    },
-    h1: {
-      color: "#272E39",
-      fontWeight: 600,
-      fontSize: 44,
-    },
-    h2: {
-      color: "#272E39",
-      fontWeight: 600,
-      fontSize: 37,
-      lineHeight: 1.5,
-    },
-    h3: {
-      color: "#272E39",
-      fontWeight: 600,
-      fontSize: 20,
-      lineHeight: 1.5,
-    },
-    h4: {
-      color: "#272E39",
-      fontWeight: 600,
-      fontSize: 16,
-      lineHeight: 1.5,
     },
   },
   palette: {
@@ -56,6 +29,77 @@ const theme = createTheme({
       dark: "#B2AD88",
       light: "#FAF3C0",
     },
+    gradients: {
+      ui1: "linear-gradient(180deg, #F8F2FE 0%,  #F8F2FE 45%, #FCF8E5 100%)",
+      ui2: "linear-gradient(90deg, #F9F4F6 0%, #FCF7E8 100%)",
+    },
+    custom: {
+      ui1: "#1E232B",
+      ui2: "#848C99",
+      ui3: "#6C7685",
+      ui4: "#9980B0",
+      ui5: "#F3E8FD",
+      ui6: "#FACA15",
+      ui7: "#FCF7D5",
+      ui8: "#2B3746",
+      ui9: "#FFFEF9",
+      ui10: "#C5A4E2",
+      ui11: "#776388",
+      ui12: "#C6CAD0",
+      ui13: "#272E39",
+      ui14: "#E5CDFA",
+      ui15: "#FDF9E2",
+      ui16: "#0F1724",
+    },
+    shadows: {
+      ui1: "0px 4px 6px 0px #0000000D, 0px 10px 15px -3px  #0000001A",
+    },
+    common: {
+      black: "#000000",
+      white: "#FFFFFF",
+    },
+  },
+});
+
+const theme = createTheme(baseTheme, {
+  typography: {
+    fontFamily: fredoka.style.fontFamily,
+    body1: {
+      color: "#6C7685",
+    },
+    h1: {
+      color: "#272E39",
+      fontWeight: 600,
+      fontSize: autoClamp({
+        desktop: 48,
+        tablet: 40,
+        mobile: 36,
+        theme: baseTheme,
+      }),
+    },
+    h2: {
+      color: "#272E39",
+      fontWeight: 600,
+      fontSize: autoClamp({
+        desktop: 32,
+        tablet: 30,
+        mobile: 28,
+        theme: baseTheme,
+      }),
+      lineHeight: 1.5,
+    },
+    h3: {
+      color: "#272E39",
+      fontWeight: 600,
+      fontSize: 24,
+      lineHeight: 1.5,
+    },
+    h4: {
+      color: "#272E39",
+      fontWeight: 600,
+      fontSize: 16,
+      lineHeight: 1.5,
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -67,13 +111,9 @@ const theme = createTheme({
         },
       },
     },
-    MuiContainer: {
-      styleOverrides: {
-        root: {
-          maxWidth: "1280px",
-          paddingLeft: "16px",
-          paddingRight: "16px",
-        },
+    MuiTypography: {
+      defaultProps: {
+        fontFamily: fredoka.style.fontFamily,
       },
     },
     MuiButton: {
@@ -85,8 +125,9 @@ const theme = createTheme({
           boxShadow:
             "0px 4px 6px 0px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.1)",
           borderRadius: "24px",
-          padding: "14px 26px",
+          padding: "10px 26px",
           textTransform: "none",
+          fontFamily: fredoka.style.fontFamily,
         },
         outlined: {
           color: "#1E232B",
@@ -123,6 +164,7 @@ const theme = createTheme({
           boxShadow: "none",
           "&:before": {
             display: "none",
+            fontFamily: fredoka.style.fontFamily,
           },
         },
       },
@@ -133,6 +175,7 @@ const theme = createTheme({
           padding: "0 24px 24px 48px",
           color: "#6C7685",
           fontSize: "18px",
+          fontFamily: fredoka.style.fontFamily,
         },
       },
     },
@@ -147,6 +190,7 @@ const theme = createTheme({
             fontSize: "20px",
             fontWeight: "600",
           },
+          fontFamily: fredoka.style.fontFamily,
         },
         content: {
           "&, &.Mui-expanded": {
@@ -161,6 +205,7 @@ const theme = createTheme({
           boxShadow:
             "0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1)",
           borderRadius: "16px",
+          fontFamily: fredoka.style.fontFamily,
         },
       },
     },
@@ -173,6 +218,53 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#FBF8FE",
+          fontFamily: fredoka.style.fontFamily,
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: baseTheme.palette.custom.ui2,
+            transition: "all 0.3s ease",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: alpha(baseTheme.palette.common.black, 0.87),
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: baseTheme.palette.custom.ui4, // border on focus
+            borderWidth: "2px",
+          },
+        },
+        input: {
+          "&::placeholder": {
+            color: baseTheme.palette.custom.ui3,
+            opacity: 1,
+            fontSize: 14,
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "&.rounded .MuiOutlinedInput-notchedOutline": {
+            borderRadius: "24px",
+          },
+        },
+      },
+    },
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          gap: "8px",
+          "& .MuiCheckbox-root": {
+            flexShrink: 0,
+          },
+          "& .MuiFormControlLabel-label": {
+            overflowWrap: "break-word",
+          },
         },
       },
     },

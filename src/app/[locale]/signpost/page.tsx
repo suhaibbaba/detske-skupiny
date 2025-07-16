@@ -1,24 +1,14 @@
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
   Container,
   Grid,
   Stack,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Breadcrumbs,
   ButtonBase,
 } from "@mui/material";
-import PlaceIcon from "@mui/icons-material/Place";
-import IllustrationChildrenGroup from "@/components/IllustrationChildrenGroup";
-import IllustrationMain from "@/components/IllustrationMain";
 import ArrowRightIcon from "@/components/icons/ArrowRight";
-import ChevronDownIcon from "@/components/icons/ChevronDown";
 import Link from "next/link";
 import ChevronRight from "@/components/icons/ChevronRight";
 
