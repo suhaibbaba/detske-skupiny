@@ -2,6 +2,7 @@ import React, { ReactNode, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Box, Button } from "@mui/material";
 import { EmblaOptionsType } from "embla-carousel";
+import { Property } from "csstype";
 
 type EmblaCarouselProps = {
   options?: EmblaOptionsType;
@@ -35,6 +36,9 @@ export default function EmblaCarousel({
           width: "100%",
           p: "6px",
           m: "-6px",
+          display: "flex",
+          justifyContent:
+            (options?.align as Property.JustifyContent) || "center",
         }}
       >
         <Box

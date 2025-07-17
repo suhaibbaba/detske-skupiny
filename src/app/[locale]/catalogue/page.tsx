@@ -69,7 +69,12 @@ const Page = () => {
               ]}
             />
           </Container>
-          <EmblaCarousel gap={24}>
+          <EmblaCarousel
+            gap={24}
+            options={{
+              align: "center",
+            }}
+          >
             {data.perSchoolList.map((item) => (
               <PreschoolCard
                 key={item.image}
