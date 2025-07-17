@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Box,
-  BoxProps,
-  Container,
-  Theme,
-  TypographyOwnProps,
-  ContainerOwnProps,
-} from "@mui/material";
+import { Box, BoxProps, Container, TypographyOwnProps } from "@mui/material";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import PageLayout from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/custom/PageHeadingTypography";
@@ -21,7 +14,7 @@ import OurPricing from "@/app/[locale]/catalogue/OurPricing";
 interface ContactUsStyles {
   section?: BoxProps;
   container?: BoxProps;
-  innerContainer?: ContainerOwnProps;
+  innerContainer?: BoxProps;
   headingContainer?: BoxProps;
   title?: TypographyOwnProps;
 }
@@ -63,17 +56,19 @@ const Page = () => {
   return (
     <PageLayout fullWidth={false}>
       <Box {...styles.container}>
-        <Container {...styles.innerContainer}>
-          <PageHeadingTypography
-            title={translate(data.heading)}
-            description={translate(data.description)}
-            ctaList={[
-              {
-                label: translate(data.ctaLabel),
-                onClick: addPreSchoolOnClick,
-              },
-            ]}
-          />
+        <Box {...styles.innerContainer}>
+          <Container>
+            <PageHeadingTypography
+              title={translate(data.heading)}
+              description={translate(data.description)}
+              ctaList={[
+                {
+                  label: translate(data.ctaLabel),
+                  onClick: addPreSchoolOnClick,
+                },
+              ]}
+            />
+          </Container>
           <EmblaCarousel gap={24}>
             {data.perSchoolList.map((item) => (
               <PreschoolCard
@@ -84,7 +79,7 @@ const Page = () => {
               />
             ))}
           </EmblaCarousel>
-        </Container>
+        </Box>
         <Box>
           <WhyJoinUs />
           <PortalsOffered />

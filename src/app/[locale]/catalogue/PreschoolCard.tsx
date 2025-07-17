@@ -31,7 +31,10 @@ interface PreschoolCardStyles {
 const styles: PreschoolCardStyles = {
   container: {
     sx: (theme) => ({
-      width: "302px",
+      width: {
+        xs: "272px",
+        sm: "302px",
+      },
       flexShrink: 0,
       borderRadius: "24px",
       display: "flex",
