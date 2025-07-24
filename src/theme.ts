@@ -50,6 +50,7 @@ const baseTheme = createTheme({
       ui14: "#E5CDFA",
       ui15: "#FDF9E2",
       ui16: "#0F1724",
+      ui17: "#EDDDFC",
     },
     shadows: {
       ui1: "0px 4px 6px 0px #0000000D, 0px 10px 15px -3px  #0000001A",
@@ -60,6 +61,32 @@ const baseTheme = createTheme({
     },
   },
 });
+
+const createButtonStyle = ({
+  bgColor,
+  textColor,
+  hoverBgColor,
+  borderColor,
+  hoverBorderColor,
+}: {
+  bgColor: string;
+  textColor: string;
+  hoverBgColor: string;
+  borderColor?: string;
+  hoverBorderColor?: string;
+}) => {
+  return {
+    backgroundColor: bgColor,
+    color: textColor,
+    boxShadow:
+      "0px 4px 6px 0px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    border: `1px solid ${borderColor || bgColor}`,
+    "&:hover": {
+      backgroundColor: hoverBgColor,
+      border: `1px solid ${hoverBorderColor || hoverBgColor}`,
+    },
+  };
+};
 
 const theme = createTheme(baseTheme, {
   typography: {
@@ -125,25 +152,16 @@ const theme = createTheme(baseTheme, {
           boxShadow:
             "0px 4px 6px 0px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.1)",
           borderRadius: "24px",
-          padding: "10px 26px",
-          textTransform: "none",
+          padding: "14px 20px",
+          textTransform: "capitalize",
+          fontWeight: 500,
+          fontSize: 16,
+          lineHeight: "16px",
           fontFamily: fredoka.style.fontFamily,
         },
         outlined: {
-          color: "#1E232B",
-          fontWeight: 500,
+          color: baseTheme.palette.custom.ui1,
           border: "1px solid",
-        },
-        outlinedPrimary: {
-          fontSize: "14px",
-          padding: "10px 20px",
-          borderColor: "#9980B0",
-          boxShadow: "none",
-        },
-        outlinedSecondary: {
-          padding: "12px 30px",
-          fontSize: "16px",
-          borderColor: "#EDDDFC",
         },
         text: {
           fontSize: "16px",
@@ -151,6 +169,39 @@ const theme = createTheme(baseTheme, {
           padding: "4px",
         },
       },
+      variants: [
+        {
+          props: { variant: "primary" },
+          style: {
+            ...createButtonStyle({
+              bgColor: baseTheme.palette.primary.main,
+              hoverBgColor: baseTheme.palette.primary.dark,
+              textColor: baseTheme.palette.common.white,
+            }),
+          },
+        },
+        {
+          props: { variant: "secondary" },
+          style: {
+            ...createButtonStyle({
+              bgColor: baseTheme.palette.secondary.light,
+              hoverBgColor: baseTheme.palette.secondary.dark,
+              textColor: baseTheme.palette.custom.ui16,
+            }),
+          },
+        },
+        {
+          props: { variant: "ghost" },
+          style: {
+            ...createButtonStyle({
+              bgColor: baseTheme.palette.common.white,
+              hoverBgColor: baseTheme.palette.custom.ui17,
+              textColor: baseTheme.palette.custom.ui1,
+              borderColor: baseTheme.palette.custom.ui17,
+            }),
+          },
+        },
+      ],
     },
     MuiAccordion: {
       defaultProps: {
