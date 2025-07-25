@@ -1,10 +1,9 @@
 "use client";
 
-import Breadcrumbs from "@/components/core/breadcrumb";
-import ContactInfoCard from "@/components/custom/ContactInfoCard";
-import { Box, BoxProps, Container, Theme, useTheme } from "@mui/material";
+import ContactInfoCard from "@/app/[locale]/contact/components/ContactInfoCard";
+import { Box, BoxProps, useTheme } from "@mui/material";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
-import PageHeadingTypography from "@/components/custom/PageHeadingTypography";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/contactUs";
 import ContactForm from "@/components/forms/ContactForm";
 import PageLayout from "@/components/layout/PageLayout";

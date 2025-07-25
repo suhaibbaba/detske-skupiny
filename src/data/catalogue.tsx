@@ -3,7 +3,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import PublicIcon from "@mui/icons-material/Public";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import OurPricing from "@/app/[locale]/catalogue/OurPricing";
 
 export default {
   heading: "heading",

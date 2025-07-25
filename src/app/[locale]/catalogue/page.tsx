@@ -3,13 +3,13 @@
 import { Box, BoxProps, Container, TypographyOwnProps } from "@mui/material";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import PageLayout from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/custom/PageHeadingTypography";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/catalogue";
-import EmblaCarousel from "@/components/custom/EmblaCarousel";
-import PreschoolCard from "@/app/[locale]/catalogue/PreschoolCard";
-import WhyJoinUs from "@/app/[locale]/catalogue/WhyJoinUs";
-import PortalsOffered from "@/app/[locale]/catalogue/PortalsOffered";
-import OurPricing from "@/app/[locale]/catalogue/OurPricing";
+import EmblaCarousel from "@/components/shared/EmblaCarousel";
+import PreschoolCard from "@/app/[locale]/catalogue/components/PreschoolCard";
+import WhyJoinUs from "@/app/[locale]/catalogue/components/WhyJoinUs";
+import PortalsOffered from "@/app/[locale]/catalogue/components/PortalsOffered";
+import OurPricing from "@/app/[locale]/catalogue/components/OurPricing";
 
 interface ContactUsStyles {
   section?: BoxProps;

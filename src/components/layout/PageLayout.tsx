@@ -1,5 +1,5 @@
 import { Box, BoxProps, Container, ContainerOwnProps } from "@mui/material";
-import Breadcrumbs from "@/components/core/breadcrumb";
+import Breadcrumbs from "@/components/ui/breadcrumb";
 import React, { FC } from "react";
 
 interface Props {

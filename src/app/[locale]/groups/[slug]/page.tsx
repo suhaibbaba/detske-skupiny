@@ -14,7 +14,7 @@ import {
 import PlaceIcon from "@mui/icons-material/Place";
 import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CheckmarkIcon from "@/components/icons/CheckmarkIcon";
-import Gallery from "@/components/Gallery";
+import Gallery from "@/app/[locale]/groups/components/Gallery";
 
 const DetailPage = () => {
   return (

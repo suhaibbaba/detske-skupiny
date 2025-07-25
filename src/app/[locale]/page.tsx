@@ -13,11 +13,11 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
-import IllustrationChildrenGroup from "@/components/IllustrationChildrenGroup";
-import IllustrationMain from "@/components/IllustrationMain";
+import IllustrationChildrenGroup from "@/components/icons/IllustrationChildrenGroup";
+import IllustrationMain from "@/components/icons/IllustrationMain";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronDownIcon from "@/components/icons/ChevronDown";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 
 const Page = () => {
   return (

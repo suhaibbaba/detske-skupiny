@@ -4,8 +4,8 @@ import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@/theme";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import { Fredoka } from "next/font/google";
 
 export const metadata: Metadata = {

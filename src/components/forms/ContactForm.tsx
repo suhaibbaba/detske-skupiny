@@ -12,7 +12,7 @@ import {
   GridBaseProps,
   TypographyOwnProps,
 } from "@mui/material";
-import Textarea from "@/components/core/Textarea/Textarea";
+import Textarea from "@/components/ui/Textarea/Textarea";
 import { formatMessage } from "@/utilites/strings";
 import { FC } from "react";
 

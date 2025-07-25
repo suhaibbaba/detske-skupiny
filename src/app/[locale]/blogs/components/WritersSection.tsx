@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import WriterCard, {
   Props as WriterProps,
-} from "@/app/[locale]/blogs/WriterCard";
+} from "@/app/[locale]/blogs/components/WriterCard";
 import { FC } from "react";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 

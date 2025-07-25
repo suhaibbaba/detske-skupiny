@@ -14,7 +14,7 @@ import Image from "next/image";
 // import logo from "@/public/dp-logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Menu from "./Menu";
+import Menu from "../Menu";
 import Link from "next/link";
 
 const Header = () => {
@@ -46,7 +46,7 @@ const Header = () => {
               px: "0 !important",
             }}
           >
-            <Link href="/">
+            <Link href="/public">
               <Box sx={{ width: { xs: "150px", md: "200px" } }}>
                 {/* <Image src={logo} width={200} alt="" priority /> */}
                 LOGO

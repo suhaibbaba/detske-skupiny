@@ -17,10 +17,10 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import PageLayout from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/custom/PageHeadingTypography";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blogDetail";
-import BlogTabs from "@/app/[locale]/blogs/BlogTabs";
+import BlogTabs from "@/app/[locale]/blogs/components/BlogTabs";
 import { formatMessage } from "@/utilites/strings";
 import { useEffect, useRef, useState } from "react";
 

@@ -1,29 +1,13 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  BoxProps,
-  Avatar,
-  ListItemProps,
-  TypographyProps,
-  ListProps,
-  AvatarProps,
-} from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
+import { Box, Container, BoxProps } from "@mui/material";
 import PageLayout from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/custom/PageHeadingTypography";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blog";
-import BlogTabs from "@/app/[locale]/blogs/BlogTabs";
-import { formatMessage } from "@/utilites/strings";
-import BlogCard from "@/app/[locale]/blogs/BlogCard";
-import WritersSection from "@/app/[locale]/blogs/WritersSection";
+import BlogTabs from "@/app/[locale]/blogs/components/BlogTabs";
+import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
+import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
 import { useEffect, useRef, useState } from "react";
 
 interface BlogsStyles {
