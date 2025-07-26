@@ -18,6 +18,7 @@ import LatestKinderGroupsSection from "@/app/[locale]/home/components/LatestKind
 import NeighbourKinderGroupSection from "@/app/[locale]/home/components/NeighbourKinderGroupSection";
 import PremiumSchoolsFeatureSection from "@/app/[locale]/home/components/PremiumSchoolsFeatureSection";
 import AddKinderGroupSection from "@/app/[locale]/home/components/AddKinderGroupSection";
+import KindergartenMapSection from "@/app/[locale]/home/components/KindergartenMapSection";
 
 const Page = () => {
   return (
@@ -27,67 +28,7 @@ const Page = () => {
       <NeighbourKinderGroupSection />
       <PremiumSchoolsFeatureSection />
       <AddKinderGroupSection />
-      <Box
-        component="section"
-        sx={{
-          backgroundImage:
-            "linear-gradient(0deg, rgba(250, 243, 192, 0.8), rgba(250, 243, 192, 0.8)), url('/balloon-bg.jpg')",
-          backgroundSize: "100%",
-          backgroundRepeat: "no-repeat",
-          py: "96px",
-        }}
-      >
-        <Container sx={{ textAlign: "center" }}>
-          <Typography variant="h1" component="h2" fontSize="36px">
-            Add Your Kinder Group
-          </Typography>
-          <Typography mt="16px" fontSize="20px">
-            Do You Run a Kinder Group? Join Our Platform — It's Free to Start!
-          </Typography>
-          <Button sx={{ mt: "32px" }}>Add Your Kinder Group</Button>
-        </Container>
-      </Box>
-      <Box
-        component="section"
-        sx={{
-          backgroundColor: "secondary.main",
-          py: "80px",
-        }}
-      >
-        <Container>
-          <Typography variant="h1" component="h2" textAlign="center">
-            Map of Private Kindergartens
-          </Typography>
-          <Typography mt="12px" textAlign="center">
-            Neighbour Kinder Groups are trusted, independent kindergartens and
-            childcare providers located right in your area — offering
-            personalized care, community-based learning, and flexible programs.
-          </Typography>
-          <Box
-            sx={{
-              mt: "64px",
-              mb: "48px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              gap: "24px",
-              "& > *": {
-                flex: 1,
-              },
-            }}
-          >
-            <Button variant="outlined" color="secondary">
-              View All
-            </Button>
-            <Button variant="outlined" color="secondary">
-              View Prague
-            </Button>
-            <Button variant="outlined" color="secondary">
-              View Brno
-            </Button>
-          </Box>
-        </Container>
-      </Box>
+      <KindergartenMapSection />
       <Box
         component="section"
         sx={{
