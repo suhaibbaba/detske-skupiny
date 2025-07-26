@@ -5,25 +5,36 @@ import React, { FC } from "react";
 interface Props {
   children: React.ReactNode;
   sectionStyles?: BoxProps;
-  fullWidth?: ContainerOwnProps["maxWidth"];
+  /**
+   * It means the content has maxwidth 100%
+   */
+  contentFullWidth?: boolean;
+  showBreadcrumb?: boolean;
 }
 
 const PageLayout: FC<Props> = ({
   children,
-  fullWidth = "lg",
+  contentFullWidth = false,
+  showBreadcrumb = true,
   sectionStyles,
 }) => {
   return (
     <Box component="section" pt={5} pb={12.5} {...sectionStyles}>
-      <Container maxWidth={fullWidth} disableGutters={!fullWidth}>
-        {!fullWidth ? (
+      <Container
+        maxWidth={contentFullWidth ? false : "lg"}
+        disableGutters={!contentFullWidth}
+      >
+        {!contentFullWidth ? (
           <Container>
-            <Breadcrumbs />
+            {showBreadcrumb && <Breadcrumbs />}
+            {children}
           </Container>
         ) : (
-          <Breadcrumbs />
+          <>
+            {showBreadcrumb && <Breadcrumbs />}
+            {children}
+          </>
         )}
-        {children}
       </Container>
     </Box>
   );

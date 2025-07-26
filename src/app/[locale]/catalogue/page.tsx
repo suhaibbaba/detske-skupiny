@@ -54,7 +54,7 @@ const Page = () => {
   };
 
   return (
-    <PageLayout fullWidth={false}>
+    <PageLayout contentFullWidth={false}>
       <Box {...styles.container}>
         <Box {...styles.innerContainer}>
           <Container>

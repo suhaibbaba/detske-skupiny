@@ -10,11 +10,12 @@ import {
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 
 interface Props {
-  title?: string;
+  title?: string | React.ReactNode;
   description?: string;
   ctaList?: {
     label: string;
-    onClick: (e: React.MouseEvent) => void;
+    variant?: ButtonProps["variant"];
+    onClick?: (e: React.MouseEvent) => void;
   }[];
   extendedStyles?: PageHeadingTypographyStyles;
 }
@@ -74,9 +75,10 @@ const PageHeadingTypography: FC<Props> = ({
         <Box {...mergeStyles.ctaWrapper}>
           {ctaList.map((cta, idx) => (
             <Button
-              {...mergeStyles.cta}
-              onClick={cta.onClick}
               key={`${cta.label}_${idx}`}
+              {...mergeStyles.cta}
+              variant={cta.variant || "contained"}
+              onClick={cta.onClick}
             >
               {cta.label}
             </Button>

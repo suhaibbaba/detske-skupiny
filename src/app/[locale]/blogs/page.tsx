@@ -70,7 +70,7 @@ const BlogsPage = () => {
 
   return (
     <Box {...styles.container}>
-      <PageLayout fullWidth={false} sectionStyles={styles.section}>
+      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
         <Container>
           <PageHeadingTypography
             title={translate(data.heading)}

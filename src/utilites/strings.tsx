@@ -1,4 +1,5 @@
 import { Theme } from "@mui/material";
+import React from "react";
 
 export const formatMessage = (
   text: string,
@@ -11,10 +12,10 @@ export const formatMessage = (
 
   const result: React.ReactNode[] = [];
 
-  parts.forEach((part, i) => {
+  parts.forEach((part, idx) => {
     result.push(part);
-    if (i < values.length) {
-      result.push(values[i]);
+    if (idx < values.length) {
+      result.push(<React.Fragment key={idx}>{values[idx]}</React.Fragment>);
     }
   });
 

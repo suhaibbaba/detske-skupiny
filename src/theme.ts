@@ -1,7 +1,8 @@
 "use client";
+
 import { createTheme } from "@mui/material/styles";
 import { Fredoka } from "next/font/google";
-import { alpha } from "@mui/material";
+import { alpha, Theme } from "@mui/material";
 import { autoClamp } from "@/utilites/strings";
 
 const fredoka = Fredoka({
@@ -51,6 +52,7 @@ const baseTheme = createTheme({
       ui15: "#FDF9E2",
       ui16: "#0F1724",
       ui17: "#EDDDFC",
+      ui18: "#AAB0B9",
     },
     shadows: {
       ui1: "0px 4px 6px 0px #0000000D, 0px 10px 15px -3px  #0000001A",
@@ -129,6 +131,22 @@ const theme = createTheme(baseTheme, {
     },
   },
   components: {
+    MuiContainer: {
+      styleOverrides: {
+        root: ({ theme }: { theme: Theme }) => ({
+          paddingLeft: 16, // fallback for xs
+          paddingRight: 16,
+          [theme.breakpoints.up("sm")]: {
+            paddingLeft: 16,
+            paddingRight: 16,
+          },
+          [theme.breakpoints.up("lg")]: {
+            paddingLeft: 16,
+            paddingRight: 16,
+          },
+        }),
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         "*, *:before, *:after": {
