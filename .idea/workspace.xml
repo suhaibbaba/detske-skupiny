@@ -20,6 +20,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "git-widget-placeholder": "develop",
@@ -57,8 +60,8 @@
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Home page" />
     <MESSAGE value="Home page - Map widget" />
-    <option name="LAST_COMMIT_MESSAGE" value="Home page - Map widget" />
+    <MESSAGE value="Home page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Home page" />
   </component>
 </project>

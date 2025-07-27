@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import mergeWith from "lodash.mergewith";
 import { SxProps, Theme } from "@mui/material/styles";
 

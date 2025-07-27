@@ -3,29 +3,15 @@
 import {
   Box,
   BoxProps,
-  Button,
-  ButtonProps,
-  Chip,
-  ChipProps,
   Container,
   ContainerProps,
   Typography,
   TypographyProps,
-  Avatar,
 } from "@mui/material";
 import data from "@/data/blog";
 import BlogCard, {
   BlogsCardStylesType,
 } from "@/app/[locale]/blogs/components/BlogCard";
-
-interface BlogCardData {
-  title: string;
-  description: string;
-  author: string;
-  date: string;
-  readTime: string;
-  image: string;
-}
 
 interface BlogSectionStyles {
   section?: BoxProps;
