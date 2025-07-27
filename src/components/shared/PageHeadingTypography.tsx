@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Box,
   BoxProps,
@@ -28,7 +28,7 @@ export interface PageHeadingTypographyStyles {
   cta?: ButtonProps;
 }
 
-const styles: PageHeadingTypographyStyles = {
+const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
   container: {
     sx: {
       display: "flex",
@@ -64,19 +64,22 @@ const PageHeadingTypography: FC<Props> = ({
   ctaList,
   extendedStyles,
 }) => {
-  const mergeStyles = mergeMuiProps(styles, extendedStyles);
+  const [styles] = useState(() =>
+    mergeMuiProps(pageHeadingTypographyStyles, extendedStyles),
+  );
+
   return (
-    <Box {...mergeStyles.container}>
-      {title && <Typography {...mergeStyles.title}>{title}</Typography>}
+    <Box {...styles.container}>
+      {title && <Typography {...styles.title}>{title}</Typography>}
       {description && (
-        <Typography {...mergeStyles.description}>{description}</Typography>
+        <Typography {...styles.description}>{description}</Typography>
       )}
       {ctaList && ctaList.length > 0 && (
-        <Box {...mergeStyles.ctaWrapper}>
+        <Box {...styles.ctaWrapper}>
           {ctaList.map((cta, idx) => (
             <Button
               key={`${cta.label}_${idx}`}
-              {...mergeStyles.cta}
+              {...styles.cta}
               variant={cta.variant || "contained"}
               onClick={cta.onClick}
             >

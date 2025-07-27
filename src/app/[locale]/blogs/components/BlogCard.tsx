@@ -15,10 +15,11 @@ import {
   TypographyOwnProps,
   CardContentProps,
 } from "@mui/material";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import NextLink from "next/link";
 import Link from "@mui/material/Link";
 import { ellipses } from "@/utilites/strings";
+import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 
 interface Props {
   image: string;
@@ -29,9 +30,10 @@ interface Props {
   date: string;
   readTime: string;
   authorImage: string;
+  extendedStyles?: BlogsCardStylesType;
 }
 
-interface BlogsCardStylesType {
+export interface BlogsCardStylesType {
   card?: CardProps;
   cardContent?: CardContentProps;
   tag?: TypographyOwnProps;
@@ -45,7 +47,7 @@ interface BlogsCardStylesType {
   readNowButton?: ButtonProps;
 }
 
-const styles: BlogsCardStylesType = {
+const blogsCardStylesType: BlogsCardStylesType = {
   card: {
     sx: (theme) => ({
       borderRadius: "20px",
@@ -89,8 +91,12 @@ const styles: BlogsCardStylesType = {
       fontWeight: 500,
       fontSize: "20px",
       minHeight: "60px",
+      textAlign: "left",
       ...ellipses(2),
     }),
+  },
+  description: {
+    textAlign: "left",
   },
   footer: {
     sx: {
@@ -116,6 +122,7 @@ const styles: BlogsCardStylesType = {
   },
   authorName: {
     color: "custom.ui13",
+    textAlign: "left",
     sx: {
       fontWeight: 500,
       fontSize: "16px",
@@ -154,7 +161,12 @@ const BlogCard: FC<Props> = ({
   date,
   readTime,
   authorImage,
+  extendedStyles,
 }) => {
+  const [styles] = useState(() =>
+    mergeMuiProps(blogsCardStylesType, extendedStyles),
+  );
+
   return (
     <Card {...styles.card}>
       <CardMedia

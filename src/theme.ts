@@ -227,8 +227,11 @@ const theme = createTheme(baseTheme, {
       },
       styleOverrides: {
         root: {
-          background:
-            "linear-gradient(180deg,rgba(255, 254, 245, 1) 5%, rgba(243, 232, 253, 1) 160%);",
+          "&.Mui-expanded": {
+            background:
+              "linear-gradient(180deg, rgba(255, 254, 245, 1) 5%, rgba(243, 232, 253, 1) 160%)",
+            marginBottom: 0,
+          },
           borderRadius: "24px",
           boxShadow: "none",
           "&:before": {
@@ -243,7 +246,7 @@ const theme = createTheme(baseTheme, {
         root: {
           padding: "0 24px 24px 48px",
           color: "#6C7685",
-          fontSize: "18px",
+          fontSize: "20px",
           fontFamily: fredoka.style.fontFamily,
         },
       },
@@ -254,6 +257,7 @@ const theme = createTheme(baseTheme, {
           flexDirection: "row-reverse",
           padding: "0 24px",
           gap: "16px",
+          minHeight: "initial",
           ".MuiTypography-root": {
             color: "#001F39",
             fontSize: "20px",
@@ -262,7 +266,7 @@ const theme = createTheme(baseTheme, {
           fontFamily: fredoka.style.fontFamily,
         },
         content: {
-          "&, &.Mui-expanded": {
+          "&.Mui-expanded": {
             margin: "24px 0",
           },
         },
