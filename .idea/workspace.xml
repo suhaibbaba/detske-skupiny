@@ -56,12 +56,29 @@
       <option name="project" value="LOCAL" />
       <updated>1753568968822</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Home page - clean">
+      <option name="closed" value="true" />
+      <created>1753574991226</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753574991226</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Home page - clean">
+      <option name="closed" value="true" />
+      <created>1753575008511</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753575008511</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Home page - Map widget" />
     <MESSAGE value="Home page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Home page" />
+    <MESSAGE value="Home page - clean" />
+    <option name="LAST_COMMIT_MESSAGE" value="Home page - clean" />
   </component>
 </project>

@@ -84,7 +84,10 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
       display: "grid",
       gridTemplateColumns: "repeat(3, 1fr)",
       columnGap: "94px",
-      rowGap: "70px",
+      rowGap: {
+        xs: "94px",
+        sm: "70px",
+      },
       [theme.breakpoints.down("md")]: {
         display: "flex",
         flexDirection: "column",

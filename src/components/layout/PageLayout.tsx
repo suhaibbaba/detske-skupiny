@@ -24,7 +24,7 @@ const PageLayout: FC<Props> = ({
         maxWidth={contentFullWidth ? false : "lg"}
         disableGutters={!contentFullWidth}
       >
-        {!contentFullWidth ? (
+        {contentFullWidth ? (
           <Container>
             {showBreadcrumb && <Breadcrumbs />}
             {children}

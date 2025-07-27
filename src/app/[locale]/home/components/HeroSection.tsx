@@ -1,24 +1,19 @@
 "use client";
 
-import React, { FC } from "react";
+import { FC } from "react";
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import PageLayout from "@/components/layout/PageLayout";
-import {
-  Box,
-  BoxProps,
-  Container,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
 import PageHeadingTypography, {
   PageHeadingTypographyStyles,
 } from "@/components/shared/PageHeadingTypography";
-import { autoClamp, formatMessage } from "@/utilites/strings";
 import IllustrationMain from "@/components/icons/IllustrationMain";
+import { autoClamp, formatMessage } from "@/utilites/strings";
 
 interface Props {}
 
 interface HeroSectionStyles {
   section?: BoxProps;
+  contentWrapper?: BoxProps;
   pageHeadingStyles?: PageHeadingTypographyStyles;
   subtitle?: TypographyProps;
 }
@@ -28,13 +23,31 @@ const styles: HeroSectionStyles = {
     bgcolor: "secondary.main",
     sx: {
       pt: "60px",
-      pb: "120px",
+      pb: {
+        xs: "75px",
+        sm: "120px",
+      },
+    },
+  },
+  contentWrapper: {
+    sx: {
+      display: "flex",
+      flexDirection: {
+        xs: "column",
+        sm: "row",
+      },
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 3,
     },
   },
   pageHeadingStyles: {
     container: {
       sx: {
-        maxWidth: "489px",
+        maxWidth: {
+          xs: "100%",
+          md: "489px",
+        },
         alignItems: "flex-start",
       },
     },
@@ -44,7 +57,7 @@ const styles: HeroSectionStyles = {
           desktop: 44,
           tablet: 40,
           mobile: 36,
-          theme: theme,
+          theme,
         }),
         textAlign: "left",
       }),
@@ -61,23 +74,14 @@ const styles: HeroSectionStyles = {
   },
 };
 
-const HeroSection: FC<Props> = ({}) => {
-  const onClickHandler = () => {};
-
+const HeroSection: FC<Props> = () => {
   return (
     <PageLayout
       contentFullWidth={false}
       showBreadcrumb={false}
       sectionStyles={styles.section}
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "20px",
-        }}
-      >
+      <Box {...styles.contentWrapper}>
         <PageHeadingTypography
           title={formatMessage(
             "Your Guide to Private Kindergartens in {0}, {1} & Beyond",
@@ -88,26 +92,15 @@ const HeroSection: FC<Props> = ({}) => {
               Brno
             </Typography>,
           )}
-          description={
-            "Hundreds of childcare groups are already reaching local families through our platform. Add your listing today to be seen, contacted, and trusted by parents near you."
-          }
+          description="Hundreds of childcare groups are already reaching local families through our platform. Add your listing today to be seen, contacted, and trusted by parents near you."
           ctaList={[
-            {
-              label: "Kinder Prague",
-              variant: "primary",
-            },
-            {
-              label: "Kindr Brno",
-              variant: "secondary",
-            },
-            {
-              label: "All Kinder",
-              variant: "ghost",
-            },
+            { label: "Kinder Prague", variant: "primary" },
+            { label: "Kindr Brno", variant: "secondary" },
+            { label: "All Kinder", variant: "ghost" },
           ]}
           extendedStyles={styles.pageHeadingStyles}
         />
-        <Box sx={{ maxWidth: "404px", maxHeight: "460px" }}>
+        <Box sx={{ maxWidth: 404, maxHeight: 460 }}>
           <IllustrationMain />
         </Box>
       </Box>

@@ -55,6 +55,10 @@ const styles: KindergartenMapSectionStyles = {
       display: "flex",
       gap: "24px",
       justifyContent: "center",
+      flexDirection: {
+        xs: "column",
+        sm: "row",
+      },
       width: "100%",
     },
   },
@@ -68,7 +72,14 @@ const styles: KindergartenMapSectionStyles = {
     bgcolor: "common.white",
     sx: (theme) => ({
       width: "100%",
-      maxHeight: "686px",
+      maxHeight: {
+        xs: "520px",
+        sm: "686px",
+      },
+      height: {
+        xs: "520px",
+        sm: "auto",
+      },
       mt: "48px",
       borderRadius: "24px",
       boxShadow: theme.palette.shadows.ui1,
@@ -78,7 +89,8 @@ const styles: KindergartenMapSectionStyles = {
   mapImage: {
     sx: {
       width: "100%",
-      display: "block",
+      height: "100%",
+      objectFit: "cover",
     },
   },
 };
@@ -95,7 +107,6 @@ const KindergartenMapSection = () => {
           childcare providers located right in your area — offering personalized
           care, community-based learning, and flexible programs.
         </Typography>
-
         <Box {...styles.filterWrapper}>
           {filters.map((label, idx) => (
             <Button key={idx} {...styles.filterButton}>
@@ -103,7 +114,6 @@ const KindergartenMapSection = () => {
             </Button>
           ))}
         </Box>
-
         <Box {...styles.mapWrapper}>
           <Box
             component="img"

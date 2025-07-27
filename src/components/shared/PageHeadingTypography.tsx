@@ -48,6 +48,7 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
   },
   ctaWrapper: {
     display: "flex",
+    flexWrap: "wrap",
     gap: "12px",
   },
   cta: {

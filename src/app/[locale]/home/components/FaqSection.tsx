@@ -75,7 +75,7 @@ const styles: FaqSectionStyles = {
     variant: "h1",
     fontSize: "40px",
     textAlign: "center",
-    sx: {
+    sx: (theme) => ({
       mx: "auto",
       mb: "80px",
       position: "relative",
@@ -87,6 +87,9 @@ const styles: FaqSectionStyles = {
         width: "122px",
         height: "1px",
         backgroundColor: "common.black",
+        [theme.breakpoints.down("sm")]: {
+          display: "none",
+        },
       },
       "&::before": {
         right: "100%",
@@ -96,7 +99,7 @@ const styles: FaqSectionStyles = {
         left: "100%",
         marginLeft: "16px",
       },
-    },
+    }),
   },
   accordionList: {
     sx: {

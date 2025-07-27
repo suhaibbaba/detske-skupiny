@@ -37,7 +37,10 @@ const styles: NeighbourKinderGroupSectionStyles = {
   container: {
     sx: {
       display: "flex",
-      flexDirection: { xs: "column", md: "row" },
+      flexDirection: {
+        xs: "column",
+        md: "row",
+      },
       alignItems: "center",
       justifyContent: "space-between",
       gap: "80px",
@@ -59,7 +62,10 @@ const styles: NeighbourKinderGroupSectionStyles = {
   description: {
     sx: {
       mb: "24px",
-      textAlign: { xs: "center", md: "left" },
+      textAlign: {
+        xs: "center",
+        md: "left",
+      },
     },
   },
   ctaButton: {
@@ -68,6 +74,7 @@ const styles: NeighbourKinderGroupSectionStyles = {
   imageWrapper: {
     sx: (theme) => ({
       flex: 1,
+      width: "100%",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -100,7 +107,7 @@ const NeighbourKinderGroupSection = () => {
         </Box>
 
         <Box {...styles.imageWrapper}>
-          <IllustrationChildrenGroup />
+          <IllustrationChildrenGroup sx={{ width: "100%", height: "auto" }} />
         </Box>
       </Container>
     </Box>
