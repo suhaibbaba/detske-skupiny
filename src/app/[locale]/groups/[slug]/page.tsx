@@ -1,181 +1,245 @@
+"use client";
+
 import {
   Box,
   Button,
-  Stack,
   Typography,
+  BoxProps,
+  ContainerProps,
+  Container,
+  TypographyProps,
+  ListItemProps,
+  ListProps,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   TableContainer,
-  TableHead,
+  Table,
   TableCell,
   TableRow,
+  TableHead,
   TableBody,
-  Table,
-  Chip,
 } from "@mui/material";
-import PlaceIcon from "@mui/icons-material/Place";
-import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
-import CheckmarkIcon from "@/components/icons/CheckmarkIcon";
-import Gallery from "@/app/[locale]/groups/components/Gallery";
+import PageLayout from "@/components/layout/PageLayout";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import data from "@/data/blogDetail";
+import FilterSidebar from "@/app/[locale]/groups/components/FilterSidebar";
+import SchoolGridImages, {
+  SchoolGridImagesStyles,
+} from "@/app/[locale]/groups/[slug]/components/SchoolGridImages";
+import InfoCardGrid from "@/app/[locale]/groups/[slug]/components/InfoCardGrid";
+import Location from "@/components/icons/Location";
+import AboutSchool from "@/app/[locale]/groups/[slug]/components/AboutSchool";
+import CheckIcon from "@mui/icons-material/Check";
 
-const DetailPage = () => {
+interface PageStyles {
+  section?: BoxProps;
+  pageContainer?: BoxProps;
+  container?: ContainerProps;
+  contentWrapper?: BoxProps;
+  name?: TypographyProps;
+  logo?: BoxProps;
+  schoolGridImagesStyles?: SchoolGridImagesStyles;
+  list?: ListProps;
+  listItem?: ListItemProps;
+  sectionHeading?: TypographyProps;
+}
+
+const styles: PageStyles = {
+  section: {
+    sx: (theme) => ({
+      background: theme.palette.gradients.ui3,
+    }),
+  },
+  pageContainer: {
+    sx: {
+      pb: {
+        xs: "100px",
+        sm: "164px",
+      },
+    },
+  },
+  container: {
+    sx: {
+      display: "grid",
+      gridTemplateColumns: {
+        xs: "1fr",
+        sm: "300px 1fr",
+      },
+      columnGap: "60px",
+      mt: "80px",
+    },
+  },
+  name: {
+    variant: "h2",
+    sx: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+    },
+  },
+  logo: {
+    sx: {
+      width: "100%",
+      height: "100%",
+      maxWidth: "35px",
+      maxHeight: "35px",
+    },
+  },
+  schoolGridImagesStyles: {
+    container: {
+      sx: {
+        mt: "24px",
+      },
+    },
+  },
+  sectionHeading: {
+    color: "custom.ui13",
+    fontSize: "24px",
+    fontWeight: 600,
+    mt: "80px",
+    mb: "20px",
+  },
+  list: {
+    disablePadding: true,
+    sx: {
+      display: "grid",
+      gridTemplateColumns: {
+        xs: "1fr",
+        sm: "1fr 1fr",
+      },
+      gap: "12px",
+    },
+  },
+  listItem: {
+    disableGutters: true,
+    disablePadding: true,
+    sx: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+    },
+  },
+};
+
+const markContent = [
+  "Understand your child’s personality and needs",
+  "Explore different teaching philosophies",
+  "Focus on communication",
+  "Look for programs that welcome involvement",
+  "Outdoor learning & nature walks",
+  "Annual mountain retreat",
+  "Location that fits your daily routine",
+  "Ask about class size & communication",
+  "Visit in person",
+  "Clarify what’s included",
+  "Daily healthy meals",
+  "Trust your gut",
+];
+
+const Page = () => {
   return (
-    <Box>
-      <Stack
-        direction="row"
-        gap="20px"
-        justifyContent="space-between"
-        alignItems="center"
-        mb="24px"
-      >
-        <Typography variant="h2" component="h1">
-          All Stars Kindergarten & Primary School
-        </Typography>
-        <Button color="secondary">Visit website</Button>
-      </Stack>
-      <Gallery />
-      <Box component="section" sx={{ my: "24px" }}>
-        <Stack direction="row" gap="16px" alignItems="center">
-          <Chip
-            label="Clickable Link"
-            component="a"
-            variant="outlined"
-            href="#basic-chip"
-            clickable
+    <Box {...styles.pageContainer}>
+      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
+        <PageHeadingTypography
+          title={data.heading}
+          description={data.description}
+          ctaList={[
+            {
+              label: "Kinder Prague",
+              variant: "primary",
+            },
+            {
+              label: "Kindr Brno",
+              variant: "secondary",
+            },
+            {
+              label: "All Kinder",
+              variant: "ghost",
+            },
+          ]}
+        />
+      </PageLayout>
+      <Container {...styles.container}>
+        <FilterSidebar />
+        <Box {...styles.contentWrapper}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "20px 12px",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}
+          >
+            <Typography {...styles.name}>
+              <Box
+                component="img"
+                {...styles.logo}
+                src="/groups/vector.svg"
+                alt="Logo"
+              />
+              All Stars Kindergarten & Primary School
+            </Typography>
+            <Button variant="secondary">Visit Website</Button>
+          </Box>
+          <SchoolGridImages
+            leftImage="/school1.jpg"
+            topRightImage="/school2.jpg"
+            bottomRightImage="/school3.jpg"
+            extendedStyles={styles.schoolGridImagesStyles}
           />
-          <Chip
-            label="Clickable Link"
-            component="a"
-            variant="outlined"
-            href="#basic-chip"
-            clickable
-            sx={{ borderColor: "#30B0C7" }}
+          <InfoCardGrid
+            items={[
+              {
+                title: "Location",
+                icon: <Location />,
+                content: (
+                  <Typography>
+                    Lstibořská 2396, Praha 21 - Újezd nad Lesy 190 16
+                  </Typography>
+                ),
+              },
+              {
+                title: "Transportation Nearby",
+                icon: <Location />,
+                content: (
+                  <>
+                    <Typography>Strakonická, New Orchards (200m)</Typography>
+                    <Typography>Strakonická, New Orchards (200m)</Typography>
+                  </>
+                ),
+              },
+              {
+                title: "Contacts",
+                icon: <Location />,
+                content: (
+                  <>
+                    <Typography>
+                      (+420 777 123 456) - Mgr. Lucie Nováková -Director
+                    </Typography>
+                    <Typography>
+                      (+420 604 654 321 )- Petra Malá- Asst. Coordinator
+                    </Typography>
+                  </>
+                ),
+              },
+              {
+                title: "Website & Social Media",
+                icon: <Location />,
+                content: (
+                  <>
+                    <Typography>www.allstarskindergarten.cz </Typography>
+                    <Typography>
+                      www.facebook.com/allstarsindergarten
+                    </Typography>
+                  </>
+                ),
+              },
+            ]}
           />
-          <Chip
-            label="Clickable Link"
-            component="a"
-            variant="outlined"
-            href="#basic-chip"
-            clickable
-            sx={{ borderColor: "#FF3B30" }}
-          />
-        </Stack>
-      </Box>
-      <Box component="section">
-        <Typography variant="h3" component="h2" fontSize="24px" mb="20px">
-          Kontaktní informace
-        </Typography>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "20px",
-          }}
-        >
-          <Box
-            sx={{
-              border: 1,
-              borderColor: "#E5CDFA",
-              backgroundColor: "primary.light",
-              borderRadius: "12px",
-              px: "24px",
-              py: "16px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "inline-flex",
-                gap: "4px",
-                alignItems: "center",
-                mb: "8px",
-              }}
-            >
-              <PlaceIcon sx={{ color: "secondary.dark" }} />
-              <Typography variant="h4">Location</Typography>
-            </Box>
-            <Typography>
-              Lstibořská 2396, Praha 21 - Újezd nad Lesy 190 16
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              border: 1,
-              borderColor: "#E5CDFA",
-              backgroundColor: "primary.light",
-              borderRadius: "12px",
-              px: "24px",
-              py: "16px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "inline-flex",
-                gap: "4px",
-                alignItems: "center",
-                mb: "8px",
-              }}
-            >
-              <PlaceIcon sx={{ color: "secondary.dark" }} />
-              <Typography variant="h4">Location</Typography>
-            </Box>
-            <Typography>
-              Lstibořská 2396, Praha 21 - Újezd nad Lesy 190 16
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              border: 1,
-              borderColor: "#E5CDFA",
-              backgroundColor: "primary.light",
-              borderRadius: "12px",
-              px: "24px",
-              py: "16px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "inline-flex",
-                gap: "4px",
-                alignItems: "center",
-                mb: "8px",
-              }}
-            >
-              <PlaceIcon sx={{ color: "secondary.dark" }} />
-              <Typography variant="h4">Location</Typography>
-            </Box>
-            <Typography>
-              Lstibořská 2396, Praha 21 - Újezd nad Lesy 190 16
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              border: 1,
-              borderColor: "#E5CDFA",
-              backgroundColor: "primary.light",
-              borderRadius: "12px",
-              px: "24px",
-              py: "16px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "inline-flex",
-                gap: "4px",
-                alignItems: "center",
-                mb: "8px",
-              }}
-            >
-              <PlaceIcon sx={{ color: "secondary.dark" }} />
-              <Typography variant="h4">Location</Typography>
-            </Box>
-            <Typography>
-              Lstibořská 2396, Praha 21 - Újezd nad Lesy 190 16
-            </Typography>
-          </Box>
-        </Box>
-        <Box component="section">
-          <Typography variant="h3" component="h2" fontSize="24px" mb="20px">
-            O nás
-          </Typography>
-          <Typography>
+          <AboutSchool>
             At All Stars, we create an inspiring environment where education
             meets play, and every child is supported as a unique individual. Our
             bilingual Czech-English program combines a joyful approach to early
@@ -187,84 +251,55 @@ const DetailPage = () => {
             socially, and emotionally. We welcome children from 2.5 years and
             offer both kindergarten and primary-level education, making
             transitions smoother for families who wish to stay long-term.
-          </Typography>
-          <Box
-            component="img"
-            src="https://www.soukromeskolky.cz/uploads/2025/03/logo-drackova-jazykova-skola.png.webp"
-          />
-        </Box>
-        <Box component="section">
-          <Typography variant="h3" component="h2" fontSize="24px" mb="20px">
-            What makes us special?
-          </Typography>
-          <Box
-            component="ul"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-              p: 0,
-              m: 0,
-            }}
-          >
-            <Box
-              component="li"
-              sx={{
-                display: "inline-flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
-              <SquareRoundedIcon
-                sx={{ color: "secondary.dark", fontSize: "16px" }}
-              />
-              <Typography>Máme tohle</Typography>
-            </Box>
-            <Box
-              component="li"
-              sx={{
-                display: "inline-flex",
-                gap: "8px",
-                alignItems: "center",
-              }}
-            >
-              <CheckmarkIcon />
-              <Typography>Máme tohle</Typography>
-            </Box>
+          </AboutSchool>
+
+          <Box>
+            <Typography {...styles.sectionHeading}>
+              What Makes Us Special
+            </Typography>
+            <List {...styles.list}>
+              {markContent.map((item) => (
+                <ListItem key={item} {...styles.listItem}>
+                  <ListItemIcon sx={{ minWidth: "initial" }}>
+                    <CheckIcon color="success" />
+                  </ListItemIcon>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+
+          <Box component="section">
+            <Typography {...styles.sectionHeading}>Our time table</Typography>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Time</TableCell>
+                    <TableCell>Activity</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>06:30 - 06:45</TableCell>
+                    <TableCell>Arrival & Free Play</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>06:30 - 06:45</TableCell>
+                    <TableCell>Arrival & Free Play</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>06:30 - 06:45</TableCell>
+                    <TableCell>Arrival & Free Play</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Box>
-        <Box component="section">
-          <Typography variant="h3" component="h2" fontSize="24px" mb="20px">
-            Our time table
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Time</TableCell>
-                  <TableCell>Activity</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>06:30 - 06:45</TableCell>
-                  <TableCell>Arrival & Free Play</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>06:30 - 06:45</TableCell>
-                  <TableCell>Arrival & Free Play</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>06:30 - 06:45</TableCell>
-                  <TableCell>Arrival & Free Play</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Box>
+      </Container>
     </Box>
   );
 };
 
-export default DetailPage;
+export default Page;

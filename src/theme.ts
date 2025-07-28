@@ -156,6 +156,7 @@ const theme = createTheme(baseTheme, {
           maxWidth: "100%",
           minWidth: "0",
           minHeight: "0",
+          letterSpacing: 0,
         },
       },
     },
