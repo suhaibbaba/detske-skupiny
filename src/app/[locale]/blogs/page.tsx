@@ -20,6 +20,7 @@ const styles: BlogsStyles = {
   section: {
     sx: (theme) => ({
       background: theme.palette.gradients.ui2,
+
       pb: "150px",
     }),
   },

@@ -4,6 +4,7 @@ import { createTheme } from "@mui/material/styles";
 import { Fredoka } from "next/font/google";
 import { alpha, Theme } from "@mui/material";
 import { autoClamp } from "@/utilites/strings";
+import CheckedIcon from "@/components/icons/CheckedIcon";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ const baseTheme = createTheme({
     gradients: {
       ui1: "linear-gradient(180deg, #F8F2FE 0%,  #F8F2FE 45%, #FCF8E5 100%)",
       ui2: "linear-gradient(90deg, #F9F4F6 0%, #FCF7E8 100%)",
+      ui3: "linear-gradient(90deg, #FCF8E5 0%, #F8F2FE 100%);\n",
     },
     custom: {
       ui1: "#1E232B",
@@ -53,6 +55,7 @@ const baseTheme = createTheme({
       ui16: "#0F1724",
       ui17: "#EDDDFC",
       ui18: "#AAB0B9",
+      ui19: "#8A866A",
     },
     shadows: {
       ui1: "0px 4px 6px 0px #0000000D, 0px 10px 15px -3px  #0000001A",
@@ -337,6 +340,34 @@ const theme = createTheme(baseTheme, {
           },
           "& .MuiFormControlLabel-label": {
             overflowWrap: "break-word",
+          },
+        },
+      },
+    },
+    MuiCheckbox: {
+      defaultProps: {
+        checkedIcon: CheckedIcon,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: "4px",
+          "&.MuiCheckbox-sizeSmall": {
+            padding: "0 8px",
+          },
+          "&.MuiCheckbox-sizeSmall .MuiSvgIcon-root": {
+            width: "16px",
+            height: "16px",
+          },
+          "& .MuiSvgIcon-root": {
+            color: "transparent",
+            border: "0.5px solid #848C99",
+            borderRadius: "4px",
+            backgroundColor: "#EDEEF0",
+          },
+          "&.Mui-checked .MuiSvgIcon-root": {
+            backgroundColor: "#9980B0",
+            borderColor: "#9980B0",
+            color: "#fff",
           },
         },
       },

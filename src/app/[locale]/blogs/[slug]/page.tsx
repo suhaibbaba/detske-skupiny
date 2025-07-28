@@ -177,12 +177,10 @@ const BlogDetailPage = () => {
   return (
     <Box {...styles.container?.(tabsOffset)}>
       <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
-        <Container>
-          <PageHeadingTypography
-            title={translate(data.heading)}
-            description={translate(data.description)}
-          />
-        </Container>
+        <PageHeadingTypography
+          title={translate(data.heading)}
+          description={translate(data.description)}
+        />
       </PageLayout>
       <Container>
         <BlogTabs

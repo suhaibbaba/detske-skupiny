@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useState } from "react";
 import {
   Box,
@@ -50,11 +52,13 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "12px",
+    mt: "20px",
   },
   cta: {
     variant: "contained",
     sx: {
-      mt: "20px",
+      padding: "14px 10px",
+      letterSpacing: 0,
     },
   },
 };
