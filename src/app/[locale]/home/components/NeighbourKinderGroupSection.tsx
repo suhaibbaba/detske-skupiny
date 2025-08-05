@@ -99,7 +99,7 @@ const NeighbourKinderGroupSection = () => {
             Neighbour Kinder Groups are trusted, independent kindergartens and
             childcare providers located right in your area — offering
             personalized care, community-based learning, and flexible programs.
-            Whether it's a Montessori preschool, language-focused group, or
+            Whether its a Montessori preschool, language-focused group, or
             nature-based nursery, each listing is verified and created to help
             you find the perfect fit for your child.
           </Typography>
