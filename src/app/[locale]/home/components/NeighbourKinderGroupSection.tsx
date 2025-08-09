@@ -11,6 +11,21 @@ import {
   TypographyProps,
 } from "@mui/material";
 import IllustrationChildrenGroup from "@/components/icons/IllustrationChildrenGroup";
+import {
+  SanityCtaField,
+  SanityImageField,
+  SanityRichText,
+} from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
+
+interface Props {
+  fields: {
+    image: SanityImageField;
+    title?: SanityRichText;
+    description: SanityRichText;
+    cta: SanityCtaField;
+  };
+}
 
 interface NeighbourKinderGroupSectionStyles {
   section?: BoxProps;
@@ -87,14 +102,12 @@ const styles: NeighbourKinderGroupSectionStyles = {
   },
 };
 
-const NeighbourKinderGroupSection = () => {
+const NeighbourKinderGroupSection = ({ fields }: Props) => {
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
         <Box {...styles.textBlock}>
-          <Typography {...styles.heading}>
-            What Is a Neighbour Kinder Group?
-          </Typography>
+          <RichText {...styles.heading}>{fields.title}</RichText>
           <Typography {...styles.description}>
             Neighbour Kinder Groups are trusted, independent kindergartens and
             childcare providers located right in your area — offering

@@ -10,15 +10,12 @@ import {
   TypographyOwnProps,
 } from "@mui/material";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
+import { SanityCtaField } from "@/sanity/types";
 
 interface Props {
   title?: string | React.ReactNode;
-  description?: string;
-  ctaList?: {
-    label: string;
-    variant?: ButtonProps["variant"];
-    onClick?: (e: React.MouseEvent) => void;
-  }[];
+  description?: string | React.ReactNode;
+  ctaList?: SanityCtaField[];
   extendedStyles?: PageHeadingTypographyStyles;
 }
 
@@ -83,12 +80,12 @@ const PageHeadingTypography: FC<Props> = ({
         <Box {...styles.ctaWrapper}>
           {ctaList.map((cta, idx) => (
             <Button
-              key={`${cta.label}_${idx}`}
+              key={`${cta.text}_${idx}`}
               {...styles.cta}
               variant={cta.variant || "contained"}
-              onClick={cta.onClick}
+              href={cta.url}
             >
-              {cta.label}
+              {cta.text}
             </Button>
           ))}
         </Box>

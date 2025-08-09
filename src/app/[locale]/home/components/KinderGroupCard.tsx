@@ -9,6 +9,20 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
+import {
+  SanityCtaField,
+  SanityImageField,
+  SanityRichText,
+} from "@/sanity/types";
+
+interface Props {
+  fields: {
+    image: SanityImageField;
+    title?: SanityRichText;
+    description: SanityRichText;
+    cta: SanityCtaField;
+  };
+}
 
 interface KinderGroupCardStyles {
   container?: BoxProps;
@@ -96,21 +110,16 @@ const styles: KinderGroupCardStyles = {
   },
 };
 
-const KinderGroupCard = () => {
+const KinderGroupCard = ({ fields }: Props) => {
   return (
     <Box {...styles.container}>
       <Box {...styles.imageWrapper}>
-        <Box
-          component="img"
-          src="/home/kinderGroups/image1.jpg"
-          {...styles.image}
-        />
+        <Box component="img" src={fields.image.asset?.url} {...styles.image} />
       </Box>
       <Box {...styles.infoContainer}>
         <Typography {...styles.title}>
           Malvína Preschool – Prague Karlín
         </Typography>
-        {/*<Box></Box>*/}
         <Typography sx={{ textAlign: "left" }}>
           A bilingual kindergarten and primary school that blends Czech and
           English learning in a warm, creative environment. Learning is fun,

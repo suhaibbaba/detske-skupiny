@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import React, { FC } from "react";
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import PageLayout from "@/components/layout/PageLayout";
 import PageHeadingTypography, {
@@ -8,8 +8,21 @@ import PageHeadingTypography, {
 } from "@/components/shared/PageHeadingTypography";
 import IllustrationMain from "@/components/icons/IllustrationMain";
 import { autoClamp, formatMessage } from "@/utilites/strings";
+import {
+  SanityCtaField,
+  SanityImageField,
+  SanityRichText,
+} from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
 
-interface Props {}
+interface Props {
+  fields: {
+    image: SanityImageField;
+    title?: SanityRichText;
+    ctas: SanityCtaField[];
+    description: SanityRichText;
+  };
+}
 
 interface HeroSectionStyles {
   section?: BoxProps;
@@ -74,7 +87,7 @@ const styles: HeroSectionStyles = {
   },
 };
 
-const HeroSection: FC<Props> = () => {
+const HeroSection: FC<Props> = ({ fields }: Props) => {
   return (
     <PageLayout
       contentFullWidth={false}
@@ -83,25 +96,13 @@ const HeroSection: FC<Props> = () => {
     >
       <Box {...styles.contentWrapper}>
         <PageHeadingTypography
-          title={formatMessage(
-            "Your Guide to Private Kindergartens in {0}, {1} & Beyond",
-            <Typography {...styles.subtitle} color="primary.main">
-              Prague
-            </Typography>,
-            <Typography {...styles.subtitle} color="secondary.dark">
-              Brno
-            </Typography>,
-          )}
-          description="Hundreds of childcare groups are already reaching local families through our platform. Add your listing today to be seen, contacted, and trusted by parents near you."
-          ctaList={[
-            { label: "Kinder Prague", variant: "primary" },
-            { label: "Kindr Brno", variant: "secondary" },
-            { label: "All Kinder", variant: "ghost" },
-          ]}
+          title={<RichText>{fields.title}</RichText>}
+          description={<RichText>{fields.description}</RichText>}
+          ctaList={fields.ctas}
           extendedStyles={styles.pageHeadingStyles}
         />
         <Box sx={{ maxWidth: 404, maxHeight: 460 }}>
-          <IllustrationMain />
+          <Box component="img" src={fields.image.asset?.url} />
         </Box>
       </Box>
     </PageLayout>

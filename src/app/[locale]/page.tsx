@@ -15,15 +15,14 @@ const Page = async () => {
   console.log({ sections });
   return (
     <Box data-test-selector="home-page">
-      <HeroSection />
-      <LatestKinderGroupsSection />
-      <NeighbourKinderGroupSection />
-      <PremiumSchoolsFeatureSection />
-      <AddKinderGroupSection />
-      <KindergartenMapSection />
-      {/*<FaqSection />*/}
-      <Zone sections={sections} types="faq" />
-      <BlogSection />
+      <Zone sections={sections} types="all" />
+      {/*<LatestKinderGroupsSection />*/}
+      {/*<NeighbourKinderGroupSection />*/}
+      {/*<PremiumSchoolsFeatureSection />*/}
+      {/*<AddKinderGroupSection />*/}
+      {/*<KindergartenMapSection />*/}
+      {/*<Zone sections={sections} types="faq" />*/}
+      {/*<BlogSection />*/}
     </Box>
   );
 };
