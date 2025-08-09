@@ -5,10 +5,14 @@ import NeighbourKinderGroupSection from "@/app/[locale]/home/components/Neighbou
 import PremiumSchoolsFeatureSection from "@/app/[locale]/home/components/PremiumSchoolsFeatureSection";
 import AddKinderGroupSection from "@/app/[locale]/home/components/AddKinderGroupSection";
 import KindergartenMapSection from "@/app/[locale]/home/components/KindergartenMapSection";
-import FaqSection from "@/app/[locale]/home/components/FaqSection";
 import BlogSection from "@/app/[locale]/home/components/BlogSection";
+import { getHomePage } from "@/sanity/queries/pages";
+import Zone from "@/sanity/components/Zone";
 
-const Page = () => {
+const Page = async () => {
+  const { sections } = await getHomePage();
+
+  console.log({ sections });
   return (
     <Box data-test-selector="home-page">
       <HeroSection />
@@ -17,7 +21,8 @@ const Page = () => {
       <PremiumSchoolsFeatureSection />
       <AddKinderGroupSection />
       <KindergartenMapSection />
-      <FaqSection />
+      {/*<FaqSection />*/}
+      <Zone sections={sections} types="faq" />
       <BlogSection />
     </Box>
   );

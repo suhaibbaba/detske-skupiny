@@ -12,38 +12,22 @@ import {
   AccordionDetails,
   AccordionProps,
 } from "@mui/material";
-import { useState } from "react";
 import ChevronDown from "@/components/icons/ChevronDown";
+import RichText from "@/sanity/components/RichText";
+import { RichTextProps } from "@/sanity/types";
 
 interface FaqItem {
   question: string;
-  answer: string;
+  answer?: RichTextProps;
+  openByDefault?: boolean;
 }
 
-const faqList: FaqItem[] = [
-  {
-    question: "How do I find a kindergarten near my home?",
-    answer:
-      "You can use our smart filtering system to browse by region, city, or even specific districts like Prague 6 or Brno-Komárov. You can also view kinder groups directly on an interactive map.",
-  },
-  {
-    question: "Can I contact the kindergarten directly?",
-    answer: "",
-  },
-  {
-    question: "What’s the difference between a Free and Premium listing?",
-    answer:
-      "Free listings include basic info like name, contact, and description.\nPremium listings offer extras like photo galleries, detailed program info, performance stats, and are highlighted throughout the site.",
-  },
-  {
-    question: "Are the kinder groups on your site verified?",
-    answer: "",
-  },
-  {
-    question: "How do I list my kindergarten on this platform?",
-    answer: "",
-  },
-];
+interface Props {
+  fields: {
+    title: string;
+    items?: FaqItem[];
+  };
+}
 
 interface FaqSectionStyles {
   section?: BoxProps;
@@ -110,25 +94,18 @@ const styles: FaqSectionStyles = {
   },
 };
 
-const FaqSection = () => {
-  const [expanded, setExpanded] = useState<string | false>("0");
-
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
-
+const FaqSection = ({ fields }: Props) => {
+  console.log(fields);
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
-        <Typography {...styles.heading}>Frequently Asked Questions</Typography>
+        <Typography {...styles.heading}>{fields.title}</Typography>
         <Box {...styles.accordionList}>
-          {faqList.map((faq, idx) => (
+          {fields.items?.map((faq, idx) => (
             <Accordion
               key={idx}
               {...styles.accordion}
-              expanded={expanded === `${idx}`}
-              onChange={handleChange(`${idx}`)}
+              defaultExpanded={faq.openByDefault}
             >
               <AccordionSummary
                 expandIcon={<ChevronDown />}
@@ -139,7 +116,7 @@ const FaqSection = () => {
               </AccordionSummary>
               {faq.answer && (
                 <AccordionDetails>
-                  <Typography {...styles.answer}>{faq.answer}</Typography>
+                  <RichText {...styles.answer} value={faq.answer} />
                 </AccordionDetails>
               )}
             </Accordion>

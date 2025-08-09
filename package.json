@@ -13,10 +13,12 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
+    "@portabletext/react": "^3.2.1",
     "embla-carousel-react": "^8.6.0",
     "lodash.mergewith": "^4.6.2",
     "next": "15.3.2",
     "next-intl": "^4.1.0",
+    "next-sanity": "^10.0.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "yet-another-react-lightbox": "^3.24.0"
