@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Region } from "@/sanity/types";
 import { FC } from "react";
-import GroupItem from "@/app/[locale]/signpost/components/groupItem";
+import GroupItem from "@/app/[locale]/group/components/groupItem";
 
 interface Props {
   group?: Region;

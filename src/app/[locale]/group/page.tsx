@@ -2,7 +2,7 @@
 
 import { Box, BoxProps } from "@mui/material";
 import { getGroupsPage } from "@/sanity/queries/pages";
-import GroupSection from "@/app/[locale]/signpost/components/groupSection";
+import GroupSection from "@/app/[locale]/group/components/groupSection";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 
