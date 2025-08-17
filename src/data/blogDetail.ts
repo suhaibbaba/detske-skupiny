@@ -16,7 +16,7 @@ export default {
           "Choosing a kindergarten is one of the first big decisions you'll make as a parent in your child’s educational journey. It’s not just about location or curriculum — it’s about finding a place where your child will feel safe, inspired, and supported in their early growth. This guide walks you through everything you need to consider when searching for the right fit.",
         heading: "Understand Your Child First",
         content:
-          "Before you start comparing schools, take a moment to reflect on your child’s personality, needs, and learning style. Are they shy or outgoing? Do they thrive in quiet, structured environments, or do they need room to explore and express themselves freely? Some children are naturally independent, while others may need a little extra reassurance in group settings.\n" +
+          "Before you start comparing schools, take a moment to reflect on your child’s personality, needs, and learning style. Are they shy or outgoing? Do they thrive in quiet, structured environments, or do they need room to explore and express themselves freely? Some children are naturally independent, while others may need a little extra reassurance in groups settings.\n" +
           "Kindergartens vary widely in their approach, and understanding your child’s temperament will help you find a program that truly supports their development — not just academically, but emotionally and socially too.\n" +
           "\n" +
           "Our experienced teachers focus on respectful guidance, recognizing each child’s natural rhythm of development. From art workshops and science play to music and outdoor discovery, we support the whole child — academically, socially, and emotionally.\n" +
