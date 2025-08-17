@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   BoxProps,
@@ -16,9 +18,7 @@ import Textarea from "@/components/ui/textarea/Textarea";
 import { formatMessage } from "@/utilites/strings";
 import { FC } from "react";
 
-interface Props {
-  translate: (key: string) => string;
-}
+interface Props {}
 
 interface ContactUsStyles {
   container?: BoxProps;
@@ -49,23 +49,21 @@ const styles: ContactUsStyles = {
   },
 };
 
-const ContactForm: FC<Props> = ({ translate }) => {
+const ContactForm: FC<Props> = (props) => {
   const theme = useTheme();
 
   return (
     <Box {...styles.container}>
       <Grid container rowSpacing={3} columnSpacing={4}>
         <Grid {...styles.fullWidthGrid}>
-          <Typography {...styles.title}>
-            {translate("Send Your Inquiry")}
-          </Typography>
+          <Typography {...styles.title}>{"Send Your Inquiry"}</Typography>
         </Grid>
         <Grid {...styles.fullWidthGrid}>
-          <Typography>{translate("formDescription")}</Typography>
+          <Typography>{"formDescription"}</Typography>
         </Grid>
         <Grid {...styles.halfWidthGrid}>
           <TextField
-            placeholder={translate("Your name")}
+            placeholder={"Your name"}
             variant="outlined"
             fullWidth
             className="rounded"
@@ -73,7 +71,7 @@ const ContactForm: FC<Props> = ({ translate }) => {
         </Grid>
         <Grid {...styles.halfWidthGrid}>
           <TextField
-            placeholder={translate("name@example.com")}
+            placeholder={"name@example.com"}
             variant="outlined"
             fullWidth
             className="rounded"
@@ -83,7 +81,7 @@ const ContactForm: FC<Props> = ({ translate }) => {
           <Textarea
             aria-label="minimum height"
             minRows={5}
-            placeholder={translate("Write text here ...")}
+            placeholder={"Write text here ..."}
           />
         </Grid>
         <Grid {...styles.fullWidthGrid}>
@@ -116,7 +114,7 @@ const ContactForm: FC<Props> = ({ translate }) => {
         </Grid>
         <Grid size={12}>
           <Button variant="contained" fullWidth>
-            {translate("Send Message")}
+            {"Send Message"}
           </Button>
         </Grid>
       </Grid>

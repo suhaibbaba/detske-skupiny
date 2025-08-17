@@ -9,8 +9,24 @@ import {
   ButtonProps,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  SanityCtaField,
+  SanityImageField,
+  SanityRichTextField,
+} from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import React from "react";
 
-interface AddKinderGroupSectionStyles {
+interface Props {
+  fields: {
+    background?: SanityImageField;
+    title?: string;
+    subtitle?: SanityRichTextField;
+    cta?: SanityCtaField;
+  };
+}
+interface BannerKinderGroupStyles {
   section?: BoxProps;
   container?: ContainerProps;
   title?: TypographyProps;
@@ -18,7 +34,7 @@ interface AddKinderGroupSectionStyles {
   button?: ButtonProps;
 }
 
-const styles: AddKinderGroupSectionStyles = {
+const styles: BannerKinderGroupStyles = {
   section: {
     sx: {
       backgroundImage:
@@ -61,18 +77,29 @@ const styles: AddKinderGroupSectionStyles = {
   },
 };
 
-const AddKinderGroupSection = () => {
+const BannerKinderGroup = ({ fields }: Props) => {
+  const bgUrl = React.useMemo(
+    () => urlImageFor(fields.background) ?? "/balloon-bg.jpg",
+    [fields.background],
+  );
+
   return (
-    <Box {...styles.section}>
+    <Box
+      {...styles.section}
+      sx={{
+        ...styles.section?.sx,
+        backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${bgUrl}")`,
+      }}
+    >
       <Container {...styles.container}>
-        <Typography {...styles.title}>Add Your Kinder Group</Typography>
-        <Typography {...styles.description}>
-          Do You Run a Kinder Group? Join Our Platform — It’s Free to Start!
-        </Typography>
-        <Button {...styles.button}>Add Your Kinder Group</Button>
+        <Typography {...styles.title}>{fields.title}</Typography>
+        <RichText {...styles.description}>{fields.subtitle}</RichText>
+        <Button {...styles.button} variant={fields.cta?.variant}>
+          {fields.cta?.text}
+        </Button>
       </Container>
     </Box>
   );
 };
 
-export default AddKinderGroupSection;
+export default BannerKinderGroup;

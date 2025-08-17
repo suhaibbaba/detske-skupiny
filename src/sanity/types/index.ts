@@ -1,6 +1,7 @@
 import type { PortableTextBlock } from "@portabletext/types";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
-export type SanityRichText = string | PortableTextBlock[];
+export type SanityRichTextField = string | PortableTextBlock[];
 
 export interface SanityCtaField {
   text: string;
@@ -9,34 +10,26 @@ export interface SanityCtaField {
   openInNewTab?: boolean;
 }
 
-export interface SanityImageField {
-  alt?: string;
-  crop?: {
-    _type: "sanity.imageCrop";
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
-  hotspot?: {
-    _type: "sanity.imageHotspot";
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-  };
-  asset?: {
-    _id: string;
-    url: string;
-    mimeType?: string; // e.g. "image/jpeg", "image/svg+xml"
-    extension?: string; // e.g. "jpg", "svg"
-    metadata?: {
-      lqip?: string;
-      dimensions?: {
-        width: number;
-        height: number;
-        aspectRatio: number;
-      };
-    };
-  };
-}
+export type SanityImageField = SanityImageSource;
+
+export type Area = {
+  name: string;
+  slug: string;
+  schoolCount: number;
+};
+
+export type SchoolType = {
+  name: string;
+  slug: string;
+  schoolCount: number;
+  emoji: string;
+};
+
+export type Region = {
+  name: string;
+  slug: string;
+  backgroundCover: string;
+  totalSchools: number;
+  areas: Area[];
+  schoolTypes: SchoolType[];
+};

@@ -2,12 +2,13 @@ import * as React from "react";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { SanityRichText } from "@/sanity/types";
+import { SanityRichTextField } from "@/sanity/types";
 import { PortableTextBlock } from "@portabletext/types";
 import Link from "@/components/ui/link";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface RichTextProps extends Omit<TypographyProps, "children"> {
-  children?: SanityRichText;
+  children?: SanityRichTextField;
 }
 
 function RichText({ children, ...typographyProps }: RichTextProps) {
@@ -123,7 +124,7 @@ function RichText({ children, ...typographyProps }: RichTextProps) {
       image: ({ value }) => (
         <Box
           component="img"
-          src={value?.asset?.url}
+          src={urlImageFor(value)}
           alt={value?.alt || ""}
           sx={{ maxWidth: "100%", borderRadius: 2 }}
         />

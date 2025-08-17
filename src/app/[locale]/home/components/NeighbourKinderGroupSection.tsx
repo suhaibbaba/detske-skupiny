@@ -14,15 +14,15 @@ import IllustrationChildrenGroup from "@/components/icons/IllustrationChildrenGr
 import {
   SanityCtaField,
   SanityImageField,
-  SanityRichText,
+  SanityRichTextField,
 } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
 
 interface Props {
   fields: {
     image: SanityImageField;
-    title?: SanityRichText;
-    description: SanityRichText;
+    title?: SanityRichTextField;
+    description: SanityRichTextField;
     cta: SanityCtaField;
   };
 }

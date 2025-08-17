@@ -10,11 +10,12 @@ import {
   TypographyOwnProps,
 } from "@mui/material";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { SanityCtaField } from "@/sanity/types";
+import { SanityCtaField, SanityRichTextField } from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
 
 interface Props {
-  title?: string | React.ReactNode;
-  description?: string | React.ReactNode;
+  title?: string | React.ReactElement | React.ComponentType<any>;
+  description?: string | SanityRichTextField;
   ctaList?: SanityCtaField[];
   extendedStyles?: PageHeadingTypographyStyles;
 }
@@ -72,9 +73,18 @@ const PageHeadingTypography: FC<Props> = ({
 
   return (
     <Box {...styles.container}>
-      {title && <Typography {...styles.title}>{title}</Typography>}
-      {description && (
+      {typeof title === "string" ? (
+        <Typography {...styles.title}>{title}</Typography>
+      ) : (
+        <>
+          {React.isValidElement(title) &&
+            React.cloneElement(title, { ...styles.title })}
+        </>
+      )}
+      {typeof description === "string" ? (
         <Typography {...styles.description}>{description}</Typography>
+      ) : (
+        <RichText {...styles.description}>{description}</RichText>
       )}
       {ctaList && ctaList.length > 0 && (
         <Box {...styles.ctaWrapper}>

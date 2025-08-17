@@ -1,5 +1,6 @@
-import { getPageByType } from "./page";
+import { getDirectPageByType, getGroups, getPageByType } from "./page";
 
 export const getHomePage = () => getPageByType("homePage");
 export const getAboutPage = () => getPageByType("aboutPage");
-export const getContactPage = () => getPageByType("contactPage");
+export const getContactPage = () => getDirectPageByType("contactUsPage");
+export const getGroupsPage = () => getGroups();

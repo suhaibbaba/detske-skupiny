@@ -21,20 +21,20 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/blogDetail";
-import FilterSidebar from "@/app/[locale]/groups/components/FilterSidebar";
+import FilterSidebar from "@/app/[locale]/catalog/components/FilterSidebar";
 import SchoolGridImages, {
   SchoolGridImagesStyles,
-} from "@/app/[locale]/groups/[slug]/components/SchoolGridImages";
-import InfoCardGrid from "@/app/[locale]/groups/[slug]/components/InfoCardGrid";
+} from "@/app/[locale]/catalog/[slug]/components/SchoolGridImages";
+import InfoCardGrid from "@/app/[locale]/catalog/[slug]/components/InfoCardGrid";
 import Location from "@/components/icons/Location";
-import AboutSchool from "@/app/[locale]/groups/[slug]/components/AboutSchool";
+import AboutSchool from "@/app/[locale]/catalog/[slug]/components/AboutSchool";
 import CheckIcon from "@mui/icons-material/Check";
 
 interface PageStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   pageContainer?: BoxProps;
   container?: ContainerProps;
   contentWrapper?: BoxProps;
@@ -47,10 +47,12 @@ interface PageStyles {
 }
 
 const styles: PageStyles = {
-  section: {
-    sx: (theme) => ({
-      background: theme.palette.gradients.ui3,
-    }),
+  pageLayout: {
+    section: {
+      sx: (theme) => ({
+        background: theme.palette.gradients.ui3,
+      }),
+    },
   },
   pageContainer: {
     sx: {
@@ -141,7 +143,7 @@ const markContent = [
 const Page = () => {
   return (
     <Box {...styles.pageContainer}>
-      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
+      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
           title={data.heading}
           description={data.description}
@@ -252,7 +254,6 @@ const Page = () => {
             offer both kindergarten and primary-level education, making
             transitions smoother for families who wish to stay long-term.
           </AboutSchool>
-
           <Box>
             <Typography {...styles.sectionHeading}>
               What Makes Us Special

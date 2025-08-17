@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Container, BoxProps } from "@mui/material";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blog";
@@ -11,18 +11,19 @@ import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
 import { useEffect, useRef, useState } from "react";
 
 interface BlogsStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   container?: BoxProps;
   blogsList?: (offsetTop: number) => BoxProps;
 }
 
 const styles: BlogsStyles = {
-  section: {
-    sx: (theme) => ({
-      background: theme.palette.gradients.ui2,
-
-      pb: "150px",
-    }),
+  pageLayout: {
+    section: {
+      sx: (theme) => ({
+        background: theme.palette.gradients.ui2,
+        pb: "150px",
+      }),
+    },
   },
   blogsList: (offsetTop) => ({
     sx: {
@@ -71,7 +72,7 @@ const BlogsPage = () => {
 
   return (
     <Box {...styles.container}>
-      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
+      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <Container>
           <PageHeadingTypography
             title={translate(data.heading)}

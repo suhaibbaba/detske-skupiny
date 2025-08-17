@@ -1,15 +1,30 @@
-"use client";
-
 import ContactInfoCard from "@/app/[locale]/contact/components/ContactInfoCard";
 import { Box, BoxProps, useTheme } from "@mui/material";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/contactUs";
 import ContactForm from "@/components/forms/ContactForm";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
+import { getContactPage } from "@/sanity/queries/pages";
+import { SanityImageField, SanityRichTextField } from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
+
+interface ContactUsItem {
+  image?: SanityImageField;
+  title?: string;
+  description?: SanityRichTextField;
+}
+
+interface Props {
+  fields: {
+    title: string;
+    subtitle: SanityRichTextField;
+    items?: ContactUsItem[];
+  };
+}
 
 interface ContactUsStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   container?: BoxProps;
   infoContainer?: BoxProps;
   contactInfoContainer?: BoxProps;
@@ -17,14 +32,16 @@ interface ContactUsStyles {
 }
 
 const styles: ContactUsStyles = {
-  section: {
-    sx: (theme) => ({
-      background: theme.palette.gradients.ui1,
-      pb: {
-        xs: "64px",
-        sm: "130px",
+  pageLayout: {
+    section: {
+      sx: {
+        background: "var(--mui-palette-gradients-ui1)",
+        pb: {
+          xs: "64px",
+          sm: "130px",
+        },
       },
-    }),
+    },
   },
   container: {
     sx: {
@@ -61,29 +78,28 @@ const styles: ContactUsStyles = {
   },
 };
 
-const Page = () => {
-  const theme = useTheme();
-  const translate = useSafeTranslations("ContactUsPage");
+const Page = async () => {
+  const { ...fields } = (await getContactPage()) as Props["fields"];
 
   return (
-    <PageLayout sectionStyles={styles.section}>
+    <PageLayout extendedStyles={styles.pageLayout}>
       <Box {...styles.container}>
         <PageHeadingTypography
-          title={translate(data.heading)}
-          description={translate(data.description)}
+          title={fields.title}
+          description={fields.subtitle}
         />
         <Box {...styles.infoContainer}>
           <Box {...styles.contactInfoContainer}>
-            {data.contactInfoCardList.map((card) => (
+            {fields.items?.map((card) => (
               <ContactInfoCard
                 key={card.title}
-                icon={card.icon}
-                title={`${translate(card.title)}:`}
-                description={card.description(theme)}
+                image={card.image}
+                title={`${card.title}:`}
+                description={card.description}
               />
             ))}
           </Box>
-          <ContactForm translate={translate} />
+          <ContactForm />
         </Box>
       </Box>
     </PageLayout>

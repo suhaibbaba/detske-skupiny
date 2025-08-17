@@ -14,11 +14,11 @@ import {
 } from "@mui/material";
 import ChevronDown from "@/components/icons/ChevronDown";
 import RichText from "@/sanity/components/RichText";
-import { SanityRichText } from "@/sanity/types";
+import { SanityRichTextField } from "@/sanity/types";
 
 interface FaqItem {
   question: string;
-  answer?: SanityRichText;
+  answer?: SanityRichTextField;
   openByDefault?: boolean;
 }
 
@@ -95,7 +95,6 @@ const styles: FaqSectionStyles = {
 };
 
 const FaqSection = ({ fields }: Props) => {
-  console.log(fields);
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>

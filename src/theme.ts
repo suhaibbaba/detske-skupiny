@@ -11,6 +11,7 @@ const fredoka = Fredoka({
 });
 
 const baseTheme = createTheme({
+  cssVariables: true,
   breakpoints: {
     values: {
       xs: 0,
@@ -34,7 +35,7 @@ const baseTheme = createTheme({
     gradients: {
       ui1: "linear-gradient(180deg, #F8F2FE 0%,  #F8F2FE 45%, #FCF8E5 100%)",
       ui2: "linear-gradient(90deg, #F9F4F6 0%, #FCF7E8 100%)",
-      ui3: "linear-gradient(90deg, #FCF8E5 0%, #F8F2FE 100%);\n",
+      ui3: "linear-gradient(90deg, #FCF8E5 0%, #F8F2FE 100%)",
     },
     custom: {
       ui1: "#1E232B",

@@ -12,14 +12,15 @@ import {
 import {
   SanityCtaField,
   SanityImageField,
-  SanityRichText,
+  SanityRichTextField,
 } from "@/sanity/types";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface Props {
   fields: {
     image: SanityImageField;
-    title?: SanityRichText;
-    description: SanityRichText;
+    title?: SanityRichTextField;
+    description: SanityRichTextField;
     cta: SanityCtaField;
   };
 }
@@ -114,7 +115,11 @@ const KinderGroupCard = ({ fields }: Props) => {
   return (
     <Box {...styles.container}>
       <Box {...styles.imageWrapper}>
-        <Box component="img" src={fields.image.asset?.url} {...styles.image} />
+        <Box
+          component="img"
+          src={urlImageFor(fields.image)}
+          {...styles.image}
+        />
       </Box>
       <Box {...styles.infoContainer}>
         <Typography {...styles.title}>

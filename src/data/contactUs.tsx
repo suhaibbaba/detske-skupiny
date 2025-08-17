@@ -11,7 +11,7 @@ export default {
     {
       icon: Store,
       title: "Company Information",
-      description: (theme: Theme) => (
+      description: () => (
         <>
           <Typography>Themesberg LLC</Typography>
           <Typography>Tax Id: USXXXXXX</Typography>
@@ -21,15 +21,13 @@ export default {
     {
       icon: LocationOn,
       title: "Address",
-      description: (theme: Theme) => (
+      description: () => (
         <>
           <Typography>SILVER LAKE, United States 1941 Late Avenue</Typography>
           <Typography>
             {formatMessage(
               "{0} code: 03875",
-              <Typography component="span" color={theme.palette.custom.ui1}>
-                Zip Code/Postal
-              </Typography>,
+              <Typography component="span">Zip Code/Postal</Typography>,
             )}
           </Typography>
         </>
@@ -38,7 +36,7 @@ export default {
     {
       icon: Phone,
       title: "Contact Us",
-      description: (theme: Theme) => (
+      description: () => (
         <>
           <Typography>
             Email us for general queries, including marketing and partnership
@@ -47,7 +45,6 @@ export default {
           <Link
             component={NextLink}
             href={`mailto:hello@company.com`}
-            color={theme.palette.custom.ui1}
             sx={{
               display: "block",
               mt: 0.5,

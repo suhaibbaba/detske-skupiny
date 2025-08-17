@@ -2,43 +2,45 @@
 
 import React, { FC } from "react";
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography, {
   PageHeadingTypographyStyles,
 } from "@/components/shared/PageHeadingTypography";
-import IllustrationMain from "@/components/icons/IllustrationMain";
 import { autoClamp, formatMessage } from "@/utilites/strings";
 import {
   SanityCtaField,
   SanityImageField,
-  SanityRichText,
+  SanityRichTextField,
 } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface Props {
   fields: {
     image: SanityImageField;
-    title?: SanityRichText;
+    title?: SanityRichTextField;
     ctas: SanityCtaField[];
-    description: SanityRichText;
+    description: SanityRichTextField;
   };
 }
 
 interface HeroSectionStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   contentWrapper?: BoxProps;
   pageHeadingStyles?: PageHeadingTypographyStyles;
   subtitle?: TypographyProps;
 }
 
 const styles: HeroSectionStyles = {
-  section: {
-    bgcolor: "secondary.main",
-    sx: {
-      pt: "60px",
-      pb: {
-        xs: "75px",
-        sm: "120px",
+  pageLayout: {
+    section: {
+      bgcolor: "secondary.main",
+      sx: {
+        pt: "60px",
+        pb: {
+          xs: "75px",
+          sm: "120px",
+        },
       },
     },
   },
@@ -92,7 +94,7 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
     <PageLayout
       contentFullWidth={false}
       showBreadcrumb={false}
-      sectionStyles={styles.section}
+      extendedStyles={styles.pageLayout}
     >
       <Box {...styles.contentWrapper}>
         <PageHeadingTypography
@@ -102,7 +104,7 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
           extendedStyles={styles.pageHeadingStyles}
         />
         <Box sx={{ maxWidth: 404, maxHeight: 460 }}>
-          <Box component="img" src={fields.image.asset?.url} />
+          <Box component="img" src={urlImageFor(fields.image)} />
         </Box>
       </Box>
     </PageLayout>

@@ -8,15 +8,15 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/blogDetail";
-import KinderGroupCard from "@/app/[locale]/groups/components/KinderGroupCard";
-import FilterSidebar from "@/app/[locale]/groups/components/FilterSidebar";
-import SearchBar from "@/app/[locale]/groups/components/SearchBar";
+import KinderGroupCard from "@/app/[locale]/catalog/components/KinderGroupCard";
+import FilterSidebar from "@/app/[locale]/catalog/components/FilterSidebar";
+import SearchBar from "@/app/[locale]/catalog/components/SearchBar";
 
 interface GroupsPageStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   pageContainer?: BoxProps;
   container?: ContainerProps;
   contentWrapper?: BoxProps;
@@ -26,10 +26,12 @@ interface GroupsPageStyles {
 }
 
 const styles: GroupsPageStyles = {
-  section: {
-    sx: (theme) => ({
-      background: theme.palette.gradients.ui3,
-    }),
+  pageLayout: {
+    section: {
+      sx: (theme) => ({
+        background: theme.palette.gradients.ui3,
+      }),
+    },
   },
   pageContainer: {
     sx: {
@@ -89,7 +91,7 @@ const styles: GroupsPageStyles = {
 const Page = () => {
   return (
     <Box {...styles.pageContainer}>
-      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
+      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
           title={data.heading}
           description={data.description}

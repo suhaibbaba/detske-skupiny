@@ -4,7 +4,7 @@ import React from "react";
 import FaqSection from "@/app/[locale]/home/components/FaqSection";
 import NeighbourKinderGroupSection from "@/app/[locale]/home/components/NeighbourKinderGroupSection";
 import PremiumSchoolsFeatureSection from "@/app/[locale]/home/components/PremiumSchoolsFeatureSection";
-import AddKinderGroupSection from "@/app/[locale]/home/components/AddKinderGroupSection";
+import BannerKinderGroup from "@/app/[locale]/home/components/BannerKinderGroup";
 
 export const SECTION_COMPONENTS: Record<string, React.FC<any>> = {
   hero: HeroSection,
@@ -12,5 +12,5 @@ export const SECTION_COMPONENTS: Record<string, React.FC<any>> = {
   faq: FaqSection,
   neighbourKinderGroup: NeighbourKinderGroupSection,
   featuresGrid: PremiumSchoolsFeatureSection,
-  banner: AddKinderGroupSection,
+  banner: BannerKinderGroup,
 };

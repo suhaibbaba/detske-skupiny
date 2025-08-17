@@ -43,3 +43,8 @@ export const sectionsProjection = groq`
     ctas[]{ ... }
   }
 `;
+
+export const directFieldsProjection = groq`
+  title,
+  ...,
+`;

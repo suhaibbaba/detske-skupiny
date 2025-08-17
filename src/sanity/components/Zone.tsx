@@ -4,12 +4,16 @@ import { SECTION_COMPONENTS } from "@/sanity/sections/registry";
 type AnySection = { _key: string; _type: string; [k: string]: any };
 
 interface ZoneProps {
-  sections: AnySection[];
+  sections?: AnySection[];
   types: string | string[] | "all";
 }
 
 const Zone: React.FC<ZoneProps> = ({ sections, types }) => {
   let matches: AnySection[];
+
+  if (!sections || sections.length === 0) {
+    return;
+  }
 
   if (types === "all") {
     matches = sections;

@@ -1,3 +1,5 @@
+"use client";
+
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
 import React, { FC, useState } from "react";

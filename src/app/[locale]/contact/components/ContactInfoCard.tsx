@@ -5,13 +5,17 @@ import {
   TypographyOwnProps,
   BoxProps,
   SvgIconProps,
+  TypographyProps,
 } from "@mui/material";
 import { SvgIconComponent } from "@mui/icons-material";
+import { SanityImageField, SanityRichTextField } from "@/sanity/types";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import RichText from "@/sanity/components/RichText";
 
 interface Props {
-  icon: SvgIconComponent;
+  image?: SanityImageField;
   title: string;
-  description?: React.ReactNode;
+  description?: SanityRichTextField;
 }
 
 interface ContactInfoCardStyles {
@@ -19,7 +23,7 @@ interface ContactInfoCardStyles {
   iconBox?: BoxProps;
   icon?: SvgIconProps;
   title?: TypographyOwnProps;
-  description?: BoxProps;
+  description?: TypographyProps;
 }
 
 const styles: ContactInfoCardStyles = {
@@ -64,17 +68,14 @@ const styles: ContactInfoCardStyles = {
   },
 };
 
-const ContactInfoCard: React.FC<Props> = ({ icon, title, description }) => {
-  const IconComponent = icon as SvgIconComponent;
+const ContactInfoCard: React.FC<Props> = ({ image, title, description }) => {
   return (
     <Box {...styles.container}>
-      {IconComponent && (
-        <Box {...styles.iconBox}>
-          <IconComponent {...styles.icon} />
-        </Box>
-      )}
+      {image && <Box component="img" src={urlImageFor(image)} />}
       <Typography {...styles.title}>{title}</Typography>
-      {description && <Box {...styles.description}>{description}</Box>}
+      {description && (
+        <RichText {...styles.description}>{description}</RichText>
+      )}
     </Box>
   );
 };

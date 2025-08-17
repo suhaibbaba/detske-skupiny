@@ -16,7 +16,7 @@ import {
   AvatarProps,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import PageLayout from "@/components/layout/PageLayout";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blogDetail";
@@ -25,7 +25,7 @@ import { formatMessage } from "@/utilites/strings";
 import { useEffect, useRef, useState } from "react";
 
 interface BlogDetailStyles {
-  section?: BoxProps;
+  pageLayout?: PageLayoutStyles;
   container?: (offsetTop: number) => BoxProps;
   featureItem?: ListItemProps;
   image?: BoxProps;
@@ -48,11 +48,13 @@ const styles: BlogDetailStyles = {
       sm: `calc(116px - ${offsetTop / 2}px)`,
     },
   }),
-  section: {
-    sx: (theme) => ({
-      background: theme.palette.gradients.ui2,
-      pb: "150px",
-    }),
+  pageLayout: {
+    section: {
+      sx: (theme) => ({
+        background: theme.palette.gradients.ui2,
+        pb: "150px",
+      }),
+    },
   },
   detailsHintBox: (offsetTop) => ({
     maxWidth: "920px",
@@ -176,7 +178,7 @@ const BlogDetailPage = () => {
 
   return (
     <Box {...styles.container?.(tabsOffset)}>
-      <PageLayout contentFullWidth={false} sectionStyles={styles.section}>
+      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
           title={translate(data.heading)}
           description={translate(data.description)}
