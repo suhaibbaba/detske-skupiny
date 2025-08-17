@@ -11,9 +11,9 @@ import {
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/blogDetail";
-import KinderGroupCard from "@/app/[locale]/catalog/components/KinderGroupCard";
-import FilterSidebar from "@/app/[locale]/catalog/components/FilterSidebar";
-import SearchBar from "@/app/[locale]/catalog/components/SearchBar";
+import KinderGroupCard from "@/app/[locale]/[region]/components/KinderGroupCard";
+import FilterSidebar from "@/app/[locale]/[region]/components/FilterSidebar";
+import SearchBar from "@/app/[locale]/[region]/components/SearchBar";
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -97,16 +97,19 @@ const Page = () => {
           description={data.description}
           ctaList={[
             {
-              label: "Kinder Prague",
+              text: "Kinder Prague",
               variant: "primary",
+              url: "",
             },
             {
-              label: "Kindr Brno",
+              text: "Kindr Brno",
               variant: "secondary",
+              url: "",
             },
             {
-              label: "All Kinder",
+              text: "All Kinder",
               variant: "ghost",
+              url: "",
             },
           ]}
         />

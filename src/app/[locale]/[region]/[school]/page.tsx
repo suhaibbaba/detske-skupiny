@@ -24,13 +24,13 @@ import {
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/blogDetail";
-import FilterSidebar from "@/app/[locale]/catalog/components/FilterSidebar";
+import FilterSidebar from "@/app/[locale]/[region]/components/FilterSidebar";
 import SchoolGridImages, {
   SchoolGridImagesStyles,
-} from "@/app/[locale]/catalog/[slug]/components/SchoolGridImages";
-import InfoCardGrid from "@/app/[locale]/catalog/[slug]/components/InfoCardGrid";
+} from "@/app/[locale]/[region]/[school]/components/SchoolGridImages";
+import InfoCardGrid from "@/app/[locale]/[region]/[school]/components/InfoCardGrid";
 import Location from "@/components/icons/Location";
-import AboutSchool from "@/app/[locale]/catalog/[slug]/components/AboutSchool";
+import AboutSchool from "@/app/[locale]/[region]/[school]/components/AboutSchool";
 import CheckIcon from "@mui/icons-material/Check";
 
 interface PageStyles {

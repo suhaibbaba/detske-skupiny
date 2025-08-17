@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Link from "@/components/ui/link/Link";
+import { useSearchParams } from "next/navigation";
 
 const filters = {
   mainDistricts: [
@@ -206,6 +207,13 @@ const styles: FilterSidebarStyles = {
 };
 
 const FilterSidebar = () => {
+  const searchParams = useSearchParams();
+
+  const area = searchParams.get("area"); // e.g. "besiktas"
+  const type = searchParams.get("type"); // e.g. "school"
+  const sort = searchParams.get("sort"); // e.g. "price_asc"
+
+  console.log({ area });
   return (
     <Box {...styles.root}>
       <Box {...styles.header}>

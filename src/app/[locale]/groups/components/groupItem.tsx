@@ -14,6 +14,7 @@ import Link from "@/components/ui/link";
 
 interface Props {
   item?: Area | SchoolType;
+  regionUrl?: string;
   hideNextArrow?: boolean;
 }
 
@@ -83,13 +84,13 @@ const styles: GroupItemStyles = {
   },
 };
 
-const GroupItem: FC<Props> = ({ item, hideNextArrow }) => {
+const GroupItem: FC<Props> = ({ item, regionUrl, hideNextArrow }) => {
   if (!item) {
     return null;
   }
 
   return (
-    <Link href={item.slug}>
+    <Link href={`${regionUrl}?area=${encodeURIComponent(item.slug)}`}>
       <ButtonBase {...styles.container}>
         <Stack {...styles.stack}>
           {(item as SchoolType).emoji && (

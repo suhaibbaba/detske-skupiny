@@ -64,7 +64,7 @@ const GroupSection: FC<Props> = ({ group }) => {
         <Grid container spacing="24px">
           {group.areas.map((area) => (
             <Grid size={4} key={area.name}>
-              <GroupItem item={area} />
+              <GroupItem item={area} regionUrl={group?.slug} />
             </Grid>
           ))}
         </Grid>
