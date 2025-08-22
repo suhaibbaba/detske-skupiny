@@ -5,10 +5,12 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blog";
-import BlogTabs from "@/app/[locale]/blogs/components/BlogTabs";
+import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
 import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
 import { useEffect, useRef, useState } from "react";
+import BlogsPageClient from "@/app/[locale]/blogs/BlogsPageClient";
+import { getBlogs } from "@/sanity/queries/page";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
@@ -46,67 +48,16 @@ const styles: BlogsStyles = {
   }),
 };
 
-const BlogsPage = () => {
-  const [tabsOffset, setTabsOffset] = useState(40);
-  const translate = useSafeTranslations("BlogsPage");
-  const onSelectHandler = () => {};
-
-  const tabsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!tabsRef.current) {
-      return;
-    }
-
-    const observer = new ResizeObserver(() => {
-      const height = tabsRef.current!.getBoundingClientRect().height;
-      setTabsOffset(height);
-    });
-
-    observer.observe(tabsRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [tabsRef.current]);
+const BlogsPage = async () => {
+  const data = await getBlogs();
 
   return (
-    <Box {...styles.container}>
-      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
-        <Container>
-          <PageHeadingTypography
-            title={translate(data.heading)}
-            description={translate(data.description)}
-          />
-        </Container>
-      </PageLayout>
-      <Container>
-        <BlogTabs
-          ref={tabsRef}
-          tabs={data.tabs}
-          selected={data.tabs[1]}
-          onSelect={onSelectHandler}
-        />
-        {tabsRef.current && (
-          <Box {...styles.blogsList?.(tabsOffset)}>
-            {data.blogs.map((blog, idx) => (
-              <BlogCard
-                key={idx}
-                title={blog.title}
-                image={blog.image}
-                tag={blog.tag}
-                description={blog.description}
-                author={blog.author}
-                date={blog.date}
-                readTime={blog.readTime}
-                authorImage={blog.authorImage}
-              />
-            ))}
-          </Box>
-        )}
-      </Container>
-      {tabsRef.current && <WritersSection writers={data.writers} />}
-    </Box>
+    <BlogsPageClient
+      blogs={data.blogs}
+      categories={data.categories ?? []}
+      content={data.content}
+      writers={data.writers ?? []}
+    />
   );
 };
 

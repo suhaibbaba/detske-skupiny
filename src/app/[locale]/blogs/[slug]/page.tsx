@@ -20,7 +20,7 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blogDetail";
-import BlogTabs from "@/app/[locale]/blogs/components/BlogTabs";
+import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import { formatMessage } from "@/utilites/strings";
 import { useEffect, useRef, useState } from "react";
 
@@ -185,7 +185,7 @@ const BlogDetailPage = () => {
         />
       </PageLayout>
       <Container>
-        <BlogTabs
+        <BlogCategories
           ref={tabsRef}
           tabs={data.tabs}
           selected={data.tabs[1]}

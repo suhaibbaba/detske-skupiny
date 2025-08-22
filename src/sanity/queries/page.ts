@@ -2,6 +2,7 @@ import { groq } from "next-sanity";
 import { client } from "../client";
 import { directFieldsProjection, sectionsProjection } from "./sections.groq";
 import { Region, SanityCtaField, SanityRichTextField } from "@/sanity/types";
+import { Author, Blog, BlogPageContent } from "@/types/blog";
 
 export async function getPageByType(type: string) {
   const query = groq`*[_type == $type][0]{ title, ${sectionsProjection} }`;
@@ -130,4 +131,43 @@ export async function getFilterQuery(regionSlug: string) {
   }[count > 0] | order(name asc)
 }`;
   return client.fetch(query, { slug: regionSlug });
+}
+
+export async function getBlogs() {
+  const query = groq`{
+    "content": *[_type == "blog"][0]{
+      title,
+      description,
+      ctas[]{ text, url, variant, openInNewTab }
+    },
+    "categories": array::unique(*[_type == "blog"].categories[]),
+    "blogs": *[_type == "blogDetails"] | order(publishedAt desc){
+      _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      "image": image.asset->url,
+      readTime,
+      publishedAt,
+      categories,
+      author->{
+        _id,
+        name,
+        "image": avatar.asset->url,
+        bio
+      }
+    },
+    "writers": *[_type == "author"]{
+      name,
+      role,
+      "image": avatar.asset->url,
+    } | order(blogCount desc)[0..7]
+  }`;
+
+  return client.fetch<{
+    content: BlogPageContent;
+    categories: string[];
+    blogs: Blog[];
+    writers: Author[];
+  }>(query);
 }

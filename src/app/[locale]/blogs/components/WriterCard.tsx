@@ -9,19 +9,16 @@ import {
   BoxProps,
 } from "@mui/material";
 import { FC } from "react";
+import { Author } from "@/types/blog";
 
-export interface Props {
-  image: string;
-  name: string;
-  bio: string;
-}
+type Props = Author;
 
 interface WriterCardStyles {
   container?: BoxProps;
   avatar?: AvatarProps;
   content?: BoxProps;
   name?: TypographyOwnProps;
-  bio?: TypographyOwnProps;
+  role?: TypographyOwnProps;
 }
 
 const styles: WriterCardStyles = {
@@ -53,20 +50,20 @@ const styles: WriterCardStyles = {
     fontSize: "24px",
     fontWeight: 500,
   },
-  bio: {
+  role: {
     fontSize: "16px",
     fontWeight: 500,
     mt: "4px",
   },
 };
 
-const WriterCard: FC<Props> = ({ name, bio, image }) => {
+const WriterCard: FC<Props> = ({ name, role, image }) => {
   return (
     <Box {...styles.container}>
       <Avatar alt={name} src={image} {...styles.avatar} />
       <Box {...styles.content}>
         <Typography {...styles.name}>{name}</Typography>
-        <Typography {...styles.bio}>{bio}</Typography>
+        <Typography {...styles.role}>{role}</Typography>
       </Box>
     </Box>
   );

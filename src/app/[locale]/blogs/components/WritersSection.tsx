@@ -7,14 +7,13 @@ import {
   Typography,
   TypographyOwnProps,
 } from "@mui/material";
-import WriterCard, {
-  Props as WriterProps,
-} from "@/app/[locale]/blogs/components/WriterCard";
+import WriterCard from "@/app/[locale]/blogs/components/WriterCard";
 import { FC } from "react";
 import useSafeTranslations from "@/hooks/useSafeTranslations";
+import { Author } from "@/types/blog";
 
 interface Props {
-  writers: WriterProps[];
+  writers: Author[];
 }
 
 interface WritersSectionStyles {
@@ -66,9 +65,10 @@ const WritersSection: FC<Props> = ({ writers }) => {
         <Box {...styles.writersContainer}>
           {writers.map((writer) => (
             <WriterCard
-              key={writer.name}
+              key={writer._id}
+              _id={writer._id}
               name={writer.name}
-              bio={writer.bio}
+              role={writer.bio}
               image={writer.image}
             />
           ))}

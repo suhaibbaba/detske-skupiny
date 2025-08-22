@@ -11,9 +11,7 @@ import {
 import React, { forwardRef } from "react";
 
 interface Props {
-  selected: string;
-  onSelect: (tab: string) => void;
-  tabs: string[];
+  categories: string[];
 }
 
 interface BlogTabsStyles {
@@ -61,18 +59,19 @@ const styles: BlogTabsStyles = {
   }),
 };
 
-const BlogTabs = forwardRef<HTMLDivElement, Props>(
-  ({ selected, onSelect, tabs }, ref) => {
+const BlogCategories = forwardRef<HTMLDivElement, Props>(
+  ({ categories }, ref) => {
+    const onSelect = (category: string) => {};
     return (
       <Box {...styles.container} ref={ref}>
         <Stack {...styles.stack}>
-          {tabs.map((tab) => (
+          {categories.map((category) => (
             <Button
-              key={tab}
-              onClick={() => onSelect(tab)}
-              {...styles.button?.(selected === tab)}
+              key={category}
+              onClick={() => onSelect(category)}
+              {...styles.button?.(category === category)}
             >
-              {tab}
+              {category}
             </Button>
           ))}
         </Stack>
@@ -81,6 +80,6 @@ const BlogTabs = forwardRef<HTMLDivElement, Props>(
   },
 );
 
-BlogTabs.displayName = "BlogTabs";
+BlogCategories.displayName = "BlogCategories";
 
-export default BlogTabs;
+export default BlogCategories;

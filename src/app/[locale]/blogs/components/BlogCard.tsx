@@ -20,16 +20,10 @@ import NextLink from "next/link";
 import Link from "@mui/material/Link";
 import { ellipses } from "@/utilites/strings";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
+import { Blog } from "@/types/blog";
+import { formatDate } from "@/utilites/date";
 
-interface Props {
-  image: string;
-  title: string;
-  description: string;
-  tag: string;
-  author: string;
-  date: string;
-  readTime: string;
-  authorImage: string;
+interface Props extends Blog {
   extendedStyles?: BlogsCardStylesType;
 }
 
@@ -153,14 +147,13 @@ const blogsCardStylesType: BlogsCardStylesType = {
 };
 
 const BlogCard: FC<Props> = ({
-  image,
-  tag,
   title,
-  description,
-  author,
-  date,
+  slug,
+  excerpt,
+  image,
+  publishedAt,
   readTime,
-  authorImage,
+  author,
   extendedStyles,
 }) => {
   const [styles] = useState(() =>
@@ -179,26 +172,24 @@ const BlogCard: FC<Props> = ({
         }}
       />
       <CardContent {...styles.cardContent}>
-        <Typography {...styles.tag}>{tag}</Typography>
-        <Link
-          component={NextLink}
-          href={`/blogs/${title.replace(/\s+/g, "-").toLowerCase()}`}
-          {...styles.title}
-        >
+        <Typography {...styles.tag}>Article</Typography>
+        <Link component={NextLink} href={`/blogs/${slug}`} {...styles.title}>
           {title}
         </Link>
-        <Typography {...styles.description}>{description}</Typography>
+        <Typography {...styles.description}>{excerpt}</Typography>
         <Box {...styles.footer}>
           <Box {...styles.authorBox}>
-            <Avatar src={authorImage} {...styles.avatar} />
+            <Avatar src={author?.image} {...styles.avatar} />
             <Box>
-              <Typography {...styles.authorName}>{author}</Typography>
+              <Typography {...styles.authorName}>{author?.name}</Typography>
               <Typography {...styles.meta}>
-                {date} · {readTime}
+                {formatDate(publishedAt)} · {readTime} min read
               </Typography>
             </Box>
           </Box>
-          <Button {...styles.readNowButton}>Read Now</Button>
+          <Button {...styles.readNowButton} href={slug}>
+            Read Now
+          </Button>
         </Box>
       </CardContent>
     </Card>

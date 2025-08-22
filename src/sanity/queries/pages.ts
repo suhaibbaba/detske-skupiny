@@ -10,4 +10,4 @@ export const getAboutPage = () => getPageByType("aboutPage");
 export const getContactPage = () => getDirectPageByType("contactUsPage");
 export const getGroupsPage = () => getGroups();
 
-export { getFilterQuery } from "@/sanity/queries/page";
+export { getFilterQuery, getBlogs } from "@/sanity/queries/page";
