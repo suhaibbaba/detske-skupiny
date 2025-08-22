@@ -60,3 +60,74 @@ export async function getGroups() {
     regions: Region[];
   }>(query);
 }
+
+export async function getFilterQuery(regionSlug: string) {
+  const query = groq`
+*[_type == "region" && slug.current == $slug][0]{
+  _id,
+  name,
+  "slug": slug.current,
+
+  // Totals for "All"
+  "totalSchools": count(*[
+    _type == "school" &&
+    area->region->slug.current == $slug
+  ]),
+
+  // MAIN AREAS (isMain == true)
+  "mainAreas": *[
+    _type == "area" &&
+    region->slug.current == $slug &&
+    coalesce(isMain, false) == true
+  ]{
+    _id,
+    name,
+    "slug": slug.current,
+    "count": count(*[
+      _type == "school" &&
+      area._ref == ^._id
+    ])
+  } | order(name asc),
+
+  // OTHER AREAS (isMain != true)
+  "otherAreas": *[
+    _type == "area" &&
+    region->slug.current == $slug &&
+    coalesce(isMain, false) != true
+  ]{
+    _id,
+    name,
+    "slug": slug.current,
+    "count": count(*[
+      _type == "school" &&
+      area._ref == ^._id
+    ])
+  } | order(name asc),
+
+  // TAGS that actually exist in this region (with counts)
+  "tags": *[_type == "tag"]{
+    _id,
+    name,
+    "slug": slug.current,
+    "count": count(*[
+      _type == "school" &&
+      area->region->slug.current == $slug &&
+      references(^._id)         // school.tags[] -> tag
+    ])
+  }[count > 0] | order(name asc),
+
+  // TYPES (kinder types) that exist in this region (with counts)
+  "types": *[_type == "schoolType"]{
+    _id,
+    name,
+    "slug": slug.current,
+    "emoji": emoji.asset->url,
+    "count": count(*[
+      _type == "school" &&
+      area->region->slug.current == $slug &&
+      references(^._id)         // school.types[] -> schoolType
+    ])
+  }[count > 0] | order(name asc)
+}`;
+  return client.fetch(query, { slug: regionSlug });
+}

@@ -99,17 +99,17 @@ const Page = () => {
             {
               text: "Kinder Prague",
               variant: "primary",
-              url: "",
+              url: "/g",
             },
             {
               text: "Kindr Brno",
               variant: "secondary",
-              url: "",
+              url: "/g",
             },
             {
               text: "All Kinder",
               variant: "ghost",
-              url: "",
+              url: "/g",
             },
           ]}
         />

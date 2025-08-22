@@ -19,35 +19,7 @@ import {
   FormControlLabelProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Link from "@/components/ui/link/Link";
-import { useSearchParams } from "next/navigation";
-
-const filters = {
-  mainDistricts: [
-    { label: "All", count: 12 },
-    { label: "Prague 2", count: 3 },
-    { label: "Prague 2", count: 3 },
-    { label: "Prague 2", count: 3 },
-  ],
-  otherDistricts: [
-    { label: "All", count: 12 },
-    { label: "Beroun", count: 3 },
-    { label: "Beroun", count: 3 },
-    { label: "Beroun", count: 3 },
-  ],
-  tags: [
-    { label: "Children’s Group", selected: true },
-    { label: "Montessori Preschool" },
-    { label: "Language Preschool" },
-    { label: "Language Preschool", error: true },
-  ],
-  types: [
-    { icon: "🧩", label: "Private Nurseries in Prague", selected: true },
-    { icon: "👶", label: "Children’s Group Prague" },
-    { icon: "🎨", label: "Art Kindergarten Prague" },
-    { icon: "🌟", label: "Music Schools Prague" },
-  ],
-};
+import { useRegionFilters, slugify } from "@/hooks/useRegionFilters";
 
 interface FilterSidebarStyles {
   root?: BoxProps;
@@ -67,11 +39,7 @@ interface FilterSidebarStyles {
 }
 
 const styles: FilterSidebarStyles = {
-  root: {
-    sx: {
-      width: "100%",
-    },
-  },
+  root: { sx: { width: "100%" } },
   header: {
     sx: (theme) => ({
       display: "flex",
@@ -79,21 +47,14 @@ const styles: FilterSidebarStyles = {
       alignItems: "center",
       pb: "20px",
       mb: "16px",
-      borderBottom: `1px solid ${theme.palette.custom.ui18}`,
+      borderBottom: `1px solid ${theme.palette.custom?.ui18 ?? "#eee"}`,
     }),
   },
-  title: {
-    fontSize: "20px",
-    color: "custom.ui13",
-    fontWeight: 600,
-  },
+  title: { fontSize: "20px", color: "custom.ui13", fontWeight: 600 },
   clearBtn: {
     variant: "primary",
     startIcon: <CloseIcon sx={{ width: 24, height: 24 }} />,
-    sx: {
-      p: "12px",
-      fontSize: 12,
-    },
+    sx: { p: "12px", fontSize: 12 },
   },
   sectionTitle: {
     fontSize: "18px",
@@ -108,9 +69,7 @@ const styles: FilterSidebarStyles = {
       fontSize: "16px",
       mt: "16px",
       cursor: "pointer",
-      "&:hover": {
-        color: "primary.dark",
-      },
+      "&:hover": { color: "primary.dark" },
     },
   },
   filterItem: {
@@ -128,13 +87,8 @@ const styles: FilterSidebarStyles = {
       fontSize: 12,
       fontWeight: 400,
       color: "#475467",
-      "& .MuiChip-label": {
-        padding: 0,
-      },
-      "& .MuiChip-icon": {
-        marginRight: "4px",
-        marginLeft: 0,
-      },
+      "& .MuiChip-label": { padding: 0 },
+      "& .MuiChip-icon": { mr: "4px", ml: 0 },
     },
   },
   tagsContainer: {
@@ -149,7 +103,7 @@ const styles: FilterSidebarStyles = {
   },
   typeBox: {
     sx: (theme) => ({
-      border: `1px solid ${theme.palette.custom.ui12}`,
+      border: `1px solid ${theme.palette.custom?.ui12 ?? "#e5e7eb"}`,
       borderRadius: "12px",
       p: "8px",
       textAlign: "center",
@@ -161,9 +115,14 @@ const styles: FilterSidebarStyles = {
       gap: "6px",
       cursor: "pointer",
       bgcolor: theme.palette.common.white,
+      userSelect: "none",
       "&.selected": {
         borderColor: theme.palette.primary.main,
         backgroundColor: theme.palette.primary.light,
+      },
+      "&:focus-visible": {
+        outline: `2px solid ${theme.palette.primary.main}`,
+        outlineOffset: 2,
       },
     }),
   },
@@ -176,11 +135,7 @@ const styles: FilterSidebarStyles = {
       pl: "5px",
     },
   },
-  formControlLabel: {
-    sx: {
-      fontSize: "16px",
-    },
-  },
+  formControlLabel: { sx: { fontSize: "16px" } },
   counter: {
     sx: {
       minWidth: "28px",
@@ -197,75 +152,201 @@ const styles: FilterSidebarStyles = {
       p: "2px",
     },
   },
-  divider: {
-    sx: {
-      mt: "20px",
-      mb: "16px",
-      backgroundColor: "#AAB0B9",
-    },
-  },
+  divider: { sx: { mt: "20px", mb: "16px", backgroundColor: "#AAB0B9" } },
 };
 
 const FilterSidebar = () => {
-  const searchParams = useSearchParams();
+  const {
+    region,
+    regionSlug,
+    isLoading,
+    isPending,
+    selectedAreas,
+    selectedTypes,
+    selectedTags,
+    toggleArea,
+    toggleType,
+    toggleTag,
+    clearAll,
+    replaceQS,
+  } = useRegionFilters();
 
-  const area = searchParams.get("area"); // e.g. "besiktas"
-  const type = searchParams.get("type"); // e.g. "school"
-  const sort = searchParams.get("sort"); // e.g. "price_asc"
+  const regionTitle = region?.name ?? regionSlug ?? "";
 
-  console.log({ area });
+  // Create a virtual "All" row for areas with total count from region
+  const mainAreas = region?.mainAreas ?? [];
+  const otherAreas = region?.otherAreas ?? [];
+  const tags = region?.tags ?? [];
+  const types = region?.types ?? [];
+
   return (
-    <Box {...styles.root}>
+    <Box {...styles.root} aria-busy={isPending || isLoading || undefined}>
       <Box {...styles.header}>
-        <Typography {...styles.title}>Filters</Typography>
-        <Button {...styles.clearBtn}>Clear All</Button>
+        <Typography {...styles.title}>
+          Filters {regionTitle ? `— ${regionTitle}` : ""}
+        </Typography>
+        <Button {...styles.clearBtn} onClick={clearAll}>
+          Clear All
+        </Button>
       </Box>
-      <Typography {...styles.sectionTitle}>Main Districts Of Prague</Typography>
+
+      <Typography {...styles.sectionTitle}>
+        Main Districts {regionTitle ? `of ${regionTitle}` : ""}
+      </Typography>
+
       <FormGroup {...styles.formGroup}>
-        {filters.mainDistricts.map((item, idx) => (
-          <Box key={idx} {...styles.filterItem}>
+        {/* ALL (virtual) */}
+        {typeof region?.totalSchools === "number" && (
+          <Box key="all" {...styles.filterItem}>
             <FormControlLabel
-              control={<Checkbox defaultChecked={idx === 2} size="small" />}
-              label={item.label}
+              control={
+                <Checkbox
+                  size="small"
+                  checked={selectedAreas.has("all")}
+                  onChange={() => toggleArea("all")}
+                />
+              }
+              label="All"
               disableTypography
               {...styles.formControlLabel}
             />
-            <Typography {...styles.counter}>{item.count}</Typography>
+            <Typography {...styles.counter}>{region.totalSchools}</Typography>
           </Box>
-        ))}
+        )}
+
+        {/* MAIN AREAS */}
+        {mainAreas.map((a) => {
+          const checked = selectedAreas.has(a.slug);
+          return (
+            <Box key={a._id} {...styles.filterItem}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={checked}
+                    onChange={() => toggleArea(a.slug)}
+                  />
+                }
+                label={a.name}
+                disableTypography
+                {...styles.formControlLabel}
+              />
+              <Typography {...styles.counter}>{a.count}</Typography>
+            </Box>
+          );
+        })}
       </FormGroup>
-      <Link {...styles.viewAll} href="/123">
-        View All
-      </Link>
-      <Divider {...styles.divider} />
-      <Typography {...styles.sectionTitle}>Tags</Typography>
-      <Box {...styles.tagsContainer}>
-        {filters.tags.map((tag, idx) => (
-          <Chip
-            key={idx}
-            label={tag.label}
-            variant={tag.selected ? "filled" : "outlined"}
-            color={"default"}
-            {...styles.chip}
-          />
-        ))}
-      </Box>
-      <Typography {...styles.viewAll}>View All</Typography>
-      <Divider {...styles.divider} />
-      <Typography {...styles.sectionTitle}>Kinder Type</Typography>
-      <Box {...styles.tagsContainer}>
-        {filters.types.map((type, idx) => (
-          <Box
-            {...styles.typeBox}
-            className={type.selected ? "selected" : ""}
-            key={type.label}
-          >
-            <Box fontSize={20}>{type.icon}</Box>
-            {type.label}
+
+      {/* OTHER AREAS */}
+      {otherAreas.length > 0 && (
+        <>
+          <Divider {...styles.divider} />
+          <Typography {...styles.sectionTitle}>Other Districts</Typography>
+          <FormGroup {...styles.formGroup}>
+            {otherAreas.map((a) => {
+              const checked = selectedAreas.has(a.slug);
+              return (
+                <Box key={a._id} {...styles.filterItem}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={checked}
+                        onChange={() => toggleArea(a.slug)}
+                      />
+                    }
+                    label={a.name}
+                    disableTypography
+                    {...styles.formControlLabel}
+                  />
+                  <Typography {...styles.counter}>{a.count}</Typography>
+                </Box>
+              );
+            })}
+          </FormGroup>
+        </>
+      )}
+
+      {/* TAGS */}
+      {tags.length > 0 && (
+        <>
+          <Divider {...styles.divider} />
+          <Typography {...styles.sectionTitle}>Tags</Typography>
+          <Box {...styles.tagsContainer}>
+            {tags.map((t) => {
+              // ensures we handle any non-slug tag name
+              const tagSlug = t.slug || slugify(t.name);
+              const checked = selectedTags.has(tagSlug);
+              return (
+                <Chip
+                  key={t._id}
+                  label={`${t.name}`}
+                  onClick={() => toggleTag(tagSlug)}
+                  variant={checked ? "filled" : "outlined"}
+                  {...styles.chip}
+                  role="checkbox"
+                  aria-checked={checked}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === " " || e.key === "Enter") {
+                      e.preventDefault();
+                      toggleTag(tagSlug);
+                    }
+                  }}
+                />
+              );
+            })}
           </Box>
-        ))}
-      </Box>
-      <Typography {...styles.viewAll}>View All</Typography>
+          <Typography
+            {...styles.viewAll}
+            onClick={() => replaceQS((qs) => qs.delete("tag"))}
+          >
+            View All
+          </Typography>
+        </>
+      )}
+
+      {/* TYPES */}
+      {types.length > 0 && (
+        <>
+          <Divider {...styles.divider} />
+          <Typography {...styles.sectionTitle}>Kinder Type</Typography>
+          <Box {...styles.tagsContainer}>
+            {types.map((t) => {
+              const typeSlug = t.slug || slugify(t.name);
+              const checked = selectedTypes.has(typeSlug);
+              return (
+                <Box
+                  key={t._id}
+                  {...styles.typeBox}
+                  className={checked ? "selected" : ""}
+                  onClick={() => toggleType(typeSlug)}
+                  role="checkbox"
+                  aria-checked={checked}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === " " || e.key === "Enter") {
+                      e.preventDefault();
+                      toggleType(typeSlug);
+                    }
+                  }}
+                >
+                  <Box fontSize={20}>
+                    {t.emoji?.startsWith("http") ? "🧩" : (t.emoji ?? "🧩")}
+                  </Box>
+                  {t.name}
+                </Box>
+              );
+            })}
+          </Box>
+          <Typography
+            {...styles.viewAll}
+            onClick={() => replaceQS((qs) => qs.delete("type"))}
+          >
+            View All
+          </Typography>
+        </>
+      )}
     </Box>
   );
 };
