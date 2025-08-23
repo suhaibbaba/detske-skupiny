@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, BoxProps } from "@mui/material";
-import { getGroupsPage } from "@/sanity/queries/pages";
+import { getGroupsPage } from "@/sanity/queries";
 import GroupSection from "@/app/[locale]/groups/components/groupSection";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";

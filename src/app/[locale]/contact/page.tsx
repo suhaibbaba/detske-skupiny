@@ -5,7 +5,7 @@ import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import data from "@/data/contactUs";
 import ContactForm from "@/components/forms/ContactForm";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import { getContactPage } from "@/sanity/queries/pages";
+import { getContactPage } from "@/sanity/queries";
 import { SanityImageField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
 

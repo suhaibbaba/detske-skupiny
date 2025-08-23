@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { getHomePage } from "@/sanity/queries/pages";
+import { getHomePage } from "@/sanity/queries";
 import Zone from "@/sanity/components/Zone";
 
 const Page = async () => {
