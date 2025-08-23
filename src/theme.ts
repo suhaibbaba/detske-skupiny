@@ -109,6 +109,7 @@ const theme = createTheme(baseTheme, {
         mobile: 36,
         theme: baseTheme,
       }),
+      marginBottom: "20px",
     },
     h2: {
       color: "#272E39",
@@ -120,18 +121,21 @@ const theme = createTheme(baseTheme, {
         theme: baseTheme,
       }),
       lineHeight: 1.5,
+      marginBottom: "20px",
     },
     h3: {
       color: "#272E39",
       fontWeight: 600,
       fontSize: 24,
       lineHeight: 1.5,
+      marginBottom: "20px",
     },
     h4: {
       color: "#272E39",
       fontWeight: 600,
       fontSize: 16,
       lineHeight: 1.5,
+      marginBottom: "20px",
     },
   },
   components: {

@@ -1,8 +1,11 @@
+import { SanityRichTextField } from "@/sanity/types";
+
 export type Blog = {
   _id: string;
   title: string;
   slug: string;
   excerpt?: string;
+  content?: SanityRichTextField;
   image?: string;
   readTime?: number;
   publishedAt?: string;

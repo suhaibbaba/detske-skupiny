@@ -149,7 +149,7 @@ export async function getBlogs() {
       "image": image.asset->url,
       readTime,
       publishedAt,
-      categories,
+      category,
       author->{
         _id,
         name,
@@ -170,4 +170,36 @@ export async function getBlogs() {
     blogs: Blog[];
     writers: Author[];
   }>(query);
+}
+
+export async function getBlogDetails(params: { slug: string }) {
+  const query = groq`{
+    "content": *[_type == "blog"][0]{
+      title,
+      description,
+      ctas[]{ text, url, variant, openInNewTab }
+    },
+    "categories": array::unique(*[_type == "blog"].categories[]),
+    "blog":*[_type == "blogDetails" && slug.current == $slug][0]{
+      _id,
+      title,
+      "slug": slug.current,
+      "image": image.asset->url,
+      readTime,
+      publishedAt,
+      content,
+      author->{
+        _id,
+        name,
+        "image": avatar.asset->url,
+        bio
+      }
+    },
+  }`;
+
+  return client.fetch<{
+    content: BlogPageContent;
+    categories: string[];
+    blog: Blog;
+  }>(query, params);
 }

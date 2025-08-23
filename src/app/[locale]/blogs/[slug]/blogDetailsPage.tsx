@@ -4,10 +4,6 @@ import {
   Box,
   Container,
   Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   BoxProps,
   Avatar,
   ListItemProps,
@@ -15,13 +11,20 @@ import {
   ListProps,
   AvatarProps,
 } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import data from "@/data/blogDetail";
 import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import { formatMessage } from "@/utilites/strings";
-import { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
+import { Blog, BlogPageContent } from "@/types/blog";
+import { formatDate } from "@/utilites/date";
+import RichText from "@/sanity/components/RichText";
+
+interface Props {
+  blog?: Blog;
+  content?: BlogPageContent;
+  categories: string[];
+}
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -69,15 +72,6 @@ const styles: BlogDetailStyles = {
       transform: `translateY(-${offsetTop / 2}px)`,
     },
   }),
-  featureItem: {
-    disableGutters: true,
-    disablePadding: true,
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-    },
-  },
   image: {
     sx: {
       width: "100%",
@@ -150,7 +144,7 @@ const styles: BlogDetailStyles = {
   },
 };
 
-const BlogDetailPage = () => {
+const BlogDetailPage: FC<Props> = ({ blog, categories, content }) => {
   const [tabsOffset, setTabsOffset] = useState(0);
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -173,16 +167,20 @@ const BlogDetailPage = () => {
 
   const onSelectHandler = () => {};
 
+  if (!blog || !content) {
+    return null;
+  }
+
   return (
     <Box {...styles.container?.(tabsOffset)}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
-          title={data.heading}
-          description={data.description}
+          title={content.title}
+          description={content.description}
         />
       </PageLayout>
       <Container>
-        <BlogCategories ref={tabsRef} categories={data.tabs} />
+        <BlogCategories ref={tabsRef} categories={categories} />
         {tabsRef.current && (
           <Box
             {...styles.detailsHintBox?.(tabsOffset)}
@@ -190,72 +188,43 @@ const BlogDetailPage = () => {
           >
             <Box>
               <Typography variant="h2" mb="24px">
-                {data.title}
+                {blog.title}
               </Typography>
-              <Box component="img" src={data.details.image} {...styles.image} />
+              <Box component="img" src={blog.image} {...styles.image} />
               <Box {...styles.authorMeta}>
                 {formatMessage(
-                  `{0}{1}{2}${data.details.date} • ${data.details.readTime}`,
+                  `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} min read`,
                   "By",
                   <Avatar
-                    alt={data.details.authorName}
-                    src={data.details.authorImage}
+                    alt={blog.author?.name}
+                    src={blog.author?.image}
                     {...styles.avatar}
                   />,
                   <Typography {...styles.authorText} key="author">
-                    {data.details.authorName}
+                    {blog.author?.name}
                   </Typography>,
                 )}
               </Box>
             </Box>
-
-            {data.details.sections.map((section) => (
-              <Box key={section.heading} {...styles.sectionBox}>
-                {section.intro && (
-                  <Typography {...styles.paragraph}>{section.intro}</Typography>
-                )}
-                <Typography {...styles.sectionHeading}>
-                  {section.heading}
-                </Typography>
-                {Array.isArray(section.content) ? (
-                  <List {...styles.list}>
-                    {section.content.map((item) => (
-                      <ListItem key={item} {...styles.featureItem}>
-                        <ListItemIcon sx={{ minWidth: "initial" }}>
-                          <CheckIcon color="success" />
-                        </ListItemIcon>
-                        <ListItemText primary={item} />
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : (
-                  <Typography {...styles.paragraph}>
-                    {section.content}
-                  </Typography>
+            <Box>
+              <RichText>{blog.content}</RichText>
+            </Box>
+            <Box {...styles.bioBox}>
+              <Box {...styles.authorBox}>
+                {formatMessage(
+                  `{0}{1}`,
+                  <Avatar
+                    alt={blog.author?.name}
+                    src={blog.author?.image}
+                    {...styles.avatar}
+                  />,
+                  <Typography {...styles.authorText} key="author">
+                    {blog.author?.name}
+                  </Typography>,
                 )}
               </Box>
-            ))}
-
-            {data.details.authorBio && (
-              <Box {...styles.bioBox}>
-                <Box {...styles.authorBox}>
-                  {formatMessage(
-                    `{0}{1}`,
-                    <Avatar
-                      alt={data.details.authorName}
-                      src={data.details.authorImage}
-                      {...styles.avatar}
-                    />,
-                    <Typography {...styles.authorText} key="author">
-                      {data.details.authorName}
-                    </Typography>,
-                  )}
-                </Box>
-                <Typography {...styles.paragraph}>
-                  {data.details.authorBio}
-                </Typography>
-              </Box>
-            )}
+              <Typography {...styles.paragraph}>{blog.author?.bio}</Typography>
+            </Box>
           </Box>
         )}
       </Container>
