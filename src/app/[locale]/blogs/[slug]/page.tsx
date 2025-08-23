@@ -18,7 +18,6 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
 import data from "@/data/blogDetail";
 import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import { formatMessage } from "@/utilites/strings";
@@ -153,8 +152,6 @@ const styles: BlogDetailStyles = {
 
 const BlogDetailPage = () => {
   const [tabsOffset, setTabsOffset] = useState(0);
-  const translate = useSafeTranslations("BlogDetailsPage");
-
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -180,14 +177,14 @@ const BlogDetailPage = () => {
     <Box {...styles.container?.(tabsOffset)}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
-          title={translate(data.heading)}
-          description={translate(data.description)}
+          title={data.heading}
+          description={data.description}
         />
       </PageLayout>
       <Container>
         <BlogCategories
           ref={tabsRef}
-          tabs={data.tabs}
+          categories={data.tabs}
           selected={data.tabs[1]}
           onSelect={onSelectHandler}
         />
@@ -204,7 +201,7 @@ const BlogDetailPage = () => {
               <Box {...styles.authorMeta}>
                 {formatMessage(
                   `{0}{1}{2}${data.details.date} • ${data.details.readTime}`,
-                  translate("By"),
+                  "By",
                   <Avatar
                     alt={data.details.authorName}
                     src={data.details.authorImage}
@@ -220,12 +217,10 @@ const BlogDetailPage = () => {
             {data.details.sections.map((section) => (
               <Box key={section.heading} {...styles.sectionBox}>
                 {section.intro && (
-                  <Typography {...styles.paragraph}>
-                    {translate(section.intro)}
-                  </Typography>
+                  <Typography {...styles.paragraph}>{section.intro}</Typography>
                 )}
                 <Typography {...styles.sectionHeading}>
-                  {translate(section.heading)}
+                  {section.heading}
                 </Typography>
                 {Array.isArray(section.content) ? (
                   <List {...styles.list}>
@@ -234,13 +229,13 @@ const BlogDetailPage = () => {
                         <ListItemIcon sx={{ minWidth: "initial" }}>
                           <CheckIcon color="success" />
                         </ListItemIcon>
-                        <ListItemText primary={translate(item)} />
+                        <ListItemText primary={item} />
                       </ListItem>
                     ))}
                   </List>
                 ) : (
                   <Typography {...styles.paragraph}>
-                    {translate(section.content)}
+                    {section.content}
                   </Typography>
                 )}
               </Box>

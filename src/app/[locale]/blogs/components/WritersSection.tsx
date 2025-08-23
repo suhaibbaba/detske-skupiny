@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import WriterCard from "@/app/[locale]/blogs/components/WriterCard";
 import { FC } from "react";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
 import { Author } from "@/types/blog";
 
 interface Props {
@@ -56,12 +55,10 @@ const styles: WritersSectionStyles = {
 };
 
 const WritersSection: FC<Props> = ({ writers }) => {
-  const translate = useSafeTranslations("BlogsPage");
-
   return (
     <Box {...styles.container}>
       <Container>
-        <Typography {...styles.title}>{translate("Our Writers")}</Typography>
+        <Typography {...styles.title}>Our Writers</Typography>
         <Box {...styles.writersContainer}>
           {writers.map((writer) => (
             <WriterCard

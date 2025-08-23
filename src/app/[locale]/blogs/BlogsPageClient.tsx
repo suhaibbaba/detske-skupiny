@@ -3,8 +3,6 @@
 import { Box, Container, BoxProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
-import data from "@/data/blog";
 import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
 import WritersSection from "@/app/[locale]/blogs/components/WritersSection";

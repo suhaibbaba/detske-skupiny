@@ -2,6 +2,8 @@ import * as React from "react";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { SanityRichTextField } from "@/sanity/types";
 import { PortableTextBlock } from "@portabletext/types";
 import Link from "@/components/ui/link";
@@ -44,7 +46,7 @@ function RichText({ children, ...typographyProps }: RichTextProps) {
         </Typography>
       ),
       h6: ({ children }) => (
-        <Typography variant="h6" component="h5" {...typographyProps}>
+        <Typography variant="h6" component="h6" {...typographyProps}>
           {children}
         </Typography>
       ),
@@ -100,15 +102,23 @@ function RichText({ children, ...typographyProps }: RichTextProps) {
           {children}
         </Typography>
       ),
-      link: ({ children, value }) => (
-        <Link
-          href={value?.href}
-          target={value?.href?.startsWith("http") ? "_blank" : undefined}
-          rel="noreferrer"
-        >
-          {children}
-        </Link>
-      ),
+      link: ({ children, value }) => {
+        const isExternal = value?.href?.startsWith("http");
+        const target = value?.openInNewTab
+          ? "_blank"
+          : isExternal
+            ? "_blank"
+            : undefined;
+        return (
+          <Link
+            href={value?.href}
+            target={target}
+            rel={target ? "noreferrer" : undefined}
+          >
+            {children}
+          </Link>
+        );
+      },
       coloredText: ({ children, value }) => (
         <Typography
           component="span"
@@ -119,7 +129,6 @@ function RichText({ children, ...typographyProps }: RichTextProps) {
         </Typography>
       ),
     },
-    // Optionally render custom types in Portable Text (images, callouts, etc.)
     types: {
       image: ({ value }) => (
         <Box
