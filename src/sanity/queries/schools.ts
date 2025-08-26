@@ -1,12 +1,13 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
 import { MiniSchool, QueryParams, School } from "@/sanity/types";
+import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchMiniSchools(
   params: QueryParams & { limit: number },
 ) {
   const query = groq`{
-    "preschools": *[_type == "school" && language == $locale][0...$limit] {
+    "preschools": *[_type == "school" && ${languageQuery}][0...$limit] {
       "id": _id,
       name,
       "slug": slug.current,
@@ -27,7 +28,7 @@ export async function fetchSchoolBySlug(
   params: QueryParams & { slug: string },
 ) {
   const query = groq`{
-    *[_type == "school" && language == $locale &&  slug.current == $slug][0]{
+    *[_type == "school" && ${languageQuery} &&  slug.current == $slug][0]{
       "id": _id,
       "logo": logo.asset->url,
       name,

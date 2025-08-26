@@ -1,17 +1,17 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
-import { Author, Blog, BlogPageContent } from "@/types/blog";
-import { QueryParams } from "@/sanity/types";
+import { Author, Blog, BlogCategory } from "@/types/blog";
+import { PageHero, QueryParams } from "@/sanity/types";
+import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchBlogPage(params: QueryParams) {
   const query = groq`{
-    "content": *[_type == "blog" && language == $locale][0]{
-      title,
-      description,
-      ctas[]{ text, url, variant, openInNewTab }
+    "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
+    "categories": *[_type == "blog" && ${languageQuery}].categories[]->{
+      name,
+      "slug": slug.current
     },
-    "categories": array::unique(*[_type == "blog" && language == $locale].categories[]),
-    "blogs": *[_type == "blogDetails" && language == $locale] | order(publishedAt desc){
+    "blogs": *[_type == "blogDetails" && ${languageQuery}] | order(publishedAt desc){
       _id,
       title,
       "slug": slug.current,
@@ -27,7 +27,7 @@ export async function fetchBlogPage(params: QueryParams) {
         bio
       }
     },
-    "writers": *[_type == "author" && language == $locale]{
+    "writers": *[_type == "author" && ${languageQuery}]{
       name,
       role,
       "image": avatar.asset->url,
@@ -35,8 +35,8 @@ export async function fetchBlogPage(params: QueryParams) {
   }`;
 
   return client.fetch<{
-    content?: BlogPageContent;
-    categories?: string[];
+    content?: PageHero;
+    categories?: BlogCategory[];
     blogs?: Blog[];
     writers?: Author[];
   }>(query, params);

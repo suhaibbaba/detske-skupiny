@@ -1,3 +1,5 @@
+export const languageQuery = `(language == $locale || !defined(language))`;
+
 export * from "@/sanity/queries/page";
 export * from "@/sanity/queries/schools";
 export * from "@/sanity/queries/filter";

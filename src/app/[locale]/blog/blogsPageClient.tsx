@@ -7,12 +7,13 @@ import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
 import BlogCard from "@/app/[locale]/blog/components/BlogCard";
 import WritersSection from "@/app/[locale]/blog/components/WritersSection";
 import { FC, useEffect, useRef, useState } from "react";
-import { Author, Blog, BlogPageContent } from "@/types/blog";
+import { Author, Blog, BlogCategory } from "@/types/blog";
 import NoPageContent from "@/components/shared/NoPageContent";
+import { PageHero } from "@/sanity/types";
 
 interface Props {
-  content?: BlogPageContent;
-  categories?: string[];
+  content?: PageHero;
+  categories?: BlogCategory[];
   blogs?: Blog[];
   writers?: Author[];
 }
@@ -78,6 +79,9 @@ const BlogsPage: FC<Props> = ({ content, categories, blogs, writers }) => {
     return <NoPageContent>No Blogs Found</NoPageContent>;
   }
 
+  console.log({
+    content,
+  });
   return (
     <Box {...styles.container}>
       {content && (

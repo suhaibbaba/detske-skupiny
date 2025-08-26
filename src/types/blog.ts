@@ -9,19 +9,13 @@ export type Blog = {
   image?: string;
   readTime?: number;
   publishedAt?: string;
-  categories?: string[];
+  categories?: BlogCategory[];
   author?: Author;
 };
 
-export type BlogPageContent = {
-  title: string;
-  description: any;
-  ctas?: {
-    text: string;
-    url: string;
-    variant?: string;
-    openInNewTab?: boolean;
-  }[];
+export type BlogCategory = {
+  name: string;
+  slug: string;
 };
 
 export type Author = {

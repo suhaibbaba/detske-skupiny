@@ -9,9 +9,10 @@ import {
   StackProps,
 } from "@mui/material";
 import React, { forwardRef } from "react";
+import { BlogCategory } from "@/types";
 
 interface Props {
-  categories?: string[];
+  categories?: BlogCategory[];
 }
 
 interface BlogTabsStyles {
@@ -71,11 +72,11 @@ const BlogCategories = forwardRef<HTMLDivElement, Props>(
         <Stack {...styles.stack}>
           {categories.map((category) => (
             <Button
-              key={category}
-              onClick={() => onSelect(category)}
+              key={category.name}
+              onClick={() => onSelect(category.slug)}
               {...styles.button?.(category === category)}
             >
-              {category}
+              {category.name}
             </Button>
           ))}
         </Stack>

@@ -55,7 +55,7 @@ const styles: WritersSectionStyles = {
 };
 
 const WritersSection: FC<Props> = ({ writers }) => {
-  if (!writers) {
+  if (!writers || writers.length === 0) {
     return null;
   }
 
