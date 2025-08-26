@@ -1,23 +1,15 @@
-import ContactInfoCard from "@/app/[locale]/contact/components/ContactInfoCard";
-import { Box, BoxProps, useTheme } from "@mui/material";
+"use client";
+
+import ContactInfoCard from "@/app/[locale]/contact-us/components/ContactInfoCard";
+import { Box, BoxProps } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import ContactForm from "@/components/forms/ContactForm";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import { getContactPage } from "@/sanity/queries";
-import { SanityImageField, SanityRichTextField } from "@/sanity/types";
-
-interface ContactUsItem {
-  image?: SanityImageField;
-  title?: string;
-  description?: SanityRichTextField;
-}
+import { ContactUsItem, PageHero } from "@/sanity/types";
 
 interface Props {
-  fields: {
-    title: string;
-    subtitle: SanityRichTextField;
-    items?: ContactUsItem[];
-  };
+  pageHero: PageHero;
+  contactUsItem: ContactUsItem[];
 }
 
 interface ContactUsStyles {
@@ -31,13 +23,13 @@ interface ContactUsStyles {
 const styles: ContactUsStyles = {
   pageLayout: {
     section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui1)",
+      sx: (theme) => ({
+        background: theme.palette.gradients.ui1,
         pb: {
           xs: "64px",
           sm: "130px",
         },
-      },
+      }),
     },
   },
   container: {
@@ -75,19 +67,17 @@ const styles: ContactUsStyles = {
   },
 };
 
-const Page = async () => {
-  const { ...fields } = (await getContactPage()) as Props["fields"];
-
+const ContactUsPageClient = ({ contactUsItem, pageHero }: Props) => {
   return (
     <PageLayout extendedStyles={styles.pageLayout}>
       <Box {...styles.container}>
         <PageHeadingTypography
-          title={fields.title}
-          description={fields.subtitle}
+          title={pageHero.title}
+          description={pageHero.description}
         />
         <Box {...styles.infoContainer}>
           <Box {...styles.contactInfoContainer}>
-            {fields.items?.map((card) => (
+            {contactUsItem?.map((card) => (
               <ContactInfoCard
                 key={card.title}
                 image={card.image}
@@ -103,4 +93,4 @@ const Page = async () => {
   );
 };
 
-export default Page;
+export default ContactUsPageClient;

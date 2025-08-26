@@ -1,8 +1,10 @@
 import GroupsPageClient from "@/app/[locale]/groups/groupsPageClient";
-import { getGroups } from "@/sanity/queries";
+import { fetchGroupPage } from "@/sanity/queries";
+import { PageProps } from "@/types";
 
-const Page = async () => {
-  const { content, regions } = await getGroups();
+const Page = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  const { content, regions } = await fetchGroupPage({ locale });
 
   return <GroupsPageClient content={content} regions={regions} />;
 };

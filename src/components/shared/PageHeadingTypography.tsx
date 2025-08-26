@@ -41,6 +41,7 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
   title: {
     variant: "h1",
     align: "center",
+    mb: 0,
   },
   description: {
     align: "center",

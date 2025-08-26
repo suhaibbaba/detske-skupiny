@@ -8,7 +8,6 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import RichText from "@/sanity/components/RichText";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { SanityImageField } from "@/sanity/types";
 

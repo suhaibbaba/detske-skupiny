@@ -56,7 +56,8 @@ const styles: ContactInfoCardStyles = {
   },
   title: {
     variant: "h3",
-    mb: 0.5,
+    fontSize: "20px",
+    mb: "4px",
   },
   description: {
     sx: {

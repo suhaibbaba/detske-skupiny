@@ -13,7 +13,6 @@ import {
   AccordionProps,
 } from "@mui/material";
 import ChevronDown from "@/components/icons/ChevronDown";
-import RichText from "@/sanity/components/RichText";
 
 interface FaqItem {
   question: string;

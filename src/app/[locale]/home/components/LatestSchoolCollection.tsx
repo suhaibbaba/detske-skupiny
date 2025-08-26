@@ -8,7 +8,6 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import KinderGroupCard from "@/app/[locale]/home/components/KinderGroupCard";
 import { SanityCtaField } from "@/sanity/types";
 
 interface Props {

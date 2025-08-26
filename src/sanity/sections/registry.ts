@@ -4,7 +4,7 @@ import React from "react";
 import FaqSection from "@/app/[locale]/home/components/FaqSection";
 import InfoBlock from "@/app/[locale]/home/components/InfoBlock";
 import FeaturesGrid from "@/app/[locale]/home/components/FeaturesGrid";
-import BannerKinderGroup from "@/app/[locale]/home/components/BannerKinderGroup";
+import HomeBanner from "@/app/[locale]/home/components/HomeBanner";
 import SectionWorthIt from "@/app/[locale]/preschool/components/SectionWorthIt";
 import PortalsOffered from "@/app/[locale]/preschool/components/PortalsOffered";
 import OurPricing from "@/app/[locale]/preschool/components/OurPricing";
@@ -19,7 +19,7 @@ export const SECTION_COMPONENTS: Record<string, React.FC<any>> = {
   blogCollection: BlogSection,
   mapCollection: MapCollection,
   featuresGrid: FeaturesGrid,
-  banner: BannerKinderGroup,
+  homeBanner: HomeBanner,
   sectionWorthIt: SectionWorthIt,
   sectionPortalsOffered: PortalsOffered,
   pricingSection: OurPricing,

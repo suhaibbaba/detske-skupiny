@@ -10,13 +10,7 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import IllustrationChildrenGroup from "@/components/icons/IllustrationChildrenGroup";
-import {
-  SanityCtaField,
-  SanityImageField,
-  SanityRichTextField,
-} from "@/sanity/types";
-import RichText from "@/sanity/components/RichText";
+import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface Props {

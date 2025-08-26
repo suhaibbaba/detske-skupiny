@@ -9,12 +9,7 @@ import {
   ButtonProps,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import {
-  SanityCtaField,
-  SanityImageField,
-  SanityRichTextField,
-} from "@/sanity/types";
-import RichText from "@/sanity/components/RichText";
+import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import React from "react";
 
@@ -26,7 +21,7 @@ interface Props {
     cta?: SanityCtaField;
   };
 }
-interface BannerKinderGroupStyles {
+interface HomeBannerStyles {
   section?: (imageUrl: string) => BoxProps;
   container?: ContainerProps;
   title?: TypographyProps;
@@ -34,7 +29,7 @@ interface BannerKinderGroupStyles {
   button?: ButtonProps;
 }
 
-const styles: BannerKinderGroupStyles = {
+const styles: HomeBannerStyles = {
   section: (imageUrl: string) => ({
     sx: {
       backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${imageUrl}")`,
@@ -77,11 +72,11 @@ const styles: BannerKinderGroupStyles = {
   },
 };
 
-const BannerKinderGroup = ({ fields }: Props) => {
+const HomeBanner = ({ fields }: Props) => {
   return (
     <Box
       {...styles.section?.(urlImageFor(fields.background))}
-      data-test-selector="BannerKinderGroup"
+      data-test-selector="HomeBanner"
     >
       <Container {...styles.container}>
         <Typography {...styles.title}>{fields.title}</Typography>
@@ -100,4 +95,4 @@ const BannerKinderGroup = ({ fields }: Props) => {
   );
 };
 
-export default BannerKinderGroup;
+export default HomeBanner;

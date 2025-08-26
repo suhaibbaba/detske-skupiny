@@ -4,17 +4,10 @@ import { Box, BoxProps, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import EmblaCarousel from "@/components/shared/EmblaCarousel";
 import PreschoolCard from "@/app/[locale]/preschool/components/PreschoolCard";
-import { SanityCtaField, SanityImageField } from "@/sanity/types";
+import { MiniSchool, SanityCtaField } from "@/sanity/types";
 import { FC, useEffect, useState } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { getPreschool } from "@/sanity/queries";
-
-export interface PerSchool {
-  id: string;
-  name: string;
-  primaryImage: SanityImageField;
-  area?: { _id: string; name: string };
-}
 
 interface Props {
   fields: {
@@ -48,7 +41,7 @@ const styles: ListOfSchoolsStyles = {
 };
 
 const ListOfSchools: FC<Props> = ({ fields }) => {
-  const [preschools, setPreschools] = useState<PerSchool[]>([]);
+  const [preschools, setPreschools] = useState<MiniSchool[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

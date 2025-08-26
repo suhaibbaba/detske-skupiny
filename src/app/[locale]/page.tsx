@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { getHomePage, getPageByType } from "@/sanity/queries";
+import { getPageByType } from "@/sanity/queries";
 import Zone from "@/sanity/components/Zone";
 
 type PageProps = {
