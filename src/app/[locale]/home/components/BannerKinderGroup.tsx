@@ -20,14 +20,14 @@ import React from "react";
 
 interface Props {
   fields: {
-    background?: SanityImageField;
     title?: string;
-    subtitle?: SanityRichTextField;
+    description?: string;
+    background?: SanityImageField;
     cta?: SanityCtaField;
   };
 }
 interface BannerKinderGroupStyles {
-  section?: BoxProps;
+  section?: (imageUrl: string) => BoxProps;
   container?: ContainerProps;
   title?: TypographyProps;
   description?: TypographyProps;
@@ -35,17 +35,16 @@ interface BannerKinderGroupStyles {
 }
 
 const styles: BannerKinderGroupStyles = {
-  section: {
+  section: (imageUrl: string) => ({
     sx: {
-      backgroundImage:
-        "linear-gradient(0deg, rgba(250, 243, 192, 0.8), rgba(250, 243, 192, 0.8)), url('/balloon-bg.jpg')",
+      backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${imageUrl}")`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundPosition: "center",
       textAlign: "center",
       py: "96px",
     },
-  },
+  }),
   container: {
     sx: {
       display: "flex",
@@ -69,6 +68,7 @@ const styles: BannerKinderGroupStyles = {
   button: {
     variant: "primary",
     sx: {
+      mt: "32px",
       "& .MuiButton-startIcon": {
         marginRight: "8px",
       },
@@ -78,25 +78,23 @@ const styles: BannerKinderGroupStyles = {
 };
 
 const BannerKinderGroup = ({ fields }: Props) => {
-  const bgUrl = React.useMemo(
-    () => urlImageFor(fields.background) ?? "/balloon-bg.jpg",
-    [fields.background],
-  );
-
   return (
     <Box
-      {...styles.section}
-      sx={{
-        ...styles.section?.sx,
-        backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${bgUrl}")`,
-      }}
+      {...styles.section?.(urlImageFor(fields.background))}
+      data-test-selector="BannerKinderGroup"
     >
       <Container {...styles.container}>
         <Typography {...styles.title}>{fields.title}</Typography>
-        <RichText {...styles.description}>{fields.subtitle}</RichText>
-        <Button {...styles.button} variant={fields.cta?.variant}>
-          {fields.cta?.text}
-        </Button>
+        <Typography {...styles.description}>{fields.description}</Typography>
+        {fields.cta && (
+          <Button
+            {...styles.button}
+            variant={fields.cta.variant}
+            href={fields.cta.url}
+          >
+            {fields.cta.text}
+          </Button>
+        )}
       </Container>
     </Box>
   );

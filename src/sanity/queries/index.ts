@@ -5,9 +5,8 @@ import {
   getPageByType,
 } from "./page";
 
-export const getHomePage = () => getPageByType("homePage");
-export const getAboutPage = () => getPageByType("aboutPage");
+export const getHomePage = () => getPageByType("home");
+export const getPreschoolPage = () => getPageByType("preschool");
+export const getAboutPage = () => getPageByType("about");
 export const getContactPage = () => getDirectPageByType("contactUsPage");
-export const getGroupsPage = () => getGroups();
-
 export * from "@/sanity/queries/page";

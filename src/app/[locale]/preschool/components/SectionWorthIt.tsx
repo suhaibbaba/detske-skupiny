@@ -8,10 +8,23 @@ import {
   BoxProps,
   TypographyOwnProps,
   PaperProps,
-  alpha,
 } from "@mui/material";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
-import data from "@/data/catalogue";
+import { SanityImageField } from "@/sanity/types";
+import { FC } from "react";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+
+interface Props {
+  fields: {
+    heading: string;
+    subheading: string;
+    features?: {
+      _key: string;
+      icon: SanityImageField;
+      title: string;
+      description: string;
+    }[];
+  };
+}
 
 interface WhyJoinUsStyles {
   container?: BoxProps;
@@ -79,7 +92,7 @@ const styles: WhyJoinUsStyles = {
       width: "88px",
       height: "88px",
       borderRadius: "50%",
-      padding: "25px 30px",
+      padding: "22px",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -96,24 +109,22 @@ const styles: WhyJoinUsStyles = {
   },
 };
 
-const WhyJoinUs = () => {
-  const translate = useSafeTranslations("CataloguePage");
-
+const SectionWorthIt: FC<Props> = ({ fields }) => {
   return (
     <Box {...styles.container}>
       <Container>
         <Box {...styles.headingBox}>
-          <Typography {...styles.title}>
-            {translate("whyJoinUs.heading")}
-          </Typography>
-          <Typography {...styles.description}>
-            {translate("whyJoinUs.description")}
-          </Typography>
+          <Typography {...styles.title}>{fields.heading}</Typography>
+          <Typography {...styles.description}>{fields.subheading}</Typography>
         </Box>
         <Box {...styles.featuresWrapper}>
-          {data.features.map((item) => (
-            <Paper key={item.title} {...styles.featureCard}>
-              <Box {...styles.iconWrapper}>{item.icon}</Box>
+          {fields.features?.map((item) => (
+            <Paper key={item._key} {...styles.featureCard}>
+              <Box
+                component="img"
+                src={urlImageFor(item.icon)}
+                {...styles.iconWrapper}
+              />
               <Typography {...styles.cardTitle}>{item.title}</Typography>
               <Typography {...styles.cardDescription}>
                 {item.description}
@@ -126,4 +137,4 @@ const WhyJoinUs = () => {
   );
 };
 
-export default WhyJoinUs;
+export default SectionWorthIt;

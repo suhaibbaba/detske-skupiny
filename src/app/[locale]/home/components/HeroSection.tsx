@@ -1,26 +1,25 @@
 "use client";
 
 import React, { FC } from "react";
-import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
+import { Box, BoxProps, TypographyProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography, {
   PageHeadingTypographyStyles,
 } from "@/components/shared/PageHeadingTypography";
-import { autoClamp, formatMessage } from "@/utilites/strings";
+import { autoClamp } from "@/utilites/strings";
 import {
   SanityCtaField,
   SanityImageField,
   SanityRichTextField,
 } from "@/sanity/types";
-import RichText from "@/sanity/components/RichText";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface Props {
   fields: {
     image: SanityImageField;
     title?: SanityRichTextField;
+    description?: string;
     ctas: SanityCtaField[];
-    description: SanityRichTextField;
   };
 }
 
@@ -29,6 +28,7 @@ interface HeroSectionStyles {
   contentWrapper?: BoxProps;
   pageHeadingStyles?: PageHeadingTypographyStyles;
   subtitle?: TypographyProps;
+  imageWrapper?: BoxProps;
 }
 
 const styles: HeroSectionStyles = {
@@ -82,10 +82,21 @@ const styles: HeroSectionStyles = {
         textAlign: "left",
       },
     },
+    cta: {
+      sx: {
+        p: "14px 26px",
+      },
+    },
   },
   subtitle: {
     variant: "inherit",
     component: "span",
+  },
+  imageWrapper: {
+    sx: {
+      maxWidth: 404,
+      maxHeight: 460,
+    },
   },
 };
 
@@ -98,12 +109,12 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
     >
       <Box {...styles.contentWrapper}>
         <PageHeadingTypography
-          title={<RichText>{fields.title}</RichText>}
-          description={<RichText>{fields.description}</RichText>}
+          title={fields.title}
+          description={fields.description}
           ctaList={fields.ctas}
           extendedStyles={styles.pageHeadingStyles}
         />
-        <Box sx={{ maxWidth: 404, maxHeight: 460 }}>
+        <Box {...styles.imageWrapper}>
           <Box component="img" src={urlImageFor(fields.image)} />
         </Box>
       </Box>

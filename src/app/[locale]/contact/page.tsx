@@ -1,13 +1,10 @@
 import ContactInfoCard from "@/app/[locale]/contact/components/ContactInfoCard";
 import { Box, BoxProps, useTheme } from "@mui/material";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import data from "@/data/contactUs";
 import ContactForm from "@/components/forms/ContactForm";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import { getContactPage } from "@/sanity/queries";
 import { SanityImageField, SanityRichTextField } from "@/sanity/types";
-import RichText from "@/sanity/components/RichText";
 
 interface ContactUsItem {
   image?: SanityImageField;

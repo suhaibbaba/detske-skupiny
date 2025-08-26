@@ -27,20 +27,6 @@ export const sectionsProjection = groq`
   title,
   sections[]{
     ...,
-    // Apply to any field named image
-    "image": image{
-      asset->{
-        url,
-        metadata{
-          dimensions{
-            width,
-            height,
-            aspectRatio
-          }
-        }
-      }
-    },
-    ctas[]{ ... }
   }
 `;
 

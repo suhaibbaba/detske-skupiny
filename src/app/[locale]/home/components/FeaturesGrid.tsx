@@ -52,11 +52,7 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
       mb: "12px",
     },
   },
-  subheading: {
-    sx: {
-      mb: "80px",
-    },
-  },
+  subheading: {},
   grid: {
     sx: (theme) => ({
       display: "grid",
@@ -66,6 +62,7 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
         xs: "94px",
         sm: "70px",
       },
+      mt: "80px",
       [theme.breakpoints.down("md")]: {
         display: "flex",
         flexDirection: "column",
@@ -103,13 +100,13 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
   },
 };
 
-const PremiumSchoolsFeatureSection = ({ fields }: Props) => {
+const FeaturesGrid = ({ fields }: Props) => {
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
         <Typography {...styles.heading}>{fields.title}</Typography>
-        <RichText {...styles.subheading}>{fields.description}</RichText>
-        <Box {...styles.grid} className="fuck">
+        <Typography {...styles.subheading}>{fields.description}</Typography>
+        <Box {...styles.grid}>
           {fields.items?.map((feature, idx) => {
             const index = idx + 1; // Start from 1 to simplify logic
 
@@ -159,4 +156,4 @@ const PremiumSchoolsFeatureSection = ({ fields }: Props) => {
   );
 };
 
-export default PremiumSchoolsFeatureSection;
+export default FeaturesGrid;

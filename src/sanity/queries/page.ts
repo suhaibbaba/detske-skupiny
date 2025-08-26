@@ -1,16 +1,28 @@
 import { groq } from "next-sanity";
 import { client } from "../client";
-import { directFieldsProjection, sectionsProjection } from "./sections.groq";
-import { Region, SanityCtaField, SanityRichTextField } from "@/sanity/types";
+import { School } from "@/sanity/types";
 import { Author, Blog, BlogPageContent } from "@/types/blog";
+import { GroupsProps } from "@/app/[locale]/groups/groupsPageClient";
+import { PerSchool } from "@/app/[locale]/preschool/components/ListOfSchools";
 
-export async function getPageByType(type: string) {
-  const query = groq`*[_type == $type][0]{ title, ${sectionsProjection} }`;
-  return client.fetch<{ title?: string; sections?: any[] }>(query, { type });
+export async function getPageByType(type: string, params: { locale: string }) {
+  const query = groq`*[_type == $type && language == $language][0]{ 
+    title, 
+    sections[]{
+      ...,
+    }
+}`;
+  return client.fetch<{ title?: string; sections?: any[] }>(query, {
+    type,
+    language: params.locale,
+  });
 }
 
 export async function getDirectPageByType(type: string) {
-  const query = groq`*[_type == $type][0]{ title, ${directFieldsProjection} }`;
+  const query = groq`*[_type == $type][0]{ 
+      title,
+      ...,
+    }`;
   return client.fetch<{ title?: string }>(query, { type });
 }
 
@@ -52,14 +64,7 @@ export async function getGroups() {
   }
 }`;
 
-  return client.fetch<{
-    content: {
-      title: string;
-      description: SanityRichTextField;
-      ctas: SanityCtaField[];
-    };
-    regions: Region[];
-  }>(query);
+  return client.fetch<GroupsProps>(query);
 }
 
 export async function getFilterQuery(regionSlug: string) {
@@ -202,4 +207,64 @@ export async function getBlogDetails(params: { slug: string }) {
     categories: string[];
     blog: Blog;
   }>(query, params);
+}
+
+export async function getSchoolBySlug(params: { slug: string }) {
+  const query = groq`
+  {
+    "school" :*[_type == "school" && slug.current == $slug][0]{
+      "id": _id,
+      "logo": logo.asset->url,
+      name,
+      "slug": slug.current,
+      website,
+      primaryImages[]{
+        alt,
+        caption,
+        "url": select(defined(asset) => asset->url, null)
+      },
+      "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
+      area->{ _id, name },
+      address,
+      location,
+      contacts[],
+      links,
+      types[]->{
+        _id,
+        name,
+        "slug": slug.current
+      },
+      transportation[],
+      about,
+      highlights,
+      timetable[],
+      isPrivate,
+      gallery[]{
+        alt,
+        caption,
+        "url": select(defined(asset) => asset->url, null)
+      }
+    }
+  }
+  `;
+  return client.fetch<{ school: School }>(query, params);
+}
+
+export async function getPreschool() {
+  const query = groq`{
+    "preschools": *[_type == "school"][0...20] {
+      "id": _id,
+      name,
+      "slug": slug.current,
+      "primaryImage": select(
+        defined(primaryImages[0]) => primaryImages[0].asset->url,
+        null
+      ),
+      area->{_id, name}
+    }
+  }`;
+
+  return client.fetch<{
+    preschools: PerSchool[];
+  }>(query);
 }

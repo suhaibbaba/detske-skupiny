@@ -9,10 +9,18 @@ import {
   ContainerProps,
   Typography,
   TypographyProps,
-  Stack,
 } from "@mui/material";
+import { SanityCtaField } from "@/sanity/types";
 
-interface KindergartenMapSectionStyles {
+interface Props {
+  fields: {
+    title: string;
+    description: string;
+    cta?: SanityCtaField[];
+  };
+}
+
+interface MapCollectionStyles {
   section?: BoxProps;
   container?: ContainerProps;
   title?: TypographyProps;
@@ -23,7 +31,7 @@ interface KindergartenMapSectionStyles {
   mapImage?: BoxProps;
 }
 
-const styles: KindergartenMapSectionStyles = {
+const styles: MapCollectionStyles = {
   section: {
     sx: (theme) => ({
       bgcolor: theme.palette.secondary.main,
@@ -63,7 +71,6 @@ const styles: KindergartenMapSectionStyles = {
     },
   },
   filterButton: {
-    variant: "ghost",
     sx: {
       width: "100%",
     },
@@ -95,22 +102,20 @@ const styles: KindergartenMapSectionStyles = {
   },
 };
 
-const filters = ["View All", "View Prague", "View Brno – Střed, Komárov"];
-
-const KindergartenMapSection = () => {
+const MapCollection = ({ fields }: Props) => {
   return (
-    <Box {...styles.section}>
+    <Box {...styles.section} data-test-selection="MapCollection">
       <Container {...styles.container}>
-        <Typography {...styles.title}>Map of Private Kindergartens</Typography>
-        <Typography {...styles.description}>
-          Neighbour Kinder Groups are trusted, independent kindergartens and
-          childcare providers located right in your area — offering personalized
-          care, community-based learning, and flexible programs.
-        </Typography>
+        <Typography {...styles.title}>{fields.title}</Typography>
+        <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.filterWrapper}>
-          {filters.map((label, idx) => (
-            <Button key={idx} {...styles.filterButton}>
-              {label}
+          {fields.cta?.map((cta, idx) => (
+            <Button
+              key={cta.text}
+              variant={cta.variant}
+              {...styles.filterButton}
+            >
+              {cta.text}
             </Button>
           ))}
         </Box>
@@ -127,4 +132,4 @@ const KindergartenMapSection = () => {
   );
 };
 
-export default KindergartenMapSection;
+export default MapCollection;

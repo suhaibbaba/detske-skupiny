@@ -3,7 +3,7 @@
 import { Box, Typography, BoxProps } from "@mui/material";
 import InfoCardItem, {
   InfoCardItemProps,
-} from "@/app/[locale]/[region]/[school]/components/InfoCardItem";
+} from "@/app/[locale]/catalog/[region]/[school]/components/InfoCardItem";
 
 interface InfoCardGridProps {
   items: InfoCardItemProps[];

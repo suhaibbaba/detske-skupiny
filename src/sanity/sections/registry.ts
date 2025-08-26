@@ -1,16 +1,28 @@
 import HeroSection from "@/app/[locale]/home/components/HeroSection";
-import LatestKinderGroupsSection from "@/app/[locale]/home/components/LatestKinderGroupsSection";
+import LatestSchoolCollection from "@/app/[locale]/home/components/LatestSchoolCollection";
 import React from "react";
 import FaqSection from "@/app/[locale]/home/components/FaqSection";
-import NeighbourKinderGroupSection from "@/app/[locale]/home/components/NeighbourKinderGroupSection";
-import PremiumSchoolsFeatureSection from "@/app/[locale]/home/components/PremiumSchoolsFeatureSection";
+import InfoBlock from "@/app/[locale]/home/components/InfoBlock";
+import FeaturesGrid from "@/app/[locale]/home/components/FeaturesGrid";
 import BannerKinderGroup from "@/app/[locale]/home/components/BannerKinderGroup";
+import SectionWorthIt from "@/app/[locale]/preschool/components/SectionWorthIt";
+import PortalsOffered from "@/app/[locale]/preschool/components/PortalsOffered";
+import OurPricing from "@/app/[locale]/preschool/components/OurPricing";
+import ListOfSchools from "@/app/[locale]/preschool/components/ListOfSchools";
+import MapCollection from "@/app/[locale]/home/components/MapCollection";
+import BlogSection from "@/app/[locale]/home/components/BlogSection";
 
 export const SECTION_COMPONENTS: Record<string, React.FC<any>> = {
   hero: HeroSection,
-  latestKinderGroups: LatestKinderGroupsSection,
   faq: FaqSection,
-  neighbourKinderGroup: NeighbourKinderGroupSection,
-  featuresGrid: PremiumSchoolsFeatureSection,
+  infoBlock: InfoBlock,
+  blogCollection: BlogSection,
+  mapCollection: MapCollection,
+  featuresGrid: FeaturesGrid,
   banner: BannerKinderGroup,
+  sectionWorthIt: SectionWorthIt,
+  sectionPortalsOffered: PortalsOffered,
+  pricingSection: OurPricing,
+  listOfSchoolSection: ListOfSchools,
+  latestSchoolCollection: LatestSchoolCollection,
 };

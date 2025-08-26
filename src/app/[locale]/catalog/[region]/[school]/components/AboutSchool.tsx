@@ -7,6 +7,8 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
+import { School } from "@/sanity/types";
+import RichText from "@/sanity/components/RichText";
 
 const tags = [
   { label: "Children’s Group", selected: true },
@@ -16,7 +18,7 @@ const tags = [
 ];
 
 interface Props {
-  children: React.ReactNode;
+  about: School["about"];
 }
 
 interface AboutSchoolStyles {
@@ -32,13 +34,16 @@ const styles: AboutSchoolStyles = {
     sx: {
       display: "flex",
       flexDirection: "column",
-      gap: "20px",
       mt: "80px",
     },
+  },
+  title: {
+    variant: "h3",
   },
   tagsContainer: {
     display: "flex",
     gap: "16px",
+    mt: "20px",
   },
   chip: {
     sx: {
@@ -59,11 +64,11 @@ const styles: AboutSchoolStyles = {
   },
 };
 
-const AboutSchool: FC<Props> = ({ children }) => {
+const AboutSchool: FC<Props> = ({ about }) => {
   return (
     <Box {...styles.container}>
-      <Typography {...styles.title}>About</Typography>
-      <Typography {...styles.description}>{children}</Typography>
+      <Typography {...styles.title}>About Us</Typography>
+      <RichText {...styles.description}>{about}</RichText>
       <Box {...styles.tagsContainer}>
         {tags.map((tag, idx) => (
           <Chip

@@ -18,8 +18,22 @@ import {
   ListItemTextProps,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
-import data from "@/data/catalogue";
+import { SanityCtaField, SanityImageField } from "@/sanity/types";
+import { FC } from "react";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+
+interface Props {
+  fields: {
+    image: SanityImageField;
+    heading: string;
+    description: string;
+    cta?: SanityCtaField;
+    portals?: {
+      _key: string;
+      title: string;
+    }[];
+  };
+}
 
 interface PortalsOfferedStyles {
   container?: BoxProps;
@@ -106,11 +120,11 @@ const styles: PortalsOfferedStyles = {
     sx: {
       width: {
         xs: "320px",
-        sm: "320px",
+        sm: "534px",
       },
       height: {
         xs: "320px",
-        sm: "320px",
+        sm: "534px",
       },
       alignSelf: {
         xs: "center",
@@ -130,42 +144,41 @@ const styles: PortalsOfferedStyles = {
   },
 };
 
-const PortalsOffered = () => {
-  const translate = useSafeTranslations("CataloguePage");
-
+const PortalsOffered: FC<Props> = ({ fields }) => {
   return (
     <Box {...styles.container}>
       <Container>
         <Box {...styles.innerBox}>
           <Box {...styles.textBox}>
-            <Typography {...styles.heading}>
-              {translate("portalsOffered.heading")}
-            </Typography>
+            <Typography {...styles.heading}>{fields.heading}</Typography>
             <Typography {...styles.description}>
-              {translate("portalsOffered.description")}
+              {fields.description}
             </Typography>
             <List {...styles.list}>
-              {data.portalsOffered.lists.map((item) => (
-                <ListItem key={item} {...styles.listItem}>
+              {fields.portals?.map((item) => (
+                <ListItem key={item._key} {...styles.listItem}>
                   <ListItemIcon {...styles.listItemIcon}>
                     <StarIcon />
                   </ListItemIcon>
-                  <ListItemText
-                    {...styles.listItemText}
-                    primary={translate(`portalsOffered.${item}`) || item}
-                  />
+                  <ListItemText {...styles.listItemText} primary={item.title} />
                 </ListItem>
               ))}
             </List>
-            <Button {...styles.button}>
-              {translate("View all Neighbour Schools")}
-            </Button>
+            {fields.cta && (
+              <Button
+                {...styles.button}
+                variant={fields.cta.variant}
+                href={fields.cta.url}
+              >
+                {fields.cta.text}
+              </Button>
+            )}
           </Box>
           <Box {...styles.imageWrapper}>
             <Box
               {...styles.image}
               component="img"
-              src={data.portalsOffered.image}
+              src={urlImageFor(fields.image)}
             />
           </Box>
         </Box>

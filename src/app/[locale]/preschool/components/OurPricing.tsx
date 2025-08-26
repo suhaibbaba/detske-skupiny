@@ -19,8 +19,29 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import useSafeTranslations from "@/hooks/useSafeTranslations";
-import data from "@/data/catalogue";
+import { SanityCtaField, SanityImageField } from "@/sanity/types";
+import { FC } from "react";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+
+interface Props {
+  fields: {
+    title: string;
+    subtitle: string;
+    cta?: SanityCtaField;
+    mostPopularImage?: SanityImageField;
+    plans: {
+      name: string;
+      description: string;
+      price: string;
+      cta: SanityCtaField;
+      isMostPopular?: boolean;
+      features: {
+        label: string;
+        included?: boolean;
+      }[];
+    }[];
+  };
+}
 
 interface PricingStyles {
   container?: BoxProps;
@@ -36,7 +57,7 @@ interface PricingStyles {
   featureItem?: ListItemProps;
   featureIcon?: BoxProps;
   button?: ButtonProps;
-  popularLabel?: TypographyOwnProps;
+  mostPopular?: BoxProps;
 }
 
 const styles: PricingStyles = {
@@ -45,6 +66,10 @@ const styles: PricingStyles = {
       pb: {
         xs: "0",
         sm: "120px",
+      },
+      pt: {
+        xs: "100px",
+        sm: "80px",
       },
     },
   },
@@ -139,54 +164,40 @@ const styles: PricingStyles = {
       px: "52px",
     },
   },
-  // TODO: use SVG later
-  popularLabel: {
-    variant: "caption",
+  mostPopular: {
     sx: {
       position: "absolute",
-      top: "-20px",
+      top: "-26px",
       right: "16px",
-      backgroundColor: "#FFEB3B",
-      color: "text.primary",
-      fontWeight: 700,
-      borderRadius: "8px",
-      px: "8px",
-      py: "2px",
     },
   },
 };
 
-const OurPricing = () => {
-  const translate = useSafeTranslations("CataloguePage");
-
+const OurPricing: FC<Props> = ({ fields }) => {
   return (
     <Box {...styles.container}>
       <Container>
         <Box {...styles.headingBox}>
-          <Typography {...styles.title}>
-            {translate("pricing.heading")}
-          </Typography>
-          <Typography {...styles.subtitle}>
-            {translate("pricing.description")}
-          </Typography>
+          <Typography {...styles.title}>{fields.title}</Typography>
+          <Typography {...styles.subtitle}>{fields.subtitle}</Typography>
         </Box>
         <Box {...styles.cardsWrapper}>
-          {data.ourPricing.plans.map((plan) => (
+          {fields.plans?.map((plan) => (
             <Paper key={plan.name} {...styles.card}>
-              {plan.popular && (
-                <Typography {...styles.popularLabel}>
-                  {translate("pricing.popular")}
-                </Typography>
+              {plan.isMostPopular && (
+                <Box
+                  src={urlImageFor(fields.mostPopularImage)}
+                  component="img"
+                  {...styles.mostPopular}
+                />
               )}
-              <Typography {...styles.planLabel}>
-                {translate(plan.name)}
-              </Typography>
+              <Typography {...styles.planLabel}>{plan.name}</Typography>
               <Typography {...styles.planDescription}>
-                {translate(plan.description)}
+                {plan.description}
               </Typography>
-              <Typography {...styles.price}>{translate(plan.price)}</Typography>
+              <Typography {...styles.price}>{plan.price}</Typography>
               <List {...styles.featureList}>
-                {plan.features.map((f) => (
+                {plan.features?.map((f) => (
                   <ListItem key={f.label} {...styles.featureItem}>
                     <Box
                       {...styles.featureIcon}
@@ -197,13 +208,19 @@ const OurPricing = () => {
                     >
                       {f.included ? <CheckIcon /> : <CloseIcon />}
                     </Box>
-                    <ListItemText
-                      primary={translate(`pricing.features.${f.label}`)}
-                    />
+                    <ListItemText primary={f.label} />
                   </ListItem>
                 ))}
               </List>
-              <Button {...styles.button}>{translate("Get this Plan")}</Button>
+              {plan.cta && (
+                <Button
+                  {...styles.button}
+                  variant={plan.cta.variant}
+                  href={plan.cta.url}
+                >
+                  {plan.cta.text}
+                </Button>
+              )}
             </Paper>
           ))}
         </Box>

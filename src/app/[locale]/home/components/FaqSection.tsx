@@ -14,11 +14,10 @@ import {
 } from "@mui/material";
 import ChevronDown from "@/components/icons/ChevronDown";
 import RichText from "@/sanity/components/RichText";
-import { SanityRichTextField } from "@/sanity/types";
 
 interface FaqItem {
   question: string;
-  answer?: SanityRichTextField;
+  answer?: string;
   openByDefault?: boolean;
 }
 
@@ -115,7 +114,7 @@ const FaqSection = ({ fields }: Props) => {
               </AccordionSummary>
               {faq.answer && (
                 <AccordionDetails>
-                  <RichText {...styles.answer}>{faq.answer}</RichText>
+                  <Typography {...styles.answer}>{faq.answer}</Typography>
                 </AccordionDetails>
               )}
             </Accordion>

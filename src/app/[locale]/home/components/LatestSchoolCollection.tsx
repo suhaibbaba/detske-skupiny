@@ -9,12 +9,21 @@ import {
   TypographyProps,
 } from "@mui/material";
 import KinderGroupCard from "@/app/[locale]/home/components/KinderGroupCard";
+import { SanityCtaField } from "@/sanity/types";
+
+interface Props {
+  fields: {
+    title: string;
+    description: string;
+    cta?: SanityCtaField;
+  };
+}
 
 interface LatestKinderGroupsSectionStyles {
   section?: BoxProps;
   container?: ContainerProps;
-  heading?: TypographyProps;
-  subheading?: TypographyProps;
+  title?: TypographyProps;
+  description?: TypographyProps;
   grid?: BoxProps;
 }
 
@@ -34,14 +43,14 @@ const styles: LatestKinderGroupsSectionStyles = {
       textAlign: "center",
     },
   },
-  heading: {
+  title: {
     component: "h1",
     variant: "h1",
     sx: {
       mb: "12px",
     },
   },
-  subheading: {
+  description: {
     sx: {
       mb: "80px",
     },
@@ -62,27 +71,21 @@ const styles: LatestKinderGroupsSectionStyles = {
   },
 };
 
-const LatestKinderGroupsSection = () => {
+const LatestSchoolCollection = ({ fields }: Props) => {
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
-        <Typography {...styles.heading}>
-          Our Latest Added Kinder Groups
-        </Typography>
-        <Typography {...styles.subheading}>
-          Hundreds of childcare groups are already reaching local families
-          through our platform. Add your listing today to be seen, contacted,
-          and trusted by parents near you.
-        </Typography>
+        <Typography {...styles.title}>{fields.title}</Typography>
+        <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.grid}>
-          <KinderGroupCard />
-          <KinderGroupCard />
-          <KinderGroupCard />
-          <KinderGroupCard />
+          {/*<KinderGroupCard />*/}
+          {/*<KinderGroupCard />*/}
+          {/*<KinderGroupCard />*/}
+          {/*<KinderGroupCard />*/}
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default LatestKinderGroupsSection;
+export default LatestSchoolCollection;

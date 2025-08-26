@@ -160,6 +160,7 @@ const BlogCard: FC<Props> = ({
     mergeMuiProps(blogsCardStylesType, extendedStyles),
   );
 
+  const blogUrl = `/blogs/${slug}`;
   return (
     <Card {...styles.card}>
       <CardMedia
@@ -173,7 +174,7 @@ const BlogCard: FC<Props> = ({
       />
       <CardContent {...styles.cardContent}>
         <Typography {...styles.tag}>Article</Typography>
-        <Link component={NextLink} href={`/blogs/${slug}`} {...styles.title}>
+        <Link component={NextLink} href={blogUrl} {...styles.title}>
           {title}
         </Link>
         <Typography {...styles.description}>{excerpt}</Typography>
@@ -187,7 +188,7 @@ const BlogCard: FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-          <Button {...styles.readNowButton} href={slug}>
+          <Button {...styles.readNowButton} href={blogUrl}>
             Read Now
           </Button>
         </Box>

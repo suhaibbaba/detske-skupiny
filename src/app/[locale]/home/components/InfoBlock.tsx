@@ -17,13 +17,14 @@ import {
   SanityRichTextField,
 } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface Props {
   fields: {
-    image: SanityImageField;
-    title?: SanityRichTextField;
-    description: SanityRichTextField;
-    cta: SanityCtaField;
+    image?: SanityImageField;
+    title: string;
+    description: string;
+    cta?: SanityCtaField;
   };
 }
 
@@ -83,9 +84,6 @@ const styles: NeighbourKinderGroupSectionStyles = {
       },
     },
   },
-  ctaButton: {
-    variant: "primary",
-  },
   imageWrapper: {
     sx: (theme) => ({
       flex: 1,
@@ -102,29 +100,30 @@ const styles: NeighbourKinderGroupSectionStyles = {
   },
 };
 
-const NeighbourKinderGroupSection = ({ fields }: Props) => {
+const InfoBlock = ({ fields }: Props) => {
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
         <Box {...styles.textBlock}>
-          <RichText {...styles.heading}>{fields.title}</RichText>
-          <Typography {...styles.description}>
-            Neighbour Kinder Groups are trusted, independent kindergartens and
-            childcare providers located right in your area — offering
-            personalized care, community-based learning, and flexible programs.
-            Whether its a Montessori preschool, language-focused group, or
-            nature-based nursery, each listing is verified and created to help
-            you find the perfect fit for your child.
-          </Typography>
-          <Button {...styles.ctaButton}>View all Neighbour Schools</Button>
+          <Typography {...styles.heading}>{fields.title}</Typography>
+          <Typography {...styles.description}>{fields.description}</Typography>
+          {fields.cta && (
+            <Button
+              {...styles.ctaButton}
+              variant={fields.cta.variant}
+              href={fields.cta.url}
+            >
+              {fields.cta.text}
+            </Button>
+          )}
         </Box>
 
         <Box {...styles.imageWrapper}>
-          <IllustrationChildrenGroup sx={{ width: "100%", height: "auto" }} />
+          <Box src={urlImageFor(fields.image)} component="img" />
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default NeighbourKinderGroupSection;
+export default InfoBlock;

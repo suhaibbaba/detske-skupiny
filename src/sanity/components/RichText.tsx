@@ -287,10 +287,19 @@ function RichText({
   };
 
   return (
-    <PortableText
-      value={children as PortableTextBlock[]}
-      components={components}
-    />
+    <Box
+      sx={{
+        // Reset bottom margin for the last Typography or block element
+        "& > *:last-child": {
+          mb: 0,
+        },
+      }}
+    >
+      <PortableText
+        value={children as PortableTextBlock[]}
+        components={components}
+      />
+    </Box>
   );
 }
 

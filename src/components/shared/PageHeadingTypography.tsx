@@ -14,7 +14,7 @@ import { SanityCtaField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
 
 interface Props {
-  title?: string | React.ReactElement | React.ComponentType<any>;
+  title?: string | SanityRichTextField;
   description?: string | SanityRichTextField;
   ctaList?: SanityCtaField[];
   extendedStyles?: PageHeadingTypographyStyles;
@@ -76,10 +76,7 @@ const PageHeadingTypography: FC<Props> = ({
       {typeof title === "string" ? (
         <Typography {...styles.title}>{title}</Typography>
       ) : (
-        <>
-          {React.isValidElement(title) &&
-            React.cloneElement(title, { ...styles.title })}
-        </>
+        <RichText {...styles.description}>{title}</RichText>
       )}
       {typeof description === "string" ? (
         <Typography {...styles.description}>{description}</Typography>
