@@ -3,9 +3,9 @@
 import { Box, Container, BoxProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
-import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
-import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
+import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
+import BlogCard from "@/app/[locale]/blog/components/BlogCard";
+import WritersSection from "@/app/[locale]/blog/components/WritersSection";
 import { FC, useEffect, useRef, useState } from "react";
 import { Author, Blog, BlogPageContent } from "@/types/blog";
 

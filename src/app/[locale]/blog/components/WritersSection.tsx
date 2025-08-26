@@ -7,7 +7,7 @@ import {
   Typography,
   TypographyOwnProps,
 } from "@mui/material";
-import WriterCard from "@/app/[locale]/blogs/components/WriterCard";
+import WriterCard from "@/app/[locale]/blog/components/WriterCard";
 import { FC } from "react";
 import { Author } from "@/types/blog";
 

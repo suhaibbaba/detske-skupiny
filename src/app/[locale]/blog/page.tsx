@@ -1,4 +1,4 @@
-import BlogsPageClient from "@/app/[locale]/blogs/blogsPageClient";
+import BlogsPageClient from "@/app/[locale]/blog/blogsPageClient";
 import { getBlogs } from "@/sanity/queries/page";
 
 const BlogsPage = async () => {

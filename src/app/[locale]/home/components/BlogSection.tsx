@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import BlogCard, {
   BlogsCardStylesType,
-} from "@/app/[locale]/blogs/components/BlogCard";
+} from "@/app/[locale]/blog/components/BlogCard";
 
 interface Props {
   fields: {
@@ -77,7 +77,7 @@ const BlogSection = ({ fields }: Props) => {
           <Typography {...styles.description}>{fields.description}</Typography>
         </Box>
         {/*<Box {...styles.grid}>*/}
-        {/*  {data.blogs.map((blog, idx) => (*/}
+        {/*  {data.blog.map((blog, idx) => (*/}
         {/*    <BlogCard*/}
         {/*      key={idx}*/}
         {/*      title={blog.title}*/}

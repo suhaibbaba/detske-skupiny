@@ -1,5 +1,5 @@
 import { getBlogDetails } from "@/sanity/queries";
-import BlogDetailPage from "@/app/[locale]/blogs/[slug]/blogDetailsPage";
+import BlogDetailPage from "@/app/[locale]/blog/[slug]/blogDetailsPage";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
