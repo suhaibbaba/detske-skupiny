@@ -1,15 +1,19 @@
 import BlogsPageClient from "@/app/[locale]/blog/blogsPageClient";
-import { getBlogs } from "@/sanity/queries/page";
+import { fetchBlogPage } from "@/sanity/queries";
+import { PageProps } from "@/types";
 
-const BlogsPage = async () => {
-  const data = await getBlogs();
+const BlogsPage = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  const { blogs, writers, content, categories } = await fetchBlogPage({
+    locale,
+  });
 
   return (
     <BlogsPageClient
-      blogs={data.blogs}
-      categories={data.categories ?? []}
-      content={data.content}
-      writers={data.writers ?? []}
+      blogs={blogs}
+      categories={categories}
+      content={content}
+      writers={writers}
     />
   );
 };

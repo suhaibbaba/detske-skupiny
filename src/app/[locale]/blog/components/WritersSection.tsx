@@ -12,7 +12,7 @@ import { FC } from "react";
 import { Author } from "@/types/blog";
 
 interface Props {
-  writers: Author[];
+  writers?: Author[];
 }
 
 interface WritersSectionStyles {
@@ -55,6 +55,10 @@ const styles: WritersSectionStyles = {
 };
 
 const WritersSection: FC<Props> = ({ writers }) => {
+  if (!writers) {
+    return null;
+  }
+
   return (
     <Box {...styles.container}>
       <Container>

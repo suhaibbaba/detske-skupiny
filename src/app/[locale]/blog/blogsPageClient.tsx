@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, BoxProps } from "@mui/material";
+import { Box, Container, BoxProps, Alert } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
@@ -8,12 +8,13 @@ import BlogCard from "@/app/[locale]/blog/components/BlogCard";
 import WritersSection from "@/app/[locale]/blog/components/WritersSection";
 import { FC, useEffect, useRef, useState } from "react";
 import { Author, Blog, BlogPageContent } from "@/types/blog";
+import NoPageContent from "@/components/shared/NoPageContent";
 
 interface Props {
-  content: BlogPageContent;
-  categories: string[];
-  blogs: Blog[];
-  writers: Author[];
+  content?: BlogPageContent;
+  categories?: string[];
+  blogs?: Blog[];
+  writers?: Author[];
 }
 
 interface BlogsStyles {
@@ -73,21 +74,27 @@ const BlogsPage: FC<Props> = ({ content, categories, blogs, writers }) => {
     };
   }, [tabsRef.current]);
 
+  if ((!blogs || blogs.length === 0) && !content) {
+    return <NoPageContent>No Blogs Found</NoPageContent>;
+  }
+
   return (
     <Box {...styles.container}>
-      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
-        <Container>
-          <PageHeadingTypography
-            title={content.title}
-            description={content.description}
-          />
-        </Container>
-      </PageLayout>
+      {content && (
+        <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+          <Container>
+            <PageHeadingTypography
+              title={content.title}
+              description={content.description}
+            />
+          </Container>
+        </PageLayout>
+      )}
       <Container>
         <BlogCategories ref={tabsRef} categories={categories} />
         {tabsRef.current && (
           <Box {...styles.blogsList?.(tabsOffset)}>
-            {blogs.map((blog) => (
+            {blogs?.map((blog) => (
               <BlogCard
                 key={blog._id}
                 _id={blog._id}

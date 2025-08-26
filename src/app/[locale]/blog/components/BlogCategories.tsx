@@ -11,7 +11,7 @@ import {
 import React, { forwardRef } from "react";
 
 interface Props {
-  categories: string[];
+  categories?: string[];
 }
 
 interface BlogTabsStyles {
@@ -61,6 +61,10 @@ const styles: BlogTabsStyles = {
 
 const BlogCategories = forwardRef<HTMLDivElement, Props>(
   ({ categories }, ref) => {
+    if (!categories || categories.length === 0) {
+      return null;
+    }
+
     const onSelect = (category: string) => {};
     return (
       <Box {...styles.container} ref={ref}>

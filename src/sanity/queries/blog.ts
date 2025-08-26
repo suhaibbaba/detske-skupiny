@@ -35,9 +35,9 @@ export async function fetchBlogPage(params: QueryParams) {
   }`;
 
   return client.fetch<{
-    content: BlogPageContent;
-    categories: string[];
-    blogs: Blog[];
-    writers: Author[];
+    content?: BlogPageContent;
+    categories?: string[];
+    blogs?: Blog[];
+    writers?: Author[];
   }>(query, params);
 }
