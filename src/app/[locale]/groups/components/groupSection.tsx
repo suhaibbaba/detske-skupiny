@@ -8,21 +8,23 @@ import {
   StackProps,
   Typography,
 } from "@mui/material";
-import { Region } from "@/sanity/types";
+import { GroupPage } from "@/sanity/types";
 import { FC } from "react";
 import GroupItem from "@/app/[locale]/groups/components/groupItem";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { routes } from "@/routes";
 
 interface Props {
-  group?: Region;
+  group?: GroupPage;
 }
 
 interface GroupSectionStyles {
-  container?: (backgroundCover: string) => BoxProps;
+  container?: (backgroundCover?: string) => BoxProps;
   stack?: StackProps;
 }
 
 const styles: GroupSectionStyles = {
-  container: (backgroundCover: string) => ({
+  container: (backgroundCover?: string) => ({
     sx: {
       background: `linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${backgroundCover})`,
       backgroundRepeat: "no-repeat",
@@ -43,28 +45,35 @@ const GroupSection: FC<Props> = ({ group }) => {
     return null;
   }
 
+  const { backgroundCover, name, schoolCategories, areas, totalSchools, slug } =
+    group;
   return (
-    <Box component="section" {...styles.container?.(group.backgroundCover)}>
+    <Box
+      component="section"
+      {...styles.container?.(urlImageFor(backgroundCover))}
+    >
       <Container>
         <Stack {...styles.stack}>
           <Box>
             <Typography variant="h2" textAlign="center">
-              Kindergarten Schools in {group?.name}
+              Kindergarten Schools in {name}
             </Typography>
             <Typography>
-              There are a total of <strong>{group.totalSchools}</strong> schools
+              There are a total of <strong>{totalSchools}</strong> schools
               listed in Prague
             </Typography>
           </Box>
-          <Button variant="outlined">View all schools in {group?.name}</Button>
+          <Button variant="outlined" href={routes.catalogs(slug)}>
+            View all schools in {name}
+          </Button>
         </Stack>
         <Typography variant="h3" my="38px">
           BY REGION
         </Typography>
         <Grid container spacing="24px">
-          {group.areas.map((area) => (
-            <Grid size={4} key={area.name}>
-              <GroupItem item={area} regionUrl={group?.slug} />
+          {areas.map((area) => (
+            <Grid size={4} key={area.id}>
+              <GroupItem item={area} slug={slug} />
             </Grid>
           ))}
         </Grid>
@@ -72,9 +81,9 @@ const GroupSection: FC<Props> = ({ group }) => {
           BY CATEGORY
         </Typography>
         <Grid container spacing="24px">
-          {group.schoolTypes.map((schoolType) => (
-            <Grid size={4} key={schoolType.name}>
-              <GroupItem item={schoolType} hideNextArrow={true} />
+          {schoolCategories.map((category) => (
+            <Grid size={4} key={category.id}>
+              <GroupItem item={category} hideNextArrow={true} />
             </Grid>
           ))}
         </Grid>

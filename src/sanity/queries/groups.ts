@@ -1,40 +1,40 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
-import { GroupsProps } from "@/app/[locale]/groups/groupsPageClient";
-import { QueryParams } from "@/sanity/types";
+import { GroupPage, PageHero, QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchGroupPage(params: QueryParams) {
   const query = groq`{
-    "regions": *[_type == "region" && ${languageQuery}]{
+    "groups": *[_type == "regions" && ${languageQuery}]{
+      "id": _id,
+      "totalSchools": count(*[_type == "schools" && ${languageQuery} && area->region._ref == ^._id ]),
       name,
       "slug": slug.current,
       "backgroundCover": backgroundCover.asset->url,
-      "areas": *[_type == "area" && ${languageQuery} && references(^._id)]{
-        _id,
+      "areas": *[_type == "areas" && ${languageQuery} && references(^._id)]{
+        "id": _id,
         name,
         "slug": slug.current,
-        "schoolCount": count(*[_type == "school" && ${languageQuery} && references(^._id)])
+        "schoolCount": count(*[_type == "schools" && ${languageQuery} && references(^._id)])
       },
-      "totalSchools": count(*[_type == "school" && ${languageQuery} && area->region._ref == ^._id ]),
-      "schoolTypes": *[_type == "schoolType" && ${languageQuery}]{
+      "schoolCategories": *[_type == "schoolCategories" && ${languageQuery}]{
+        "id": _id,
         name,
         "slug": slug.current,
         "emoji": emoji.asset->url,
         "schoolCount": count(*[
-          _type == "school" &&
+          _type == "schools" &&
           area->region._ref == ^.^._id &&
           references(^._id)
         ])
       }
     },
-    "content": *[_type == "group" && ${languageQuery}][0]{
-      title,
-      description,
-      ctas[]{text, url,variant,openInNewTab},
-    }
+    "content": *[_type == "group" && ${languageQuery}][0].pageHero,
   }
 `;
 
-  return client.fetch<GroupsProps>(query, params);
+  return client.fetch<{
+    groups?: GroupPage[];
+    content?: PageHero;
+  }>(query, params);
 }

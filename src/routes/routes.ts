@@ -8,4 +8,6 @@ export const routes = {
   contactUs: "/contact-us",
   groups: "/groups",
   preschool: "/preschool",
+  catalogs: (slug?: string) =>
+    slug ? `/catalog/${encodeURIComponent(slug)}` : "/",
 };

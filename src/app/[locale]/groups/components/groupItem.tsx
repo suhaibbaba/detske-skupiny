@@ -6,15 +6,17 @@ import {
   Stack,
   StackProps,
   Typography,
+  TypographyProps,
 } from "@mui/material";
 import ArrowRightIcon from "@/components/icons/ArrowRight";
-import { Area, SchoolType } from "@/sanity/types";
+import { GroupPage } from "@/sanity/types";
 import { FC } from "react";
 import Link from "@/components/ui/link";
+import { routes } from "@/routes";
 
 interface Props {
-  item?: Area | SchoolType;
-  regionUrl?: string;
+  item?: GroupPage["areas"][number] | GroupPage["schoolCategories"][number];
+  slug?: string; // region slug
   hideNextArrow?: boolean;
 }
 
@@ -24,6 +26,7 @@ interface GroupItemStyles {
   stack?: StackProps;
   schoolCountBox?: BoxProps;
   arrowBox?: BoxProps;
+  title?: TypographyProps;
 }
 
 const styles: GroupItemStyles = {
@@ -82,25 +85,29 @@ const styles: GroupItemStyles = {
       flexShrink: 0,
     },
   },
+  title: {
+    variant: "h3",
+    sx: {
+      mb: 0,
+    },
+  },
 };
 
-const GroupItem: FC<Props> = ({ item, regionUrl, hideNextArrow }) => {
+const GroupItem: FC<Props> = ({ slug, item, hideNextArrow }) => {
   if (!item) {
     return null;
   }
 
   return (
-    <Link href={`${regionUrl}?area=${encodeURIComponent(item.slug)}`}>
+    <Link
+      href={`${routes.catalogs(slug)}?area=${encodeURIComponent(item.slug)}`}
+    >
       <ButtonBase {...styles.container}>
         <Stack {...styles.stack}>
-          {(item as SchoolType).emoji && (
-            <Box
-              component="img"
-              src={(item as SchoolType).emoji}
-              {...styles.emoji}
-            />
+          {"emoji" in item && item.emoji && (
+            <Box component="img" src={item.emoji} {...styles.emoji} />
           )}
-          <Typography variant="h3">{item.name}</Typography>
+          <Typography {...styles.title}>{item.name}</Typography>
           <Box
             {...styles.schoolCountBox}
             ml={hideNextArrow ? "auto" : "initial"}
@@ -110,7 +117,7 @@ const GroupItem: FC<Props> = ({ item, regionUrl, hideNextArrow }) => {
         </Stack>
         {!hideNextArrow && (
           <Box {...styles.arrowBox}>
-            <ArrowRightIcon />
+            <ArrowRightIcon sx={{ fontSize: "12px" }} />
           </Box>
         )}
       </ButtonBase>
