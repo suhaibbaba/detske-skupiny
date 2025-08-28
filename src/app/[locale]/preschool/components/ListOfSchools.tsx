@@ -7,9 +7,11 @@ import PreschoolCard from "@/app/[locale]/preschool/components/PreschoolCard";
 import { MiniSchool, SanityCtaField } from "@/sanity/types";
 import { FC, useEffect, useState } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import { getPreschool } from "@/sanity/queries";
+import { fetchMiniSchools } from "@/sanity/queries";
 
 interface Props {
+  locale: string;
+  numberOfSchools: number;
   fields: {
     title: string;
     subtitle: string;
@@ -40,13 +42,16 @@ const styles: ListOfSchoolsStyles = {
   },
 };
 
-const ListOfSchools: FC<Props> = ({ fields }) => {
-  const [preschools, setPreschools] = useState<MiniSchool[]>([]);
+const ListOfSchools: FC<Props> = ({ fields, locale, numberOfSchools }) => {
+  const [miniSchools, setMiniSchools] = useState<MiniSchool[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { preschools } = await getPreschool();
-      setPreschools(preschools);
+      const { schools } = await fetchMiniSchools({
+        locale,
+        numberOfSchools,
+      });
+      setMiniSchools(schools);
     };
     fetchData();
   }, []);
@@ -66,7 +71,7 @@ const ListOfSchools: FC<Props> = ({ fields }) => {
           align: "center",
         }}
       >
-        {preschools?.map((item) => (
+        {miniSchools?.map((item) => (
           <PreschoolCard
             key={item.id}
             name={item.name}

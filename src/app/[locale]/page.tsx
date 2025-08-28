@@ -1,18 +1,15 @@
 import { Box } from "@mui/material";
-import { getPageByType } from "@/sanity/queries";
+import { fetchPageByType } from "@/sanity/queries";
 import Zone from "@/sanity/components/Zone";
-
-type PageProps = {
-  params: Promise<{ locale: string; school: string }>;
-};
+import { PageProps } from "@/types";
 
 const Page = async ({ params }: PageProps) => {
-  const { locale } = await params;
-  const widgets = await getPageByType("home", { locale });
+  const pageParams = await params;
+  const data = await fetchPageByType("home", { locale: pageParams.locale });
 
   return (
     <Box data-test-selector="home-page">
-      <Zone sections={widgets?.sections} types="all" />
+      <Zone sections={data?.sections} types="all" {...pageParams} />
     </Box>
   );
 };

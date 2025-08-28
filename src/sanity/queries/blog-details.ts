@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
-import { Blog, BlogPageContent } from "@/types/blog";
-import { QueryParams } from "@/sanity/types";
+import { Blog, BlogCategory } from "@/types/blog";
+import { PageHero, QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchBlogDetailPage(
@@ -32,8 +32,8 @@ export async function fetchBlogDetailPage(
   }`;
 
   return client.fetch<{
-    content: BlogPageContent;
-    categories: string[];
+    content: PageHero;
+    categories?: BlogCategory[];
     blog: Blog;
   }>(query, params);
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -9,8 +7,11 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { SanityCtaField } from "@/sanity/types";
+import { fetchMiniSchools } from "@/sanity/queries";
+import SchoolCard from "@/app/[locale]/home/components/SchoolCard";
 
 interface Props {
+  locale: string;
   fields: {
     title: string;
     description: string;
@@ -29,12 +30,12 @@ interface LatestKinderGroupsSectionStyles {
 const styles: LatestKinderGroupsSectionStyles = {
   section: {
     component: "section",
-    sx: (theme) => ({
+    sx: {
       pt: "100px",
       pb: "74px",
-      bgcolor: theme.palette.primary.light,
+      bgcolor: "primary.light",
       textAlign: "center",
-    }),
+    },
   },
   container: {
     component: "section",
@@ -70,17 +71,21 @@ const styles: LatestKinderGroupsSectionStyles = {
   },
 };
 
-const LatestSchoolCollection = ({ fields }: Props) => {
+const LatestSchoolCollection = async ({ fields, locale }: Props) => {
+  const { schools } = await fetchMiniSchools({
+    locale,
+    numberOfSchools: 4,
+  });
+
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
         <Typography {...styles.title}>{fields.title}</Typography>
         <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.grid}>
-          {/*<KinderGroupCard />*/}
-          {/*<KinderGroupCard />*/}
-          {/*<KinderGroupCard />*/}
-          {/*<KinderGroupCard />*/}
+          {schools.map((school) => (
+            <SchoolCard school={school} key={school.id} />
+          ))}
         </Box>
       </Container>
     </Box>

@@ -127,7 +127,7 @@ const Page = () => {
   //           {Array(5)
   //             .fill(null)
   //             .map((_, i) => (
-  //               <KinderGroupCard
+  //               <SchoolCard
   //                 key={i}
   //                 logo="/groups/vs_code.svg"
   //                 image="/groups/image1.jpg"

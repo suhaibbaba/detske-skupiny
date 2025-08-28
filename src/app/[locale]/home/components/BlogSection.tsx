@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -11,8 +9,10 @@ import {
 import BlogCard, {
   BlogsCardStylesType,
 } from "@/app/[locale]/blog/components/BlogCard";
+import { fetchMiniBlogs } from "@/sanity/queries";
 
 interface Props {
+  locale: string;
   fields: {
     title: string;
     description: string;
@@ -24,18 +24,18 @@ interface BlogSectionStyles {
   container?: ContainerProps;
   heading?: TypographyProps;
   description?: TypographyProps;
-  grid?: BoxProps;
+  blogsWrapper?: BoxProps;
   blogCard?: BlogsCardStylesType;
 }
 
 const styles: BlogSectionStyles = {
   section: {
-    sx: (theme) => ({
-      bgcolor: theme.palette.custom.ui5,
+    sx: {
+      bgcolor: "custom.ui5",
       pt: { xs: "100px", md: "120px" },
       pb: "100px",
       textAlign: "center",
-    }),
+    },
   },
   container: {
     sx: {
@@ -51,24 +51,25 @@ const styles: BlogSectionStyles = {
   description: {
     mb: "68px",
   },
-  grid: {
+  blogsWrapper: {
     sx: {
-      display: "grid",
-      gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
-      gap: "50px",
-      width: "100%",
-    },
-  },
-  blogCard: {
-    card: {
-      sx: {
-        maxWidth: "initial",
+      display: "flex",
+      flexDirection: {
+        xs: "column",
+        sm: "row",
       },
+      justifyContent: "center",
+      gap: "50px",
     },
   },
 };
 
-const BlogSection = ({ fields }: Props) => {
+const BlogSection = async ({ locale, fields }: Props) => {
+  const { blogs } = await fetchMiniBlogs({ locale, numberOfBlogs: 2 });
+
+  if (!blogs) {
+    return null;
+  }
   return (
     <Box {...styles.section} data-test-selector="blog-section">
       <Container {...styles.container}>
@@ -76,22 +77,15 @@ const BlogSection = ({ fields }: Props) => {
           <Typography {...styles.heading}>{fields.title}</Typography>
           <Typography {...styles.description}>{fields.description}</Typography>
         </Box>
-        {/*<Box {...styles.grid}>*/}
-        {/*  {data.blog.map((blog, idx) => (*/}
-        {/*    <BlogCard*/}
-        {/*      key={idx}*/}
-        {/*      title={blog.title}*/}
-        {/*      image={blog.image}*/}
-        {/*      tag={blog.tag}*/}
-        {/*      description={blog.description}*/}
-        {/*      author={blog.author}*/}
-        {/*      date={blog.date}*/}
-        {/*      readTime={blog.readTime}*/}
-        {/*      authorImage={blog.authorImage}*/}
-        {/*      extendedStyles={styles.blogCard}*/}
-        {/*    />*/}
-        {/*  ))}*/}
-        {/*</Box>*/}
+        <Box {...styles.blogsWrapper}>
+          {blogs.map((blog) => (
+            <BlogCard
+              key={blog.id}
+              blog={blog}
+              extendedStyles={styles.blogCard}
+            />
+          ))}
+        </Box>
       </Container>
     </Box>
   );

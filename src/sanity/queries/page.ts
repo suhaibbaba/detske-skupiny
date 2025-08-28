@@ -1,6 +1,7 @@
 import { groq } from "next-sanity";
 import { client } from "../client";
 import { languageQuery } from "@/sanity/queries/index";
+import { PageSections } from "@/sanity/types";
 
 export async function fetchPageByType(
   type: string,
@@ -14,7 +15,7 @@ export async function fetchPageByType(
     }
   `;
 
-  return client.fetch<{ title?: string; sections?: any[] }>(query, {
+  return client.fetch<PageSections>(query, {
     type,
     ...params,
   });

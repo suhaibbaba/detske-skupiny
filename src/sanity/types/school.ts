@@ -12,6 +12,11 @@ export interface MiniSchool {
   id: string;
   name: string;
   primaryImage: SanityImageField;
+  shortSummary: string;
+  website?: {
+    url?: string;
+  };
+  tags?: SchoolTag[];
   area?: { _id: string; name: string };
 }
 
@@ -33,7 +38,6 @@ export type SchoolCategory = {
   id: string;
   name: string;
   slug: string;
-  schoolCount: number;
   emoji: string;
 };
 
@@ -41,8 +45,8 @@ export type SchoolTag = {
   id: string;
   name: string;
   slug: string;
-  schoolCount: number;
   emoji: string;
+  borderColor: string;
 };
 
 export interface School {

@@ -1,4 +1,4 @@
-type BaseParams = { locale: string };
+export type BaseParams = { locale: string };
 
 export type Params<E extends object = {}> = Promise<BaseParams & E>;
 

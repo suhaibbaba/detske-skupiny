@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
-import { Author, Blog, BlogCategory } from "@/types/blog";
+import { Author, Blog, BlogCategory, MiniBlog } from "@/types/blog";
 import { PageHero, QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
@@ -11,7 +11,7 @@ export async function fetchBlogPage(params: QueryParams) {
       name,
       "slug": slug.current
     },
-    "blogs": *[_type == "blogDetails" && ${languageQuery}] | order(publishedAt desc){
+    "blogs": *[_type == "blogs" && ${languageQuery}] | order(publishedAt desc){
       _id,
       title,
       "slug": slug.current,
@@ -39,5 +39,31 @@ export async function fetchBlogPage(params: QueryParams) {
     categories?: BlogCategory[];
     blogs?: Blog[];
     writers?: Author[];
+  }>(query, params);
+}
+
+export async function fetchMiniBlogs(
+  params: QueryParams & { numberOfBlogs: number },
+) {
+  const query = groq`{
+    "blogs": *[_type == "blogs" && ${languageQuery}][0...$numberOfBlogs] | order(publishedAt desc){
+      "id": _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      "image": image.asset->url,
+      readTime,
+      publishedAt,
+      author->{
+        _id,
+        name,
+        "image": avatar.asset->url,
+        "slug": slug.current,
+      }
+    },
+  }`;
+
+  return client.fetch<{
+    blogs?: MiniBlog[];
   }>(query, params);
 }

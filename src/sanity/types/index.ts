@@ -4,3 +4,4 @@ export * from "@/sanity/types/geo";
 export * from "@/sanity/types/component";
 export * from "@/sanity/types/query";
 export * from "@/sanity/types/contact-us";
+export * from "@/sanity/types/page";

@@ -16,14 +16,15 @@ import {
   CardContentProps,
 } from "@mui/material";
 import React, { FC, useState } from "react";
-import NextLink from "next/link";
-import Link from "@mui/material/Link";
+import Link from "@/components/ui/link";
 import { ellipses } from "@/utilites/strings";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { Blog } from "@/types/blog";
+import { MiniBlog } from "@/types/blog";
 import { formatDate } from "@/utilites/date";
+import { routes } from "@/routes";
 
-interface Props extends Blog {
+interface Props {
+  blog: MiniBlog;
   extendedStyles?: BlogsCardStylesType;
 }
 
@@ -146,21 +147,14 @@ const blogsCardStylesType: BlogsCardStylesType = {
   },
 };
 
-const BlogCard: FC<Props> = ({
-  title,
-  slug,
-  excerpt,
-  image,
-  publishedAt,
-  readTime,
-  author,
-  extendedStyles,
-}) => {
+const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
   const [styles] = useState(() =>
     mergeMuiProps(blogsCardStylesType, extendedStyles),
   );
 
-  const blogUrl = `/blogs/${slug}`;
+  const { title, slug, excerpt, image, publishedAt, readTime, author } = blog;
+
+  const url = routes.blogs(slug);
   return (
     <Card {...styles.card}>
       <CardMedia
@@ -174,7 +168,7 @@ const BlogCard: FC<Props> = ({
       />
       <CardContent {...styles.cardContent}>
         <Typography {...styles.tag}>Article</Typography>
-        <Link component={NextLink} href={blogUrl} {...styles.title}>
+        <Link href={url} {...styles.title}>
           {title}
         </Link>
         <Typography {...styles.description}>{excerpt}</Typography>
@@ -188,7 +182,7 @@ const BlogCard: FC<Props> = ({
               </Typography>
             </Box>
           </Box>
-          <Button {...styles.readNowButton} href={blogUrl}>
+          <Button {...styles.readNowButton} href={url}>
             Read Now
           </Button>
         </Box>

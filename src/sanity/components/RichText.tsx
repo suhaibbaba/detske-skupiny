@@ -222,7 +222,7 @@ function RichText({
           </Link>
         );
       },
-      // Colored text annotation (requires `@sanity/color-input` and your `coloredText` schema)
+      // Colored text annotation (requires `@sanity/color-input` and your `color` schema)
       color: ({ children, value }) => (
         <Typography
           component="span"

@@ -1,7 +1,7 @@
 import { SanityRichTextField } from "@/sanity/types";
 
 export type Blog = {
-  _id: string;
+  id: string;
   title: string;
   slug: string;
   excerpt?: string;
@@ -12,6 +12,8 @@ export type Blog = {
   categories?: BlogCategory[];
   author?: Author;
 };
+
+export type MiniBlog = Omit<Blog, "categories" | "content">;
 
 export type BlogCategory = {
   name: string;

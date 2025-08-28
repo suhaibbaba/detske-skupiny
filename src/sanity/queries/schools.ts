@@ -4,23 +4,31 @@ import { MiniSchool, QueryParams, School } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchMiniSchools(
-  params: QueryParams & { limit: number },
+  params: QueryParams & { numberOfSchools: number },
 ) {
   const query = groq`{
-    "preschools": *[_type == "school" && ${languageQuery}][0...$limit] {
+    "schools": *[_type == "schools" && ${languageQuery}][0...$numberOfSchools] {
       "id": _id,
       name,
       "slug": slug.current,
+      shortSummary,
+      website,
       "primaryImage": select(
         defined(primaryImages[0]) => primaryImages[0].asset->url,
         null
       ),
-      area->{_id, name}
+      area->{_id, name},
+      tags[]->{
+        "id": _id,
+        name,
+        "slug": slug.current,
+        "borderColor": borderColor.hex,
+      }
     }
   }`;
 
   return client.fetch<{
-    preschools: MiniSchool[];
+    schools: MiniSchool[];
   }>(query, params);
 }
 

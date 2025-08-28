@@ -1,4 +1,4 @@
-import { getBlogDetails } from "@/sanity/queries";
+// import { getBlogDetails } from "@/sanity/queries";
 import BlogDetailPage from "@/app/[locale]/blog/[slug]/blogDetailsPage";
 
 type PageProps = {
@@ -7,11 +7,12 @@ type PageProps = {
 
 const Page = async ({ params }: PageProps) => {
   const { slug } = await params;
-  const { blog, categories, content } = await getBlogDetails({ slug });
+  // const { blog, categories, content } = await getBlogDetails({ slug });
 
-  return (
-    <BlogDetailPage blog={blog} content={content} categories={categories} />
-  );
+  return null;
+  // return (
+  //   <BlogDetailPage blog={blog} content={content} categories={categories} />
+  // );
 };
 
 export default Page;
