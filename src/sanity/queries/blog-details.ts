@@ -15,7 +15,7 @@ export async function fetchBlogDetailPage(
     },
     "categories": array::unique(*[_type == "blog" && ${languageQuery}].categories[]),
     "blog":*[_type == "blogDetails" && ${languageQuery} && slug.current == $slug][0]{
-      _id,
+      "id": _id,
       title,
       "slug": slug.current,
       "image": image.asset->url,
@@ -23,7 +23,7 @@ export async function fetchBlogDetailPage(
       publishedAt,
       content,
       author->{
-        _id,
+        "id": _id,
         name,
         "image": avatar.asset->url,
         bio

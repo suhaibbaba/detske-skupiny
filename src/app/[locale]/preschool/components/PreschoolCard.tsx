@@ -14,12 +14,12 @@ import {
   ChipProps,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { Area } from "@/sanity/types";
 
 interface Props {
   primaryImage: string;
   name: string;
-  area?: { _id: string; name: string };
+  area?: Area;
 }
 
 interface PreschoolCardStyles {

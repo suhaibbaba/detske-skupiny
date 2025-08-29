@@ -8,11 +8,12 @@ export async function fetchBlogPage(params: QueryParams) {
   const query = groq`{
     "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
     "categories": *[_type == "blog" && ${languageQuery}].categories[]->{
+      "id": _id,
       name,
       "slug": slug.current
     },
     "blogs": *[_type == "blogs" && ${languageQuery}] | order(publishedAt desc){
-      _id,
+      "id": _id,
       title,
       "slug": slug.current,
       excerpt,
@@ -21,13 +22,14 @@ export async function fetchBlogPage(params: QueryParams) {
       publishedAt,
       category,
       author->{
-        _id,
+        "id": _id,
         name,
         "image": avatar.asset->url,
         bio
       }
     },
-    "writers": *[_type == "author" && ${languageQuery}]{
+    "writers": *[_type == "authors" && ${languageQuery}]{
+      "id": _id,
       name,
       role,
       "image": avatar.asset->url,
@@ -55,7 +57,7 @@ export async function fetchMiniBlogs(
       readTime,
       publishedAt,
       author->{
-        _id,
+        "id": _id,
         name,
         "image": avatar.asset->url,
         "slug": slug.current,

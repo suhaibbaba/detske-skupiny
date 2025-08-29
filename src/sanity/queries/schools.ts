@@ -17,7 +17,7 @@ export async function fetchMiniSchools(
         defined(primaryImages[0]) => primaryImages[0].asset->url,
         null
       ),
-      area->{_id, name},
+      area->{ "id": _id, name},
       tags[]->{
         "id": _id,
         name,
@@ -48,13 +48,13 @@ export async function fetchSchoolBySlug(
         "url": select(defined(asset) => asset->url, null)
       },
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
-      area->{ _id, name },
+      area->{ "id": _id, name },
       address,
       location,
       contacts[],
       links,
       types[]->{
-        _id,
+        "id": _id,
         name,
         "slug": slug.current
       },

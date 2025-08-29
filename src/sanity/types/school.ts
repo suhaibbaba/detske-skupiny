@@ -17,7 +17,7 @@ export interface MiniSchool {
     url?: string;
   };
   tags?: SchoolTag[];
-  area?: { _id: string; name: string };
+  area?: Area;
 }
 
 export interface TransportOption {

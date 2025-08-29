@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -23,11 +21,10 @@ interface WritersSectionStyles {
 
 const styles: WritersSectionStyles = {
   container: {
-    sx: (theme) => ({
-      backgroundColor: theme.palette.custom.ui15,
+    sx: {
+      bgcolor: "custom.ui15",
       py: "100px",
-      mt: "120px",
-    }),
+    },
   },
   title: {
     variant: "h1",
@@ -65,13 +62,7 @@ const WritersSection: FC<Props> = ({ writers }) => {
         <Typography {...styles.title}>Our Writers</Typography>
         <Box {...styles.writersContainer}>
           {writers.map((writer) => (
-            <WriterCard
-              key={writer._id}
-              _id={writer._id}
-              name={writer.name}
-              role={writer.bio}
-              image={writer.image}
-            />
+            <WriterCard key={writer.id} {...writer} />
           ))}
         </Box>
       </Container>

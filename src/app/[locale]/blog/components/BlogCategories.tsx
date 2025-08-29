@@ -8,7 +8,7 @@ import {
   ButtonProps,
   StackProps,
 } from "@mui/material";
-import React, { forwardRef } from "react";
+import React, { FC } from "react";
 import { BlogCategory } from "@/types";
 
 interface Props {
@@ -60,31 +60,27 @@ const styles: BlogTabsStyles = {
   }),
 };
 
-const BlogCategories = forwardRef<HTMLDivElement, Props>(
-  ({ categories }, ref) => {
-    if (!categories || categories.length === 0) {
-      return null;
-    }
+const BlogCategories: FC<Props> = ({ categories }) => {
+  if (!categories || categories.length === 0) {
+    return null;
+  }
 
-    const onSelect = (category: string) => {};
-    return (
-      <Box {...styles.container} ref={ref}>
-        <Stack {...styles.stack}>
-          {categories.map((category) => (
-            <Button
-              key={category.name}
-              onClick={() => onSelect(category.slug)}
-              {...styles.button?.(category === category)}
-            >
-              {category.name}
-            </Button>
-          ))}
-        </Stack>
-      </Box>
-    );
-  },
-);
-
-BlogCategories.displayName = "BlogCategories";
+  const onSelect = (category: string) => {};
+  return (
+    <Box {...styles.container}>
+      <Stack {...styles.stack}>
+        {categories.map((category) => (
+          <Button
+            key={category.name}
+            onClick={() => onSelect(category.slug)}
+            {...styles.button?.(category === category)}
+          >
+            {category.name}
+          </Button>
+        ))}
+      </Stack>
+    </Box>
+  );
+};
 
 export default BlogCategories;

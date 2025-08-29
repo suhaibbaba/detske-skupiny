@@ -44,7 +44,7 @@ export async function fetchFilterQuery(params: QueryParams & { slug: string }) {
       } | order(name asc),
       
       "tags": *[_type == "tag"]{
-        _id,
+        "id": _id,
         name,
         "slug": slug.current,
         "count": count(*[
@@ -56,7 +56,7 @@ export async function fetchFilterQuery(params: QueryParams & { slug: string }) {
       }[count > 0] | order(name asc),
       
       "types": *[_type == "schoolType" && ${languageQuery}]{
-        _id,
+        "id": _id,
         name,
         "slug": slug.current,
         "emoji": emoji.asset->url,

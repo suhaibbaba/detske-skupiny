@@ -21,7 +21,7 @@ export type BlogCategory = {
 };
 
 export type Author = {
-  _id: string;
+  id: string;
   name?: string;
   image?: string;
   bio?: string;

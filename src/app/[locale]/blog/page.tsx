@@ -1,6 +1,46 @@
-import BlogsPageClient from "@/app/[locale]/blog/blogsPageClient";
 import { fetchBlogPage } from "@/sanity/queries";
 import { PageProps } from "@/types";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
+import { Box, BoxProps, Container } from "@mui/material";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
+import BlogCard from "@/app/[locale]/blog/components/BlogCard";
+import WritersSection from "@/app/[locale]/blog/components/WritersSection";
+
+interface BlogsStyles {
+  pageLayout?: PageLayoutStyles;
+  container?: BoxProps;
+  blogsList?: BoxProps;
+}
+
+const styles: BlogsStyles = {
+  pageLayout: {
+    section: {
+      sx: {
+        background: "var(--mui-palette-gradients-ui2)",
+        pb: "150px",
+      },
+    },
+  },
+  blogsList: {
+    sx: {
+      display: "grid",
+      gap: {
+        xs: "50px",
+        sm: "80px 50px",
+      },
+      pb: {
+        xs: "100px",
+        sm: "120px",
+      },
+      gridTemplateColumns: {
+        xs: "1fr",
+        sm: "1fr 1fr",
+        md: "1fr 1fr 1fr",
+      },
+    },
+  },
+};
 
 const BlogsPage = async ({ params }: PageProps) => {
   const { locale } = await params;
@@ -9,12 +49,27 @@ const BlogsPage = async ({ params }: PageProps) => {
   });
 
   return (
-    <BlogsPageClient
-      blogs={blogs}
-      categories={categories}
-      content={content}
-      writers={writers}
-    />
+    <Box {...styles.container}>
+      {content && (
+        <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+          <Container>
+            <PageHeadingTypography
+              title={content.title}
+              description={content.description}
+            />
+          </Container>
+        </PageLayout>
+      )}
+      <Container>
+        <BlogCategories categories={categories} />
+        <Box {...styles.blogsList}>
+          {blogs?.map((blog) => (
+            <BlogCard key={blog.id} blog={blog} />
+          ))}
+        </Box>
+      </Container>
+      <WritersSection writers={writers} />
+    </Box>
   );
 };
 

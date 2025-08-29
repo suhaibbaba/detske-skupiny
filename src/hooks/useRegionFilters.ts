@@ -11,7 +11,7 @@ import {
 import { getFilterQuery } from "@/sanity/queries/page";
 
 export interface RegionFilterData {
-  _id: string;
+  id: string;
   name?: string; // or `title` if that's your schema
   slug: string;
   totalSchools?: number;
