@@ -1,17 +1,12 @@
-"use client";
-
 import { Box, BoxProps, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import EmblaCarousel from "@/components/shared/EmblaCarousel";
-import PreschoolCard from "@/app/[locale]/preschool/components/PreschoolCard";
-import { MiniSchool, SanityCtaField } from "@/sanity/types";
-import { FC, useEffect, useState } from "react";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { SanityCtaField } from "@/sanity/types";
+import { FC } from "react";
 import { fetchMiniSchools } from "@/sanity/queries";
+import SchoolsCarousel from "@/app/[locale]/preschool/components/SchoolsCarousel";
 
 interface Props {
   locale: string;
-  numberOfSchools: number;
   fields: {
     title: string;
     subtitle: string;
@@ -42,19 +37,11 @@ const styles: ListOfSchoolsStyles = {
   },
 };
 
-const ListOfSchools: FC<Props> = ({ fields, locale, numberOfSchools }) => {
-  const [miniSchools, setMiniSchools] = useState<MiniSchool[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { schools } = await fetchMiniSchools({
-        locale,
-        numberOfSchools,
-      });
-      setMiniSchools(schools);
-    };
-    fetchData();
-  }, []);
+const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
+  const { schools } = await fetchMiniSchools({
+    locale,
+    numberOfSchools: 20,
+  });
 
   return (
     <Box {...styles.container} data-test-selector="ListOfSchools">
@@ -65,21 +52,7 @@ const ListOfSchools: FC<Props> = ({ fields, locale, numberOfSchools }) => {
           ctaList={[fields.cta]}
         />
       </Container>
-      <EmblaCarousel
-        gap={24}
-        options={{
-          align: "center",
-        }}
-      >
-        {miniSchools?.map((item) => (
-          <PreschoolCard
-            key={item.id}
-            name={item.name}
-            primaryImage={urlImageFor(item.primaryImage)}
-            area={item.area}
-          />
-        ))}
-      </EmblaCarousel>
+      <SchoolsCarousel schools={schools} />
     </Box>
   );
 };

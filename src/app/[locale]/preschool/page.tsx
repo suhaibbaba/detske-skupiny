@@ -1,12 +1,18 @@
-import { getPreschoolPage } from "@/sanity/queries";
-import { Box, Container } from "@mui/material";
+import { fetchPageByType } from "@/sanity/queries";
+import { Box } from "@mui/material";
 import Zone from "@/sanity/components/Zone";
+import { PageProps } from "@/types";
 
-const Page = async () => {
-  const widgets = await getPreschoolPage();
+const Page = async ({ params }: PageProps) => {
+  const pageParams = await params;
+  const data = await fetchPageByType("preschool", {
+    locale: pageParams.locale,
+  });
+
+  console.log({ data });
   return (
     <Box data-test-selector="preschool-page">
-      <Zone sections={widgets?.sections} types="all" />
+      <Zone sections={data?.sections} types="all" {...pageParams} />
     </Box>
   );
 };
