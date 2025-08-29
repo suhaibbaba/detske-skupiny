@@ -4,17 +4,15 @@ import { Blog, BlogCategory } from "@/types/blog";
 import { PageHero, QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
-export async function fetchBlogDetailPage(
-  params: QueryParams & { slug: string },
-) {
+export async function fetchBlogBySlug(params: QueryParams & { slug: string }) {
   const query = groq`{
-    "content": *[_type == "blog" && ${languageQuery}][0]{
-      title,
-      description,
-      ctas[]{ text, url, variant, openInNewTab }
+    "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
+    "categories": *[_type == "blog" && ${languageQuery}].categories[]->{
+      "id": _id,
+      name,
+      "slug": slug.current
     },
-    "categories": array::unique(*[_type == "blog" && ${languageQuery}].categories[]),
-    "blog":*[_type == "blogDetails" && ${languageQuery} && slug.current == $slug][0]{
+    "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
       "id": _id,
       title,
       "slug": slug.current,
@@ -22,6 +20,10 @@ export async function fetchBlogDetailPage(
       readTime,
       publishedAt,
       content,
+      category->{
+        "id": _id,
+        name,
+      },
       author->{
         "id": _id,
         name,

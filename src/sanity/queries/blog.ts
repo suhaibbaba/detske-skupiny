@@ -20,7 +20,6 @@ export async function fetchBlogPage(params: QueryParams) {
       "image": image.asset->url,
       readTime,
       publishedAt,
-      category,
       author->{
         "id": _id,
         name,
