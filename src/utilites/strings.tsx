@@ -45,3 +45,15 @@ export const ellipses = (lines: number) => {
     WebkitLineClamp: lines,
   };
 };
+
+export const toOptionalArray = (
+  v: string | string[] | undefined,
+): string[] | undefined => {
+  if (!v) return [];
+  if (Array.isArray(v)) return v.filter(Boolean);
+  // handle comma-separated string
+  return v
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+};

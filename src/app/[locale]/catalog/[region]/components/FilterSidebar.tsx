@@ -19,7 +19,8 @@ import {
   FormControlLabelProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRegionFilters, slugify } from "@/hooks/useRegionFilters";
+import { useRegionFilters } from "@/hooks/useRegionFilters";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 
 interface FilterSidebarStyles {
   root?: BoxProps;
@@ -50,11 +51,18 @@ const styles: FilterSidebarStyles = {
       borderBottom: `1px solid ${theme.palette.custom?.ui18 ?? "#eee"}`,
     }),
   },
-  title: { fontSize: "20px", color: "custom.ui13", fontWeight: 600 },
+  title: {
+    fontSize: "20px",
+    color: "custom.ui13",
+    fontWeight: 600,
+  },
   clearBtn: {
     variant: "primary",
     startIcon: <CloseIcon sx={{ width: 24, height: 24 }} />,
-    sx: { p: "12px", fontSize: 12 },
+    sx: {
+      p: "8px 12px",
+      fontSize: 12,
+    },
   },
   sectionTitle: {
     fontSize: "18px",
@@ -155,12 +163,16 @@ const styles: FilterSidebarStyles = {
   divider: { sx: { mt: "20px", mb: "16px", backgroundColor: "#AAB0B9" } },
 };
 
-const FilterSidebar = () => {
+const FilterSidebar = ({
+  locale,
+  regionSlug,
+}: {
+  locale: string;
+  regionSlug: string;
+}) => {
   const {
-    region,
-    regionSlug,
+    filter,
     isLoading,
-    isPending,
     selectedAreas,
     selectedTypes,
     selectedTags,
@@ -168,98 +180,89 @@ const FilterSidebar = () => {
     toggleType,
     toggleTag,
     clearAll,
-    replaceQS,
-  } = useRegionFilters();
-
-  const regionTitle = region?.name ?? regionSlug ?? "";
-
-  // Create a virtual "All" row for areas with total count from region
-  const mainAreas = region?.mainAreas ?? [];
-  const otherAreas = region?.otherAreas ?? [];
-  const tags = region?.tags ?? [];
-  const types = region?.types ?? [];
+    hasActiveFilters,
+    clearKey,
+  } = useRegionFilters({ locale, regionSlug });
 
   return (
-    <Box {...styles.root} aria-busy={isPending || isLoading || undefined}>
+    <Box {...styles.root} aria-busy={isLoading || undefined}>
       <Box {...styles.header}>
         <Typography {...styles.title}>
-          Filters {regionTitle ? `— ${regionTitle}` : ""}
+          Filters {filter?.region.name ? `— ${filter?.region.name}` : ""}
         </Typography>
-        <Button {...styles.clearBtn} onClick={clearAll}>
-          Clear All
-        </Button>
+        {hasActiveFilters && (
+          <Button {...styles.clearBtn} onClick={clearAll}>
+            Clear All
+          </Button>
+        )}
       </Box>
 
       <Typography {...styles.sectionTitle}>
-        Main Districts {regionTitle ? `of ${regionTitle}` : ""}
+        Main Districts {filter?.region.name ? `of ${filter?.region.name}` : ""}
       </Typography>
-
       <FormGroup {...styles.formGroup}>
-        {/* ALL (virtual) */}
-        {typeof region?.totalSchools === "number" && (
-          <Box key="all" {...styles.filterItem}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  checked={selectedAreas.has("all")}
-                  onChange={() => toggleArea("all")}
-                />
-              }
-              label="All"
-              disableTypography
-              {...styles.formControlLabel}
-            />
-            <Typography {...styles.counter}>{region.totalSchools}</Typography>
-          </Box>
-        )}
-
-        {/* MAIN AREAS */}
-        {mainAreas.map((a) => {
-          const checked = selectedAreas.has(a.slug);
+        <Box key="all" {...styles.filterItem}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={selectedAreas.has("all")}
+                onChange={() => toggleArea("all")}
+              />
+            }
+            label="All"
+            disableTypography
+            {...styles.formControlLabel}
+          />
+          <Typography {...styles.counter}>
+            {filter?.totalSchools || 0}
+          </Typography>
+        </Box>
+        {filter?.mainAreas?.map((area) => {
+          const checked = selectedAreas.has(area.slug);
           return (
-            <Box key={a._id} {...styles.filterItem}>
+            <Box key={area.id} {...styles.filterItem}>
               <FormControlLabel
                 control={
                   <Checkbox
                     size="small"
                     checked={checked}
-                    onChange={() => toggleArea(a.slug)}
+                    onChange={() => toggleArea(area.slug)}
                   />
                 }
-                label={a.name}
+                label={area.name}
                 disableTypography
                 {...styles.formControlLabel}
               />
-              <Typography {...styles.counter}>{a.count}</Typography>
+              <Typography {...styles.counter}>{area.count}</Typography>
             </Box>
           );
         })}
       </FormGroup>
 
       {/* OTHER AREAS */}
-      {otherAreas.length > 0 && (
+      {filter?.otherAreas && filter?.otherAreas.length > 0 && (
         <>
           <Divider {...styles.divider} />
           <Typography {...styles.sectionTitle}>Other Districts</Typography>
           <FormGroup {...styles.formGroup}>
-            {otherAreas.map((a) => {
-              const checked = selectedAreas.has(a.slug);
+            {filter?.otherAreas.map((area) => {
+              const checked = selectedAreas.has(area.slug);
               return (
-                <Box key={a._id} {...styles.filterItem}>
+                <Box key={area.id} {...styles.filterItem}>
                   <FormControlLabel
                     control={
                       <Checkbox
                         size="small"
                         checked={checked}
-                        onChange={() => toggleArea(a.slug)}
+                        onChange={() => toggleArea(area.slug)}
                       />
                     }
-                    label={a.name}
+                    label={area.name}
                     disableTypography
                     {...styles.formControlLabel}
                   />
-                  <Typography {...styles.counter}>{a.count}</Typography>
+                  <Typography {...styles.counter}>{area.count}</Typography>
                 </Box>
               );
             })}
@@ -268,19 +271,18 @@ const FilterSidebar = () => {
       )}
 
       {/* TAGS */}
-      {tags.length > 0 && (
+      {filter?.tags && filter?.tags?.length > 0 && (
         <>
           <Divider {...styles.divider} />
           <Typography {...styles.sectionTitle}>Tags</Typography>
           <Box {...styles.tagsContainer}>
-            {tags.map((t) => {
-              // ensures we handle any non-slug tag name
-              const tagSlug = t.slug || slugify(t.name);
+            {filter?.tags?.map((tag) => {
+              const tagSlug = tag.slug;
               const checked = selectedTags.has(tagSlug);
               return (
                 <Chip
-                  key={t._id}
-                  label={`${t.name}`}
+                  key={tag.id}
+                  label={tag.name}
                   onClick={() => toggleTag(tagSlug)}
                   variant={checked ? "filled" : "outlined"}
                   {...styles.chip}
@@ -297,27 +299,24 @@ const FilterSidebar = () => {
               );
             })}
           </Box>
-          <Typography
-            {...styles.viewAll}
-            onClick={() => replaceQS((qs) => qs.delete("tag"))}
-          >
+          <Typography {...styles.viewAll} onClick={() => clearKey("tag")}>
             View All
           </Typography>
         </>
       )}
 
       {/* TYPES */}
-      {types.length > 0 && (
+      {filter?.types && filter?.types.length > 0 && (
         <>
           <Divider {...styles.divider} />
           <Typography {...styles.sectionTitle}>Kinder Type</Typography>
           <Box {...styles.tagsContainer}>
-            {types.map((t) => {
-              const typeSlug = t.slug || slugify(t.name);
+            {filter.types.map((type) => {
+              const typeSlug = type.slug;
               const checked = selectedTypes.has(typeSlug);
               return (
                 <Box
-                  key={t._id}
+                  key={type.id}
                   {...styles.typeBox}
                   className={checked ? "selected" : ""}
                   onClick={() => toggleType(typeSlug)}
@@ -331,18 +330,15 @@ const FilterSidebar = () => {
                     }
                   }}
                 >
-                  <Box fontSize={20}>
-                    {t.emoji?.startsWith("http") ? "🧩" : (t.emoji ?? "🧩")}
-                  </Box>
-                  {t.name}
+                  {type.emoji && (
+                    <Box src={urlImageFor(type.emoji)} component="img"></Box>
+                  )}
+                  {type.name}
                 </Box>
               );
             })}
           </Box>
-          <Typography
-            {...styles.viewAll}
-            onClick={() => replaceQS((qs) => qs.delete("type"))}
-          >
+          <Typography {...styles.viewAll} onClick={() => clearKey("type")}>
             View All
           </Typography>
         </>

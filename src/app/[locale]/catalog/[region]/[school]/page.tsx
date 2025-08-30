@@ -1,4 +1,4 @@
-import { getSchoolBySlug } from "@/sanity/queries";
+import { fetchSchoolBySlug } from "@/sanity/queries";
 import SchoolPageClient from "@/app/[locale]/catalog/[region]/[school]/schoolPageClient";
 
 type PageProps = {
@@ -6,12 +6,12 @@ type PageProps = {
 };
 
 const Page = async ({ params }: PageProps) => {
-  const { school: schoolParams } = await params;
+  const { school: schoolParams, locale } = await params;
   if (!schoolParams) {
     return null;
   }
 
-  const { school } = await getSchoolBySlug({ slug: schoolParams });
+  const school = await fetchSchoolBySlug({ slug: schoolParams, locale });
 
   console.log(school);
   return <SchoolPageClient school={school} />;

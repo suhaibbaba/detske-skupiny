@@ -5,6 +5,7 @@ export type Area = {
 };
 
 export type Region = {
+  id: string;
   name: string;
   slug: string;
   backgroundCover: string;

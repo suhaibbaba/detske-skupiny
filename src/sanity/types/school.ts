@@ -38,14 +38,14 @@ export type SchoolCategory = {
   id: string;
   name: string;
   slug: string;
-  emoji: string;
+  emoji: SanityImageField;
 };
 
 export type SchoolTag = {
   id: string;
   name: string;
   slug: string;
-  emoji: string;
+  emoji: SanityImageField;
   borderColor: string;
 };
 

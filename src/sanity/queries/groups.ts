@@ -11,7 +11,8 @@ export async function fetchGroupPage(params: QueryParams) {
       name,
       "slug": slug.current,
       "backgroundCover": backgroundCover.asset->url,
-      "areas": *[_type == "areas" && ${languageQuery} && references(^._id)]{
+      "areas": *[_type == "areas" && ${languageQuery} && references(^._id) &&
+        isMain == true]{
         "id": _id,
         name,
         "slug": slug.current,

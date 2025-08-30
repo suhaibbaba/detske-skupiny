@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -10,9 +8,13 @@ import {
 } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import KinderGroupCard from "@/app/[locale]/catalog/[region]/components/KinderGroupCard";
 import FilterSidebar from "@/app/[locale]/catalog/[region]/components/FilterSidebar";
 import SearchBar from "@/app/[locale]/catalog/[region]/components/SearchBar";
+import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
+import { PageProps } from "@/types";
+import { SchoolFilterQueryParams } from "@/sanity/types";
+import { toOptionalArray } from "@/utilites/strings";
+import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -27,9 +29,9 @@ interface GroupsPageStyles {
 const styles: GroupsPageStyles = {
   pageLayout: {
     section: {
-      sx: (theme) => ({
-        background: theme.palette.gradients.ui3,
-      }),
+      sx: {
+        background: "var(--mui-palette-gradients-ui3)",
+      },
     },
   },
   pageContainer: {
@@ -67,7 +69,7 @@ const styles: GroupsPageStyles = {
       display: "flex",
       flexWrap: "wrap",
       justifyContent: "space-between",
-      alignItems: "center",
+      alignItems: "flex-start",
       gap: "24px",
     },
   },
@@ -87,62 +89,65 @@ const styles: GroupsPageStyles = {
   },
 };
 
-const Page = () => {
-  return null;
-  // return (
-  //   <Box {...styles.pageContainer}>
-  //     <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
-  //       <PageHeadingTypography
-  //         title={data.heading}
-  //         description={data.description}
-  //         ctaList={[
-  //           {
-  //             text: "Kinder Prague",
-  //             variant: "primary",
-  //             url: "/g",
-  //           },
-  //           {
-  //             text: "Kindr Brno",
-  //             variant: "secondary",
-  //             url: "/g",
-  //           },
-  //           {
-  //             text: "All Kinder",
-  //             variant: "ghost",
-  //             url: "/g",
-  //           },
-  //         ]}
-  //       />
-  //     </PageLayout>
-  //     <Container {...styles.container}>
-  //       <FilterSidebar />
-  //       <Box {...styles.contentWrapper}>
-  //         <Box {...styles.resultsHeader}>
-  //           <Typography {...styles.resultText}>
-  //             Showing 10 of 15 Results
-  //           </Typography>
-  //           <SearchBar />
-  //         </Box>
-  //         <Box {...styles.cardGrid}>
-  //           {Array(5)
-  //             .fill(null)
-  //             .map((_, i) => (
-  //               <SchoolCard
-  //                 key={i}
-  //                 logo="/groups/vs_code.svg"
-  //                 image="/groups/image1.jpg"
-  //                 name="All Stars Kindergarten & Primary School"
-  //                 tags={["Montessori Preschool", "Language School"]}
-  //                 location="Prague"
-  //                 description="A bilingual kindergarten and primary school that blends Czech and English learning in a warm, creative environment."
-  //                 isPremium
-  //               />
-  //             ))}
-  //         </Box>
-  //       </Box>
-  //     </Container>
-  //   </Box>
-  // );
+const Page = async ({
+  params,
+  searchParams,
+}: PageProps<{ region: string }>) => {
+  const { locale, region: regionSlug } = await params;
+  const { area, tag, type } = (await searchParams) as SchoolFilterQueryType;
+
+  console.log({ area });
+  const { pageHero, schools } = await fetchSchoolByFilter({
+    locale,
+    areas: toOptionalArray(area),
+    tags: toOptionalArray(tag),
+    types: toOptionalArray(type),
+    regionSlug,
+  });
+
+  console.log({
+    schools,
+    types: toOptionalArray(type),
+    areas: toOptionalArray(area),
+  });
+  return (
+    <Box {...styles.pageContainer}>
+      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+        <PageHeadingTypography
+          title={pageHero.title}
+          description={pageHero.description}
+          ctaList={pageHero.ctas}
+        />
+      </PageLayout>
+      <Container {...styles.container}>
+        <FilterSidebar locale={locale} regionSlug={regionSlug} />
+        <Box {...styles.contentWrapper}>
+          <Box {...styles.resultsHeader}>
+            <Typography {...styles.resultText}>
+              Showing 10 of 15 Results
+            </Typography>
+            <SearchBar />
+          </Box>
+          <Box {...styles.cardGrid}>
+            {/*{Array(5)*/}
+            {/*  .fill(null)*/}
+            {/*  .map((_, i) => (*/}
+            {/*    <SchoolCard*/}
+            {/*      key={i}*/}
+            {/*      logo="/groups/vs_code.svg"*/}
+            {/*      image="/groups/image1.jpg"*/}
+            {/*      name="All Stars Kindergarten & Primary School"*/}
+            {/*      tags={["Montessori Preschool", "Language School"]}*/}
+            {/*      location="Prague"*/}
+            {/*      description="A bilingual kindergarten and primary school that blends Czech and English learning in a warm, creative environment."*/}
+            {/*      isPremium*/}
+            {/*    />*/}
+            {/*  ))}*/}
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
 };
 
 export default Page;

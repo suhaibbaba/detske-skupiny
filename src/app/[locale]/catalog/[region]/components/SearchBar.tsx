@@ -17,10 +17,10 @@ interface SearchBarStyles {
 
 const styles: SearchBarStyles = {
   wrapper: {
-    sx: (theme) => ({
+    sx: {
       display: "flex",
       alignItems: "center",
-      border: `1px solid ${theme.palette.custom.ui18}`,
+      border: `1px solid var(--mui-palette-custom-ui18)`,
       borderRadius: "24px",
       overflow: "hidden",
       width: "100%",
@@ -28,7 +28,7 @@ const styles: SearchBarStyles = {
         xs: "100%",
         sm: "291px",
       },
-    }),
+    },
   },
   icon: {
     sx: {
@@ -42,19 +42,19 @@ const styles: SearchBarStyles = {
     },
   },
   input: {
-    sx: (theme) => ({
+    sx: {
       flex: 1,
       px: "10px",
       fontSize: "14px",
       fontWeight: 500,
-      color: theme.palette.custom.ui2,
+      color: "var(--mui-palette-custom-ui2)",
       "&::placeholder": {
         fontSize: "14px",
         fontWeight: 500,
-        color: theme.palette.custom.ui2,
+        color: "var(--mui-palette-custom-ui2)",
         opacity: 1,
       },
-    }),
+    },
     placeholder: "Search here",
   },
   button: {

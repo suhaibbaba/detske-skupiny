@@ -7,6 +7,7 @@ import theme from "@/theme";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { Fredoka } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,16 +32,18 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={fredoka.className}>
-        <NextIntlClientProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Box>
-              <Header />
-              {children}
-              <Footer />
-            </Box>
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <NuqsAdapter>
+          <NextIntlClientProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Box>
+                <Header />
+                {children}
+                <Footer />
+              </Box>
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
