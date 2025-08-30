@@ -151,7 +151,7 @@ const styles: KinderGroupCardStyles = {
 
 const SchoolGridCard = ({ school }: Props) => {
   const { shortSummary, name, tags, primaryImage, logo, region } = school;
-  console.log({ region });
+
   return (
     <Box {...styles.card}>
       <Box
@@ -160,15 +160,6 @@ const SchoolGridCard = ({ school }: Props) => {
         src={urlImageFor(primaryImage)}
         alt={name}
       />
-      {/*{isPremium && (*/}
-      {/*  <Chip*/}
-      {/*    {...styles.premiumBadge}*/}
-      {/*    icon={*/}
-      {/*      <Star sx={{ width: "10px", height: "10px", color: "#8A866A" }} />*/}
-      {/*    }*/}
-      {/*    label="Premium"*/}
-      {/*  />*/}
-      {/*)}*/}
       <Box {...styles.nameWrapper}>
         <Box
           component="img"

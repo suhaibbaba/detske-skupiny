@@ -5,32 +5,17 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import {
   Box,
   BoxProps,
-  Button,
   Container,
   ContainerProps,
   ListItemProps,
   ListProps,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
   TypographyProps,
 } from "@mui/material";
 import SchoolGallery, {
-  SchoolGridImagesStyles,
+  SchoolGalleryStyles,
 } from "@/app/[locale]/catalog/[region]/[school]/components/SchoolGallery";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import FilterSidebar from "@/app/[locale]/catalog/[region]/components/FilterSidebar";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import InfoCardGrid from "@/app/[locale]/catalog/[region]/[school]/components/InfoCardGrid";
-import Location from "@/components/icons/Location";
-import { formatMessage } from "@/utilites/strings";
-import Link from "@/components/ui/link";
 import AboutSchool from "@/app/[locale]/catalog/[region]/[school]/components/AboutSchool";
-import RichText from "@/sanity/components/RichText";
 import SchoolHighlights from "@/app/[locale]/catalog/[region]/[school]/components/SchoolHighlights";
 import SchoolTimetable from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTimetable";
 import SchoolHeader from "@/app/[locale]/catalog/[region]/[school]/components/SchoolHeader";
@@ -42,7 +27,7 @@ interface PageStyles {
   contentWrapper?: BoxProps;
   name?: TypographyProps;
   logo?: BoxProps;
-  schoolGridImagesStyles?: SchoolGridImagesStyles;
+  schoolGalleryStyles?: SchoolGalleryStyles;
   list?: ListProps;
   listItem?: ListItemProps;
   sectionHeading?: TypographyProps;
@@ -85,13 +70,6 @@ const styles: PageStyles = {
       maxHeight: "35px",
     },
   },
-  schoolGridImagesStyles: {
-    container: {
-      sx: {
-        mt: "24px",
-      },
-    },
-  },
   sectionHeading: {
     color: "custom.ui13",
     fontSize: "24px",
@@ -132,9 +110,6 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
     locale,
   });
 
-  console.log({
-    primaryImage: school.primaryImage,
-  });
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>

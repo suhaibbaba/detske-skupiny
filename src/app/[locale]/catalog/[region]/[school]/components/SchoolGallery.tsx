@@ -84,7 +84,6 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
   const main = gallery[0];
   const rights = gallery.slice(1, 5); // max 4 right images
 
-  console.log({ main });
   return (
     <Box {...styles.container} data-test-selector="SchoolGallery">
       <Typography {...styles.title}>Gallery</Typography>

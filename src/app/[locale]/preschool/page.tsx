@@ -9,7 +9,6 @@ const Page = async ({ params }: PageProps) => {
     locale: pageParams.locale,
   });
 
-  console.log({ data });
   return (
     <Box data-test-selector="preschool-page">
       <Zone sections={data?.sections} types="all" {...pageParams} />

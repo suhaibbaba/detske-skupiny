@@ -15,7 +15,7 @@ export interface MiniSchool {
   slug: string;
   logo: SanityImageField;
   region: Region;
-  primaryImage: SanityImageField | null;
+  primaryImage: SanityImageField;
   shortSummary: string;
   website?: {
     url?: string;

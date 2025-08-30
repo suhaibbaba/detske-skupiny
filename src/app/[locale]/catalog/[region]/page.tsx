@@ -99,7 +99,6 @@ const Page = async ({
   const { locale, region: regionSlug } = await params;
   const { area, tag, type } = (await searchParams) as SchoolFilterQueryType;
 
-  console.log({ area });
   const { pageHero, schools } = await fetchSchoolByFilter({
     locale,
     areas: toOptionalArray(area),
