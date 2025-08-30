@@ -1,15 +1,14 @@
 "use client";
 
-import {
-  Box,
-  BoxProps,
-  Dialog,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { FC, useState } from "react";
 import { School } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+
+const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
 interface SchoolGalleryProps {
   gallery?: School["primaryImages"];
@@ -69,71 +68,97 @@ const styles: SchoolGalleryStyles = {
 
 const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  if (!gallery || gallery.length === 0) return null;
-
-  const openImage = (src: string) => {
-    setSelected(src);
-    setOpen(true);
+  const openImage = (index: number) => {
+    setSelectedIndex(index);
+    setOpen((prevState) => !prevState);
   };
 
   const closeImage = () => setOpen(false);
+
+  if (!gallery || gallery.length === 0) {
+    return null;
+  }
 
   // first image is always the big/left
   const main = gallery[0];
   const rights = gallery.slice(1, 5); // max 4 right images
 
-  return (
-    <Box {...styles.container} data-test-selector="SchoolGallery">
-      <Typography {...styles.title}>Gallery</Typography>
-      <Box {...styles.imageContainer}>
-        {/* Left main */}
-        {main && (
-          <Box
-            {...styles.imageBox}
-            onClick={() => openImage(urlImageFor(main))}
-          >
-            <Box component="img" src={urlImageFor(main)} {...styles.img} />
-          </Box>
-        )}
+  const gallerySlides = gallery.map((g) => ({
+    src: urlImageFor(g),
+    width: 3840,
+    height: 2272,
+    srcSet: breakpoints.map((breakpoint) => ({
+      src: urlImageFor(g),
+      width: breakpoint,
+      height: Math.round((2272 / 3840) * breakpoint),
+    })),
+  }));
 
-        {/* Right column */}
-        <Box
-          sx={{
-            display: "grid",
-            gridAutoRows: "1fr",
-            gridTemplateColumns: {
-              xs: "1fr 1fr",
-              sm: "1fr",
-            },
-            gap: 2,
-          }}
-        >
-          {rights.map((img, i) => (
-            <Box
-              key={i}
-              {...styles.imageBox}
-              onClick={() => openImage(urlImageFor(img))}
-            >
-              <Box component="img" src={urlImageFor(img)} {...styles.img} />
+  return (
+    <>
+      <Box {...styles.container} data-test-selector="SchoolGallery">
+        <Typography {...styles.title}>Gallery</Typography>
+        <Box {...styles.imageContainer}>
+          {/* Left main */}
+          {main && (
+            <Box {...styles.imageBox} onClick={() => openImage(0)}>
+              <Box component="img" src={urlImageFor(main)} {...styles.img} />
             </Box>
-          ))}
+          )}
+
+          {/* Right column */}
+          <Box
+            sx={{
+              display: "grid",
+              gridAutoRows: "1fr",
+              gridTemplateColumns: {
+                xs: "1fr 1fr",
+                sm: "1fr",
+              },
+              gap: 2,
+            }}
+          >
+            {rights.map((img, idx) => (
+              <Box
+                key={idx}
+                {...styles.imageBox}
+                onClick={() => openImage(idx + 1)}
+              >
+                <Box component="img" src={urlImageFor(img)} {...styles.img} />
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
-
-      {/* Zoom modal */}
-      <Dialog open={open} onClose={closeImage} maxWidth="lg">
-        {selected && (
-          <Box
-            component="img"
-            src={selected}
-            alt="zoomed"
-            sx={{ maxWidth: "90vw", maxHeight: "90vh" }}
-          />
-        )}
-      </Dialog>
-    </Box>
+      <Lightbox
+        plugins={[Zoom]}
+        open={open}
+        close={closeImage}
+        index={selectedIndex}
+        slides={gallerySlides}
+        controller={{
+          closeOnPullDown: true,
+          closeOnBackdropClick: true,
+        }}
+        carousel={{
+          preload: 0,
+        }}
+        animation={{ zoom: 500 }}
+        zoom={{
+          maxZoomPixelRatio: 1,
+          zoomInMultiplier: 2,
+          doubleTapDelay: 300,
+          doubleClickDelay: 300,
+          doubleClickMaxStops: 2,
+          keyboardMoveDistance: 50,
+          wheelZoomDistanceFactor: 100,
+          pinchZoomDistanceFactor: 100,
+          scrollToZoom: false,
+        }}
+      />
+    </>
   );
 };
 

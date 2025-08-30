@@ -23,7 +23,7 @@
     "nuqs": "^2.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "yet-another-react-lightbox": "^3.24.0"
+    "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
