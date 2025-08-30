@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import React from "react";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   fields: {
@@ -73,6 +74,7 @@ const styles: HomeBannerStyles = {
 };
 
 const HomeBanner = ({ fields }: Props) => {
+  const link = parseLinkField(fields.cta?.link);
   return (
     <Box
       {...styles.section?.(urlImageFor(fields.background))}
@@ -85,9 +87,9 @@ const HomeBanner = ({ fields }: Props) => {
           <Button
             {...styles.button}
             variant={fields.cta.variant}
-            href={fields.cta.url}
+            href={link.url}
           >
-            {fields.cta.text}
+            {link.text}
           </Button>
         )}
       </Container>

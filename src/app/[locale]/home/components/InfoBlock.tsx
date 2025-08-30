@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   fields: {
@@ -95,6 +96,7 @@ const styles: NeighbourKinderGroupSectionStyles = {
 };
 
 const InfoBlock = ({ fields }: Props) => {
+  const link = parseLinkField(fields.cta?.link);
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>
@@ -105,9 +107,9 @@ const InfoBlock = ({ fields }: Props) => {
             <Button
               {...styles.ctaButton}
               variant={fields.cta.variant}
-              href={fields.cta.url}
+              href={link.url}
             >
-              {fields.cta.text}
+              {link.text}
             </Button>
           )}
         </Box>

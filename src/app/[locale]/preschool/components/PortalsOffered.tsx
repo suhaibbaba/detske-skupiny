@@ -21,6 +21,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   fields: {
@@ -145,6 +146,8 @@ const styles: PortalsOfferedStyles = {
 };
 
 const PortalsOffered: FC<Props> = ({ fields }) => {
+  const link = parseLinkField(fields.cta?.link);
+
   return (
     <Box {...styles.container}>
       <Container>
@@ -168,9 +171,9 @@ const PortalsOffered: FC<Props> = ({ fields }) => {
               <Button
                 {...styles.button}
                 variant={fields.cta.variant}
-                href={fields.cta.url}
+                href={link.url}
               >
-                {fields.cta.text}
+                {link.text}
               </Button>
             )}
           </Box>

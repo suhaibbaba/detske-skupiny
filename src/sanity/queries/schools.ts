@@ -51,7 +51,10 @@ export async function fetchSchoolBySlug(
       address,
       location,
       contacts[],
-      links,
+      links[]{
+        "id": _key,
+        ...link,
+      },
       types[]->{
         "id": _id,
         name,

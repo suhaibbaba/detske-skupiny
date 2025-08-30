@@ -2,12 +2,12 @@ import {
   Area,
   ContactPerson,
   GeoPoint,
-  Link,
   PostalAddress,
   Region,
   SanityImageField,
   SanityRichTextField,
 } from "@/sanity/types";
+import { SanityLinkField } from "@/components/ui/link/parser";
 
 export interface MiniSchool {
   id: string;
@@ -65,7 +65,8 @@ export interface School {
   address?: PostalAddress | null;
   location?: GeoPoint | null;
   contacts?: ContactPerson[];
-  links?: Link[];
+  links?: (SanityLinkField & { id: string })[];
+  website?: SanityLinkField;
   types?: SchoolCategory[];
   transportation?: TransportOption[];
   about?: SanityRichTextField;

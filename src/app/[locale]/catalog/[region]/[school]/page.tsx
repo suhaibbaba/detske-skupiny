@@ -9,6 +9,7 @@ import {
   ContainerProps,
   ListItemProps,
   ListProps,
+  Typography,
   TypographyProps,
 } from "@mui/material";
 import SchoolGallery, {
@@ -19,6 +20,14 @@ import AboutSchool from "@/app/[locale]/catalog/[region]/[school]/components/Abo
 import SchoolHighlights from "@/app/[locale]/catalog/[region]/[school]/components/SchoolHighlights";
 import SchoolTimetable from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTimetable";
 import SchoolHeader from "@/app/[locale]/catalog/[region]/[school]/components/SchoolHeader";
+import InfoCardGrid from "@/app/[locale]/catalog/[region]/[school]/components/InfoCardGrid";
+import { formatMessage } from "@/utilites/strings";
+import Location from "@/components/icons/Location";
+import Link from "@/components/ui/link";
+import {
+  parseLinkField,
+  parseMultipleLinkFields,
+} from "@/components/ui/link/parser";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -123,81 +132,75 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
         <Box {...styles.contentWrapper}>
           <SchoolHeader school={school} />
           <SchoolGallery gallery={school.primaryImages} />
-          {/*<InfoCardGrid*/}
-          {/*  items={[*/}
-          {/*    {*/}
-          {/*      title: "Location",*/}
-          {/*      icon: <Location />,*/}
-          {/*      content: (*/}
-          {/*        <Box>*/}
-          {/*          <Typography>*/}
-          {/*            {formatMessage(*/}
-          {/*              "{0}, {1}",*/}
-          {/*              school.address?.street,*/}
-          {/*              school.address?.city,*/}
-          {/*            )}*/}
-          {/*          </Typography>*/}
-          {/*          <Typography>{school.address?.postalCode}</Typography>*/}
-          {/*        </Box>*/}
-          {/*      ),*/}
-          {/*    },*/}
-          {/*    {*/}
-          {/*      title: "Transportation Nearby",*/}
-          {/*      icon: <Location />,*/}
-          {/*      content: (*/}
-          {/*        <Box>*/}
-          {/*          {school.transportation?.map((item) => (*/}
-          {/*            <Typography key={item.name}>*/}
-          {/*              {item.name} ({item.distance})*/}
-          {/*            </Typography>*/}
-          {/*          ))}*/}
-          {/*        </Box>*/}
-          {/*      ),*/}
-          {/*    },*/}
-          {/*    {*/}
-          {/*      title: "Contacts",*/}
-          {/*      icon: <Location />,*/}
-          {/*      content: (*/}
-          {/*        <Box>*/}
-          {/*          {school.contacts?.map((item) => (*/}
-          {/*            <Typography*/}
-          {/*              key={item.name}*/}
-          {/*              sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}*/}
-          {/*            >*/}
-          {/*              {formatMessage(*/}
-          {/*                `{0}  - {1} - {2}`,*/}
-          {/*                <Link href={`tel:${item.phone}`}>{item.phone}</Link>,*/}
-          {/*                item.name,*/}
-          {/*                item.role,*/}
-          {/*              )}*/}
-          {/*            </Typography>*/}
-          {/*          ))}*/}
-          {/*        </Box>*/}
-          {/*      ),*/}
-          {/*    },*/}
-          {/*    {*/}
-          {/*      title: "Website & Social Media",*/}
-          {/*      icon: <Location />,*/}
-          {/*      content: (*/}
-          {/*        <Box>*/}
-          {/*          {school.links?.map((item) => (*/}
-          {/*            <Link*/}
-          {/*              href={item.url}*/}
-          {/*              key={item._key}*/}
-          {/*              target={item.blank ? "_blank" : "_self"}*/}
-          {/*            >*/}
-          {/*              {item.url}*/}
-          {/*            </Link>*/}
-          {/*          ))}*/}
-          {/*        </Box>*/}
-          {/*      ),*/}
-          {/*    },*/}
-          {/*  ]}*/}
-          {/*/>*/}
+          <InfoCardGrid
+            items={[
+              {
+                title: "Location",
+                icon: <Location />,
+                content: (
+                  <Box>
+                    <Typography>
+                      {formatMessage(
+                        "{0}, {1}",
+                        school.address?.street,
+                        school.address?.city,
+                      )}
+                    </Typography>
+                    <Typography>{school.address?.postalCode}</Typography>
+                  </Box>
+                ),
+              },
+              {
+                title: "Transportation Nearby",
+                icon: <Location />,
+                content: (
+                  <Box>
+                    {school.transportation?.map((item) => (
+                      <Typography key={item.name}>
+                        {item.name} ({item.distance})
+                      </Typography>
+                    ))}
+                  </Box>
+                ),
+              },
+              {
+                title: "Contacts",
+                icon: <Location />,
+                content: (
+                  <Box>
+                    {school.contacts?.map((item) => (
+                      <Typography
+                        key={item.name}
+                        sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
+                      >
+                        {formatMessage(
+                          `{0}  - {1} - {2}`,
+                          <Link href={`tel:${item.phone}`}>{item.phone}</Link>,
+                          item.name,
+                          item.role,
+                        )}
+                      </Typography>
+                    ))}
+                  </Box>
+                ),
+              },
+              {
+                title: "Website & Social Media",
+                icon: <Location />,
+                content: (
+                  <Box>
+                    {school.links?.map((link) => (
+                      <Link link={link} key={link.id} />
+                    ))}
+                  </Box>
+                ),
+              },
+            ]}
+          />
           <AboutSchool about={school.about} />
           <SchoolHighlights highlights={school.highlights} />
           <SchoolTimetable timetable={school.timetable} />
-          <SchoolGallery gallery={school.gallery} />
+          <SchoolGallery gallery={school.gallery} showTitle={true} />
         </Box>
       </Container>
     </Box>

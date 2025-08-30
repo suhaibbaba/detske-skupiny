@@ -11,6 +11,7 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { SanityCtaField } from "@/sanity/types";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   fields: {
@@ -109,15 +110,18 @@ const MapCollection = ({ fields }: Props) => {
         <Typography {...styles.title}>{fields.title}</Typography>
         <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.filterWrapper}>
-          {fields.cta?.map((cta, idx) => (
-            <Button
-              key={cta.text}
-              variant={cta.variant}
-              {...styles.filterButton}
-            >
-              {cta.text}
-            </Button>
-          ))}
+          {fields.cta?.map((cta, idx) => {
+            const link = parseLinkField(cta.link);
+            return (
+              <Button
+                key={link.url}
+                variant={cta.variant}
+                {...styles.filterButton}
+              >
+                {link.text}
+              </Button>
+            );
+          })}
         </Box>
         <Box {...styles.mapWrapper}>
           <Box

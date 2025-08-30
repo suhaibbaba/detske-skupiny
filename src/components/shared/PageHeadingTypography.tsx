@@ -12,6 +12,7 @@ import {
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { SanityCtaField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   title?: string | SanityRichTextField;
@@ -86,16 +87,19 @@ const PageHeadingTypography: FC<Props> = ({
       )}
       {ctaList && ctaList.length > 0 && (
         <Box {...styles.ctaWrapper}>
-          {ctaList.map((cta, idx) => (
-            <Button
-              key={`${cta.text}_${idx}`}
-              {...styles.cta}
-              variant={cta.variant || "contained"}
-              href={cta.url}
-            >
-              {cta.text}
-            </Button>
-          ))}
+          {ctaList.map((cta, idx) => {
+            const link = parseLinkField(cta.link);
+            return (
+              <Button
+                key={`${link.text}_${idx}`}
+                {...styles.cta}
+                variant={cta.variant || "contained"}
+                href={link.url}
+              >
+                {link.text}
+              </Button>
+            );
+          })}
         </Box>
       )}
     </Box>

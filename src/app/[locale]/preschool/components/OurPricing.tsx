@@ -22,6 +22,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
   fields: {
@@ -174,6 +175,7 @@ const styles: PricingStyles = {
 };
 
 const OurPricing: FC<Props> = ({ fields }) => {
+  const link = parseLinkField(fields.cta?.link);
   return (
     <Box {...styles.container}>
       <Container>
@@ -216,9 +218,9 @@ const OurPricing: FC<Props> = ({ fields }) => {
                 <Button
                   {...styles.button}
                   variant={plan.cta.variant}
-                  href={plan.cta.url}
+                  href={link.url}
                 >
-                  {plan.cta.text}
+                  {link.text}
                 </Button>
               )}
             </Paper>

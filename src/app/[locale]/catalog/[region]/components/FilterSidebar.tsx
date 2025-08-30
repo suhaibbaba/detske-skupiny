@@ -188,7 +188,7 @@ const FilterSidebar = ({
     <Box {...styles.root} aria-busy={isLoading || undefined}>
       <Box {...styles.header}>
         <Typography {...styles.title}>
-          Filters {filter?.region.name ? `— ${filter?.region.name}` : ""}
+          Filters {filter?.region?.name ? `— ${filter?.region.name}` : ""}
         </Typography>
         {hasActiveFilters && (
           <Button {...styles.clearBtn} onClick={clearAll}>
@@ -197,7 +197,7 @@ const FilterSidebar = ({
         )}
       </Box>
       <Typography {...styles.sectionTitle}>
-        Main Districts {filter?.region.name ? `of ${filter?.region.name}` : ""}
+        Main Districts {filter?.region?.name ? `of ${filter?.region.name}` : ""}
       </Typography>
       <FormGroup {...styles.formGroup}>
         <Box key="all" {...styles.filterItem}>

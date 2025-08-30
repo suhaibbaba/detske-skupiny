@@ -7,15 +7,10 @@ import {
 } from "@mui/material";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { School } from "@/sanity/types";
-import { routes } from "@/routes";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface Props {
-  school: {
-    name: School["name"];
-    logo?: School["logo"];
-    region?: School["region"];
-    slug?: School["slug"];
-  };
+  school: School;
 }
 
 interface SchoolHeaderStyles {
@@ -67,11 +62,8 @@ const SchoolHeader = ({ school }: Props) => {
         )}
         {school.name}
       </Typography>
-      {school.slug && school.region && (
-        <Button
-          variant="secondary"
-          href={routes.school(school.region.slug, school.slug)}
-        >
+      {school.website && (
+        <Button variant="secondary" href={parseLinkField(school.website).url}>
           Visit Website
         </Button>
       )}

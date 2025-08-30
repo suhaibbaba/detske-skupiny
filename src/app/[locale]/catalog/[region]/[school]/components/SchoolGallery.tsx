@@ -11,6 +11,7 @@ import "yet-another-react-lightbox/styles.css";
 const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
 interface SchoolGalleryProps {
+  showTitle?: boolean;
   gallery?: School["primaryImages"];
   extendedStyles?: SchoolGalleryStyles;
 }
@@ -66,7 +67,7 @@ const styles: SchoolGalleryStyles = {
   },
 };
 
-const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
+const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery, showTitle }) => {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -99,7 +100,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
   return (
     <>
       <Box {...styles.container} data-test-selector="SchoolGallery">
-        <Typography {...styles.title}>Gallery</Typography>
+        {showTitle && <Typography {...styles.title}>Gallery</Typography>}
         <Box {...styles.imageContainer}>
           {/* Left main */}
           {main && (

@@ -15,7 +15,6 @@ interface Props {
   fields: {
     title: string;
     description: string;
-    cta?: SanityCtaField;
   };
 }
 
