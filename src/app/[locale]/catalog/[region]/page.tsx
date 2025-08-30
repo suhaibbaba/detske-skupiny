@@ -15,6 +15,8 @@ import { PageProps } from "@/types";
 import { SchoolFilterQueryParams } from "@/sanity/types";
 import { toOptionalArray } from "@/utilites/strings";
 import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
+import SchoolCard from "@/app/[locale]/home/components/SchoolCard";
+import SchoolGridCard from "@/app/[locale]/catalog/[region]/components/SchoolGridCard";
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -55,8 +57,8 @@ const styles: GroupsPageStyles = {
   },
   contentWrapper: {
     sx: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
+      display: "flex",
+      flexDirection: "column",
       gap: "26px",
       mt: {
         xs: "44px",
@@ -71,6 +73,7 @@ const styles: GroupsPageStyles = {
       justifyContent: "space-between",
       alignItems: "flex-start",
       gap: "24px",
+      width: "100%",
     },
   },
   resultText: {
@@ -105,11 +108,6 @@ const Page = async ({
     regionSlug,
   });
 
-  console.log({
-    schools,
-    types: toOptionalArray(type),
-    areas: toOptionalArray(area),
-  });
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
@@ -129,20 +127,9 @@ const Page = async ({
             <SearchBar />
           </Box>
           <Box {...styles.cardGrid}>
-            {/*{Array(5)*/}
-            {/*  .fill(null)*/}
-            {/*  .map((_, i) => (*/}
-            {/*    <SchoolCard*/}
-            {/*      key={i}*/}
-            {/*      logo="/groups/vs_code.svg"*/}
-            {/*      image="/groups/image1.jpg"*/}
-            {/*      name="All Stars Kindergarten & Primary School"*/}
-            {/*      tags={["Montessori Preschool", "Language School"]}*/}
-            {/*      location="Prague"*/}
-            {/*      description="A bilingual kindergarten and primary school that blends Czech and English learning in a warm, creative environment."*/}
-            {/*      isPremium*/}
-            {/*    />*/}
-            {/*  ))}*/}
+            {schools?.map((school, i) => (
+              <SchoolGridCard key={school.id} school={school} />
+            ))}
           </Box>
         </Box>
       </Container>

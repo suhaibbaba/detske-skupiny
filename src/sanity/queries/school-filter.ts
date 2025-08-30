@@ -94,7 +94,7 @@ export const typesQuery = groq`
     "emoji": emoji.asset->url,
     "count": count(*[
       _type == "schools" &&
-      area->region->slug.current == $regionSlug  &&
+      area->region->slug.current == $regionSlug &&
       references(^._id)
     ]),
   }[count > 0] | order(name asc)

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
+import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import { formatMessage } from "@/utilites/strings";
 import React from "react";
 import { formatDate } from "@/utilites/date";

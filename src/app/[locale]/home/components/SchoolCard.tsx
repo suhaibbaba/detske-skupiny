@@ -15,6 +15,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import SchoolTag from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTag";
+import { routes } from "@/routes";
 
 interface Props {
   school: MiniSchool;
@@ -191,7 +192,10 @@ const SchoolCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {school.shortSummary}
         </Ellipsis>
-        <Button {...styles.cta} href={school.website?.url}>
+        <Button
+          {...styles.cta}
+          href={routes.school(school.region.name, school.slug)}
+        >
           View this School
         </Button>
       </Box>

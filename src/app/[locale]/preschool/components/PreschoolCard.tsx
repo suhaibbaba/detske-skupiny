@@ -14,12 +14,12 @@ import {
   ChipProps,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Area } from "@/sanity/types";
+import { MiniSchool } from "@/sanity/types";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { routes } from "@/routes";
 
 interface Props {
-  primaryImage: string;
-  name: string;
-  area?: Area;
+  school: MiniSchool;
 }
 
 interface PreschoolCardStyles {
@@ -90,23 +90,27 @@ const styles: PreschoolCardStyles = {
   },
 };
 
-const PreschoolCard: FC<Props> = ({ name, primaryImage, area }) => {
+const PreschoolCard: FC<Props> = ({ school }) => {
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
-      <CardActionArea>
+      <CardActionArea href={routes.school(school.region.name, school.slug)}>
         <Box p="10px" position="relative">
-          <CardMedia {...styles.cardMedia} image={primaryImage} title={name} />
-          {area && (
+          <CardMedia
+            {...styles.cardMedia}
+            image={urlImageFor(school.primaryImage) || ""}
+            title={school.name}
+          />
+          {school.area && (
             <Chip
               icon={<LocationOnIcon />}
-              label={area?.name}
+              label={school.area.name}
               {...styles.locationChip}
             />
           )}
         </Box>
         <CardContent {...styles.cardContent}>
           <Typography variant="h4" fontWeight={500} component="div">
-            {name}
+            {school.name}
           </Typography>
         </CardContent>
       </CardActionArea>

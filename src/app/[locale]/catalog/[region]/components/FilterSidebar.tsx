@@ -196,7 +196,6 @@ const FilterSidebar = ({
           </Button>
         )}
       </Box>
-
       <Typography {...styles.sectionTitle}>
         Main Districts {filter?.region.name ? `of ${filter?.region.name}` : ""}
       </Typography>

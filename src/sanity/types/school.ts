@@ -4,6 +4,7 @@ import {
   GeoPoint,
   Link,
   PostalAddress,
+  Region,
   SanityImageField,
   SanityRichTextField,
 } from "@/sanity/types";
@@ -11,7 +12,10 @@ import {
 export interface MiniSchool {
   id: string;
   name: string;
-  primaryImage: SanityImageField;
+  slug: string;
+  logo: SanityImageField;
+  region: Region;
+  primaryImage: SanityImageField | null;
   shortSummary: string;
   website?: {
     url?: string;
@@ -54,8 +58,10 @@ export interface School {
   logo: SanityImageField;
   name: string;
   slug: string;
+  primaryImage: SanityImageField | null;
   primaryImages: SanityImageField[];
-  area?: Area | null;
+  region: Region;
+  area: Area;
   address?: PostalAddress | null;
   location?: GeoPoint | null;
   contacts?: ContactPerson[];

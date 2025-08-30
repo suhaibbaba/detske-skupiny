@@ -14,6 +14,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
     ] {
       "id": _id,
       name,
+      "logo": logo.asset->url,
       "slug": slug.current,
       shortSummary,
       website,
@@ -21,6 +22,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
         defined(primaryImages[0]) => primaryImages[0].asset->url,
         null
       ),
+      "region": area->region->{ "id": _id, name},
       area->{ "id": _id, name},
       tags[]->{
         "id": _id,

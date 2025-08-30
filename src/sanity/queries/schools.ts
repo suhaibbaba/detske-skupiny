@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
-import { MiniSchool, QueryParams, School } from "@/sanity/types";
+import { MiniSchool, PageHero, QueryParams, School } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
 export async function fetchMiniSchools(
@@ -18,6 +18,7 @@ export async function fetchMiniSchools(
         null
       ),
       area->{ "id": _id, name},
+      "region": area->region->{ "id": _id, name},
       tags[]->{
         "id": _id,
         name,
@@ -36,18 +37,16 @@ export async function fetchSchoolBySlug(
   params: QueryParams & { slug: string },
 ) {
   const query = groq`{
-    *[_type == "school" && ${languageQuery} &&  slug.current == $slug][0]{
+    "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
+    "school": *[_type == "schools" && ${languageQuery} &&  slug.current == $slug][0]{
       "id": _id,
       "logo": logo.asset->url,
       name,
       "slug": slug.current,
       website,
-      primaryImages[]{
-        alt,
-        caption,
-        "url": select(defined(asset) => asset->url, null)
-      },
+      "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
+      "region": area->region->{ "id": _id, name},
       area->{ "id": _id, name },
       address,
       location,
@@ -63,12 +62,12 @@ export async function fetchSchoolBySlug(
       highlights,
       timetable[],
       isPrivate,
-      gallery[]{
-        alt,
-        caption,
-        "url": select(defined(asset) => asset->url, null)
-      }
+      "gallery": gallery[].asset->url,
     }
-  `;
-  return client.fetch<School>(query, params);
+  }`;
+
+  return client.fetch<{
+    pageHero: PageHero;
+    school: School;
+  }>(query, params);
 }

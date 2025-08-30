@@ -1,27 +1,22 @@
-import Star from "@/components/icons/Star";
+"use client";
+
 import {
   Box,
   BoxProps,
   Typography,
   TypographyProps,
-  Chip,
   ChipProps,
   Button,
   ButtonProps,
-  Avatar,
-  Icon,
 } from "@mui/material";
+import { MiniSchool } from "@/sanity/types";
+import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import SchoolTag from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTag";
+import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import Location from "@/components/icons/Location";
-import { ellipses } from "@/utilites/strings";
 
-interface KinderGroupCardProps {
-  image: string;
-  name: string;
-  tags: string[];
-  location: string;
-  description: string;
-  isPremium?: boolean;
-  logo?: string;
+interface Props {
+  school: MiniSchool;
 }
 
 interface KinderGroupCardStyles {
@@ -30,6 +25,7 @@ interface KinderGroupCardStyles {
   image?: BoxProps;
   premiumBadge?: ChipProps;
   logo?: BoxProps;
+  nameWrapper?: BoxProps;
   name?: TypographyProps;
   tagsWrapper?: BoxProps;
   tag?: ChipProps;
@@ -50,6 +46,7 @@ const styles: KinderGroupCardStyles = {
       p: "20px",
       width: "100%",
       gap: "13px",
+      maxWidth: "290px",
     }),
   },
   imageWrapper: {
@@ -97,14 +94,19 @@ const styles: KinderGroupCardStyles = {
       mt: "4px",
     },
   },
+  nameWrapper: {
+    sx: {
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "12px",
+    },
+  },
   name: {
     fontSize: "18px",
     fontWeight: 500,
     color: "custom.ui13",
     sx: {
-      display: "flex",
-      alignItems: "flex-start",
-      gap: "12px",
+      minHeight: "54px",
     },
   },
   tagsWrapper: {
@@ -128,16 +130,13 @@ const styles: KinderGroupCardStyles = {
       alignItems: "center",
       gap: "6px",
       color: "custom.ui13",
-    },
-  },
-  description: {
-    sx: {
-      ...ellipses(4),
+      mb: "13px",
     },
   },
   cta: {
     variant: "ghost",
     sx: (theme) => ({
+      mt: "13px",
       py: "8px",
       fontSize: "14px",
       width: "100%",
@@ -150,46 +149,58 @@ const styles: KinderGroupCardStyles = {
   },
 };
 
-const KinderGroupCard = ({
-  image,
-  name,
-  tags,
-  location,
-  description,
-  isPremium,
-  logo = "/icons/school.svg", // replace with actual logo if needed
-}: KinderGroupCardProps) => {
+const SchoolGridCard = ({ school }: Props) => {
+  const { shortSummary, name, tags, primaryImage, logo, region } = school;
+  console.log({ region });
   return (
     <Box {...styles.card}>
-      <Box component="img" {...styles.image} src={image} alt={name} />
-      {isPremium && (
-        <Chip
-          {...styles.premiumBadge}
-          icon={
-            <Star sx={{ width: "10px", height: "10px", color: "#8A866A" }} />
-          }
-          label="Premium"
+      <Box
+        component="img"
+        {...styles.image}
+        src={urlImageFor(primaryImage)}
+        alt={name}
+      />
+      {/*{isPremium && (*/}
+      {/*  <Chip*/}
+      {/*    {...styles.premiumBadge}*/}
+      {/*    icon={*/}
+      {/*      <Star sx={{ width: "10px", height: "10px", color: "#8A866A" }} />*/}
+      {/*    }*/}
+      {/*    label="Premium"*/}
+      {/*  />*/}
+      {/*)}*/}
+      <Box {...styles.nameWrapper}>
+        <Box
+          component="img"
+          {...styles.logo}
+          src={urlImageFor(logo)}
+          alt="Logo"
         />
-      )}
-      <Typography {...styles.name}>
-        <Box component="img" {...styles.logo} src={logo} alt="Logo" />
-        {name}
-      </Typography>
+        <Ellipsis limitOfLine={2} {...styles.name}>
+          {name}
+        </Ellipsis>
+      </Box>
       <Box {...styles.tagsWrapper}>
-        {tags.map((tag, idx) => (
-          <Chip key={idx} {...styles.tag} label={tag} />
+        {tags?.map((tag, idx) => (
+          <SchoolTag tag={tag} key={tag.id} />
         ))}
       </Box>
-      <Typography {...styles.location}>
-        <Location
-          sx={{ width: "16px", height: "20px", color: "secondary.dark" }}
-        />
-        {location}
-      </Typography>
-      <Typography {...styles.description}>{description}</Typography>
-      <Button {...styles.cta}>View this School</Button>
+      <Box sx={{ mt: "auto" }}>
+        <Typography {...styles.location}>
+          <Location
+            sx={{ width: "16px", height: "20px", color: "secondary.dark" }}
+          />
+          {region.name}
+        </Typography>
+        <Ellipsis limitOfLine={4} {...styles.description}>
+          {shortSummary}
+        </Ellipsis>
+        <Button {...styles.cta} href={school.slug}>
+          View this School
+        </Button>
+      </Box>
     </Box>
   );
 };
 
-export default KinderGroupCard;
+export default SchoolGridCard;

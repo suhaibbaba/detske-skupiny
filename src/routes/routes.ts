@@ -1,7 +1,7 @@
 export const routes = {
   home: "/",
   blogs: (slug?: string) =>
-    slug ? `/blog/${encodeURIComponent(slug)}` : "/blog",
+    slug ? `/blogs/${encodeURIComponent(slug)}` : "/blogs",
   authors: (slug?: string) =>
     slug ? `/author/${encodeURIComponent(slug)}` : "/author",
   about: "/about",
@@ -10,4 +10,8 @@ export const routes = {
   preschool: "/preschool",
   catalogs: (slug?: string) =>
     slug ? `/catalog/${encodeURIComponent(slug)}` : "/",
+  school: (regionSlug?: string, slug?: string) =>
+    slug && regionSlug
+      ? `/catalog/${encodeURIComponent(regionSlug)}/${encodeURIComponent(slug)}`
+      : "/",
 };

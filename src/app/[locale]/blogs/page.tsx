@@ -3,9 +3,9 @@ import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import { Box, BoxProps, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/blog/components/BlogCategories";
-import BlogCard from "@/app/[locale]/blog/components/BlogCard";
-import WritersSection from "@/app/[locale]/blog/components/WritersSection";
+import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
+import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
+import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
