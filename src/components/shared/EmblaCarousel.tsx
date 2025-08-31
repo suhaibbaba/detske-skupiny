@@ -1,8 +1,9 @@
 import React, { ReactNode, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { EmblaOptionsType } from "embla-carousel";
 import { Property } from "csstype";
+import Button from "@/components/ui/button";
 
 type EmblaCarouselProps = {
   options?: EmblaOptionsType;

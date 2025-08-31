@@ -3,7 +3,6 @@
 import {
   Box,
   BoxProps,
-  Button,
   ButtonProps,
   Container,
   ContainerProps,
@@ -13,6 +12,7 @@ import {
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   fields: {
@@ -97,6 +97,7 @@ const styles: NeighbourKinderGroupSectionStyles = {
 
 const InfoBlock = ({ fields }: Props) => {
   const link = parseLinkField(fields.cta?.link);
+
   return (
     <Box {...styles.section}>
       <Container {...styles.container}>

@@ -2,8 +2,6 @@ export const routes = {
   home: "/",
   blogs: (slug?: string) =>
     slug ? `/blogs/${encodeURIComponent(slug)}` : "/blogs",
-  authors: (slug?: string) =>
-    slug ? `/author/${encodeURIComponent(slug)}` : "/author",
   about: "/about",
   contactUs: "/contact-us",
   groups: "/groups",

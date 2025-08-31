@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Stack,
-  BoxProps,
-  ButtonProps,
-  StackProps,
-} from "@mui/material";
+import { Box, Stack, BoxProps, ButtonProps, StackProps } from "@mui/material";
 import React, { FC } from "react";
 import { BlogCategory } from "@/types";
+import Button from "@/components/ui/button";
 
 interface Props {
   categories?: BlogCategory[];

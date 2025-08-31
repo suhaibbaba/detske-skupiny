@@ -3,7 +3,6 @@
 import {
   Box,
   BoxProps,
-  Button,
   ButtonProps,
   Container,
   ContainerProps,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 import { SanityCtaField } from "@/sanity/types";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   fields: {
@@ -110,11 +110,11 @@ const MapCollection = ({ fields }: Props) => {
         <Typography {...styles.title}>{fields.title}</Typography>
         <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.filterWrapper}>
-          {fields.cta?.map((cta, idx) => {
+          {fields.cta?.map((cta) => {
             const link = parseLinkField(cta.link);
             return (
               <Button
-                key={link.url}
+                key={cta._key}
                 variant={cta.variant}
                 {...styles.filterButton}
               >

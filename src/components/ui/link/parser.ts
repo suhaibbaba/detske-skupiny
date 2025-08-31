@@ -2,6 +2,7 @@
  * Sanity LinkField Parser - TypeScript Method Functions
  * Collection of functions to parse and validate Sanity CMS link field structures
  */
+import { routes } from "@/routes";
 
 // Types and Interfaces
 interface ParserOptions {
@@ -30,7 +31,7 @@ interface SanityFile {
 }
 
 interface SanityLinkField {
-  _type?: string;
+  type?: string;
   href?: string;
   url?: string;
   text?: string;
@@ -38,10 +39,11 @@ interface SanityLinkField {
   target?: string;
   email?: string;
   phone?: string;
-  reference?: SanityReference;
-  _ref?: string;
-  asset?: SanityAsset;
-  file?: SanityFile;
+  internalLink?: {
+    _type: string;
+    slug: string;
+    [key: string]: any;
+  };
 }
 
 type LinkType =
@@ -63,15 +65,6 @@ interface ParsedLink {
   errors: string[];
 }
 
-interface LinkSummary {
-  type: LinkType;
-  hasText: boolean;
-  isValid: boolean;
-  errorCount: number;
-  target: string;
-}
-
-// Default configuration
 const defaultOptions: Required<ParserOptions> = {
   allowExternal: true,
   allowInternal: true,
@@ -119,9 +112,6 @@ function parseLinkField(
       case "phone":
         result.url = parsePhoneLink(linkField, config);
         break;
-      case "file":
-        result.url = parseFileLink(linkField, config);
-        break;
       default:
       // result.errors.push("Unknown link type");
     }
@@ -138,20 +128,19 @@ function parseLinkField(
  * Detect the type of link based on the field structure
  */
 function detectLinkType(linkField: SanityLinkField): LinkType {
-  if (linkField.href && typeof linkField.href === "string") {
-    const href = linkField.href.toLowerCase();
-    if (href.startsWith("mailto:")) return "email";
-    if (href.startsWith("tel:")) return "phone";
-    if (href.startsWith("http://") || href.startsWith("https://"))
-      return "external";
+  if (linkField.type === "email") {
+    return "email";
   }
 
-  if (linkField.reference || linkField._ref) return "internal";
-  if (linkField.asset || (linkField.file && linkField.file.asset))
-    return "file";
-  if (linkField.email) return "email";
-  if (linkField.phone) return "phone";
-  if (linkField.url || linkField.href) return "external";
+  if (linkField.type === "phone") {
+    return "phone";
+  }
+
+  if (linkField.type === "external") return "external";
+
+  if (linkField.type === "internal") {
+    return "internal";
+  }
 
   return "unknown";
 }
@@ -188,19 +177,28 @@ function parseInternalLink(
   linkField: SanityLinkField,
   config: Required<ParserOptions>,
 ): string {
-  if (!config.allowInternal) {
+  if (!config.allowInternal || !linkField.internalLink) {
     throw new Error("Internal links are not allowed");
   }
 
-  const ref =
-    linkField.reference?._ref || linkField._ref || linkField.reference;
-
-  if (!ref) {
-    throw new Error("Missing internal reference");
+  switch (linkField.internalLink?._type) {
+    case "regions":
+      return routes.catalogs(linkField.internalLink.slug);
+    case "blog":
+      return routes.blogs(linkField.internalLink.slug);
+    case "contactUs":
+      return routes.contactUs;
+    case "group":
+      return routes.groups;
+    case "home":
+      return routes.home;
+    case "preschool":
+      return routes.preschool;
+    case "about":
+      return routes.about;
+    default:
+      return routes.home;
   }
-
-  // Return the reference - in a real implementation, you'd resolve this to a URL
-  return `/_ref/${ref}`;
 }
 
 /**
@@ -244,27 +242,6 @@ function parsePhoneLink(
   }
 
   return `tel:${phone}`;
-}
-
-/**
- * Parse file/asset links
- */
-function parseFileLink(
-  linkField: SanityLinkField,
-  config: Required<ParserOptions>,
-): string {
-  if (!config.allowFile) {
-    throw new Error("File links are not allowed");
-  }
-
-  const asset = linkField.asset || linkField.file?.asset;
-
-  if (!asset) {
-    throw new Error("Missing file asset");
-  }
-
-  // Return asset reference - in real implementation, resolve to CDN URL
-  return asset.url || `/_asset/${asset._ref || asset._id}`;
 }
 
 /**
@@ -358,7 +335,6 @@ export type {
   SanityLinkField,
   LinkType,
   ParsedLink,
-  LinkSummary,
 };
 
 export { parseLinkField, parseMultipleLinkFields, cleanUrl };

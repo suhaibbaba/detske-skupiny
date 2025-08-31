@@ -3,7 +3,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardContent,
   CardMedia,
@@ -22,6 +21,7 @@ import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { MiniBlog } from "@/types/blog";
 import { formatDate } from "@/utilites/date";
 import { routes } from "@/routes";
+import Button from "@/components/ui/button";
 
 interface Props {
   blog: MiniBlog;

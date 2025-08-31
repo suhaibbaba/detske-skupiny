@@ -4,10 +4,7 @@ import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
 import React, { FC, useState } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import {
-  Link as SanityLink,
-  type LinkProps as SanityLinkProps,
-} from "sanity-plugin-link-field/component";
+import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
 import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
 
 interface LinkProps
@@ -43,6 +40,7 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
       </MuiLink>
     );
   }
+
   return (
     <MuiLink component={NextLink} {...styles} {...otherProps}>
       {children}

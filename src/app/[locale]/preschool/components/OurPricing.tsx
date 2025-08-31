@@ -5,7 +5,6 @@ import {
   Container,
   Typography,
   Paper,
-  Button,
   List,
   ListItem,
   ListItemText,
@@ -23,6 +22,7 @@ import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   fields: {

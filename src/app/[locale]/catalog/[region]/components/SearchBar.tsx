@@ -3,10 +3,10 @@ import {
   BoxProps,
   InputBase,
   InputBaseProps,
-  Button,
   ButtonProps,
 } from "@mui/material";
 import Search from "@/components/icons/Search";
+import Button from "@/components/ui/button";
 
 interface SearchBarStyles {
   wrapper?: BoxProps;

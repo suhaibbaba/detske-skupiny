@@ -1,13 +1,8 @@
-import {
-  Box,
-  Button,
-  Typography,
-  TypographyProps,
-  BoxProps,
-} from "@mui/material";
+import { Box, Typography, TypographyProps, BoxProps } from "@mui/material";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { School } from "@/sanity/types";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   school: School;

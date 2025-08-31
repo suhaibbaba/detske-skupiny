@@ -8,14 +8,12 @@ import {
   Drawer,
   IconButton,
   Box,
-  Button,
 } from "@mui/material";
-import Image from "next/image";
-// import logo from "@/public/dp-logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Menu from "../Menu";
 import Link from "next/link";
+import Button from "@/components/ui/button";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);

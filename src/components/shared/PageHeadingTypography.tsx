@@ -4,7 +4,6 @@ import React, { FC, useState } from "react";
 import {
   Box,
   BoxProps,
-  Button,
   ButtonProps,
   Typography,
   TypographyOwnProps,
@@ -13,6 +12,7 @@ import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { SanityCtaField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   title?: string | SanityRichTextField;
@@ -87,11 +87,11 @@ const PageHeadingTypography: FC<Props> = ({
       )}
       {ctaList && ctaList.length > 0 && (
         <Box {...styles.ctaWrapper}>
-          {ctaList.map((cta, idx) => {
+          {ctaList.map((cta) => {
             const link = parseLinkField(cta.link);
             return (
               <Button
-                key={`${link.text}_${idx}`}
+                key={cta._key}
                 {...styles.cta}
                 variant={cta.variant || "contained"}
                 href={link.url}

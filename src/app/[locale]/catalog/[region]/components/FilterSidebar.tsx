@@ -6,7 +6,6 @@ import {
   Typography,
   TypographyProps,
   Divider,
-  Button,
   ButtonProps,
   Checkbox,
   Chip,
@@ -21,6 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useRegionFilters } from "@/hooks/useRegionFilters";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import Button from "@/components/ui/button";
 
 interface FilterSidebarStyles {
   root?: BoxProps;

@@ -6,7 +6,6 @@ import {
   Typography,
   TypographyProps,
   ChipProps,
-  Button,
   ButtonProps,
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
@@ -14,6 +13,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import SchoolTag from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTag";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import Location from "@/components/icons/Location";
+import Button from "@/components/ui/button";
 
 interface Props {
   school: MiniSchool;

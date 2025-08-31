@@ -5,7 +5,6 @@ import {
   ContainerProps,
   Typography,
   TypographyProps,
-  Button,
   ButtonProps,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,6 +12,7 @@ import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import React from "react";
 import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
 
 interface Props {
   fields: {

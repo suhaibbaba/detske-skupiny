@@ -3,7 +3,6 @@
 import {
   Box,
   BoxProps,
-  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -17,6 +16,7 @@ import {
 import Textarea from "@/components/ui/textarea/Textarea";
 import { formatMessage } from "@/utilites/strings";
 import { FC } from "react";
+import Button from "@/components/ui/button";
 
 interface Props {}
 

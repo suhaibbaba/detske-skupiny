@@ -1,7 +1,6 @@
 import {
   Box,
   BoxProps,
-  Button,
   Container,
   Grid,
   Stack,
@@ -13,6 +12,7 @@ import { FC } from "react";
 import GroupItem from "@/app/[locale]/groups/components/groupItem";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { routes } from "@/routes";
+import Button from "@/components/ui/button";
 
 interface Props {
   group?: GroupPage;

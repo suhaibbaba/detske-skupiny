@@ -4,7 +4,6 @@ import React from "react";
 import {
   Box,
   BoxProps,
-  Button,
   ButtonProps,
   SvgIconProps,
   Typography,
@@ -16,6 +15,7 @@ import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import SchoolTag from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTag";
 import { routes } from "@/routes";
+import Button from "@/components/ui/button";
 
 interface Props {
   school: MiniSchool;
