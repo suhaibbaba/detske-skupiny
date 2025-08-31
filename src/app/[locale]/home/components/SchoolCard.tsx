@@ -16,6 +16,7 @@ import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import SchoolTag from "@/app/[locale]/catalog/[region]/[school]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {
   school: MiniSchool;
@@ -163,6 +164,8 @@ const styles: KinderGroupCardStyles = {
 };
 
 const SchoolCard = ({ school }: Props) => {
+  const translate = useTranslate();
+
   return (
     <Box {...styles.container}>
       <Box {...styles.imageWrapper}>
@@ -196,7 +199,7 @@ const SchoolCard = ({ school }: Props) => {
           {...styles.cta}
           href={routes.school(school.region.name, school.slug)}
         >
-          View this School
+          {translate("View this School")}
         </Button>
       </Box>
     </Box>

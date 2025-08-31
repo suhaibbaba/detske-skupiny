@@ -12,10 +12,8 @@ import FilterSidebar from "@/app/[locale]/catalog/[region]/components/FilterSide
 import SearchBar from "@/app/[locale]/catalog/[region]/components/SearchBar";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { PageProps } from "@/types";
-import { SchoolFilterQueryParams } from "@/sanity/types";
 import { toOptionalArray } from "@/utilites/strings";
 import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
-import SchoolCard from "@/app/[locale]/home/components/SchoolCard";
 import SchoolGridCard from "@/app/[locale]/catalog/[region]/components/SchoolGridCard";
 
 interface GroupsPageStyles {
