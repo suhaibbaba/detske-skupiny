@@ -1,8 +1,11 @@
 import { useTranslations as useIntlTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 function useTranslate(namespace = "common") {
-  const t = useIntlTranslations(namespace);
-  return t;
+  return useIntlTranslations(namespace);
 }
+
+export const getTranslateServer = async (locale: string) =>
+  await getTranslations({ locale, namespace: "common" });
 
 export default useTranslate;

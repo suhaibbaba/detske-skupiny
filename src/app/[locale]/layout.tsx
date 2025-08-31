@@ -9,7 +9,6 @@ import Header from "@/components/layout/Header";
 import { Fredoka } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getDictionary } from "@/sanity/queries/dictionary";
-import ClientIntlProvider from "@/i18n/ClientIntlProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,13 +30,11 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getDictionary(locale);
-
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={fredoka.className}>
         <NuqsAdapter>
-          <ClientIntlProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider locale={locale}>
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <Box>
@@ -46,7 +43,7 @@ export default async function LocaleLayout({
                 <Footer />
               </Box>
             </ThemeProvider>
-          </ClientIntlProvider>
+          </NextIntlClientProvider>
         </NuqsAdapter>
       </body>
     </html>

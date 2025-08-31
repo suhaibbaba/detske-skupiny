@@ -1,28 +1,20 @@
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Alert, Box, BoxProps, Container, ContainerProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import FilterSidebar from "@/app/[locale]/catalog/[region]/components/FilterSidebar";
-import SearchBar from "@/app/[locale]/catalog/[region]/components/SearchBar";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { PageProps } from "@/types";
 import { toOptionalArray } from "@/utilites/strings";
 import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
 import SchoolGridCard from "@/app/[locale]/catalog/[region]/components/SchoolGridCard";
+import SchoolsCount from "@/app/[locale]/catalog/[region]/components/SchoolCount";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
   pageContainer?: BoxProps;
   container?: ContainerProps;
   contentWrapper?: BoxProps;
-  resultsHeader?: BoxProps;
-  resultText?: TypographyProps;
   cardGrid?: BoxProps;
 }
 
@@ -64,23 +56,6 @@ const styles: GroupsPageStyles = {
       },
     },
   },
-  resultsHeader: {
-    sx: {
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-between",
-      alignItems: "flex-start",
-      gap: "24px",
-      width: "100%",
-    },
-  },
-  resultText: {
-    sx: {
-      fontSize: "28px",
-      fontWeight: 600,
-      color: "custom.ui13",
-    },
-  },
   cardGrid: {
     sx: {
       display: "grid",
@@ -97,13 +72,15 @@ const Page = async ({
   const { locale, region: regionSlug } = await params;
   const { area, tag, type } = (await searchParams) as SchoolFilterQueryType;
 
-  const { pageHero, schools } = await fetchSchoolByFilter({
+  const { pageHero, schools, totalSchools } = await fetchSchoolByFilter({
     locale,
     areas: toOptionalArray(area),
     tags: toOptionalArray(tag),
     types: toOptionalArray(type),
     regionSlug,
   });
+
+  const translate = await getTranslateServer(locale);
 
   return (
     <Box {...styles.pageContainer}>
@@ -117,16 +94,24 @@ const Page = async ({
       <Container {...styles.container}>
         <FilterSidebar locale={locale} regionSlug={regionSlug} />
         <Box {...styles.contentWrapper}>
-          <Box {...styles.resultsHeader}>
-            <Typography {...styles.resultText}>
-              Showing 10 of 15 Results
-            </Typography>
-            <SearchBar />
-          </Box>
+          <SchoolsCount
+            filterTotal={schools?.length || 0}
+            total={totalSchools}
+          />
           <Box {...styles.cardGrid}>
-            {schools?.map((school, i) => (
-              <SchoolGridCard key={school.id} school={school} />
-            ))}
+            {schools && schools.length > 0 ? (
+              <>
+                {schools.map((school, i) => (
+                  <SchoolGridCard key={school.id} school={school} />
+                ))}
+              </>
+            ) : (
+              <>
+                <Alert severity="info" sx={{ maxWidth: 600 }}>
+                  {translate("No Schools Found")}
+                </Alert>
+              </>
+            )}
           </Box>
         </Box>
       </Container>

@@ -199,45 +199,32 @@ const FilterSidebar = ({
       <Typography {...styles.sectionTitle}>
         Main Districts {filter?.region?.name ? `of ${filter?.region.name}` : ""}
       </Typography>
-      <FormGroup {...styles.formGroup}>
-        <Box key="all" {...styles.filterItem}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                size="small"
-                checked={selectedAreas.has("all")}
-                onChange={() => toggleArea("all")}
-              />
-            }
-            label="All"
-            disableTypography
-            {...styles.formControlLabel}
-          />
-          <Typography {...styles.counter}>
-            {filter?.totalSchools || 0}
-          </Typography>
-        </Box>
-        {filter?.mainAreas?.map((area) => {
-          const checked = selectedAreas.has(area.slug);
-          return (
-            <Box key={area.id} {...styles.filterItem}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={checked}
-                    onChange={() => toggleArea(area.slug)}
+      {filter?.mainAreas && filter.mainAreas.length > 0 && (
+        <Box sx={{ maxHeight: 190, overflowY: "auto" }}>
+          <FormGroup {...styles.formGroup}>
+            {filter.mainAreas?.map((area) => {
+              const checked = selectedAreas.has(area.slug);
+              return (
+                <Box key={area.id} {...styles.filterItem}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={checked}
+                        onChange={() => toggleArea(area.slug)}
+                      />
+                    }
+                    label={area.name}
+                    disableTypography
+                    {...styles.formControlLabel}
                   />
-                }
-                label={area.name}
-                disableTypography
-                {...styles.formControlLabel}
-              />
-              <Typography {...styles.counter}>{area.count}</Typography>
-            </Box>
-          );
-        })}
-      </FormGroup>
+                  <Typography {...styles.counter}>{area.count}</Typography>
+                </Box>
+              );
+            })}
+          </FormGroup>
+        </Box>
+      )}
 
       {/* OTHER AREAS */}
       {filter?.otherAreas && filter?.otherAreas.length > 0 && (
