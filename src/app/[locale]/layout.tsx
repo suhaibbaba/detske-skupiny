@@ -31,7 +31,7 @@ export default async function LocaleLayout({
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale}>
       <body className={fredoka.className}>
         <NuqsAdapter>
           <NextIntlClientProvider locale={locale}>

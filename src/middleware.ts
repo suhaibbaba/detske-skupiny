@@ -9,7 +9,6 @@ export function middleware(request: NextRequest) {
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
 
-  console.log({ hasLocale, pathname });
   // If not, redirect to default locale
   if (!hasLocale) {
     const newUrl = request.nextUrl.clone();

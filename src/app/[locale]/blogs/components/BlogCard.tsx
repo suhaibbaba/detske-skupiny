@@ -22,6 +22,7 @@ import { MiniBlog } from "@/types/blog";
 import { formatDate } from "@/utilites/date";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {
   blog: MiniBlog;
@@ -153,6 +154,7 @@ const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
   );
 
   const { title, slug, excerpt, image, publishedAt, readTime, author } = blog;
+  const translate = useTranslate();
 
   const url = routes.blogs(slug);
   return (
@@ -178,7 +180,7 @@ const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
             <Box>
               <Typography {...styles.authorName}>{author?.name}</Typography>
               <Typography {...styles.meta}>
-                {formatDate(publishedAt)} · {readTime} min read
+                {formatDate(publishedAt)} · {readTime} {translate("min read")}
               </Typography>
             </Box>
           </Box>

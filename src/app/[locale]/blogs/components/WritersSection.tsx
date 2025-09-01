@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   BoxProps,
@@ -8,6 +10,7 @@ import {
 import WriterCard from "@/app/[locale]/blogs/components/WriterCard";
 import { FC } from "react";
 import { Author } from "@/types/blog";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {
   writers?: Author[];
@@ -52,6 +55,8 @@ const styles: WritersSectionStyles = {
 };
 
 const WritersSection: FC<Props> = ({ writers }) => {
+  const translate = useTranslate();
+
   if (!writers || writers.length === 0) {
     return null;
   }
@@ -59,7 +64,7 @@ const WritersSection: FC<Props> = ({ writers }) => {
   return (
     <Box {...styles.container}>
       <Container>
-        <Typography {...styles.title}>Our Writers</Typography>
+        <Typography {...styles.title}>{translate("Our Writers")}</Typography>
         <Box {...styles.writersContainer}>
           {writers.map((writer) => (
             <WriterCard key={writer.id} {...writer} />

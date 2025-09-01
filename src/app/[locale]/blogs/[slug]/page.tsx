@@ -18,6 +18,7 @@ import { formatMessage } from "@/utilites/strings";
 import React from "react";
 import { formatDate } from "@/utilites/date";
 import RichText from "@/sanity/components/RichText";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -133,6 +134,8 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const { locale, slug } = await params;
   const { blog, categories, content } = await fetchBlogBySlug({ locale, slug });
 
+  const translate = await getTranslateServer(locale);
+
   return (
     <Box {...styles.container}>
       {content && (
@@ -153,8 +156,8 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
             <Box component="img" src={blog.image} {...styles.image} />
             <Box {...styles.authorMeta}>
               {formatMessage(
-                `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} min read`,
-                "By",
+                `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} ${translate("min read")}`,
+                translate("By"),
                 <Avatar
                   alt={blog.author?.name}
                   src={blog.author?.image}
