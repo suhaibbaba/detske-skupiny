@@ -38,7 +38,7 @@ const Page = async ({ params }: PageProps) => {
         />
       </PageLayout>
       {groups?.map((group) => (
-        <GroupSection key={group.id} group={group} />
+        <GroupSection key={group.id} group={group} locale={locale} />
       ))}
     </Box>
   );

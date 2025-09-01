@@ -14,7 +14,6 @@ export interface SchoolFilterModel {
   totalSchools: number;
   totalSchoolsFiltered: number;
   mainAreas: (Area & { count: number })[];
-  otherAreas: (Area & { count: number })[];
   tags: (SchoolTag & { count: number })[];
   types: (SchoolCategory & { count: number })[];
 }

@@ -185,7 +185,7 @@ const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
             </Box>
           </Box>
           <Button {...styles.readNowButton} href={url}>
-            Read Now
+            {translate("Read Now")}
           </Button>
         </Box>
       </CardContent>

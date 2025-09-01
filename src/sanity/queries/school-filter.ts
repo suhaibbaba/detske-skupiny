@@ -54,28 +54,7 @@ export const mainAreasQuery = groq`
     (
       $regionSlug == "all" ||
       region->slug.current == $regionSlug
-    ) &&
-    coalesce(isMain, false) == true
-  ]{
-    "id": _id,
-    name,
-    "slug": slug.current,
-    "count": count(*[
-      _type == "schools" &&
-      area._ref == ^._id
-    ])
-  } | order(name asc)
-`;
-
-/** Other areas (supports "all") */
-export const otherAreasQuery = groq`
-  *[
-    _type == "areas" &&
-    (
-      $regionSlug == "all" ||
-      region->slug.current == $regionSlug
-    ) &&
-    coalesce(isMain, false) == false
+    )
   ]{
     "id": _id,
     name,
@@ -133,7 +112,6 @@ export async function fetchSchoolFilterQuery(params: SchoolFilterQueryParams) {
     "totalSchools": ${totalSchoolsQuery},
     "totalSchoolsFiltered": ${totalSchoolsFilteredQuery},
     "mainAreas": ${mainAreasQuery},
-    "otherAreas": ${otherAreasQuery},
     "tags": ${tagsQuery},
     "types": ${typesQuery}
   }`;

@@ -24,10 +24,7 @@ import InfoCardGrid from "@/app/[locale]/catalog/[region]/[school]/components/In
 import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
-import {
-  parseLinkField,
-  parseMultipleLinkFields,
-} from "@/components/ui/link/parser";
+import { routes } from "@/routes";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -111,7 +108,7 @@ const styles: PageStyles = {
 const Page = async ({ params }: PageProps<{ school: string }>) => {
   const { school: schoolSlug, locale } = await params;
   if (!schoolSlug) {
-    return redirect("/");
+    return redirect(routes.home);
   }
 
   const { pageHero, school } = await fetchSchoolBySlug({

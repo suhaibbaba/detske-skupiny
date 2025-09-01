@@ -9,7 +9,7 @@ interface Props {
   schools: MiniSchool[];
 }
 
-const SchoolsCarousel: FC<Props> = async ({ schools }) => {
+const SchoolsCarousel: FC<Props> = ({ schools }) => {
   return (
     <EmblaCarousel
       gap={24}

@@ -17,6 +17,7 @@ import Textarea from "@/components/ui/textarea/Textarea";
 import { formatMessage } from "@/utilites/strings";
 import { FC } from "react";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {}
 
@@ -51,19 +52,22 @@ const styles: ContactUsStyles = {
 
 const ContactForm: FC<Props> = (props) => {
   const theme = useTheme();
+  const translate = useTranslate();
 
   return (
     <Box {...styles.container}>
       <Grid container rowSpacing={3} columnSpacing={4}>
         <Grid {...styles.fullWidthGrid}>
-          <Typography {...styles.title}>{"Send Your Inquiry"}</Typography>
+          <Typography {...styles.title}>
+            {translate("Send Your Inquiry")}
+          </Typography>
         </Grid>
         <Grid {...styles.fullWidthGrid}>
           <Typography>{"formDescription"}</Typography>
         </Grid>
         <Grid {...styles.halfWidthGrid}>
           <TextField
-            placeholder={"Your name"}
+            placeholder={translate("Your name")}
             variant="outlined"
             fullWidth
             className="rounded"
@@ -71,7 +75,7 @@ const ContactForm: FC<Props> = (props) => {
         </Grid>
         <Grid {...styles.halfWidthGrid}>
           <TextField
-            placeholder={"name@example.com"}
+            placeholder={translate("name@example.com")}
             variant="outlined"
             fullWidth
             className="rounded"
@@ -81,7 +85,7 @@ const ContactForm: FC<Props> = (props) => {
           <Textarea
             aria-label="minimum height"
             minRows={5}
-            placeholder={"Write text here ..."}
+            placeholder={translate("Write text here ...")}
           />
         </Grid>
         <Grid {...styles.fullWidthGrid}>
@@ -91,20 +95,23 @@ const ContactForm: FC<Props> = (props) => {
               label={
                 <Typography fontSize="12px">
                   {formatMessage(
-                    "By submitting this form, you confirm that you have read and agree to {0} and Privacy Statement {1}",
+                    translate(
+                      "By submitting this form, you confirm that you have read and agree to {0} and Privacy Statement {1}",
+                    ),
                     <Typography
                       fontSize="inherit"
                       color={theme.palette.custom.ui1}
                       component="span"
                     >
                       Terms of Service
+                      {translate("Terms of Service")}
                     </Typography>,
                     <Typography
                       fontSize="inherit"
                       color={theme.palette.custom.ui1}
                       component="span"
                     >
-                      Privacy Statement
+                      {translate("Privacy Statement")}
                     </Typography>,
                   )}
                 </Typography>
@@ -114,7 +121,7 @@ const ContactForm: FC<Props> = (props) => {
         </Grid>
         <Grid size={12}>
           <Button variant="contained" fullWidth>
-            {"Send Message"}
+            {translate("Send Message")}
           </Button>
         </Grid>
       </Grid>

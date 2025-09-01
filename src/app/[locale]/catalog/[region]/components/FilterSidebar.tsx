@@ -226,36 +226,6 @@ const FilterSidebar = ({
         </Box>
       )}
 
-      {/* OTHER AREAS */}
-      {filter?.otherAreas && filter?.otherAreas.length > 0 && (
-        <>
-          <Divider {...styles.divider} />
-          <Typography {...styles.sectionTitle}>Other Districts</Typography>
-          <FormGroup {...styles.formGroup}>
-            {filter?.otherAreas.map((area) => {
-              const checked = selectedAreas.has(area.slug);
-              return (
-                <Box key={area.id} {...styles.filterItem}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size="small"
-                        checked={checked}
-                        onChange={() => toggleArea(area.slug)}
-                      />
-                    }
-                    label={area.name}
-                    disableTypography
-                    {...styles.formControlLabel}
-                  />
-                  <Typography {...styles.counter}>{area.count}</Typography>
-                </Box>
-              );
-            })}
-          </FormGroup>
-        </>
-      )}
-
       {/* TAGS */}
       {filter?.tags && filter?.tags?.length > 0 && (
         <>

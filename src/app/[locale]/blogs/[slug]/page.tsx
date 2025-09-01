@@ -172,22 +172,24 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
           <Box>
             <RichText>{blog.content}</RichText>
           </Box>
-          <Box {...styles.bioBox}>
-            <Box {...styles.authorBox}>
-              {formatMessage(
-                `{0}{1}`,
-                <Avatar
-                  alt={blog.author?.name}
-                  src={blog.author?.image}
-                  {...styles.avatar}
-                />,
-                <Typography {...styles.authorText} key="author">
-                  {blog.author?.name}
-                </Typography>,
-              )}
+          {blog.author && (
+            <Box {...styles.bioBox}>
+              <Box {...styles.authorBox}>
+                {formatMessage(
+                  `{0}{1}`,
+                  <Avatar
+                    alt={blog.author.name}
+                    src={blog.author.image}
+                    {...styles.avatar}
+                  />,
+                  <Typography {...styles.authorText} key="author">
+                    {blog.author.name}
+                  </Typography>,
+                )}
+              </Box>
+              <Typography {...styles.paragraph}>{blog.author.bio}</Typography>
             </Box>
-            <Typography {...styles.paragraph}>{blog.author?.bio}</Typography>
-          </Box>
+          )}
         </Box>
       </Container>
     </Box>

@@ -59,6 +59,7 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
     sx: {
       padding: "14px 10px",
       letterSpacing: 0,
+      minWidth: "172px",
     },
   },
 };

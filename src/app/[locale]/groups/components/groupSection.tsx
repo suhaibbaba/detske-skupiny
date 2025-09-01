@@ -1,11 +1,13 @@
 import {
   Box,
   BoxProps,
+  ButtonProps,
   Container,
   Grid,
   Stack,
   StackProps,
   Typography,
+  TypographyProps,
 } from "@mui/material";
 import { GroupPage } from "@/sanity/types";
 import { FC } from "react";
@@ -13,14 +15,19 @@ import GroupItem from "@/app/[locale]/groups/components/groupItem";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface Props {
+  locale: string;
   group?: GroupPage;
 }
 
 interface GroupSectionStyles {
   container?: (backgroundCover?: string) => BoxProps;
   stack?: StackProps;
+  sectionTitle?: TypographyProps;
+  viewAllContainer?: BoxProps;
+  viewAllButton?: ButtonProps;
 }
 
 const styles: GroupSectionStyles = {
@@ -38,15 +45,35 @@ const styles: GroupSectionStyles = {
     alignItems: "center",
     gap: "20px",
   },
+  sectionTitle: {
+    variant: "h3",
+    sx: {
+      my: "38px",
+      textTransform: "uppercase",
+    },
+  },
+  viewAllContainer: {
+    sx: {
+      mt: "38px",
+      display: "flex",
+      justifyContent: "center",
+    },
+  },
+  viewAllButton: {
+    variant: "ghost",
+  },
 };
 
-const GroupSection: FC<Props> = ({ group }) => {
+const GroupSection: FC<Props> = async ({ locale, group }) => {
   if (!group) {
     return null;
   }
 
+  const translate = await getTranslateServer(locale);
+
   const { backgroundCover, name, schoolCategories, areas, totalSchools, slug } =
     group;
+
   return (
     <Box
       component="section"
@@ -55,20 +82,24 @@ const GroupSection: FC<Props> = ({ group }) => {
       <Container>
         <Stack {...styles.stack}>
           <Box>
-            <Typography variant="h2" textAlign="center">
-              Kindergarten Schools in {name}
+            <Typography variant="h2" textAlign="left">
+              {translate("Kindergarten Schools in {region}", {
+                region: name,
+              })}
             </Typography>
             <Typography>
-              There are a total of <strong>{totalSchools}</strong> schools
-              listed in Prague
+              {translate(
+                "There are a total of {totalSchools} schools listed in {region}",
+                {
+                  totalSchools,
+                  region: name,
+                },
+              )}
             </Typography>
           </Box>
-          <Button variant="outlined" href={routes.catalogs(slug)}>
-            View all schools in {name}
-          </Button>
         </Stack>
-        <Typography variant="h3" my="38px">
-          BY REGION
+        <Typography {...styles.sectionTitle}>
+          {translate("By Region")}
         </Typography>
         <Grid container spacing="24px">
           {areas.map((area) => (
@@ -77,8 +108,8 @@ const GroupSection: FC<Props> = ({ group }) => {
             </Grid>
           ))}
         </Grid>
-        <Typography variant="h3" my="38px">
-          BY CATEGORY
+        <Typography {...styles.sectionTitle}>
+          {translate("By Category")}
         </Typography>
         <Grid container spacing="24px">
           {schoolCategories.map((category) => (
@@ -87,6 +118,11 @@ const GroupSection: FC<Props> = ({ group }) => {
             </Grid>
           ))}
         </Grid>
+        <Box {...styles.viewAllContainer}>
+          <Button {...styles.viewAllButton} href={routes.catalogs(slug)}>
+            {translate("View all schools in {region}", { region: name })}
+          </Button>
+        </Box>
       </Container>
     </Box>
   );

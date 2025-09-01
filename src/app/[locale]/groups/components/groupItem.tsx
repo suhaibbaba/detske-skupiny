@@ -41,6 +41,10 @@ const styles: GroupItemStyles = {
       border: 1,
       padding: "16px",
       borderColor: "#EDEEF0",
+      transition: "all 300ms ease-in-out",
+      "&:hover": {
+        backgroundColor: "#EDDDFC",
+      },
     },
   },
   emoji: {
