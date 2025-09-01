@@ -61,7 +61,7 @@ const styles: HeroSectionStyles = {
       sx: {
         maxWidth: {
           xs: "100%",
-          md: "489px",
+          md: "540px",
         },
         alignItems: "flex-start",
       },

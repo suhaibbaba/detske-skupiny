@@ -12,11 +12,13 @@ import {
   alpha,
   Chip,
   ChipProps,
+  TypographyProps,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { routes } from "@/routes";
+import { ellipses } from "@/utilites/strings";
 
 interface Props {
   school: MiniSchool;
@@ -27,6 +29,7 @@ interface PreschoolCardStyles {
   cardMedia?: CardMediaProps;
   cardContent?: CardContentProps;
   locationChip?: ChipProps;
+  schoolTitle?: TypographyProps;
 }
 
 const styles: PreschoolCardStyles = {
@@ -88,6 +91,14 @@ const styles: PreschoolCardStyles = {
       },
     }),
   },
+  schoolTitle: {
+    variant: "h4",
+    sx: {
+      fontWeight: "500",
+      mb: 0,
+      ...ellipses(1),
+    },
+  },
 };
 
 const PreschoolCard: FC<Props> = ({ school }) => {
@@ -109,7 +120,7 @@ const PreschoolCard: FC<Props> = ({ school }) => {
           )}
         </Box>
         <CardContent {...styles.cardContent}>
-          <Typography variant="h4" fontWeight={500} component="div">
+          <Typography {...styles.schoolTitle} title={school.name}>
             {school.name}
           </Typography>
         </CardContent>

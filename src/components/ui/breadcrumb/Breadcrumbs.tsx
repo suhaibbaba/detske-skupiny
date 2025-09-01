@@ -12,6 +12,10 @@ import { usePathname } from "next/navigation";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { useLocale } from "use-intl";
 
+interface Props {
+  addSpace?: boolean;
+}
+
 // Segments to exclude from breadcrumb display but keep in URLs
 const excludeNavigation = ["catalog"];
 
@@ -44,7 +48,7 @@ const styles: BreadcrumbsStyles = {
   },
 };
 
-const Breadcrumbs: React.FC = () => {
+const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
   const pathname = usePathname();
   const locale = useLocale();
 
@@ -95,7 +99,7 @@ const Breadcrumbs: React.FC = () => {
     <MuiBreadcrumbs
       separator={<ChevronRight sx={{ fontSize: "10px" }} />}
       aria-label="breadcrumb"
-      sx={{ mb: "40px" }}
+      sx={{ mb: addSpace ? "40px" : 0 }}
     >
       {items.slice(0, -1).map((item, index) => (
         <Link key={item.href} href={item.href} {...styles.link}>

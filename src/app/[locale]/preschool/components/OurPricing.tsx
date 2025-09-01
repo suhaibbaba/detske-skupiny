@@ -28,7 +28,6 @@ interface Props {
   fields: {
     title: string;
     subtitle: string;
-    cta?: SanityCtaField;
     mostPopularImage?: SanityImageField;
     plans: {
       name: string;
@@ -175,7 +174,6 @@ const styles: PricingStyles = {
 };
 
 const OurPricing: FC<Props> = ({ fields }) => {
-  const link = parseLinkField(fields.cta?.link);
   return (
     <Box {...styles.container}>
       <Container>
@@ -184,47 +182,51 @@ const OurPricing: FC<Props> = ({ fields }) => {
           <Typography {...styles.subtitle}>{fields.subtitle}</Typography>
         </Box>
         <Box {...styles.cardsWrapper}>
-          {fields.plans?.map((plan) => (
-            <Paper key={plan.name} {...styles.card}>
-              {plan.isMostPopular && (
-                <Box
-                  src={urlImageFor(fields.mostPopularImage)}
-                  component="img"
-                  {...styles.mostPopular}
-                />
-              )}
-              <Typography {...styles.planLabel}>{plan.name}</Typography>
-              <Typography {...styles.planDescription}>
-                {plan.description}
-              </Typography>
-              <Typography {...styles.price}>{plan.price}</Typography>
-              <List {...styles.featureList}>
-                {plan.features?.map((f) => (
-                  <ListItem key={f.label} {...styles.featureItem}>
-                    <Box
-                      {...styles.featureIcon}
-                      sx={{
-                        ...styles.featureIcon?.sx,
-                        color: f.included ? "success.main" : "error.main",
-                      }}
-                    >
-                      {f.included ? <CheckIcon /> : <CloseIcon />}
-                    </Box>
-                    <ListItemText primary={f.label} />
-                  </ListItem>
-                ))}
-              </List>
-              {plan.cta && (
-                <Button
-                  {...styles.button}
-                  variant={plan.cta.variant}
-                  href={link.url}
-                >
-                  {link.text}
-                </Button>
-              )}
-            </Paper>
-          ))}
+          {fields.plans?.map((plan) => {
+            const link = parseLinkField(plan.cta.link);
+
+            return (
+              <Paper key={plan.name} {...styles.card}>
+                {plan.isMostPopular && (
+                  <Box
+                    src={urlImageFor(fields.mostPopularImage)}
+                    component="img"
+                    {...styles.mostPopular}
+                  />
+                )}
+                <Typography {...styles.planLabel}>{plan.name}</Typography>
+                <Typography {...styles.planDescription}>
+                  {plan.description}
+                </Typography>
+                <Typography {...styles.price}>{plan.price}</Typography>
+                <List {...styles.featureList}>
+                  {plan.features?.map((f) => (
+                    <ListItem key={f.label} {...styles.featureItem}>
+                      <Box
+                        {...styles.featureIcon}
+                        sx={{
+                          ...styles.featureIcon?.sx,
+                          color: f.included ? "success.main" : "error.main",
+                        }}
+                      >
+                        {f.included ? <CheckIcon /> : <CloseIcon />}
+                      </Box>
+                      <ListItemText primary={f.label} />
+                    </ListItem>
+                  ))}
+                </List>
+                {link && (
+                  <Button
+                    {...styles.button}
+                    variant={plan.cta.variant}
+                    href={link?.url}
+                  >
+                    {link?.text}
+                  </Button>
+                )}
+              </Paper>
+            );
+          })}
         </Box>
       </Container>
     </Box>

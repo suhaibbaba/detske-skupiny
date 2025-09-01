@@ -27,7 +27,7 @@ const styles: ListOfSchoolsStyles = {
       gap: "54px",
       pt: {
         xs: "120px",
-        sm: "80px",
+        sm: "20px",
       },
       pb: {
         xs: "100px",
