@@ -13,6 +13,7 @@ import {
   AccordionProps,
 } from "@mui/material";
 import ChevronDown from "@/components/icons/ChevronDown";
+import { sharedClassNames } from "@/app/[locale]/home/utility";
 
 interface FaqItem {
   question: string;
@@ -94,7 +95,7 @@ const styles: FaqSectionStyles = {
 
 const FaqSection = ({ fields }: Props) => {
   return (
-    <Box {...styles.section}>
+    <Box {...styles.section} className={sharedClassNames.faq}>
       <Container {...styles.container}>
         <Typography {...styles.heading}>{fields.title}</Typography>
         <Box {...styles.accordionList}>

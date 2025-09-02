@@ -9,6 +9,7 @@ import {
 import { SanityCtaField } from "@/sanity/types";
 import { fetchMiniSchools } from "@/sanity/queries";
 import SchoolCard from "@/app/[locale]/home/components/SchoolCard";
+import { sharedClassNames } from "@/app/[locale]/home/utility";
 
 interface Props {
   locale: string;
@@ -77,7 +78,7 @@ const LatestSchoolCollection = async ({ fields, locale }: Props) => {
   });
 
   return (
-    <Box {...styles.section}>
+    <Box {...styles.section} className={sharedClassNames.schools}>
       <Container {...styles.container}>
         <Typography {...styles.title}>{fields.title}</Typography>
         <Typography {...styles.description}>{fields.description}</Typography>

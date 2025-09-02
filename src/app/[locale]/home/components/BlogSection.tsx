@@ -10,6 +10,7 @@ import BlogCard, {
   BlogsCardStylesType,
 } from "@/app/[locale]/blogs/components/BlogCard";
 import { fetchMiniBlogs } from "@/sanity/queries";
+import { sharedClassNames } from "@/app/[locale]/home/utility";
 
 interface Props {
   locale: string;
@@ -71,7 +72,7 @@ const BlogSection = async ({ locale, fields }: Props) => {
     return null;
   }
   return (
-    <Box {...styles.section} data-test-selector="blog-section">
+    <Box {...styles.section} className={sharedClassNames.blog}>
       <Container {...styles.container}>
         <Box>
           <Typography {...styles.heading}>{fields.title}</Typography>

@@ -1,0 +1,178 @@
+"use client";
+
+import { useState } from "react";
+import {
+  AppBar,
+  AppBarProps,
+  Toolbar,
+  ToolbarProps,
+  Container,
+  Drawer,
+  IconButton,
+  IconButtonProps,
+  Box,
+  BoxProps,
+  SvgIconProps,
+  ButtonProps,
+  DrawerProps,
+} from "@mui/material";
+import Link from "next/link";
+import Button from "@/components/ui/button";
+import { routes } from "@/routes";
+import Menu from "@/components/shared/Menu";
+import { Header } from "@/types/header";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
+
+interface Props {
+  header?: Header;
+}
+
+interface HeaderStyles {
+  root: BoxProps;
+  appBar: AppBarProps;
+  toolbar: ToolbarProps;
+  logo: BoxProps;
+  drawerLogoContainer: BoxProps;
+  menuButton: IconButtonProps;
+  menuIcon: SvgIconProps;
+  cta?: ButtonProps;
+  drawer?: DrawerProps;
+}
+
+const styles: HeaderStyles = {
+  root: {
+    sx: {
+      borderBottom: 1,
+      borderColor: "#E7E8EA",
+      boxShadow:
+        "0px 1px 8px 1px rgba(0, 0, 0, 0.08), 0px 1px 7px 0px rgba(0, 0, 0, 0.1)",
+    },
+  },
+  appBar: {
+    sx: {
+      backgroundColor: "white",
+      py: 1.5,
+      boxShadow: "none",
+    },
+  },
+  toolbar: {
+    sx: {
+      display: "flex",
+      justifyContent: "space-between",
+      px: "0 !important",
+    },
+  },
+  logo: {
+    sx: {
+      width: "55px",
+    },
+  },
+  drawerLogoContainer: {
+    sx: {
+      pb: "8px",
+      mb: "12px",
+      borderBottom: `1px solid var(--mui-palette-custom-ui14)`,
+    },
+  },
+  menuButton: {
+    sx: {
+      display: {
+        md: "none",
+      },
+    },
+  },
+  menuIcon: {
+    sx: {
+      color: "primary.main",
+      fontSize: 40,
+    },
+  },
+  cta: {
+    variant: "primary",
+    sx: {
+      padding: "10px 20px",
+      display: {
+        xs: "none",
+        md: "flex",
+      },
+    },
+  },
+  drawer: {
+    sx: {
+      display: {
+        md: "none",
+      },
+    },
+  },
+};
+
+const HeaderClientPage = ({ header }: Props) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const scrollToSection = (className: string, closeMenu?: boolean) => {
+    const el = document.querySelector(`.${className}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (closeMenu) {
+      setMenuOpen(false);
+    }
+  };
+
+  if (!header) {
+    return null;
+  }
+
+  return (
+    <Box {...styles.root}>
+      <Container>
+        <AppBar position="static" {...styles.appBar}>
+          <Toolbar {...styles.toolbar}>
+            <Link href={routes.home}>
+              <Box component="img" src={header.logo} {...styles.logo} />
+            </Link>
+            <IconButton
+              {...styles.menuButton}
+              onClick={() => setMenuOpen(true)}
+            >
+              <HeaderMenuIcon {...styles.menuIcon} />
+            </IconButton>
+            <Drawer
+              anchor="left"
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              ModalProps={{ keepMounted: true }}
+              {...styles.drawer}
+            >
+              <Box sx={{ p: "8px 20px 8px 8px" }}>
+                <Box {...styles.drawerLogoContainer}>
+                  <Box component="img" src={header.logo} {...styles.logo} />
+                </Box>
+                <Menu
+                  menuItems={header.menuItems}
+                  onClick={(className) => scrollToSection(className, true)}
+                />
+              </Box>
+            </Drawer>
+            <Menu
+              menuItems={header.menuItems}
+              onClick={scrollToSection}
+              hideOnMobile={true}
+            />
+            {header.cta && (
+              <Button
+                startIcon={<AddCircleRoundedIcon />}
+                variant={header.cta.variant}
+                link={header.cta.link}
+                {...styles.cta}
+              />
+            )}
+          </Toolbar>
+        </AppBar>
+      </Container>
+    </Box>
+  );
+};
+
+export default HeaderClientPage;

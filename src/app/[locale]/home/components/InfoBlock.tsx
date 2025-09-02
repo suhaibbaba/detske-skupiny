@@ -13,6 +13,7 @@ import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import { sharedClassNames } from "@/app/[locale]/home/utility";
 
 interface Props {
   fields: {
@@ -99,7 +100,7 @@ const InfoBlock = ({ fields }: Props) => {
   const link = parseLinkField(fields.cta?.link);
 
   return (
-    <Box {...styles.section}>
+    <Box {...styles.section} className={sharedClassNames.infoBlock}>
       <Container {...styles.container}>
         <Box {...styles.textBlock}>
           <Typography {...styles.heading}>{fields.title}</Typography>

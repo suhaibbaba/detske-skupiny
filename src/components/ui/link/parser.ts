@@ -181,7 +181,12 @@ function parseInternalLink(
     throw new Error("Internal links are not allowed");
   }
 
-  switch (linkField.internalLink?._type) {
+  const type =
+    linkField.internalLink?._type === "reference"
+      ? linkField.internalLink?._ref
+      : linkField.internalLink?._type;
+
+  switch (type) {
     case "regions":
       return routes.catalogs(linkField.internalLink.slug);
     case "blog":
@@ -192,7 +197,7 @@ function parseInternalLink(
       return routes.groups;
     case "home":
       return routes.home;
-    case "preschool":
+    case "preschoolPage":
       return routes.preschool;
     case "about":
       return routes.about;

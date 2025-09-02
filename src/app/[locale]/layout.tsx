@@ -38,7 +38,7 @@ export default async function LocaleLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <Box>
-                <Header />
+                <Header locale={locale} />
                 {children}
                 <Footer />
               </Box>
