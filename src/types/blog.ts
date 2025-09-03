@@ -5,6 +5,7 @@ export type Blog = {
   title: string;
   slug: string;
   excerpt?: string;
+  category?: BlogCategory;
   content?: SanityRichTextField;
   image?: string;
   readTime?: number;

@@ -6,6 +6,7 @@ import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
 import BlogCard from "@/app/[locale]/blogs/components/BlogCard";
 import WritersSection from "@/app/[locale]/blogs/components/WritersSection";
+import Alert from "@/components/ui/alert";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
@@ -42,10 +43,14 @@ const styles: BlogsStyles = {
   },
 };
 
-const BlogsPage = async ({ params }: PageProps) => {
+const BlogsPage = async ({ params, searchParams }: PageProps) => {
   const { locale } = await params;
+  const { category: categorySelected } = (await searchParams) as {
+    category?: string;
+  };
   const { blogs, writers, content, categories } = await fetchBlogPage({
     locale,
+    categorySelected: categorySelected || "",
   });
 
   return (
@@ -61,11 +66,21 @@ const BlogsPage = async ({ params }: PageProps) => {
         </PageLayout>
       )}
       <Container>
-        <BlogCategories categories={categories} />
+        <BlogCategories
+          categories={categories}
+          categorySelected={categorySelected}
+        />
         <Box {...styles.blogsList}>
           {blogs?.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />
           ))}
+          {(!blogs || blogs.length == 0) && (
+            <Alert
+              severity="info"
+              sx={{ maxWidth: 600, gridColumn: "1/3" }}
+              message={"No Blogs Found"}
+            />
+          )}
         </Box>
       </Container>
       <WritersSection writers={writers} />

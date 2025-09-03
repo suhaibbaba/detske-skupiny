@@ -4,15 +4,25 @@ import { Author, Blog, BlogCategory, MiniBlog } from "@/types/blog";
 import { PageHero, QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 
-export async function fetchBlogPage(params: QueryParams) {
+export async function fetchBlogPage(
+  params: QueryParams & { categorySelected?: string },
+) {
   const query = groq`{
     "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
-    "categories": *[_type == "blog" && ${languageQuery}].categories[]->{
+    "categories": *[_type == "blogCategories" && ${languageQuery}] {
       "id": _id,
       name,
       "slug": slug.current
     },
-    "blogs": *[_type == "blogs" && ${languageQuery}] | order(publishedAt desc){
+    "blogs": *[
+      _type == "blogs" &&
+      ${languageQuery} &&
+      (
+        !defined($categorySelected) || 
+        $categorySelected == "" ||
+        category->slug.current == $categorySelected
+      )
+    ] | order(publishedAt desc){
       "id": _id,
       title,
       "slug": slug.current,
@@ -20,6 +30,10 @@ export async function fetchBlogPage(params: QueryParams) {
       "image": image.asset->url,
       readTime,
       publishedAt,
+      category->{
+        "id": _id,
+        name,
+      },
       author->{
         "id": _id,
         name,

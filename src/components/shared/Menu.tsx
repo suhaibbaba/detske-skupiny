@@ -24,10 +24,13 @@ const styles: MenuStyles = {
         xs: "flex-start",
         md: "center",
       },
-      flexDirection: { xs: "column", md: "row" },
+      flexDirection: {
+        xs: "column",
+        md: "row",
+      },
       gap: {
         xs: 2,
-        md: 0,
+        md: "36px",
       },
     },
   },

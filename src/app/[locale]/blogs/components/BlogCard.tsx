@@ -169,7 +169,9 @@ const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
         }}
       />
       <CardContent {...styles.cardContent}>
-        <Typography {...styles.tag}>Article</Typography>
+        {blog.category && (
+          <Typography {...styles.tag}>{blog.category.name}</Typography>
+        )}
         <Link href={url} {...styles.title}>
           {title}
         </Link>

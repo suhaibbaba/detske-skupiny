@@ -45,7 +45,8 @@ const styles: BlogDetailStyles = {
     section: {
       sx: {
         background: "var(--mui-palette-gradients-ui2)",
-        pb: "150px",
+        pb: "100px",
+        mb: "100px",
       },
     },
   },
@@ -132,7 +133,7 @@ const styles: BlogDetailStyles = {
 
 const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const { locale, slug } = await params;
-  const { blog, categories, content } = await fetchBlogBySlug({ locale, slug });
+  const { blog, content } = await fetchBlogBySlug({ locale, slug });
 
   const translate = await getTranslateServer(locale);
 
@@ -147,7 +148,6 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
         </PageLayout>
       )}
       <Container>
-        <BlogCategories categories={categories} />
         <Box {...styles.detailsHintBox} data-test-selector="details-hint">
           <Box>
             <Typography variant="h2" mb="24px">

@@ -5,7 +5,7 @@ import {
   Button as MuiButton,
   ButtonProps as MuiButtonProps,
 } from "@mui/material";
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
 import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
@@ -19,7 +19,7 @@ interface ButtonProps extends Omit<MuiButtonProps, "href"> {
 const buttonStyles: MuiButtonProps = {};
 
 const Button: FC<ButtonProps> = ({ children, sx, link, ...otherProps }) => {
-  const [styles] = useState(() => mergeMuiProps(buttonStyles, { sx }));
+  const styles = useMemo(() => mergeMuiProps(buttonStyles, { sx }), [sx]);
 
   if (link) {
     const passedProps = parseLinkField(link);

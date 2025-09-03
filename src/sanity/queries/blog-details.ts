@@ -7,11 +7,6 @@ import { languageQuery } from "@/sanity/queries/index";
 export async function fetchBlogBySlug(params: QueryParams & { slug: string }) {
   const query = groq`{
     "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
-    "categories": *[_type == "blog" && ${languageQuery}].categories[]->{
-      "id": _id,
-      name,
-      "slug": slug.current
-    },
     "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
       "id": _id,
       title,
@@ -35,7 +30,6 @@ export async function fetchBlogBySlug(params: QueryParams & { slug: string }) {
 
   return client.fetch<{
     content: PageHero;
-    categories?: BlogCategory[];
     blog: Blog;
   }>(query, params);
 }
