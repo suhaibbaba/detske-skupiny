@@ -59,7 +59,7 @@ const styles: GroupsPageStyles = {
   cardGrid: {
     sx: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 278px))",
       gap: "26px",
     },
   },
