@@ -15,7 +15,9 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
   border: 1px solid ${theme.palette.custom.ui2};
   width: 100%;
   transition: all 0.3s ease;
-    
+  font-size: 15px;
+  font-weight: normal;
+  
   /* firefox */
   &:focus-visible {
     outline: 0;
@@ -26,12 +28,12 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
   }
 
   &:focus {
-    border-width: 2px;
+    border-width: 1px;
     border-color: ${theme.palette.custom.ui4};
   }
   
   & input::placeholder: {
-    color: ${theme.palette.custom.ui3};
+    color: #6B7280;
     opacity: 1;
     fontSize: 14px;
   }
