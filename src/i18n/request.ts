@@ -12,6 +12,9 @@ export default getRequestConfig(
 
     const messages = await getDictionary(locale);
 
+    console.log({
+      messages,
+    });
     return {
       locale,
       messages,

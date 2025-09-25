@@ -108,7 +108,7 @@ const Page = async ({
             ) : (
               <>
                 <Alert severity="info" sx={{ maxWidth: 600 }}>
-                  {translate("No Schools Found")}
+                  {translate("noSchoolsFound")}
                 </Alert>
               </>
             )}

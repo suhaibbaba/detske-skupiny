@@ -156,8 +156,8 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
             <Box component="img" src={blog.image} {...styles.image} />
             <Box {...styles.authorMeta}>
               {formatMessage(
-                `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} ${translate("min read")}`,
-                translate("By"),
+                `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} ${translate("minRead")}`,
+                translate("by"),
                 <Avatar
                   alt={blog.author?.name}
                   src={blog.author?.image}

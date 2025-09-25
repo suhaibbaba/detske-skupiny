@@ -182,12 +182,12 @@ const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
             <Box>
               <Typography {...styles.authorName}>{author?.name}</Typography>
               <Typography {...styles.meta}>
-                {formatDate(publishedAt)} · {readTime} {translate("min read")}
+                {formatDate(publishedAt)} · {readTime} {translate("minRead")}
               </Typography>
             </Box>
           </Box>
           <Button {...styles.readNowButton} href={url}>
-            {translate("Read Now")}
+            {translate("readNow")}
           </Button>
         </Box>
       </CardContent>

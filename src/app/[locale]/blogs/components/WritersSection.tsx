@@ -64,7 +64,7 @@ const WritersSection: FC<Props> = ({ writers }) => {
   return (
     <Box {...styles.container}>
       <Container>
-        <Typography {...styles.title}>{translate("Our Writers")}</Typography>
+        <Typography {...styles.title}>{translate("ourWriters")}</Typography>
         <Box {...styles.writersContainer}>
           {writers.map((writer) => (
             <WriterCard key={writer.id} {...writer} />

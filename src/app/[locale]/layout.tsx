@@ -8,7 +8,6 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { Fredoka } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
-import { getDictionary } from "@/sanity/queries/dictionary";
 
 export const metadata: Metadata = {
   title: "Create Next App",

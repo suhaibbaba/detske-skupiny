@@ -100,7 +100,7 @@ const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
           }
           {...(!categorySelected ? styles.activeButton : styles.button)}
         >
-          {translate("All")}
+          {translate("all")}
         </Button>
         {categories.map((category) => {
           return (

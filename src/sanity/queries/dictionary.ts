@@ -6,7 +6,7 @@ import { getLocale } from "@/i18n/cookie";
 export const messagesQuery = (locale: string) => groq`
   *[_type == "dictionaries"][0]{
     "common": entries[]{
-      "k": en,
+      "k": keyword,
       "v": coalesce(${locale}, en)
     }
   }

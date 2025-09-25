@@ -199,7 +199,7 @@ const SchoolCard = ({ school }: Props) => {
           {...styles.cta}
           href={routes.school(school.region.name, school.slug)}
         >
-          {translate("View this School")}
+          {translate("viewSchool")}
         </Button>
       </Box>
     </Box>

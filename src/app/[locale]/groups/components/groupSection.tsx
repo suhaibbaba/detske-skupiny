@@ -83,7 +83,7 @@ const GroupSection: FC<Props> = async ({ locale, group }) => {
         <Stack {...styles.stack}>
           <Box>
             <Typography variant="h2" textAlign="left">
-              {translate("Kindergarten Schools in {region}", {
+              {translate("kindergartenSchoolsInRegion", {
                 region: name,
               })}
             </Typography>
@@ -99,7 +99,7 @@ const GroupSection: FC<Props> = async ({ locale, group }) => {
           </Box>
         </Stack>
         <Typography {...styles.sectionTitle}>
-          {translate("By Region")}
+          {translate("byRegion")}
         </Typography>
         <Grid container spacing="24px">
           {areas.map((area) => (
@@ -109,7 +109,7 @@ const GroupSection: FC<Props> = async ({ locale, group }) => {
           ))}
         </Grid>
         <Typography {...styles.sectionTitle}>
-          {translate("By Category")}
+          {translate("byCategory")}
         </Typography>
         <Grid container spacing="24px">
           {schoolCategories.map((category) => (
@@ -120,7 +120,7 @@ const GroupSection: FC<Props> = async ({ locale, group }) => {
         </Grid>
         <Box {...styles.viewAllContainer}>
           <Button {...styles.viewAllButton} href={routes.catalogs(slug)}>
-            {translate("View all schools in {region}", { region: name })}
+            {translate("viewAllSchoolsInRegion", { region: name })}
           </Button>
         </Box>
       </Container>

@@ -141,22 +141,22 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
 
         {status === "ok" && (
           <Alert severity="success" sx={{ mb: 2 }}>
-            {translate("Message sent successfully.")}
+            {translate("successMessageSent")}
           </Alert>
         )}
         {status === "error" && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMsg || translate("Failed to send. Try again.")}
+            {errorMsg || translate("failedMessageSent")}
           </Alert>
         )}
 
         <Grid container rowSpacing="24px" columnSpacing="32px">
           <Grid {...styles.halfWidthGrid}>
             <TextField
-              name="name"
+              name={translate("name")}
               value={form.name}
               onChange={onChange("name")}
-              placeholder={translate("Your name")}
+              placeholder={translate("yourName")}
               variant="outlined"
               fullWidth
               className="rounded"
@@ -166,7 +166,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
           </Grid>
           <Grid {...styles.halfWidthGrid}>
             <TextField
-              name="email"
+              name={translate("email")}
               type="email"
               value={form.email}
               onChange={onChange("email")}
@@ -179,20 +179,20 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               error={form.email.length > 0 && !isEmailValid}
               helperText={
                 form.email.length > 0 && !isEmailValid
-                  ? translate("Enter a valid email")
+                  ? translate("invalidEmail")
                   : ""
               }
             />
           </Grid>
           <Grid {...styles.fullWidthGrid}>
             <Textarea
-              name="message"
+              name={translate("message")}
               value={form.message}
               onChange={onChange("message") as any}
               aria-label="message"
               minRows={5}
               maxRows={7}
-              placeholder={translate("Write text here ...")}
+              placeholder={translate("writeTextHere")}
               required
             />
           </Grid>
@@ -219,7 +219,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
             disabled={!isValid || status === "sending"}
             aria-busy={status === "sending"}
           >
-            {status === "sending" ? translate("Sending...") : link.text}
+            {status === "sending" ? `${translate("sending")}...` : link.text}
           </Button>
         </Grid>
       </Box>

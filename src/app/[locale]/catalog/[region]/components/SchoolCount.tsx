@@ -40,7 +40,7 @@ const SchoolsCount = ({ total, filterTotal }: Props) => {
   return (
     <Box {...styles.container}>
       <Typography {...styles.text}>
-        {translate("Showing {filterTotal} of {total} Results", {
+        {translate("showingResults", {
           total,
           filterTotal,
         })}
