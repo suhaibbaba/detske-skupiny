@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
 import { SchoolFilterModel, SchoolFilterQueryParams } from "@/sanity/types";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
 /** Region info (supports "all") */
 export const regionBaseQuery = groq`
@@ -123,5 +123,6 @@ export async function fetchSchoolFilterQuery(params: SchoolFilterQueryParams) {
     tags: params.tags ?? [],
   };
 
-  return client.fetch<SchoolFilterModel>(query, safeParams);
+  const x = await clientFetch<SchoolFilterModel>(query, safeParams);
+  return clientFetch<SchoolFilterModel>(query, safeParams);
 }

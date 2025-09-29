@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/client";
 import { cache } from "react";
-import { getLocale } from "@/i18n/cookie";
+import { getLocale } from "next-intl/server";
 
 export const messagesQuery = (locale: string) => groq`
   *[_type == "dictionaries"][0]{

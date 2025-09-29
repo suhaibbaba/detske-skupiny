@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
 import { MiniSchool, PageHero, SchoolFilterQueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
   const query = groq`{
@@ -39,7 +39,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
     }
   }`;
 
-  return client.fetch<{
+  return clientFetch<{
     pageHero: PageHero;
     totalSchools: number;
     schools: MiniSchool[];
