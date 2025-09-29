@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRegionFilters } from "@/hooks/useRegionFilters";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
 
 interface FilterSidebarStyles {
   root?: BoxProps;
@@ -177,21 +178,25 @@ const FilterSidebar = ({ regionSlug }: { regionSlug: string }) => {
     hasActiveFilters,
     clearKey,
   } = useRegionFilters({ regionSlug });
+  const translate = useTranslate();
 
   return (
     <Box {...styles.root} aria-busy={isLoading || undefined}>
       <Box {...styles.header}>
-        <Typography {...styles.title}>
-          Filters {filter?.region?.name ? `— ${filter?.region.name}` : ""}
-        </Typography>
+        <Typography {...styles.title}>{translate("filters")}</Typography>
         {hasActiveFilters && (
           <Button {...styles.clearBtn} onClick={clearAll}>
-            Clear All
+            {translate("Clear All")}
           </Button>
         )}
       </Box>
       <Typography {...styles.sectionTitle}>
-        Main Districts {filter?.region?.name ? `of ${filter?.region.name}` : ""}
+        {translate(
+          filter?.region?.name ? "mainDistrictsByRegion" : "mainDistricts",
+          {
+            region: filter?.region.name || "",
+          },
+        )}
       </Typography>
       {filter?.mainAreas && filter.mainAreas.length > 0 && (
         <Box sx={{ maxHeight: 190, overflowY: "auto" }}>
@@ -250,11 +255,10 @@ const FilterSidebar = ({ regionSlug }: { regionSlug: string }) => {
             })}
           </Box>
           <Typography {...styles.viewAll} onClick={() => clearKey("tag")}>
-            View All
+            {translate("viewAll")}
           </Typography>
         </>
       )}
-
       {/* TYPES */}
       {filter?.types && filter?.types.length > 0 && (
         <>
@@ -281,7 +285,7 @@ const FilterSidebar = ({ regionSlug }: { regionSlug: string }) => {
                   }}
                 >
                   {type.emoji && (
-                    <Box src={urlImageFor(type.emoji)} component="img"></Box>
+                    <Box src={urlImageFor(type.emoji)} component="img" />
                   )}
                   {type.name}
                 </Box>
@@ -289,7 +293,7 @@ const FilterSidebar = ({ regionSlug }: { regionSlug: string }) => {
             })}
           </Box>
           <Typography {...styles.viewAll} onClick={() => clearKey("type")}>
-            View All
+            {translate("viewAll")}
           </Typography>
         </>
       )}
