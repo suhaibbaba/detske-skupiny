@@ -1,11 +1,9 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
-import { MiniSchool, PageHero, QueryParams, School } from "@/sanity/types";
+import { MiniSchool, PageHero, School } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
-export async function fetchMiniSchools(
-  params: QueryParams & { numberOfSchools: number },
-) {
+export async function fetchMiniSchools(params: { numberOfSchools: number }) {
   const query = groq`{
     "schools": *[_type == "schools" && ${languageQuery}][0...$numberOfSchools] {
       "id": _id,
@@ -28,14 +26,12 @@ export async function fetchMiniSchools(
     }
   }`;
 
-  return client.fetch<{
+  return clientFetch<{
     schools: MiniSchool[];
-  }>(query, params);
+  }>(query, { ...params });
 }
 
-export async function fetchSchoolBySlug(
-  params: QueryParams & { slug: string },
-) {
+export async function fetchSchoolBySlug(params: { slug: string }) {
   const query = groq`{
     "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
     "school": *[_type == "schools" && ${languageQuery} &&  slug.current == $slug][0]{
@@ -69,8 +65,8 @@ export async function fetchSchoolBySlug(
     }
   }`;
 
-  return client.fetch<{
+  return clientFetch<{
     pageHero: PageHero;
     school: School;
-  }>(query, params);
+  }>(query, { ...params });
 }

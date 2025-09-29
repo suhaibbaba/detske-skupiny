@@ -1,10 +1,9 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
-import { QueryParams } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
 import { Header } from "@/types/header";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
-export async function fetchHeaderPage(params: QueryParams) {
+export async function fetchHeaderPage() {
   const query = groq`{
     "header": *[_type == "header" && ${languageQuery}][0]{
       "logo": logo.asset->url,
@@ -18,7 +17,7 @@ export async function fetchHeaderPage(params: QueryParams) {
     }
 }`;
 
-  return client.fetch<{
+  return clientFetch<{
     header?: Header;
-  }>(query, params);
+  }>(query);
 }

@@ -6,15 +6,13 @@ import { getDictionary } from "@/sanity/queries";
 export default getRequestConfig(
   async ({ locale: localeProps, requestLocale }) => {
     const requested = await requestLocale;
-    const locale = hasLocale(routing.locales, requested)
-      ? requested
-      : localeProps || routing.defaultLocale;
+    const locale = "cz";
+    // const locale = hasLocale(routing.locales, requested)
+    //   ? requested
+    //   : localeProps || routing.defaultLocale;
 
     const messages = await getDictionary(locale);
 
-    console.log({
-      messages,
-    });
     return {
       locale,
       messages,

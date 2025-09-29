@@ -1,9 +1,9 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
-import { GroupPage, PageHero, QueryParams } from "@/sanity/types";
+import { GroupPage, PageHero } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
-export async function fetchGroupPage(params: QueryParams) {
+export async function fetchGroupPage() {
   const query = groq`{
     "groups": *[_type == "regions" && ${languageQuery}]{
       "id": _id,
@@ -33,8 +33,8 @@ export async function fetchGroupPage(params: QueryParams) {
   }
 `;
 
-  return client.fetch<{
+  return clientFetch<{
     groups?: GroupPage[];
     content?: PageHero;
-  }>(query, params);
+  }>(query);
 }

@@ -13,10 +13,9 @@ export interface SchoolFilterQueryType {
 
 interface Props {
   regionSlug: string;
-  locale: string;
 }
 
-export function useRegionFilters({ regionSlug, locale }: Props) {
+export function useRegionFilters({ regionSlug }: Props) {
   const [{ area, type, tag }, setQS] = useQueryStates(
     {
       area: parseAsArrayOf(parseAsString).withDefault([]),
@@ -40,7 +39,6 @@ export function useRegionFilters({ regionSlug, locale }: Props) {
     (async () => {
       try {
         const data = await fetchSchoolFilterQuery({
-          locale,
           regionSlug,
         });
         if (mounted) {

@@ -1,10 +1,10 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
-import { Blog, BlogCategory } from "@/types/blog";
-import { PageHero, QueryParams } from "@/sanity/types";
+import { Blog } from "@/types/blog";
+import { PageHero } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/index";
+import { clientFetch } from "@/sanity/utilites/fetch";
 
-export async function fetchBlogBySlug(params: QueryParams & { slug: string }) {
+export async function fetchBlogBySlug(params: { slug: string }) {
   const query = groq`{
     "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
     "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
@@ -28,8 +28,8 @@ export async function fetchBlogBySlug(params: QueryParams & { slug: string }) {
     },
   }`;
 
-  return client.fetch<{
+  return clientFetch<{
     content: PageHero;
     blog: Blog;
-  }>(query, params);
+  }>(query, { ...params });
 }
