@@ -1,13 +1,13 @@
 import { Alert, Box, BoxProps, Container, ContainerProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import FilterSidebar from "@/app/catalog/[region]/components/FilterSidebar";
+import FilterSidebar from "@/app/catalog/[...slug]/components/FilterSidebar";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { PageProps } from "@/types";
 import { toOptionalArray } from "@/utilites/strings";
 import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
-import SchoolGridCard from "@/app/catalog/[region]/components/SchoolGridCard";
-import SchoolsCount from "@/app/catalog/[region]/components/SchoolCount";
+import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
+import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
 import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface GroupsPageStyles {

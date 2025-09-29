@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -43,14 +41,14 @@ interface FilterSidebarStyles {
 const styles: FilterSidebarStyles = {
   root: { sx: { width: "100%" } },
   header: {
-    sx: (theme) => ({
+    sx: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
       pb: "20px",
       mb: "16px",
-      borderBottom: `1px solid ${theme.palette.custom?.ui18 ?? "#eee"}`,
-    }),
+      borderBottom: `1px solid var(--mui-palette-custom-ui18)`,
+    },
   },
   title: {
     fontSize: "20px",
@@ -78,7 +76,9 @@ const styles: FilterSidebarStyles = {
       fontSize: "16px",
       mt: "16px",
       cursor: "pointer",
-      "&:hover": { color: "primary.dark" },
+      "&:hover": {
+        color: "primary.dark",
+      },
     },
   },
   filterItem: {
@@ -111,8 +111,8 @@ const styles: FilterSidebarStyles = {
     },
   },
   typeBox: {
-    sx: (theme) => ({
-      border: `1px solid ${theme.palette.custom?.ui12 ?? "#e5e7eb"}`,
+    sx: {
+      border: `1px solid var(--mui-palette-custom-ui12)`,
       borderRadius: "12px",
       p: "8px",
       textAlign: "center",
@@ -123,17 +123,17 @@ const styles: FilterSidebarStyles = {
       alignItems: "center",
       gap: "6px",
       cursor: "pointer",
-      bgcolor: theme.palette.common.white,
+      bgcolor: "common.white",
       userSelect: "none",
       "&.selected": {
-        borderColor: theme.palette.primary.main,
-        backgroundColor: theme.palette.primary.light,
+        borderColor: "primary.main",
+        backgroundColor: "primary.light",
       },
       "&:focus-visible": {
-        outline: `2px solid ${theme.palette.primary.main}`,
+        outline: `2px solid var(--mui-palette-primary-main)`,
         outlineOffset: 2,
       },
-    }),
+    },
   },
   formGroup: {
     sx: {
@@ -144,7 +144,11 @@ const styles: FilterSidebarStyles = {
       pl: "5px",
     },
   },
-  formControlLabel: { sx: { fontSize: "16px" } },
+  formControlLabel: {
+    sx: {
+      fontSize: "16px",
+    },
+  },
   counter: {
     sx: {
       minWidth: "28px",
@@ -161,7 +165,13 @@ const styles: FilterSidebarStyles = {
       p: "2px",
     },
   },
-  divider: { sx: { mt: "20px", mb: "16px", backgroundColor: "#AAB0B9" } },
+  divider: {
+    sx: {
+      mt: "20px",
+      mb: "16px",
+      bgcolor: "common.ui18",
+    },
+  },
 };
 
 const FilterSidebar = ({ regionSlug }: { regionSlug: string }) => {

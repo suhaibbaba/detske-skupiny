@@ -13,7 +13,7 @@ import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
-import SchoolTag from "@/app/catalog/[region]/[school]/components/SchoolTag";
+import SchoolTag from "@/app/[school]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
-import SearchBar from "@/app/catalog/[region]/components/SearchBar";
+import SearchBar from "@/app/catalog/[...slug]/components/SearchBar";
 import useTranslate from "@/hooks/useTranslate";
 import { useTranslations } from "next-intl";
 

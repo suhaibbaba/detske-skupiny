@@ -14,13 +14,13 @@ import {
 } from "@mui/material";
 import SchoolGallery, {
   SchoolGalleryStyles,
-} from "@/app/catalog/[region]/[school]/components/SchoolGallery";
+} from "@/app/[school]/components/SchoolGallery";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import AboutSchool from "@/app/catalog/[region]/[school]/components/AboutSchool";
-import SchoolHighlights from "@/app/catalog/[region]/[school]/components/SchoolHighlights";
-import SchoolTimetable from "@/app/catalog/[region]/[school]/components/SchoolTimetable";
-import SchoolHeader from "@/app/catalog/[region]/[school]/components/SchoolHeader";
-import InfoCardGrid from "@/app/catalog/[region]/[school]/components/InfoCardGrid";
+import AboutSchool from "@/app/[school]/components/AboutSchool";
+import SchoolHighlights from "@/app/[school]/components/SchoolHighlights";
+import SchoolTimetable from "@/app/[school]/components/SchoolTimetable";
+import SchoolHeader from "@/app/[school]/components/SchoolHeader";
+import InfoCardGrid from "@/app/[school]/components/InfoCardGrid";
 import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
