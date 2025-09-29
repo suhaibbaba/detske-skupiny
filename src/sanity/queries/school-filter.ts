@@ -123,5 +123,6 @@ export async function fetchSchoolFilterQuery(params: SchoolFilterQueryParams) {
     tags: params.tags ?? [],
   };
 
+  const x = await clientFetch<SchoolFilterModel>(query, safeParams);
   return clientFetch<SchoolFilterModel>(query, safeParams);
 }

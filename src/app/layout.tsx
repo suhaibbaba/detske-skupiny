@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const fredoka = Fredoka({ subsets: ["latin"] });
 
-export default async function Layout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;

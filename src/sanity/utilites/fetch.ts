@@ -5,6 +5,13 @@ import { getLocale } from "next-intl/server";
 
 type FetchParams = Parameters<SanityClient["fetch"]>[1];
 
+function getClientLocale() {
+  if (typeof window === "undefined") return "en"; // fallback
+
+  const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
+  return match ? match[1] : "en";
+}
+
 export async function sanityFetch<T>(
   query: string,
   params?: FetchParams,
@@ -16,7 +23,14 @@ export async function sanityFetch<T>(
 }
 
 export async function clientFetch<T>(query: string, params?: FetchParams) {
-  const locale = await getLocale();
+  let locale: string;
+
+  if (typeof window === "undefined") {
+    locale = await getLocale();
+  } else {
+    locale = getClientLocale();
+  }
+
   const queryParams = { ...(params || {}), locale };
   const data = await client.fetch<T>(query, queryParams);
   return data;
