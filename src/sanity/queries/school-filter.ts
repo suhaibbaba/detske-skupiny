@@ -28,14 +28,13 @@ export const tagsQuery = groq`
       "id": _id,
       name,
       "slug": slug.current,
-      "borderColor": borderColor.hex,
+      "backgroundColor": backgroundColor.hex,
       "count": count(*[
         _type == "schools" &&
         (!defined($country) || area->region->country->slug.current == $country) &&
         (!defined($region) || area->region->slug.current == $region) &&
         references(^._id)
       ]),
-      "emoji": emoji.asset->url,
     }[count > 0] | order(name asc)
 `;
 

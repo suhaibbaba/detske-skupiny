@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  alpha,
   Box,
   BoxProps,
   Chip,
@@ -15,6 +16,7 @@ import { FC } from "react";
 import { FiltersResponse } from "@/sanity/queries";
 import useTranslate from "@/hooks/useTranslate";
 import { Filters } from "@/hooks/useSchoolFilters";
+import DoneIcon from "@mui/icons-material/Done";
 
 interface Props {
   showDivider?: boolean;
@@ -28,7 +30,7 @@ interface FilterListStyles {
   container?: BoxProps;
   sectionHeading?: TypographyProps;
   listContainer?: BoxProps;
-  chip?: ChipProps;
+  chip?: (backgroundColor?: string) => ChipProps;
   viewAllContainer?: BoxProps;
   viewAll?: LinkProps;
   divider?: DividerProps;
@@ -58,7 +60,7 @@ const styles: FilterListStyles = {
       bgcolor: "common.ui18",
     },
   },
-  chip: {
+  chip: (backgroundColor?: string) => ({
     sx: {
       borderRadius: "24px",
       px: "6px",
@@ -66,15 +68,23 @@ const styles: FilterListStyles = {
       fontSize: 12,
       fontWeight: 400,
       color: "#475467",
+      bgcolor: backgroundColor,
+      border: `1px solid ${backgroundColor}`,
       "& .MuiChip-label": {
         padding: 0,
+      },
+      "&.checked": {
+        borderColor: "var(--mui-palette-primary-main)",
+      },
+      "&:hover": {
+        bgcolor: alpha(backgroundColor || "white", 0.5),
       },
       "& .MuiChip-icon": {
         mr: "4px",
         ml: 0,
       },
     },
-  },
+  }),
   viewAllContainer: {
     sx: {
       display: "flex",
@@ -118,17 +128,20 @@ const FilterTagList: FC<Props> = ({
               key={tag.id}
               label={tag.name}
               onClick={() => toggleTag?.(tag.slug)}
-              variant={checked ? "filled" : "outlined"}
-              {...styles.chip}
+              {...styles.chip?.(tag.backgroundColor)}
               role="checkbox"
               aria-checked={checked}
               tabIndex={0}
+              className={checked ? "checked" : ""}
               onKeyDown={(e) => {
                 if (e.key === " " || e.key === "Enter") {
                   e.preventDefault();
                   toggleTag?.(tag.slug);
                 }
               }}
+              icon={
+                checked ? <DoneIcon sx={{ fontSize: "16px" }} /> : undefined
+              }
             />
           );
         })}

@@ -60,7 +60,7 @@ const styles: FilterListStyles = {
       justifyContent: "space-between",
       minHeight: "auto",
       "&:hover:not(.selected)": {
-        bgcolor: alpha(theme.palette.custom.ui14, 0.4),
+        bgcolor: alpha(theme.palette.custom.ui14, 0.3),
       },
       "&.selected": {
         border: `1px solid ${theme.palette.custom.ui14}`,

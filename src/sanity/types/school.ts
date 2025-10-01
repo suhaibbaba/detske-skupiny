@@ -49,8 +49,7 @@ export type SchoolTag = {
   id: string;
   name: string;
   slug: string;
-  emoji: SanityImageField;
-  borderColor: string;
+  backgroundColor: string;
 };
 
 export interface School {
