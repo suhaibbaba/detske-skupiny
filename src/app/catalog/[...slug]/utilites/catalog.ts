@@ -14,18 +14,12 @@ export interface CatalogParams {
 }
 
 export function getSelectedSlug(params: CatalogParams): string {
-  switch (params.level) {
-    case FilterTypes.country:
-      return `/${params.country}`;
-    case FilterTypes.region:
-      return `/${params.country}/${params.region}`;
-    case FilterTypes.area:
-      return `/${params.country}/${params.region}/${params.area}`;
-    case FilterTypes.subarea:
-      return `/${params.country}/${params.region}/${params.area}/${params.subarea}`;
-    default:
-      return "";
-  }
+  return (
+    "/" +
+    [params.country, params.region, params.area, params.subarea]
+      .filter(Boolean) // remove undefined or empty values
+      .join("/")
+  );
 }
 
 export function parseCatalogSlug(slug: string[] = []): CatalogParams {
@@ -35,6 +29,13 @@ export function parseCatalogSlug(slug: string[] = []): CatalogParams {
     case 2:
       return { level: FilterTypes.region, country: slug[0], region: slug[1] };
     case 3:
+      return {
+        level: FilterTypes.area,
+        country: slug[0],
+        region: slug[1],
+        area: slug[2],
+      };
+    case 4:
       return {
         level: FilterTypes.subarea,
         country: slug[0],
