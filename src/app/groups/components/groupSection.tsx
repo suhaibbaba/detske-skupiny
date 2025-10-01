@@ -87,13 +87,10 @@ const GroupSection: FC<Props> = async ({ group }) => {
               })}
             </Typography>
             <Typography>
-              {translate(
-                "There are a total of {totalSchools} schools listed in {region}",
-                {
-                  totalSchools,
-                  region: name,
-                },
-              )}
+              {translate("totalOfSchoolByRegion", {
+                totalSchools,
+                region: name,
+              })}
             </Typography>
           </Box>
         </Stack>

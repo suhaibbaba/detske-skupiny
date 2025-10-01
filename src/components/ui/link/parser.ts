@@ -188,7 +188,9 @@ function parseInternalLink(
 
   switch (type) {
     case "regions":
-      return routes.catalogs(linkField.internalLink.slug);
+      return routes.catalogs(
+        `/${linkField.internalLink.country?.slug}/${linkField.internalLink.slug}`,
+      );
     case "blog":
       return routes.blogs(linkField.internalLink.slug);
     case "contactUs":

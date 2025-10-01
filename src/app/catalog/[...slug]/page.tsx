@@ -1,14 +1,19 @@
 import { Alert, Box, BoxProps, Container, ContainerProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import FilterSidebar from "@/app/catalog/[region]/components/FilterSidebar";
-import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
+import FilterSidebar from "@/app/catalog/[...slug]/components/FilterSidebar";
 import { PageProps } from "@/types";
-import { toOptionalArray } from "@/utilites/strings";
-import { SchoolFilterQueryType } from "@/hooks/useRegionFilters";
-import SchoolGridCard from "@/app/catalog/[region]/components/SchoolGridCard";
-import SchoolsCount from "@/app/catalog/[region]/components/SchoolCount";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import {
+  getSelectedSlug,
+  parseCatalogSlug,
+} from "@/app/catalog/[...slug]/utilites/catalog";
+import { fetchFilters } from "@/sanity/queries";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
+import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
+import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
+
+type Props = PageProps<{ slug: string[] }>;
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -65,22 +70,32 @@ const styles: GroupsPageStyles = {
   },
 };
 
-const Page = async ({
-  params,
-  searchParams,
-}: PageProps<{ region: string }>) => {
-  const { region: regionSlug } = await params;
-
-  const { area, tag, type } = (await searchParams) as SchoolFilterQueryType;
-
-  const { pageHero, schools, totalSchools } = await fetchSchoolByFilter({
-    areas: toOptionalArray(area),
-    tags: toOptionalArray(tag),
-    types: toOptionalArray(type),
-    regionSlug,
-  });
+const Page = async ({ params, searchParams }: Props) => {
+  const { slug } = await params;
+  const { types, tags, name } = (await searchParams) as {
+    types?: string[];
+    tags?: string[];
+    name?: string;
+  };
 
   const translate = await getTranslateServer();
+  const catalog = parseCatalogSlug(slug);
+  const selectedSlug = getSelectedSlug(catalog);
+
+  if (!catalog || !catalog.country) {
+    return null;
+  }
+
+  const filterContent = await fetchFilters(catalog);
+  const { pageHero, schools, totalSchools } = await fetchSchoolByFilter({
+    country: catalog.country!,
+    region: catalog.region,
+    area: catalog.area,
+    subarea: catalog.subarea,
+    types,
+    tags,
+    search: name,
+  });
 
   return (
     <Box {...styles.pageContainer}>
@@ -92,7 +107,11 @@ const Page = async ({
         />
       </PageLayout>
       <Container {...styles.container}>
-        <FilterSidebar regionSlug={regionSlug} />
+        <FilterSidebar
+          catalog={catalog}
+          selectedSlug={selectedSlug}
+          filterContent={filterContent}
+        />
         <Box {...styles.contentWrapper}>
           <SchoolsCount
             filterTotal={schools?.length || 0}
@@ -106,11 +125,9 @@ const Page = async ({
                 ))}
               </>
             ) : (
-              <>
-                <Alert severity="info" sx={{ maxWidth: 600 }}>
-                  {translate("noSchoolsFound")}
-                </Alert>
-              </>
+              <Alert severity="info" sx={{ maxWidth: 600 }}>
+                {translate("noSchoolsFound")}
+              </Alert>
             )}
           </Box>
         </Box>
