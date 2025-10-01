@@ -1,25 +1,27 @@
+"use client";
+
 import {
   Box,
   BoxProps,
   Typography,
   TypographyProps,
   ButtonProps,
-  ChipProps,
-  LinkProps,
-  DividerProps,
-  FormGroupProps,
-  FormControlLabelProps,
-  IconProps,
-  Icon,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { getTranslateServer } from "@/hooks/useTranslate";
+import useTranslate from "@/hooks/useTranslate";
 import { CatalogParams } from "@/app/catalog/[...slug]/utilites/catalog";
-import { fetchFilters } from "@/sanity/queries";
-import Button from "@/components/ui/button";
-import MinusIcon from "@mui/icons-material/Remove";
-import { routes } from "@/routes";
+import { FiltersResponse } from "@/sanity/queries";
 import FilterList from "@/app/catalog/[...slug]/components/FilterList";
+import FilterTypeList from "@/app/catalog/[...slug]/components/FilterTypeList";
+import FilterTagList from "@/app/catalog/[...slug]/components/FilterTagList";
+import { useSchoolFilters } from "@/hooks/useSchoolFilters";
+import Button from "@/components/ui/button";
+
+interface Props {
+  catalog: CatalogParams;
+  selectedSlug: string;
+  filterContent: FiltersResponse;
+}
 
 interface FilterSidebarStyles {
   root?: BoxProps;
@@ -33,7 +35,6 @@ const styles: FilterSidebarStyles = {
     sx: {
       width: "100%",
       maxWidth: "300px",
-      pr: "14px",
     },
   },
   headingContainer: {
@@ -59,105 +60,26 @@ const styles: FilterSidebarStyles = {
       fontSize: 12,
     },
   },
-  // viewAll: {
-  //   sx: {
-  //     color: "custom.ui11",
-  //     fontWeight: 500,
-  //     fontSize: "16px",
-  //     mt: "16px",
-  //     cursor: "pointer",
-  //     "&:hover": {
-  //       color: "primary.dark",
-  //     },
-  //   },
-  // },
-  // chip: {
-  //   sx: {
-  //     borderRadius: "24px",
-  //     px: "6px",
-  //     py: "2px",
-  //     fontSize: 12,
-  //     fontWeight: 400,
-  //     color: "#475467",
-  //     "& .MuiChip-label": { padding: 0 },
-  //     "& .MuiChip-icon": { mr: "4px", ml: 0 },
-  //   },
-  // },
-  // tagsContainer: {
-  //   sx: {
-  //     display: "grid",
-  //     gridTemplateColumns: {
-  //       xs: "repeat(auto-fit, minmax(132px, 1fr))",
-  //       sm: "repeat(2,1fr)",
-  //     },
-  //     gap: "16px",
-  //   },
-  // },
-  // typeBox: {
-  //   sx: {
-  //     border: `1px solid var(--mui-palette-custom-ui12)`,
-  //     borderRadius: "12px",
-  //     p: "8px",
-  //     textAlign: "center",
-  //     fontWeight: 400,
-  //     fontSize: "14px",
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     alignItems: "center",
-  //     gap: "6px",
-  //     cursor: "pointer",
-  //     bgcolor: "common.white",
-  //     userSelect: "none",
-  //     "&.selected": {
-  //       borderColor: "primary.main",
-  //       backgroundColor: "primary.light",
-  //     },
-  //     "&:focus-visible": {
-  //       outline: `2px solid var(--mui-palette-primary-main)`,
-  //       outlineOffset: 2,
-  //     },
-  //   },
-  // },
-  // formGroup: {
-  //   sx: {
-  //     p: 0,
-  //     display: "flex",
-  //     gap: "16px",
-  //     flexDirection: "column",
-  //     pl: "5px",
-  //   },
-  // },
-  // formControlLabel: {
-  //   sx: {
-  //     fontSize: "16px",
-  //   },
-  // },
-  // count: {
-  //   sx: {
-  //     width: "28px",
-  //     height: "28px",
-  //     aspectRatio: 1,
-  //     fontSize: 14,
-  //     color: "custom.ui13",
-  //     fontWeight: 400,
-  //     border: "1px solid #E0C3F9",
-  //     borderRadius: "50%",
-  //     display: "flex",
-  //     justifyContent: "center",
-  //     alignItems: "center",
-  //     p: "2px",
-  //   },
-  // },
 };
 
-const FilterSidebar = async ({ catalog }: { catalog: CatalogParams }) => {
-  const translate = await getTranslateServer();
-  const { regions, areas, subareas } = await fetchFilters(catalog);
+const FilterSidebar = ({
+  catalog,
+  selectedSlug,
+  filterContent: { regions, areas, subareas, tags, types },
+}: Props) => {
+  const translate = useTranslate();
+  const { toggleTag, toggleType, hasActiveFilters, filters, clear } =
+    useSchoolFilters();
 
   return (
     <Box {...styles.root}>
       <Box {...styles.headingContainer}>
         <Typography {...styles.heading}>{translate("filters")}</Typography>
+        {hasActiveFilters && (
+          <Button {...styles.clearButton} onClick={() => clear()}>
+            {translate("clearAll")}
+          </Button>
+        )}
       </Box>
       <FilterList
         title={translate(
@@ -166,6 +88,7 @@ const FilterSidebar = async ({ catalog }: { catalog: CatalogParams }) => {
             region: catalog.region || "",
           },
         )}
+        selectedSlug={selectedSlug}
         items={+catalog.level > 0 ? areas : regions}
       />
       <FilterList
@@ -177,6 +100,20 @@ const FilterSidebar = async ({ catalog }: { catalog: CatalogParams }) => {
         )}
         items={subareas}
         showDivider={true}
+      />
+      <FilterTagList
+        tags={tags}
+        toggleTag={toggleTag}
+        selectedTags={filters.tags ?? []}
+        clear={clear}
+        showDivider={true}
+      />
+      <FilterTypeList
+        types={types}
+        showDivider={true}
+        toggleType={toggleType}
+        selectedTypes={filters.types ?? []}
+        clear={clear}
       />
     </Box>
   );

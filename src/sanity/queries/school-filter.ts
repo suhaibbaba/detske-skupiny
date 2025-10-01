@@ -22,6 +22,42 @@ export type FiltersResponse = {
   types: (SchoolCategory & { count: number })[];
 };
 
+/** Tags (counts respect "all") */
+export const tagsQuery = groq`
+    "tags": *[_type == "schoolTags"]{
+      "id": _id,
+      name,
+      "slug": slug.current,
+      "borderColor": borderColor.hex,
+      "count": count(*[
+        _type == "schools" &&
+        (!defined($country) || area->region->country->slug.current == $country) &&
+        (!defined($region) || area->region->slug.current == $region) &&
+        references(^._id)
+      ]),
+      "emoji": emoji.asset->url,
+    }[count > 0] | order(name asc)
+`;
+
+/** Types / categories (counts respect "all") */
+export const typesQuery = groq`
+    "types": *[
+    _type == "schoolCategories" &&
+    (!defined(language) || language == $locale)
+    ]{
+      "id": _id,
+      name,
+      "slug": slug.current,
+      "emoji": emoji.asset->url,
+      "count": count(*[
+        _type == "schools" &&
+        (!defined($country) || area->region->country->slug.current == $country) &&
+        (!defined($region) || area->region->slug.current == $region) &&
+        references(^._id)
+      ]),
+    }[count > 0] | order(name asc),
+`;
+
 // 1. Country level
 export const countryQuery = groq`
 {
@@ -49,8 +85,14 @@ export const countryQuery = groq`
         + area->region->country->slug.current + "/" 
         + area->region->slug.current + "/" 
         + area->slug.current + "/" 
-        + slug.current
-    }
+        + slug.current,
+      "count": count(*[
+        _type == "schools" &&
+        subarea->region._ref == ^._id
+      ])
+    },
+    ${typesQuery}
+    ${tagsQuery}
 }
 `;
 
@@ -117,50 +159,13 @@ export const regionQuery = groq`
         _type == "schools" &&
         subarea._ref == ^._id
       ])
-    }
+    },
+    ${typesQuery}
+    ${tagsQuery}
 }
 `;
 
-// 3. Area level
-export const areaQuery = groq`
-{
-  "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{
-      "id": _id,
-      name,
-      "slug": slug.current
-    },
-  "regions": *[_type == "regions" && slug.current == $region && country->slug.current == $country && (!defined(language) || language == $locale)]{
-      "id": _id,
-      name,
-      "slug": "/" 
-        + country->slug.current + "/" 
-        + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        area->region._ref == ^._id
-      ])
-    },
-  "areas": *[_type == "areas" && region->slug.current == $region && region->country->slug.current == $country && (!defined(language) || language == $locale)]{
-      "id": _id,
-      name,
-      "slug": "/" 
-        + region->country->slug.current + "/" 
-        + region->slug.current + "/" 
-        + slug.current
-    },
-  "subareas": *[_type == "subareas" && area->region->slug.current == $region && area->region->country->slug.current == $country && (!defined(language) || language == $locale)]{
-      "id": _id,
-      name,
-      "slug": "/" 
-        + area->region->country->slug.current + "/" 
-        + area->region->slug.current + "/" 
-        + area->slug.current + "/" 
-        + slug.current
-    }
-}
-`;
-
-// 4. Subarea level
+// 3. Subarea level
 export const subareaQuery = groq`
 {
   "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{
@@ -196,7 +201,9 @@ export const subareaQuery = groq`
         + area->slug.current + "/" 
         + slug.current
     }
-}
+  },
+  ${typesQuery}
+  ${tagsQuery}
 `;
 
 export async function fetchFilters(
@@ -206,6 +213,8 @@ export async function fetchFilters(
     case FilterTypes.country:
       return clientFetch(countryQuery, {
         country: catalog.country,
+        region: null,
+        area: null,
       });
     case FilterTypes.area:
     case FilterTypes.region:

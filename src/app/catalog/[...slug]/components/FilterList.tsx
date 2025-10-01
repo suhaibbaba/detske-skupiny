@@ -1,7 +1,9 @@
+"use client";
+
 import {
+  alpha,
   Box,
   BoxProps,
-  Button,
   ButtonProps,
   Divider,
   DividerProps,
@@ -13,16 +15,18 @@ import { FC } from "react";
 import MinusIcon from "@mui/icons-material/Remove";
 import { routes } from "@/routes";
 import { CategoryItem } from "@/sanity/queries";
+import Button from "@/components/ui/button";
 
 interface Props {
   title: string;
   showDivider?: boolean;
   items?: CategoryItem[];
+  selectedSlug?: string;
 }
 
 interface FilterListStyles {
   container?: BoxProps;
-  sectionHeading?: TypographyProps;
+  heading?: TypographyProps;
   listContainer?: BoxProps;
   itemButton?: ButtonProps;
   itemContainer?: BoxProps;
@@ -33,11 +37,12 @@ interface FilterListStyles {
 }
 
 const styles: FilterListStyles = {
-  sectionHeading: {
+  heading: {
     fontSize: "18px",
     fontWeight: 500,
     mb: "16px",
     color: "custom.ui13",
+    textTransform: "capitalize",
   },
   listContainer: {
     sx: {
@@ -46,16 +51,20 @@ const styles: FilterListStyles = {
       display: "flex",
       flexDirection: "column",
       gap: "16px",
+      pr: "14px",
     },
   },
   itemButton: {
-    sx: {
+    sx: (theme) => ({
       justifyContent: "space-between",
       minHeight: "auto",
-      "&:hover": {
-        bgcolor: "custom.ui14",
+      "&:hover:not(.selected)": {
+        bgcolor: alpha(theme.palette.custom.ui14, 0.4),
       },
-    },
+      "&.selected": {
+        border: `1px solid ${theme.palette.custom.ui14}`,
+      },
+    }),
   },
   itemContainer: {
     sx: {
@@ -98,14 +107,15 @@ const styles: FilterListStyles = {
   },
 };
 
-const FilterList: FC<Props> = ({ title, items, showDivider }) => {
+const FilterList: FC<Props> = ({ title, items, showDivider, selectedSlug }) => {
   if (!items || items.length === 0) {
     return null;
   }
+
   return (
     <Box {...styles.container}>
       {showDivider && <Divider {...styles.divider} />}
-      <Typography {...styles.sectionHeading}>{title}</Typography>
+      <Typography {...styles.heading}>{title}</Typography>
       {items.length > 0 && (
         <Box {...styles.listContainer}>
           {items.map((district) => {
@@ -115,6 +125,7 @@ const FilterList: FC<Props> = ({ title, items, showDivider }) => {
                 key={district.id}
                 href={routes.catalogs(district.slug)}
                 variant="text"
+                className={selectedSlug === district.slug ? "selected" : ""}
               >
                 <Box {...styles.itemContainer}>
                   <MinusIcon sx={styles.itemIcon?.sx} />

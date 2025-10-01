@@ -13,6 +13,21 @@ export interface CatalogParams {
   subarea?: string;
 }
 
+export function getSelectedSlug(params: CatalogParams): string {
+  switch (params.level) {
+    case FilterTypes.country:
+      return `/${params.country}`;
+    case FilterTypes.region:
+      return `/${params.country}/${params.region}`;
+    case FilterTypes.area:
+      return `/${params.country}/${params.region}/${params.area}`;
+    case FilterTypes.subarea:
+      return `/${params.country}/${params.region}/${params.area}/${params.subarea}`;
+    default:
+      return "";
+  }
+}
+
 export function parseCatalogSlug(slug: string[] = []): CatalogParams {
   switch (slug.length) {
     case 1:

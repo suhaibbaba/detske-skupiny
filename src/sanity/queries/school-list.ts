@@ -6,7 +6,11 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
   const query = groq`{
     "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
-    "totalSchools": count(*[_type == "schools" && ${languageQuery}]),
+    "totalSchools": count(
+      *[_type == "schools" && ${languageQuery} && 
+        (!defined($country) || area->region->country->slug.current == $country) &&
+        (!defined($region) || area->region->slug.current == $region)]
+      ),
     "schools": *[
       _type == "schools" &&
       ${languageQuery} &&

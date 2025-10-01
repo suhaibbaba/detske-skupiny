@@ -3,14 +3,17 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import FilterSidebar from "@/app/catalog/[...slug]/components/FilterSidebar";
 import { PageProps } from "@/types";
 import { getTranslateServer } from "@/hooks/useTranslate";
-import { parseCatalogSlug } from "@/app/catalog/[...slug]/utilites/catalog";
+import {
+  getSelectedSlug,
+  parseCatalogSlug,
+} from "@/app/catalog/[...slug]/utilites/catalog";
 import { fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
 import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
-import { toOptionalArray } from "@/utilites/strings";
-import { notFound } from "next/navigation";
+
+type Props = PageProps<{ slug: string[] }>;
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -67,16 +70,17 @@ const styles: GroupsPageStyles = {
   },
 };
 
-const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
+const Page = async ({ params }: Props) => {
   const { slug } = await params;
   const translate = await getTranslateServer();
   const catalog = parseCatalogSlug(slug);
-  const catalogData = await fetchFilters(catalog);
+  const selectedSlug = getSelectedSlug(catalog);
 
   if (!catalog || !catalog.country) {
     return null;
   }
 
+  const filterContent = await fetchFilters(catalog);
   const { pageHero, schools, totalSchools } = await fetchSchoolByFilter({
     country: catalog.country!,
     region: catalog.region,
@@ -84,7 +88,6 @@ const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
     subarea: catalog.subarea,
   });
 
-  console.log({ catalogData, catalog });
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
@@ -95,7 +98,11 @@ const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
         />
       </PageLayout>
       <Container {...styles.container}>
-        <FilterSidebar catalog={catalog} />
+        <FilterSidebar
+          catalog={catalog}
+          selectedSlug={selectedSlug}
+          filterContent={filterContent}
+        />
         <Box {...styles.contentWrapper}>
           <SchoolsCount
             filterTotal={schools?.length || 0}
@@ -109,11 +116,9 @@ const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
                 ))}
               </>
             ) : (
-              <>
-                <Alert severity="info" sx={{ maxWidth: 600 }}>
-                  {translate("noSchoolsFound")}
-                </Alert>
-              </>
+              <Alert severity="info" sx={{ maxWidth: 600 }}>
+                {translate("noSchoolsFound")}
+              </Alert>
             )}
           </Box>
         </Box>
