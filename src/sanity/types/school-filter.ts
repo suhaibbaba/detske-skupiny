@@ -2,8 +2,10 @@ import { Area, Region } from "@/sanity/types/geo";
 import { SchoolCategory, SchoolTag } from "@/sanity/types/school";
 
 export type SchoolFilterQueryParams = {
-  regionSlug: string; // region slug
-  areas?: string[]; // array of area slugs from GET (?area=ramallah&area=hebron)
+  country: string; // country slug
+  region?: string; // region slug
+  area?: string;
+  subarea?: string;
   types?: string[]; // array of schoolCategories slugs (?type=kindergarten)
   tags?: string[]; // array of tag slugs (?tag=montessori)
 };

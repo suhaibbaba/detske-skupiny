@@ -1,16 +1,13 @@
 import { Alert, Box, BoxProps, Container, ContainerProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import FilterSidebar from "@/app/catalog/[...slug]/components/FilterSidebar";
-import { PageProps } from "@/types";
-import { getTranslateServer } from "@/hooks/useTranslate";
-import { parseCatalogSlug } from "@/app/catalog/[...slug]/utilites/catalog";
-import { fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
-import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
+import FilterSidebar from "@/app/catalog/[...slug]/components/FilterSidebar";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
+import { PageProps } from "@/types";
 import { toOptionalArray } from "@/utilites/strings";
-import { notFound } from "next/navigation";
+import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
+import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -67,24 +64,23 @@ const styles: GroupsPageStyles = {
   },
 };
 
-const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
-  const { slug } = await params;
-  const translate = await getTranslateServer();
-  const catalog = parseCatalogSlug(slug);
-  const catalogData = await fetchFilters(catalog);
+const Page = async ({
+  params,
+  searchParams,
+}: PageProps<{ region: string }>) => {
+  const { region: regionSlug } = await params;
 
-  if (!catalog || !catalog.country) {
-    return null;
-  }
+  const { area, tag, type } = (await searchParams) as SchoolFilterQueryType;
 
   const { pageHero, schools, totalSchools } = await fetchSchoolByFilter({
-    country: catalog.country!,
-    region: catalog.region,
-    area: catalog.area,
-    subarea: catalog.subarea,
+    areas: toOptionalArray(area),
+    tags: toOptionalArray(tag),
+    types: toOptionalArray(type),
+    regionSlug,
   });
 
-  console.log({ catalogData, catalog });
+  const translate = await getTranslateServer();
+
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
@@ -95,7 +91,7 @@ const Page = async ({ params }: PageProps<{ slug: string[] }>) => {
         />
       </PageLayout>
       <Container {...styles.container}>
-        <FilterSidebar catalog={catalog} />
+        <FilterSidebar regionSlug={regionSlug} />
         <Box {...styles.contentWrapper}>
           <SchoolsCount
             filterTotal={schools?.length || 0}
