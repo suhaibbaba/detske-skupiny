@@ -70,8 +70,14 @@ const styles: GroupsPageStyles = {
   },
 };
 
-const Page = async ({ params }: Props) => {
+const Page = async ({ params, searchParams }: Props) => {
   const { slug } = await params;
+  const { types, tags, name } = (await searchParams) as {
+    types?: string[];
+    tags?: string[];
+    name?: string;
+  };
+
   const translate = await getTranslateServer();
   const catalog = parseCatalogSlug(slug);
   const selectedSlug = getSelectedSlug(catalog);
@@ -86,6 +92,9 @@ const Page = async ({ params }: Props) => {
     region: catalog.region,
     area: catalog.area,
     subarea: catalog.subarea,
+    types,
+    tags,
+    search: name,
   });
 
   return (

@@ -98,6 +98,7 @@ const FilterSidebar = ({
             region: catalog.region || "",
           },
         )}
+        selectedSlug={selectedSlug}
         items={subareas}
         showDivider={true}
       />

@@ -10,10 +10,12 @@ import {
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import SchoolTag from "@/app/[school]/components/SchoolTag";
+import SchoolTag from "@/app/school/[school]/components/SchoolTag";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
+import { routes } from "@/routes";
 
 interface Props {
   school: MiniSchool;
@@ -150,6 +152,7 @@ const styles: KinderGroupCardStyles = {
 };
 
 const SchoolGridCard = ({ school }: Props) => {
+  const translate = useTranslate();
   const { shortSummary, name, tags, primaryImage, logo, region } = school;
 
   return (
@@ -165,7 +168,7 @@ const SchoolGridCard = ({ school }: Props) => {
           component="img"
           {...styles.logo}
           src={urlImageFor(logo)}
-          alt="Logo"
+          alt={name}
         />
         <Ellipsis limitOfLine={2} {...styles.name}>
           {name}
@@ -186,8 +189,8 @@ const SchoolGridCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {shortSummary}
         </Ellipsis>
-        <Button {...styles.cta} href={school.slug}>
-          View this School
+        <Button {...styles.cta} href={routes.school(school.slug)}>
+          {translate("viewSchool")}
         </Button>
       </Box>
     </Box>

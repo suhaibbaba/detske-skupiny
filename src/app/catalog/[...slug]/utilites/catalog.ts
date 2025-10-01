@@ -36,10 +36,11 @@ export function parseCatalogSlug(slug: string[] = []): CatalogParams {
       return { level: FilterTypes.region, country: slug[0], region: slug[1] };
     case 3:
       return {
-        level: FilterTypes.area,
+        level: FilterTypes.subarea,
         country: slug[0],
         region: slug[1],
         area: slug[2],
+        subarea: slug[3],
       };
     case 4:
       return {

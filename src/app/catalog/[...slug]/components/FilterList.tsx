@@ -16,6 +16,7 @@ import MinusIcon from "@mui/icons-material/Remove";
 import { routes } from "@/routes";
 import { CategoryItem } from "@/sanity/queries";
 import Button from "@/components/ui/button";
+import { normalizeSlug } from "@/sanity/utilites/helper";
 
 interface Props {
   title: string;
@@ -125,9 +126,13 @@ const FilterList: FC<Props> = ({ title, items, showDivider, selectedSlug }) => {
                 key={district.id}
                 href={routes.catalogs(district.slug)}
                 variant="text"
-                className={selectedSlug === district.slug ? "selected" : ""}
+                className={
+                  normalizeSlug(selectedSlug) === normalizeSlug(district.slug)
+                    ? "selected"
+                    : ""
+                }
               >
-                <Box {...styles.itemContainer}>
+                <Box {...styles.itemContainer} key={`container_${district.id}`}>
                   <MinusIcon sx={styles.itemIcon?.sx} />
                   <Typography {...styles.itemText}>{district.name}</Typography>
                 </Box>

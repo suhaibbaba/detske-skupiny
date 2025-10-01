@@ -7,8 +7,5 @@ export const routes = {
   groups: "/groups",
   preschool: "/preschool",
   catalogs: (slug?: string) => (slug ? `/catalog/${slug}` : "/"),
-  school: (regionSlug?: string, slug?: string) =>
-    slug && regionSlug
-      ? `/catalog/${encodeURIComponent(regionSlug)}/${encodeURIComponent(slug)}`
-      : "/",
+  school: (slug?: string) => (slug ? `/school/${slug}` : "/"),
 };

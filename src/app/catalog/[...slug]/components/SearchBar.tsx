@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   BoxProps,
@@ -7,6 +9,8 @@ import {
 } from "@mui/material";
 import Search from "@/components/icons/Search";
 import Button from "@/components/ui/button";
+import { useSchoolFilters } from "@/hooks/useSchoolFilters";
+import useTranslate from "@/hooks/useTranslate";
 
 interface SearchBarStyles {
   wrapper?: BoxProps;
@@ -75,13 +79,23 @@ const styles: SearchBarStyles = {
 };
 
 const SearchBar = () => {
+  const translate = useTranslate();
+  const { commitName, setLocalName, localName } = useSchoolFilters();
+
   return (
     <Box {...styles.wrapper}>
       <Box {...styles.icon}>
         <Search />
       </Box>
-      <InputBase {...styles.input} />
-      <Button {...styles.button}>Search</Button>
+      <InputBase
+        {...styles.input}
+        value={localName}
+        onChange={(e) => setLocalName(e.target.value)}
+        onBlur={() => commitName()}
+      />
+      <Button {...styles.button} onClick={() => commitName()}>
+        {translate("search")}
+      </Button>
     </Box>
   );
 };

@@ -13,7 +13,7 @@ import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
-import SchoolTag from "@/app/[school]/components/SchoolTag";
+import SchoolTag from "@/app/school/[school]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
@@ -167,7 +167,7 @@ const SchoolCard = ({ school }: Props) => {
   const translate = useTranslate();
 
   return (
-    <Box {...styles.container}>
+    <Box {...styles.container} data-test-selector="SchoolCard">
       <Box {...styles.imageWrapper}>
         <Box
           component="img"
@@ -195,10 +195,7 @@ const SchoolCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {school.shortSummary}
         </Ellipsis>
-        <Button
-          {...styles.cta}
-          href={routes.school(school.region.name, school.slug)}
-        >
+        <Button {...styles.cta} href={routes.school(school.slug)}>
           {translate("viewSchool")}
         </Button>
       </Box>

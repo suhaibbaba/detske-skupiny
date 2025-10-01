@@ -13,11 +13,14 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
       ),
     "schools": *[
       _type == "schools" &&
-      ${languageQuery} &&
+      (language == $locale || language == "en" || !defined(language)) &&
       (!defined($country) || area->region->country->slug.current == $country) &&
       (!defined($region) || area->region->slug.current == $region) &&
       (!defined($area) || area->slug.current == $area) &&
-      (!defined($subarea) || subarea->slug.current == $subarea)
+      (!defined($subarea) || subarea->slug.current == $subarea) &&
+      (!defined($types) || count($types) == 0 || count(categories[@->slug.current in $types]) > 0) &&
+      (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
+      (!defined($search) || name match $search)
     ] {
       "id": _id,
       name,
@@ -54,5 +57,6 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
     subarea: params.subarea ?? null,
     types: params.types ?? [],
     tags: params.tags ?? [],
+    search: params.search ?? null,
   });
 }
