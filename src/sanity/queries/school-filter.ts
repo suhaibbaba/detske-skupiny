@@ -126,7 +126,7 @@ export const regionQuery = groq`
       (!defined(language) || language == $locale)
     ][0]{
       "id": _id,
-      "name": country->name + " " + name,
+      "name": name,
       "slug": "/" + country->slug.current + "/" + slug.current,
       "count": count(*[
         _type == "schools" &&
