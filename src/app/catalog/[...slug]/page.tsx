@@ -12,6 +12,7 @@ import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import SchoolsCount from "@/app/catalog/[...slug]/components/SchoolCount";
 import SchoolGridCard from "@/app/catalog/[...slug]/components/SchoolGridCard";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
+import { toArray } from "@/sanity/utilites/helper";
 
 type Props = PageProps<{ slug: string[] }>;
 
@@ -72,11 +73,18 @@ const styles: GroupsPageStyles = {
 
 const Page = async ({ params, searchParams }: Props) => {
   const { slug } = await params;
-  const { types, tags, name } = (await searchParams) as {
+  const {
+    types: typesQuery,
+    tags: tagsQuery,
+    name,
+  } = (await searchParams) as {
     types?: string[];
     tags?: string[];
     name?: string;
   };
+
+  const types = toArray(typesQuery);
+  const tags = toArray(tagsQuery);
 
   const translate = await getTranslateServer();
   const catalog = parseCatalogSlug(slug);
