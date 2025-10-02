@@ -25,6 +25,7 @@ export interface MiniSchool {
 }
 
 export interface TransportOption {
+  id: string;
   type?: string;
   name?: string;
   mode?: string;

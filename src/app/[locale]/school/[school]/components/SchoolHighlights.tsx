@@ -1,6 +1,7 @@
 import { Box, Typography, TypographyProps } from "@mui/material";
 import RichText from "@/sanity/components/RichText";
 import { SanityRichTextField } from "@/sanity/types";
+import useTranslate from "@/hooks/useTranslate";
 
 const sectionHeading: TypographyProps = {
   color: "custom.ui13",
@@ -15,13 +16,14 @@ interface Props {
 }
 
 const SchoolHighlights = ({ highlights }: Props) => {
+  const translate = useTranslate();
   if (!highlights) {
     return null;
   }
 
   return (
     <Box component="section">
-      <Typography {...sectionHeading}>Highlights</Typography>
+      <Typography {...sectionHeading}>{translate("highlights")}</Typography>
       <RichText>{highlights}</RichText>
     </Box>
   );

@@ -9,12 +9,17 @@ export async function fetchGroupPage() {
       "id": _id,
       "totalSchools": count(*[_type == "schools" && ${languageQuery} && area->region._ref == ^._id ]),
       name,
-      "slug": slug.current,
+      "slug": "/" 
+        + country->slug.current + "/" 
+        + slug.current,
       "backgroundCover": backgroundCover.asset->url,
       "areas": *[_type == "areas" && ${languageQuery} && references(^._id)]{
         "id": _id,
         name,
-        "slug": slug.current,
+        "slug": "/" 
+          + region->country->slug.current + "/" 
+          + region->slug.current + "/" 
+          + slug.current,
         "schoolCount": count(*[_type == "schools" && ${languageQuery} && references(^._id)])
       },
       "schoolCategories": *[_type == "schoolCategories" && ${languageQuery}]{

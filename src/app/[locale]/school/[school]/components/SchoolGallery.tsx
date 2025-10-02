@@ -7,6 +7,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
+import useTranslate from "@/hooks/useTranslate";
 
 const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
@@ -68,6 +69,8 @@ const styles: SchoolGalleryStyles = {
 };
 
 const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery, showTitle }) => {
+  const translate = useTranslate();
+
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -100,7 +103,9 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery, showTitle }) => {
   return (
     <>
       <Box {...styles.container} data-test-selector="SchoolGallery">
-        {showTitle && <Typography {...styles.title}>Gallery</Typography>}
+        {showTitle && (
+          <Typography {...styles.title}>{translate("gallery")}</Typography>
+        )}
         <Box {...styles.imageContainer}>
           {/* Left main */}
           {main && (

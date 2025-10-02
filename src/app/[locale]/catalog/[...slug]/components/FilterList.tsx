@@ -18,6 +18,7 @@ import { CategoryItem } from "@/sanity/queries";
 import Button from "@/components/ui/button";
 import { normalizeSlug } from "@/sanity/utilites/helper";
 import DoneIcon from "@mui/icons-material/Done";
+import React from "react";
 
 interface Props {
   title: string;
@@ -136,23 +137,32 @@ const FilterList: FC<Props> = ({
           const selected =
             normalizeSlug(selectedSlug) === normalizeSlug(district.slug);
           return (
-            <Button
-              {...styles.itemButton}
-              key={district.id}
-              href={routes.catalogs(district.slug)}
-              variant="text"
-              className={selected ? "selected" : ""}
-            >
-              <Box {...styles.itemContainer} key={`container_${district.id}`}>
-                {selected ? (
-                  <DoneIcon sx={styles.itemSelectedIcon?.sx} />
-                ) : (
-                  <MinusIcon sx={styles.itemIcon?.sx} />
-                )}
-                <Typography {...styles.itemText}>{district.name}</Typography>
-              </Box>
-              <Typography {...styles.itemCount}>{district.count}</Typography>
-            </Button>
+            <React.Fragment key={district.id}>
+              <Button
+                {...styles.itemButton}
+                href={routes.catalogs(district.slug)}
+                variant="text"
+                className={selected ? "selected" : ""}
+              >
+                <Box {...styles.itemContainer} key={`container_${district.id}`}>
+                  {selected ? (
+                    <DoneIcon
+                      key={`${district.id}_done`}
+                      sx={styles.itemSelectedIcon?.sx}
+                    />
+                  ) : (
+                    <MinusIcon
+                      key={`${district.id}_minus`}
+                      sx={styles.itemIcon?.sx}
+                    />
+                  )}
+                  <Typography key={`${district.id}_name`} {...styles.itemText}>
+                    {district.name}
+                  </Typography>
+                </Box>
+                <Typography {...styles.itemCount}>{district.count}</Typography>
+              </Button>
+            </React.Fragment>
           );
         })}
       </Box>

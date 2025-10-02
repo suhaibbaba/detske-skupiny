@@ -152,7 +152,7 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
                 content: (
                   <Box>
                     {school.transportation?.map((item) => (
-                      <Typography key={item.name}>
+                      <Typography key={item.id}>
                         {item.name} ({item.distance})
                       </Typography>
                     ))}

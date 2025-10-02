@@ -16,7 +16,7 @@ import { routes } from "@/routes";
 
 interface Props {
   item?: GroupPage["areas"][number] | GroupPage["schoolCategories"][number];
-  slug?: string; // region slug
+  baseSlug?: string;
   hideNextArrow?: boolean;
 }
 
@@ -97,15 +97,18 @@ const styles: GroupItemStyles = {
   },
 };
 
-const GroupItem: FC<Props> = ({ slug, item, hideNextArrow }) => {
+const GroupItem: FC<Props> = ({ baseSlug, item, hideNextArrow }) => {
   if (!item) {
     return null;
   }
 
+  let url = routes.catalogs(item.slug);
+  if (baseSlug) {
+    url = `${routes.catalogs(baseSlug)}?types=${item.slug}`;
+  }
+
   return (
-    <Link
-      href={`${routes.catalogs(slug)}?area=${encodeURIComponent(item.slug)}`}
-    >
+    <Link href={url}>
       <ButtonBase {...styles.container}>
         <Stack {...styles.stack}>
           {"emoji" in item && item.emoji && (

@@ -100,7 +100,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
         <Grid container spacing="24px">
           {areas.map((area) => (
             <Grid size={4} key={area.id}>
-              <GroupItem item={area} slug={slug} />
+              <GroupItem item={area} />
             </Grid>
           ))}
         </Grid>
@@ -110,7 +110,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
         <Grid container spacing="24px">
           {schoolCategories.map((category) => (
             <Grid size={4} key={category.id}>
-              <GroupItem item={category} hideNextArrow={true} />
+              <GroupItem item={category} baseSlug={slug} hideNextArrow={true} />
             </Grid>
           ))}
         </Grid>

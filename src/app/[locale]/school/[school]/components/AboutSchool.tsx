@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { School } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
+import useTranslate from "@/hooks/useTranslate";
 
 const tags = [
   { label: "Children’s Group", selected: true },
@@ -65,9 +66,11 @@ const styles: AboutSchoolStyles = {
 };
 
 const AboutSchool: FC<Props> = ({ about }) => {
+  const translate = useTranslate();
+
   return (
     <Box {...styles.container}>
-      <Typography {...styles.title}>About Us</Typography>
+      <Typography {...styles.title}>{translate("aboutUs")}</Typography>
       <RichText {...styles.description}>{about}</RichText>
       <Box {...styles.tagsContainer}>
         {tags.map((tag, idx) => (

@@ -13,7 +13,7 @@ interface InfoCardItemStyles {
   container?: BoxProps;
   iconWrapper?: BoxProps;
   title?: TypographyProps;
-  content?: TypographyProps;
+  content?: BoxProps;
 }
 
 const styles: InfoCardItemStyles = {
@@ -48,9 +48,9 @@ const InfoCardItem = ({ icon, title, content }: InfoCardItemProps) => {
   return (
     <Box {...styles.container}>
       <Box {...styles.iconWrapper}>{icon}</Box>
-      <Box>
+      <Box data-test-selector={"info-card"}>
         <Typography {...styles.title}>{title}</Typography>
-        <Typography {...styles.content}>{content}</Typography>
+        <Box {...styles.content}>{content}</Box>
       </Box>
     </Box>
   );

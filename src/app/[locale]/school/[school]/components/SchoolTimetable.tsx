@@ -10,6 +10,7 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { TimetableRow } from "@/sanity/types";
+import useTranslate from "@/hooks/useTranslate";
 
 interface SchoolTimetableStyles {
   title?: TypographyProps;
@@ -29,19 +30,20 @@ interface Props {
 }
 
 export default function SchoolTimetable({ timetable }: Props) {
+  const translate = useTranslate();
   if (!timetable || !timetable?.length) {
     return null;
   }
 
   return (
     <Box component="section">
-      <Typography {...styles.title}>Our time table</Typography>
+      <Typography {...styles.title}>{translate("ourTimeTable")}</Typography>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Time</TableCell>
-              <TableCell>Activity</TableCell>
+              <TableCell>{translate("time")}</TableCell>
+              <TableCell>{translate("activity")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

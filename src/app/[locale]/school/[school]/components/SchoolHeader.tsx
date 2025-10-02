@@ -3,6 +3,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { School } from "@/sanity/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {
   school: School;
@@ -44,6 +45,8 @@ const styles: SchoolHeaderStyles = {
 };
 
 const SchoolHeader = ({ school }: Props) => {
+  const translate = useTranslate();
+
   return (
     <Box {...styles.wrapper}>
       <Typography {...styles.name}>
@@ -59,7 +62,7 @@ const SchoolHeader = ({ school }: Props) => {
       </Typography>
       {school.website && (
         <Button variant="secondary" href={parseLinkField(school.website).url}>
-          Visit Website
+          {translate("visitWebsite")}
         </Button>
       )}
     </Box>

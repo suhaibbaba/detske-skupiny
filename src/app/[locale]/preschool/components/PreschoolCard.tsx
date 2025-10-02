@@ -104,7 +104,7 @@ const styles: PreschoolCardStyles = {
 const PreschoolCard: FC<Props> = ({ school }) => {
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
-      <CardActionArea href={routes.school(school.region.name, school.slug)}>
+      <CardActionArea href={routes.school(school.slug)}>
         <Box p="10px" position="relative">
           <CardMedia
             {...styles.cardMedia}
