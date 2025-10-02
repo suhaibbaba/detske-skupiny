@@ -3,7 +3,7 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 import {
   CatalogParams,
   FilterTypes,
-} from "@/app/catalog/[...slug]/utilites/catalog";
+} from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { SchoolCategory, SchoolTag } from "@/sanity/types";
 
 export type CategoryItem = {

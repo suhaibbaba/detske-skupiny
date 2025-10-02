@@ -56,7 +56,10 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
         name,
         "slug": slug.current
       },
-      transportation[],
+      transportation[]{
+        "id": _key,
+        ...
+      },
       about,
       highlights,
       timetable[],

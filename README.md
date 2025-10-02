@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js i18n Domain-Based Routing Setup
 
-## Getting Started
+This guide explains how to set up domain-based internationalization (i18n) routing for local development on macOS.
 
-First, run the development server:
+## Overview
+
+This project uses `next-intl` with domain-based routing, where different domains serve different languages:
+- `en.school.local` → English
+- `cz.school.local` → Czech
+
+## Prerequisites
+
+- Node.js installed
+- macOS (for the setup commands below)
+- Terminal access with sudo privileges
+
+## Local Development Setup
+
+### 1. Configure Local Domains
+
+Add custom domain entries to your hosts file:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Add these lines at the end of the file:
+
+```
+127.0.0.1 en.school.local
+127.0.0.1 cz.school.local
+```
+
+**Save and exit:** Press `Ctrl + X`, then `Y`, then `Enter`
+
+**Flush DNS cache** to make changes take effect immediately:
+
+```bash
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
+### 2. Set Up Port Forwarding (Optional)
+
+If you want to access the app on port 80 instead of 3000:
+
+```bash
+# Forward port 80 to port 3000
+echo "rdr pass on lo0 inet proto tcp from any to any port 80 -> 127.0.0.1 port 3000" | sudo pfctl -ef -
+```
+
+**Note:** This forwarding is temporary and will be removed after a system restart.
+
+### 3. Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```bash
+cp .env.example .env.local
+```
+
+Add your domain configuration:
+
+```env
+NEXT_PUBLIC_EN_DOMAIN=en.school.local
+NEXT_PUBLIC_CZ_DOMAIN=cz.school.local
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 5. Access the Application
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**With port forwarding (port 80):**
+- English: http://en.school.local
+- Czech: http://cz.school.local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Without port forwarding (port 3000):**
+- English: http://en.school.local:3000
+- Czech: http://cz.school.local:3000
 
-## Learn More
+## Troubleshooting
 
-To learn more about Next.js, take a look at the following resources:
+### Issue: Getting 404 errors
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Solution:** Ensure you have the `[locale]` folder in your app directory. All routes must be inside `src/app/[locale]/`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Issue: Still showing English on Czech domain
 
-## Deploy on Vercel
+**Solution:** 
+1. Clear Next.js cache: `rm -rf .next`
+2. Restart the dev server
+3. Make sure you're accessing via the correct domain (not `localhost`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Issue: Cross-origin warnings
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Solution:** Add this to your `next.config.js`:
+
+```javascript
+const nextConfig = {
+  allowedDevOrigins: [
+    'http://en.school.local',
+    'http://cz.school.local',
+  ],
+};
+```
+
+## Production Deployment
+
+In production, point your actual domains to your server:
+- `en.yourdomain.com` → Your server IP
+- `cz.yourdomain.com` → Your server IP
+
+Update environment variables:
+```env
+NEXT_PUBLIC_EN_DOMAIN=en.yourdomain.com
+NEXT_PUBLIC_CZ_DOMAIN=cz.yourdomain.com
+```
+
+No hosts file modifications or port forwarding needed in production.
