@@ -103,13 +103,15 @@ const styles: FilterListStyles = {
 };
 
 const FilterTypeList: FC<Props> = ({
-  types,
+  types: typesProps,
   selectedTypes,
   toggleType,
   clear,
   showDivider,
 }) => {
   const translate = useTranslate();
+  const types = typesProps?.filter(Boolean);
+
   if (!types || types.length === 0) {
     return null;
   }

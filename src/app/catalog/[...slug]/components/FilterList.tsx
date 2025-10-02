@@ -17,6 +17,7 @@ import { routes } from "@/routes";
 import { CategoryItem } from "@/sanity/queries";
 import Button from "@/components/ui/button";
 import { normalizeSlug } from "@/sanity/utilites/helper";
+import DoneIcon from "@mui/icons-material/Done";
 
 interface Props {
   title: string;
@@ -32,6 +33,7 @@ interface FilterListStyles {
   itemButton?: ButtonProps;
   itemContainer?: BoxProps;
   itemIcon?: IconProps;
+  itemSelectedIcon?: IconProps;
   itemText?: TypographyProps;
   itemCount?: TypographyProps;
   divider?: DividerProps;
@@ -77,11 +79,17 @@ const styles: FilterListStyles = {
   },
   itemIcon: {
     sx: {
-      color: "#475467",
+      color: "custom.ui20",
+    },
+  },
+  itemSelectedIcon: {
+    sx: {
+      fontSize: "18px",
+      color: "custom.ui10",
     },
   },
   itemText: {
-    color: "#475467",
+    color: "custom.ui20",
   },
   itemCount: {
     sx: {
@@ -108,7 +116,13 @@ const styles: FilterListStyles = {
   },
 };
 
-const FilterList: FC<Props> = ({ title, items, showDivider, selectedSlug }) => {
+const FilterList: FC<Props> = ({
+  title,
+  items: itemsProps,
+  showDivider,
+  selectedSlug,
+}) => {
+  const items = itemsProps?.filter(Boolean);
   if (!items || items.length === 0) {
     return null;
   }
@@ -117,31 +131,31 @@ const FilterList: FC<Props> = ({ title, items, showDivider, selectedSlug }) => {
     <Box {...styles.container}>
       {showDivider && <Divider {...styles.divider} />}
       <Typography {...styles.heading}>{title}</Typography>
-      {items.length > 0 && (
-        <Box {...styles.listContainer}>
-          {items.map((district) => {
-            return (
-              <Button
-                {...styles.itemButton}
-                key={district.id}
-                href={routes.catalogs(district.slug)}
-                variant="text"
-                className={
-                  normalizeSlug(selectedSlug) === normalizeSlug(district.slug)
-                    ? "selected"
-                    : ""
-                }
-              >
-                <Box {...styles.itemContainer} key={`container_${district.id}`}>
+      <Box {...styles.listContainer}>
+        {items.map((district) => {
+          const selected =
+            normalizeSlug(selectedSlug) === normalizeSlug(district.slug);
+          return (
+            <Button
+              {...styles.itemButton}
+              key={district.id}
+              href={routes.catalogs(district.slug)}
+              variant="text"
+              className={selected ? "selected" : ""}
+            >
+              <Box {...styles.itemContainer} key={`container_${district.id}`}>
+                {selected ? (
+                  <DoneIcon sx={styles.itemSelectedIcon?.sx} />
+                ) : (
                   <MinusIcon sx={styles.itemIcon?.sx} />
-                  <Typography {...styles.itemText}>{district.name}</Typography>
-                </Box>
-                <Typography {...styles.itemCount}>{district.count}</Typography>
-              </Button>
-            );
-          })}
-        </Box>
-      )}
+                )}
+                <Typography {...styles.itemText}>{district.name}</Typography>
+              </Box>
+              <Typography {...styles.itemCount}>{district.count}</Typography>
+            </Button>
+          );
+        })}
+      </Box>
     </Box>
   );
 };

@@ -67,7 +67,7 @@ const styles: FilterListStyles = {
       py: "2px",
       fontSize: 12,
       fontWeight: 400,
-      color: "#475467",
+      color: "custom.ui20",
       bgcolor: backgroundColor,
       border: `1px solid ${backgroundColor}`,
       "& .MuiChip-label": {
@@ -106,13 +106,15 @@ const styles: FilterListStyles = {
 };
 
 const FilterTagList: FC<Props> = ({
-  tags,
+  tags: tagsProps,
   selectedTags,
   toggleTag,
   showDivider,
   clear,
 }) => {
   const translate = useTranslate();
+  const tags = tagsProps?.filter(Boolean);
+
   if (!tags || tags.length === 0) {
     return null;
   }

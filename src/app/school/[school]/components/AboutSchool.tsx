@@ -52,7 +52,7 @@ const styles: AboutSchoolStyles = {
       py: "2px",
       fontSize: 12,
       fontWeight: 400,
-      color: "#475467",
+      color: "custom.ui20",
       "& .MuiChip-label": {
         padding: 0,
       },

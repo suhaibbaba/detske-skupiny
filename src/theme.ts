@@ -57,6 +57,7 @@ const baseTheme = createTheme({
       ui17: "#EDDDFC",
       ui18: "#AAB0B9",
       ui19: "#8A866A",
+      ui20: "#475467",
     },
     shadows: {
       ui1: "0px 4px 6px 0px #0000000D, 0px 10px 15px -3px  #0000001A",
