@@ -77,7 +77,7 @@ const styles: FilterListStyles = {
         borderColor: "var(--mui-palette-primary-main)",
       },
       "&:hover": {
-        bgcolor: alpha(backgroundColor || "white", 0.5),
+        bgcolor: alpha(backgroundColor || "#FFFFFF", 0.5),
       },
       "& .MuiChip-icon": {
         mr: "4px",
