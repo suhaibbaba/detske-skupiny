@@ -13,7 +13,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
       ),
     "schools": *[
       _type == "schools" &&
-      (language == $locale || language == "en" || !defined(language)) &&
+      (language == $locale || !defined(language)) &&
       (!defined($country) || area->region->country->slug.current == $country) &&
       (!defined($region) || area->region->slug.current == $region) &&
       (!defined($area) || area->slug.current == $area) &&
