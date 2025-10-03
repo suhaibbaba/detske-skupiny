@@ -11,12 +11,13 @@ import {
 import { usePathname } from "next/navigation";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { useLocale } from "use-intl";
+import useTranslate from "@/hooks/useTranslate";
+import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 
 interface Props {
   addSpace?: boolean;
 }
 
-// Segments to exclude from breadcrumb display but keep in URLs
 const excludeNavigation = ["catalog"];
 
 interface BreadcrumbsStyles {
@@ -51,48 +52,80 @@ const styles: BreadcrumbsStyles = {
 const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
   const pathname = usePathname();
   const locale = useLocale();
+  const translate = useTranslate();
+  const [items, setItems] = React.useState<BreadcrumbItem[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const generateBreadcrumbs = (): BreadcrumbItem[] => {
-    // Split the pathname and filter out empty strings
-    const pathSegments = pathname
-      .split("/")
-      .filter((segment) => segment !== "");
+  React.useEffect(() => {
+    const fetchBreadcrumbs = async () => {
+      setLoading(true);
 
-    // Create breadcrumb items starting with Home
-    const breadcrumbs: BreadcrumbItem[] = [
-      {
-        label: "Home",
-        href: "/",
-      },
-    ];
+      const pathSegments = pathname
+        .split("/")
+        .filter((segment) => segment !== "" && segment !== locale);
 
-    // Add breadcrumbs for each path segment
-    pathSegments.forEach((segment, index) => {
-      const href = "/" + pathSegments.slice(0, index + 1).join("/");
+      const breadcrumbs: BreadcrumbItem[] = [
+        {
+          label: translate("home"),
+          href: "/",
+        },
+      ];
 
-      // Skip excluded segments from display but keep them in URLs
-      if (!excludeNavigation.includes(segment) && segment !== locale) {
-        // Format the segment into readable label
-        const label = formatSegment(segment);
+      // Fetch all page names in one query for better performance
+      const slugs = pathSegments.filter(
+        (segment) => !excludeNavigation.includes(segment),
+      );
 
-        breadcrumbs.push({
-          label,
-          href,
-        });
+      if (slugs.length > 0) {
+        try {
+          const pages = await fetchBreadcrumbList({ slugs });
+
+          console.log({ pages });
+          // Create a map for quick lookup
+          const pageMap = new Map(pages.map((page) => [page.slug, page.name]));
+
+          // Build breadcrumbs with proper names
+          pathSegments.forEach((segment, index) => {
+            const href = "/" + pathSegments.slice(0, index + 1).join("/");
+
+            if (!excludeNavigation.includes(segment)) {
+              const label = pageMap.get(segment) || formatSegment(segment);
+              breadcrumbs.push({ label, href });
+            }
+          });
+        } catch (error) {
+          console.error("Error fetching breadcrumb data:", error);
+
+          // Fallback to formatted slugs on error
+          pathSegments.forEach((segment, index) => {
+            const href = "/" + pathSegments.slice(0, index + 1).join("/");
+            if (!excludeNavigation.includes(segment)) {
+              breadcrumbs.push({
+                label: formatSegment(segment),
+                href,
+              });
+            }
+          });
+        }
       }
-    });
 
-    return breadcrumbs;
-  };
+      setItems(breadcrumbs);
+      setLoading(false);
+    };
+
+    fetchBreadcrumbs();
+  }, [pathname, locale, translate]);
 
   const formatSegment = (segment: string): string => {
-    // Remove hyphens and underscores, capitalize each word
     return segment
       .replace(/[-_]/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const items = generateBreadcrumbs();
+  if (loading || items.length === 0) {
+    return null; // or a loading skeleton
+  }
+
   const last = items[items.length - 1];
 
   return (
@@ -101,7 +134,7 @@ const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
       aria-label="breadcrumb"
       sx={{ mb: addSpace ? "40px" : 0 }}
     >
-      {items.slice(0, -1).map((item, index) => (
+      {items.slice(0, -1).map((item) => (
         <Link key={item.href} href={item.href} {...styles.link}>
           {item.label}
         </Link>
