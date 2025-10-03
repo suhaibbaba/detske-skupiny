@@ -179,7 +179,7 @@ const SchoolGridCard = ({ school }: Props) => {
           <SchoolTag tag={tag} key={tag.id} />
         ))}
       </Box>
-      <Box sx={{ mt: "auto" }}>
+      <Box sx={{ mt: "auto", width: "100%" }}>
         <Typography {...styles.location}>
           <Location
             sx={{ width: "16px", height: "20px", color: "secondary.dark" }}

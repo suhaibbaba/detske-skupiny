@@ -20,7 +20,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
       (!defined($subarea) || subarea->slug.current == $subarea) &&
       (!defined($types) || count($types) == 0 || count(categories[@->slug.current in $types]) > 0) &&
       (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
-      (!defined($search) || name match $search)
+      (!defined($search) || lower(name) match "*" + lower($search) + "*")
     ] {
       "id": _id,
       name,
