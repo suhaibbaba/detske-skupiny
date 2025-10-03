@@ -52,6 +52,7 @@ export const typesQuery = groq`
         _type == "schools" &&
         (!defined($country) || area->region->country->slug.current == $country) &&
         (!defined($region) || area->region->slug.current == $region) &&
+        (!defined(language) || language == $locale) &&
         references(^._id)
       ]),
     }[count > 0] | order(name asc),
@@ -76,6 +77,7 @@ export const countryQuery = groq`
       "slug": slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         area->region->country._ref == ^._id
       ])
     }
@@ -87,6 +89,7 @@ export const countryQuery = groq`
         + slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         area->region._ref == ^._id
       ])
     },
@@ -101,6 +104,7 @@ export const countryQuery = groq`
         + slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         subarea->region._ref == ^._id
       ])
     },
@@ -130,6 +134,7 @@ export const regionQuery = groq`
       "slug": "/" + country->slug.current + "/" + slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         area->region._ref == ^._id
       ])
     }
@@ -147,6 +152,7 @@ export const regionQuery = groq`
         + slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         area._ref == ^._id
       ])
     },
@@ -160,6 +166,7 @@ export const regionQuery = groq`
         + slug.current,
       "count": count(*[
         _type == "schools" &&
+        (!defined(language) || language == $locale) &&
         subarea._ref == ^._id
       ])
     },
