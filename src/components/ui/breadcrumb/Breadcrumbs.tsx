@@ -80,7 +80,6 @@ const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
         try {
           const pages = await fetchBreadcrumbList({ slugs });
 
-          console.log({ pages });
           // Create a map for quick lookup
           const pageMap = new Map(pages.map((page) => [page.slug, page.name]));
 
