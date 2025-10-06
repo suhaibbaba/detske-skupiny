@@ -13,12 +13,35 @@ import ChevronRight from "@/components/icons/ChevronRight";
 import { useLocale } from "use-intl";
 import useTranslate from "@/hooks/useTranslate";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
+import { pathnames } from "@/i18n/routing";
 
 interface Props {
   addSpace?: boolean;
 }
 
-const excludeNavigation = ["catalog"];
+const excludeNavigationEN = ["catalog", "school"];
+
+const excludeNavigationMaps = [
+  ...excludeNavigationEN,
+  ...Object.values(pathnames)
+    .filter((value) => typeof value === "object")
+    .flatMap((locales) =>
+      Object.values(locales)
+        .map((path) => path.split("/").find((s) => s && !s.startsWith("[")))
+        .filter(
+          (segment): segment is string =>
+            segment !== undefined &&
+            excludeNavigationEN.some((en) =>
+              Object.values(locales).some(
+                (p) => p.includes(`/${en}/`) || p.includes(`/${en}`),
+              ),
+            ),
+        ),
+    ),
+];
+
+// Remove duplicates
+const excludeNavigation = [...new Set(excludeNavigationMaps)];
 
 interface BreadcrumbsStyles {
   link?: LinkProps;
@@ -50,7 +73,9 @@ const styles: BreadcrumbsStyles = {
 };
 
 const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
-  const pathname = usePathname();
+  const encodedPathname = usePathname();
+  const pathname = decodeURIComponent(encodedPathname);
+
   const locale = useLocale();
   const translate = useTranslate();
   const [items, setItems] = React.useState<BreadcrumbItem[]>([]);

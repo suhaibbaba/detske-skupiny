@@ -1,11 +1,10 @@
 export const routes = {
   home: "/",
-  blogs: (slug?: string) =>
-    slug ? `/blogs/${encodeURIComponent(slug)}` : "/blogs",
   about: "/about",
   contactUs: "/contact-us",
   groups: "/groups",
   preschool: "/preschool",
-  catalogs: (slug?: string) => (slug ? `/catalog/${slug}` : "/"),
-  school: (slug?: string) => (slug ? `/school/${slug}` : "/"),
+  blogs: (slug?: string) => (slug ? ["/blogs", slug].join("/") : "/blogs"),
+  catalogs: (slug?: string) => (slug ? ["/catalog", slug].join("/") : "/"),
+  school: (slug?: string) => (slug ? ["/school", slug].join("/") : "/"),
 };
