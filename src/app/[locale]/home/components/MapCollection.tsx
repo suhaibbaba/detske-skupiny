@@ -13,7 +13,7 @@ import { Coordinate, Coordinates, Region } from "@/sanity/types";
 import Button from "@/components/ui/button";
 import Map from "@/components/ui/map/Map";
 import useTranslate from "@/hooks/useTranslate";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   fields: {
@@ -33,7 +33,6 @@ interface MapCollectionStyles {
   filterWrapper?: BoxProps;
   filterButton?: ButtonProps;
   mapWrapper?: BoxProps;
-  mapImage?: BoxProps;
 }
 
 const styles: MapCollectionStyles = {
@@ -85,7 +84,7 @@ const styles: MapCollectionStyles = {
   },
   mapWrapper: {
     bgcolor: "common.white",
-    sx: (theme) => ({
+    sx: {
       width: "100%",
       maxHeight: {
         xs: "520px",
@@ -97,15 +96,8 @@ const styles: MapCollectionStyles = {
       },
       mt: "48px",
       borderRadius: "24px",
-      boxShadow: theme.palette.shadows.ui1,
+      boxShadow: "var(--mui-palette-shadows-ui1)",
       p: "20px",
-    }),
-  },
-  mapImage: {
-    sx: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
     },
   },
 };

@@ -26,6 +26,7 @@ const Map: React.FC<Props> = ({ regionId, coordinates, defaultLocation }) => {
 
     setMarkers(markers || []);
   }, [coordinates, regionId]);
+
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY || ""}>
       <MapComponent
@@ -36,9 +37,9 @@ const Map: React.FC<Props> = ({ regionId, coordinates, defaultLocation }) => {
         defaultZoom={9}
         mapId="MapCollection"
       >
-        {markers.map(({ coordinate }) => (
+        {markers.map(({ coordinate }, idx) => (
           <AdvancedMarker
-            key={`${coordinate.lat}-${coordinate.lng}`}
+            key={`${coordinate.lat}-${coordinate.lng}-${idx}`}
             position={{
               lat: coordinate.lat,
               lng: coordinate.lng,

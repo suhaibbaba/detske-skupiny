@@ -72,7 +72,6 @@ export interface School {
   region: Region;
   area: Area;
   address?: PostalAddress | null;
-  location?: GeoPoint | null;
   contacts?: ContactPerson[];
   links?: (SanityLinkField & { id: string })[];
   website?: SanityLinkField;

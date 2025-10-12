@@ -19,5 +19,5 @@ export type Coordinate = {
 
 export type Coordinates = {
   coordinate: Coordinate;
-  regionId: string;
+  regionId?: string;
 };
