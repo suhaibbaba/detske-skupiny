@@ -8,7 +8,18 @@ export async function fetchPageByType(type: string) {
       title,
       sections[]{
         ...,
-      }
+        _type == "mapCollection" => {
+          ...,
+          "coordinates": *[_type == "schools"]{
+            "coordinate": address.mapLocation,
+            "regionId": area->region->_id
+          },
+          "regions": regions[]->{
+            "id": _id,
+            name,
+          },
+        },
+      },
     }
   `;
 

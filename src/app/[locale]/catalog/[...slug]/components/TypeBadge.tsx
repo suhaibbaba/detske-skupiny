@@ -61,9 +61,6 @@ const SchoolTypesBadge: FC<Props> = ({ types }) => {
           icon = <Star />;
         }
 
-        console.log({
-          bg: type.backgroundColor,
-        });
         return (
           <Chip
             key={type.id}

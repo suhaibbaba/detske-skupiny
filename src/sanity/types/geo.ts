@@ -11,3 +11,13 @@ export type Region = {
   backgroundCover: string;
   areas: Area[];
 };
+
+export type Coordinate = {
+  lat: number;
+  lng: number;
+};
+
+export type Coordinates = {
+  coordinate: Coordinate;
+  regionId: string;
+};

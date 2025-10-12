@@ -9,15 +9,19 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import { SanityCtaField } from "@/sanity/types";
-import { parseLinkField } from "@/components/ui/link/parser";
+import { Coordinate, Coordinates, Region } from "@/sanity/types";
 import Button from "@/components/ui/button";
+import Map from "@/components/ui/map/Map";
+import useTranslate from "@/hooks/useTranslate";
+import { useCallback, useState } from "react";
 
 interface Props {
   fields: {
     title: string;
     description: string;
-    cta?: SanityCtaField[];
+    regions: Region[];
+    coordinates?: Coordinates[];
+    defaultMapLocation: Coordinate;
   };
 }
 
@@ -74,6 +78,9 @@ const styles: MapCollectionStyles = {
   filterButton: {
     sx: {
       width: "100%",
+      "&.selected": {
+        borderColor: "custom.ui11",
+      },
     },
   },
   mapWrapper: {
@@ -86,7 +93,7 @@ const styles: MapCollectionStyles = {
       },
       height: {
         xs: "520px",
-        sm: "auto",
+        sm: "686px",
       },
       mt: "48px",
       borderRadius: "24px",
@@ -104,31 +111,47 @@ const styles: MapCollectionStyles = {
 };
 
 const MapCollection = ({ fields }: Props) => {
+  const [regionId, setRegionId] = useState("");
+  const translate = useTranslate();
+
+  const onRegionIdChange = (id: string) => {
+    setRegionId(id);
+  };
+
   return (
     <Box {...styles.section} data-test-selection="MapCollection">
       <Container {...styles.container}>
         <Typography {...styles.title}>{fields.title}</Typography>
         <Typography {...styles.description}>{fields.description}</Typography>
         <Box {...styles.filterWrapper}>
-          {fields.cta?.map((cta) => {
-            const link = parseLinkField(cta.link);
+          <Button
+            variant="ghost"
+            {...styles.filterButton}
+            onClick={() => onRegionIdChange("")}
+            className={!regionId ? "selected" : ""}
+          >
+            {translate("viewAll")}
+          </Button>
+
+          {fields.regions?.map((region) => {
             return (
               <Button
-                key={cta._key}
-                variant={cta.variant}
+                key={region.id}
+                variant="ghost"
                 {...styles.filterButton}
+                className={region.id === regionId ? "selected" : ""}
+                onClick={() => onRegionIdChange(region.id)}
               >
-                {link.text}
+                {region.name}
               </Button>
             );
           })}
         </Box>
         <Box {...styles.mapWrapper}>
-          <Box
-            component="img"
-            {...styles.mapImage}
-            src="/home/map.jpg"
-            alt="Kindergarten Map"
+          <Map
+            regionId={regionId}
+            defaultLocation={fields.defaultMapLocation}
+            coordinates={fields.coordinates}
           />
         </Box>
       </Container>
