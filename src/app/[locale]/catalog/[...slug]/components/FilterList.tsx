@@ -94,8 +94,8 @@ const styles: FilterListStyles = {
   },
   itemCount: {
     sx: {
-      width: "28px",
-      height: "28px",
+      width: "34px",
+      height: "34px",
       aspectRatio: 1,
       fontSize: 14,
       color: "custom.ui13",
@@ -143,6 +143,7 @@ const FilterList: FC<Props> = ({
                 href={routes.catalogs(district.slug)}
                 variant="text"
                 className={selected ? "selected" : ""}
+                scroll={false}
               >
                 <Box {...styles.itemContainer} key={`container_${district.id}`}>
                   {selected ? (

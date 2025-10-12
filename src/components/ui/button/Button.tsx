@@ -14,11 +14,18 @@ interface ButtonProps extends Omit<MuiButtonProps, "href"> {
   href?: string;
   link?: SanityLinkProps;
   children?: React.ReactNode;
+  scroll?: boolean;
 }
 
 const buttonStyles: MuiButtonProps = {};
 
-const Button: FC<ButtonProps> = ({ children, sx, link, ...otherProps }) => {
+const Button: FC<ButtonProps> = ({
+  children,
+  sx,
+  link,
+  scroll,
+  ...otherProps
+}) => {
   const styles = useMemo(() => mergeMuiProps(buttonStyles, { sx }), [sx]);
 
   if (link) {
@@ -30,6 +37,7 @@ const Button: FC<ButtonProps> = ({ children, sx, link, ...otherProps }) => {
         {...styles}
         {...otherProps}
         href={passedProps.url}
+        scroll={scroll}
       >
         {children || passedProps.text || cleanUrl(passedProps.url)}
       </MuiButton>
@@ -43,6 +51,7 @@ const Button: FC<ButtonProps> = ({ children, sx, link, ...otherProps }) => {
         {...styles}
         {...otherProps}
         href={otherProps.href}
+        scroll={scroll}
       >
         {children}
       </MuiButton>

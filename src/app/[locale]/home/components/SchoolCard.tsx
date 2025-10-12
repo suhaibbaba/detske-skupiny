@@ -17,6 +17,7 @@ import SchoolTag from "@/app/[locale]/school/[school]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
+import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 
 interface Props {
   school: MiniSchool;
@@ -129,6 +130,7 @@ const styles: KinderGroupCardStyles = {
       color: theme.palette.custom.ui13,
       fontSize: "20px",
       fontWeight: 600,
+      textTransform: "capitalize",
     }),
   },
   description: {
@@ -180,6 +182,7 @@ const SchoolCard = ({ school }: Props) => {
             {school.area?.name}
           </Typography>
         )}
+        <SchoolTypesBadge types={school.types} />
       </Box>
       <Box {...styles.infoContainer}>
         <Ellipsis {...styles.title} limitOfLine={1}>

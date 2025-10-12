@@ -13,6 +13,7 @@ interface LinkProps
   href?: string;
   link?: SanityLinkProps;
   children?: React.ReactNode;
+  scroll?: boolean;
 }
 
 const linkStyles: MuiLinkProps = {

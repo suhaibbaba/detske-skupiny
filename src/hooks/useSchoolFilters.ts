@@ -62,7 +62,7 @@ export function useSchoolFilters({
         if (next.name) params.set("name", next.name);
       }
 
-      router.replace(`?${params.toString()}`);
+      router.replace(`?${params.toString()}`, { scroll: false });
 
       if (onChange) {
         onChange({
@@ -87,7 +87,9 @@ export function useSchoolFilters({
 
   // Commit localName → URL
   const commitName = useCallback(() => {
-    updateQuery({ name: localName });
+    if (localName !== nameFromUrl) {
+      updateQuery({ name: localName });
+    }
   }, [localName, updateQuery]);
 
   // Debounce commit on typing

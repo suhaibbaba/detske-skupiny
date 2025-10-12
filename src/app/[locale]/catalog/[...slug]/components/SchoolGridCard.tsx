@@ -7,6 +7,7 @@ import {
   TypographyProps,
   ChipProps,
   ButtonProps,
+  Chip,
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
@@ -16,6 +17,8 @@ import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
 import { routes } from "@/routes";
+import Star from "@/components/icons/Star";
+import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 
 interface Props {
   school: MiniSchool;
@@ -25,7 +28,6 @@ interface KinderGroupCardStyles {
   card?: BoxProps;
   imageWrapper?: BoxProps;
   image?: BoxProps;
-  premiumBadge?: ChipProps;
   logo?: BoxProps;
   nameWrapper?: BoxProps;
   name?: TypographyProps;
@@ -64,28 +66,6 @@ const styles: KinderGroupCardStyles = {
       display: "block",
       borderRadius: "12px",
     },
-  },
-  premiumBadge: {
-    size: "small",
-    sx: (theme) => ({
-      position: "absolute",
-      top: 12,
-      left: 12,
-      bgcolor: "secondary.main",
-      color: "custom.ui1",
-      fontWeight: 400,
-      fontSize: "14px",
-      borderRadius: "24px",
-      px: "10px",
-      ".MuiChip-icon": {
-        color: theme.palette.custom.ui19,
-        ml: 0,
-        mr: "4px",
-      },
-      ".MuiChip-label": {
-        p: 0,
-      },
-    }),
   },
   logo: {
     sx: {
@@ -153,16 +133,20 @@ const styles: KinderGroupCardStyles = {
 
 const SchoolGridCard = ({ school }: Props) => {
   const translate = useTranslate();
-  const { shortSummary, name, tags, primaryImage, logo, region } = school;
+  const { shortSummary, name, tags, primaryImage, logo, region, types } =
+    school;
 
   return (
     <Box {...styles.card}>
-      <Box
-        component="img"
-        {...styles.image}
-        src={urlImageFor(primaryImage)}
-        alt={name}
-      />
+      <Box {...styles.imageWrapper}>
+        <Box
+          component="img"
+          {...styles.image}
+          src={urlImageFor(primaryImage)}
+          alt={name}
+        />
+        <SchoolTypesBadge types={types} />
+      </Box>
       <Box {...styles.nameWrapper}>
         <Box
           component="img"
@@ -175,7 +159,7 @@ const SchoolGridCard = ({ school }: Props) => {
         </Ellipsis>
       </Box>
       <Box {...styles.tagsWrapper}>
-        {tags?.map((tag, idx) => (
+        {tags?.map((tag) => (
           <SchoolTag tag={tag} key={tag.id} />
         ))}
       </Box>

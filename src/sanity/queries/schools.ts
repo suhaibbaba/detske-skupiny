@@ -5,7 +5,7 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchMiniSchools(params: { numberOfSchools: number }) {
   const query = groq`{
-    "schools": *[_type == "schools" && ${languageQuery}][0...$numberOfSchools] {
+    "schools": *[_type == "schools" && ${languageQuery}] | order((defined(types[0]->highPriority) && types[0]->highPriority == true) desc)[0...$numberOfSchools] {
       "id": _id,
       name,
       "slug": slug.current,
@@ -22,8 +22,15 @@ export async function fetchMiniSchools(params: { numberOfSchools: number }) {
         name,
         "slug": slug.current,
         "borderColor": borderColor.hex,
-      }
-    }
+      },
+      types[]->{
+        "id": _id,
+        name,
+        highPriority,
+        "icon": icon.asset->url,
+        "backgroundColor": backgroundColor.hex,
+      },
+    },
   }`;
 
   return clientFetch<{
