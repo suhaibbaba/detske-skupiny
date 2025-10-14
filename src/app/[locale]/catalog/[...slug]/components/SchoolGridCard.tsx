@@ -56,6 +56,7 @@ const styles: KinderGroupCardStyles = {
   imageWrapper: {
     sx: {
       position: "relative",
+      width: "100%",
     },
   },
   image: {
