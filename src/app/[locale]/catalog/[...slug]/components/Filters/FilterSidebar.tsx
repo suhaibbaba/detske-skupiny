@@ -11,9 +11,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import useTranslate from "@/hooks/useTranslate";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { FiltersResponse } from "@/sanity/queries";
-import FilterList from "@/app/[locale]/catalog/[...slug]/components/FilterList";
-import FilterTypeList from "@/app/[locale]/catalog/[...slug]/components/FilterTypeList";
-import FilterTagList from "@/app/[locale]/catalog/[...slug]/components/FilterTagList";
+import FilterList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterList";
+import FilterTypeList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterTypeList";
+import FilterTagList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterTagList";
 import { useSchoolFilters } from "@/hooks/useSchoolFilters";
 import Button from "@/components/ui/button";
 

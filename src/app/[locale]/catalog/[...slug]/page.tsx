@@ -1,6 +1,6 @@
 import { Box, BoxProps, Container, ContainerProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import FilterSidebar from "@/app/[locale]/catalog/[...slug]/components/FilterSidebar";
+import FilterSidebar from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 import { PageProps } from "@/types";
 import {
   getSelectedSlug,
