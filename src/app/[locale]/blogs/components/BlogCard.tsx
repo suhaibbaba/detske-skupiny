@@ -120,6 +120,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
     color: "custom.ui13",
     textAlign: "left",
     sx: {
+      textAlign: "left",
       fontWeight: 500,
       fontSize: "16px",
     },
@@ -127,6 +128,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
   meta: {
     color: "custom.ui3",
     sx: {
+      textAlign: "left",
       fontWeight: 400,
       fontSize: "14px",
     },

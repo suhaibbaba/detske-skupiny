@@ -53,9 +53,13 @@ const styles: KinderGroupCardStyles = {
   },
   imageWrapper: {
     position: "relative",
-    maxWidth: {
+    width: {
       xs: "100%",
       lg: "260px",
+    },
+    height: {
+      xs: "227px",
+      lg: "auto",
     },
     flexShrink: 0,
     maxHeight: "277px",
