@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, BoxProps, CircularProgress } from "@mui/material";
 import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/SchoolListClient";
 
 const PAGE_SIZE = 9;
@@ -16,7 +16,22 @@ interface Props {
   };
 }
 
-// Server Component - renders on server, great for SEO
+interface SchoolListWrapperStyles {
+  loadingBox?: BoxProps;
+}
+
+const styles: SchoolListWrapperStyles = {
+  loadingBox: {
+    sx: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      py: 4,
+    },
+  },
+};
+
+  // Server Component - renders on server, great for SEO
 const SchoolListWrapper = async ({
   initialFilters,
   totalSchools = 0,
@@ -48,14 +63,7 @@ const SchoolListWrapper = async ({
   return (
     <Suspense
       fallback={
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            py: 4,
-          }}
-        >
+        <Box {...styles.loadingBox}>
           <CircularProgress />
         </Box>
       }
