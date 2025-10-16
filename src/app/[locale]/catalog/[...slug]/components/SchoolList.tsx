@@ -82,37 +82,43 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
     setHasMore(true);
     setIsLoaded(false);
     setTimeout(() => {
-      loadMoreSchools();
+      loadMoreSchools(0);
     }, 500);
   }, [country, region, area, subarea, categories, tags, searchName]);
 
-  const loadMoreSchools = useCallback(async () => {
-    if (!country) {
-      return;
-    }
+  const loadMoreSchools = useCallback(
+    async (nextPage?: number) => {
+      if (!country) {
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    const result = await fetchSchoolByFilter({
-      country,
-      region,
-      area,
-      subarea,
-      categories,
-      tags,
-      search: searchName,
-      start: page * PAGE_SIZE,
-      end: (page + 1) * PAGE_SIZE,
-    });
+      const result = await fetchSchoolByFilter({
+        country,
+        region,
+        area,
+        subarea,
+        categories,
+        tags,
+        search: searchName,
+        start: (nextPage ?? page) * PAGE_SIZE,
+        end: ((nextPage ?? page) + 1) * PAGE_SIZE,
+      });
 
-    const newSchools = result.schools ?? [];
-    setSchools((prev) => [...prev, ...newSchools]);
-    setHasMore(newSchools.length < result.totalSelectedSchools); // stop if less than PAGE_SIZE
-    setPage((prev) => prev + 1);
-    setLoading(false);
-    setIsLoaded(true);
-    setTotalSelectedSchools(result.totalSelectedSchools);
-  }, [page, initialFilters]);
+      const newSchools = result.schools ?? [];
+      setSchools((prev) => {
+        const all = [...prev, ...newSchools];
+        return Array.from(new Map(all.map((s) => [s.id, s])).values());
+      });
+      setHasMore(newSchools.length < result.totalSelectedSchools); // stop if less than PAGE_SIZE
+      setPage((prev) => prev + 1);
+      setLoading(false);
+      setIsLoaded(true);
+      setTotalSelectedSchools(result.totalSelectedSchools);
+    },
+    [page, initialFilters],
+  );
 
   const [sentryRef] = useInfiniteScroll({
     loading,

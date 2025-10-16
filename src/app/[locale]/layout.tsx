@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import { Fredoka } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getLocale } from "next-intl/server";
+import { setLocale } from "@/utilites/localeStore";
 
 export const metadata: Metadata = {
   title: "Sousedske Skupinky",
@@ -21,6 +22,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
+  setLocale(locale);
 
   return (
     <html lang={locale}>
