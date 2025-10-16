@@ -5,14 +5,15 @@ import SchoolGridCard from "@/app/[locale]/catalog/[...slug]/components/SchoolGr
 import useTranslate from "@/hooks/useTranslate";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState, useRef } from "react";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import SchoolsCount from "@/app/[locale]/catalog/[...slug]/components/SchoolCount";
 
-const PAGE_SIZE = 9;
-
 interface Props {
-  totalSchools?: number;
+  initialSchools: any[];
+  initialTotalSelected: number;
+  totalSchools: number;
+  pageSize: number;
   initialFilters: {
     categories: string[];
     tags: string[];
@@ -56,7 +57,13 @@ const styles: SchoolListStyles = {
   },
 };
 
-const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
+const SchoolListClient: FC<Props> = ({
+  initialSchools,
+  initialTotalSelected,
+  totalSchools,
+  pageSize,
+  initialFilters,
+}) => {
   const {
     catalog: { country, region, area, subarea },
     categories,
@@ -65,35 +72,43 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
   } = initialFilters;
   const translate = useTranslate();
 
-  const [schools, setSchools] = useState<any[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [schools, setSchools] = useState<any[]>(initialSchools);
+  const [page, setPage] = useState(1); // Start at 1 since we already have page 0
+  const [hasMore, setHasMore] = useState(initialSchools.length >= pageSize);
   const [loading, setLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [totalSelectedSchools, setTotalSelectedSchools] = useState(0);
+  const [totalSelectedSchools, setTotalSelectedSchools] =
+    useState(initialTotalSelected);
 
-  useEffect(() => {
-    loadMoreSchools();
-  }, []);
+  const prevFiltersRef = useRef(initialFilters);
 
+  // Reset when filters change
   useEffect(() => {
-    setSchools([]);
-    setPage(0);
-    setHasMore(true);
-    setIsLoaded(false);
-    setTimeout(() => {
-      loadMoreSchools(0);
-    }, 500);
+    const filtersChanged =
+      prevFiltersRef.current.catalog.country !== country ||
+      prevFiltersRef.current.catalog.region !== region ||
+      prevFiltersRef.current.catalog.area !== area ||
+      prevFiltersRef.current.catalog.subarea !== subarea ||
+      JSON.stringify(prevFiltersRef.current.categories) !==
+        JSON.stringify(categories) ||
+      JSON.stringify(prevFiltersRef.current.tags) !== JSON.stringify(tags) ||
+      prevFiltersRef.current.searchName !== searchName;
+
+    if (filtersChanged) {
+      prevFiltersRef.current = initialFilters;
+      resetAndLoadFirstPage();
+    }
   }, [country, region, area, subarea, categories, tags, searchName]);
 
-  const loadMoreSchools = useCallback(
-    async (nextPage?: number) => {
-      if (!country) {
-        return;
-      }
+  const resetAndLoadFirstPage = async () => {
+    if (!country) {
+      return;
+    }
 
-      setLoading(true);
+    setLoading(true);
+    setSchools([]);
+    setPage(1);
 
+    try {
       const result = await fetchSchoolByFilter({
         country,
         region,
@@ -102,8 +117,36 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
         categories,
         tags,
         search: searchName,
-        start: (nextPage ?? page) * PAGE_SIZE,
-        end: ((nextPage ?? page) + 1) * PAGE_SIZE,
+        start: 0,
+        end: pageSize,
+      });
+
+      setSchools(result.schools ?? []);
+      setHasMore((result.schools ?? []).length >= pageSize);
+      setTotalSelectedSchools(result.totalSelectedSchools);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMoreSchools = useCallback(async () => {
+    if (!country || loading) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await fetchSchoolByFilter({
+        country,
+        region,
+        area,
+        subarea,
+        categories,
+        tags,
+        search: searchName,
+        start: page * pageSize,
+        end: (page + 1) * pageSize,
       });
 
       const newSchools = result.schools ?? [];
@@ -111,14 +154,24 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
         const all = [...prev, ...newSchools];
         return Array.from(new Map(all.map((s) => [s.id, s])).values());
       });
-      setHasMore(newSchools.length < result.totalSelectedSchools); // stop if less than PAGE_SIZE
+      setHasMore(newSchools.length >= pageSize);
       setPage((prev) => prev + 1);
-      setLoading(false);
-      setIsLoaded(true);
       setTotalSelectedSchools(result.totalSelectedSchools);
-    },
-    [page, initialFilters],
-  );
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    page,
+    country,
+    region,
+    area,
+    subarea,
+    categories,
+    tags,
+    searchName,
+    pageSize,
+    loading,
+  ]);
 
   const [sentryRef] = useInfiniteScroll({
     loading,
@@ -131,14 +184,20 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
   return (
     <Box {...styles.container} data-test-selector="SchoolList">
       <SchoolsCount filterTotal={totalSelectedSchools} total={totalSchools} />
-      <Box {...styles.listContainer} data-test-selector="">
-        {schools.length > 0 && (
+      <Box {...styles.listContainer}>
+        {schools.length > 0 ? (
           <>
             {schools.map((school) => (
               <SchoolGridCard key={school.id} school={school} />
             ))}
-            <div ref={sentryRef}></div>
+            {hasMore && <div ref={sentryRef} />}
           </>
+        ) : (
+          !loading && (
+            <Alert severity="info" sx={{ maxWidth: 600, gridColumn: "1 / -1" }}>
+              {translate("noSchoolsFound")}
+            </Alert>
+          )
         )}
       </Box>
       {loading && (
@@ -146,13 +205,8 @@ const SchoolList: FC<Props> = ({ initialFilters, totalSchools = 0 }) => {
           <CircularProgress />
         </Box>
       )}
-      {isLoaded && schools.length === 0 && (
-        <Alert severity="info" sx={{ maxWidth: 600 }}>
-          {translate("noSchoolsFound")}
-        </Alert>
-      )}
     </Box>
   );
 };
 
-export default SchoolList;
+export default SchoolListClient;

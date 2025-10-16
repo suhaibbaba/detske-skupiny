@@ -10,7 +10,7 @@ import { fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import { fetchSchoolPage } from "@/sanity/queries/school-list";
 import { toArray } from "@/sanity/utilites/helper";
-import SchoolList from "@/app/[locale]/catalog/[...slug]/components/SchoolList";
+import SchoolListWrapper from "@/app/[locale]/catalog/[...slug]/components/SchoolListWrapper";
 
 type Props = PageProps<{ slug: string[] }>;
 
@@ -92,7 +92,7 @@ const Page = async ({ params, searchParams }: Props) => {
           selectedSlug={selectedSlug}
           filterContent={filterContent}
         />
-        <SchoolList
+        <SchoolListWrapper
           totalSchools={totalSchools}
           initialFilters={{
             catalog,
