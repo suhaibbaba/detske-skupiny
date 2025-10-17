@@ -9,9 +9,9 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/material";
-import { Coordinate, Coordinates, Region } from "@/sanity/types";
+import { MapCoordinate, MarkerData, Region } from "@/sanity/types";
 import Button from "@/components/ui/button";
-import Map from "@/components/ui/map/Map";
+import MapComponent from "@/components/ui/map/MapComponent";
 import useTranslate from "@/hooks/useTranslate";
 import { useState } from "react";
 
@@ -20,8 +20,8 @@ interface Props {
     title: string;
     description: string;
     regions: Region[];
-    coordinates?: Coordinates[];
-    defaultMapLocation: Coordinate;
+    markers?: MarkerData[];
+    defaultCenter: MapCoordinate;
   };
 }
 
@@ -85,6 +85,7 @@ const styles: MapCollectionStyles = {
   mapWrapper: {
     bgcolor: "common.white",
     sx: {
+      position: "relative",
       width: "100%",
       maxHeight: {
         xs: "520px",
@@ -103,11 +104,11 @@ const styles: MapCollectionStyles = {
 };
 
 const MapCollection = ({ fields }: Props) => {
-  const [regionId, setRegionId] = useState("");
+  const [selectedRegionId, setSelectedRegionId] = useState("");
   const translate = useTranslate();
 
-  const onRegionIdChange = (id: string) => {
-    setRegionId(id);
+  const onSelectedRegionIdClick = (id: string) => {
+    setSelectedRegionId(id);
   };
 
   return (
@@ -119,8 +120,8 @@ const MapCollection = ({ fields }: Props) => {
           <Button
             variant="ghost"
             {...styles.filterButton}
-            onClick={() => onRegionIdChange("")}
-            className={!regionId ? "selected" : ""}
+            onClick={() => onSelectedRegionIdClick("")}
+            className={!selectedRegionId ? "selected" : ""}
           >
             {translate("viewAll")}
           </Button>
@@ -131,8 +132,8 @@ const MapCollection = ({ fields }: Props) => {
                 key={region.id}
                 variant="ghost"
                 {...styles.filterButton}
-                className={region.id === regionId ? "selected" : ""}
-                onClick={() => onRegionIdChange(region.id)}
+                className={region.id === selectedRegionId ? "selected" : ""}
+                onClick={() => onSelectedRegionIdClick(region.id)}
               >
                 {region.name}
               </Button>
@@ -140,10 +141,10 @@ const MapCollection = ({ fields }: Props) => {
           })}
         </Box>
         <Box {...styles.mapWrapper}>
-          <Map
-            regionId={regionId}
-            defaultLocation={fields.defaultMapLocation}
-            coordinates={fields.coordinates}
+          <MapComponent
+            regionId={selectedRegionId}
+            defaultCenter={fields.defaultCenter}
+            markers={fields.markers}
           />
         </Box>
       </Container>

@@ -12,12 +12,16 @@ export type Region = {
   areas: Area[];
 };
 
-export type Coordinate = {
+export type MapCoordinate = {
   lat: number;
   lng: number;
 };
 
-export type Coordinates = {
-  coordinate: Coordinate;
-  regionId?: string;
-};
+export interface MarkerData {
+  id: string;
+  coordinate: MapCoordinate;
+  selectedRegionId?: string;
+  name?: string;
+  fullAddress?: string;
+  slug?: string;
+}

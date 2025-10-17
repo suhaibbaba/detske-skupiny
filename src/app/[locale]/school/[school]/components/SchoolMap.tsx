@@ -1,10 +1,11 @@
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { School } from "@/sanity/types";
 import useTranslate from "@/hooks/useTranslate";
-import Map from "@/components/ui/map/Map";
+import MapComponent from "@/components/ui/map/MapComponent";
+import { parseAddress } from "@/utilites/location";
 
 interface Props {
-  address?: School["address"];
+  school?: School;
 }
 
 interface SchoolMapStyles {
@@ -33,9 +34,10 @@ const styles: SchoolMapStyles = {
   },
 };
 
-const SchoolMap = ({ address }: Props) => {
+const SchoolMap = ({ school }: Props) => {
   const translate = useTranslate();
-  if (!address || !address.mapLocation) {
+  const marker = parseAddress(school);
+  if (!marker) {
     return null;
   }
 
@@ -43,14 +45,7 @@ const SchoolMap = ({ address }: Props) => {
     <Box component="section">
       <Typography {...styles.title}>{translate("Map")}</Typography>
       <Box {...styles.mapWrapper}>
-        <Map
-          defaultLocation={address.mapLocation}
-          coordinates={[
-            {
-              coordinate: address.mapLocation,
-            },
-          ]}
-        />
+        <MapComponent defaultCenter={marker.coordinate} markers={[marker]} />
       </Box>
     </Box>
   );

@@ -10,9 +10,28 @@ export async function fetchPageByType(type: string) {
         ...,
         _type == "mapCollection" => {
           ...,
-          "coordinates": *[_type == "schools"]{
+          "markers": *[_type == "schools"]{
+            "id": _id,
             "coordinate": address.mapLocation,
-            "regionId": area->region->_id
+            name,
+            "fullAddress": select(
+                defined(address.street) => address.street,
+                ""
+              ) + select(
+                defined(address.extraDistrict) => ", " + address.extraDistrict,
+                ""
+              ) + select(
+                defined(address.city) => ", " + address.city,
+                ""
+              ) + select(
+                defined(address.postalCode) => ", " + address.postalCode,
+                ""
+              ) + select(
+                defined(address.country) => ", " + address.country,
+                ""
+              ),
+            "selectedRegionId": area->region->_id,
+            "slug": slug.current,
           },
           "regions": regions[]->{
             "id": _id,

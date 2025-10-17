@@ -25,7 +25,7 @@ import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
 import { routes } from "@/routes";
-import Map from "@/components/ui/map/Map";
+import Map from "@/components/ui/map/MapComponent";
 import SchoolMap from "@/app/[locale]/school/[school]/components/SchoolMap";
 
 interface PageStyles {
@@ -198,7 +198,7 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
           <AboutSchool about={school.about} />
           <SchoolHighlights highlights={school.highlights} />
           <SchoolTimetable timetable={school.timetable} />
-          <SchoolMap address={school.address} />
+          <SchoolMap school={school} />
           <SchoolGallery gallery={school.gallery} showTitle={true} />
         </Box>
       </Container>
