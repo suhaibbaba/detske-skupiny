@@ -166,11 +166,6 @@ const theme = createTheme(baseTheme, {
         },
       },
     },
-    MuiTypography: {
-      defaultProps: {
-        fontFamily: fredoka.style.fontFamily,
-      },
-    },
     MuiButton: {
       defaultProps: {
         variant: "contained",
@@ -375,6 +370,30 @@ const theme = createTheme(baseTheme, {
             backgroundColor: "#9980B0",
             borderColor: "#9980B0",
             color: "#fff",
+          },
+        },
+      },
+    },
+    MuiTypography: {
+      defaultProps: {
+        fontFamily: fredoka.style.fontFamily,
+      },
+      styleOverrides: {
+        root: {
+          // Ensure Typography doesn't override Link colors
+          "&.MuiLink-root:hover": {
+            color: baseTheme.palette.primary.dark,
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+          color: baseTheme.palette.primary.main,
+          "&:hover": {
+            color: baseTheme.palette.primary.dark,
           },
         },
       },

@@ -7,11 +7,13 @@ import {
   LinkProps,
   ButtonProps,
   BoxProps,
+  ThemeProvider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { MarkerData } from "@/sanity/types";
 import { routes } from "@/routes";
 import Link from "@/components/ui/link";
+import theme from "@/theme";
 
 interface PopupContentProps {
   markerData: MarkerData;
@@ -36,7 +38,7 @@ const styles: PopupStyles = {
     disableRipple: true,
     sx: {
       position: "absolute",
-      top: "14px",
+      top: "4px",
       right: "2px",
       zIndex: 10,
       width: 26,
@@ -69,6 +71,9 @@ const styles: PopupStyles = {
       fontSize: "16px",
       mb: "16px",
       display: "inline-block",
+      "&:hover": {
+        color: "primary.main",
+      },
     },
   },
   address: {
@@ -81,27 +86,29 @@ const styles: PopupStyles = {
 
 const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
   return (
-    <Box {...styles.container} data-test-selector="PopupContent">
-      <IconButton
-        onClick={onClose}
-        {...styles.closeButton}
-        aria-label="Close popup"
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
+    <ThemeProvider theme={theme}>
+      <Box {...styles.container} data-test-selector="PopupContent">
+        <IconButton
+          onClick={onClose}
+          {...styles.closeButton}
+          aria-label="Close popup"
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
 
-      {markerData.name && markerData.slug && (
-        <Link href={routes.school(markerData.slug)} {...styles.titleLink}>
-          {markerData.name}
-        </Link>
-      )}
+        {markerData.name && markerData.slug && (
+          <Link href={routes.school(markerData.slug)} {...styles.titleLink}>
+            {markerData.name}
+          </Link>
+        )}
 
-      {markerData.fullAddress && (
-        <Typography color="text.secondary" {...styles.address}>
-          {markerData.fullAddress}
-        </Typography>
-      )}
-    </Box>
+        {markerData.fullAddress && (
+          <Typography color="text.secondary" {...styles.address}>
+            {markerData.fullAddress}
+          </Typography>
+        )}
+      </Box>
+    </ThemeProvider>
   );
 };
 

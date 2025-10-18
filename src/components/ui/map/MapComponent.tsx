@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import { createRoot } from "react-dom/client";
 import { MapCoordinate, MarkerData } from "@/sanity/types";
 import "@/components/ui/map/syles.css";
 import PopupContent from "@/components/ui/map/PopupContent";
@@ -29,10 +29,15 @@ const MapComponent: React.FC<MapProps> = ({
   const markersRef = useRef<globalThis.Map<string, maptilersdk.Marker>>(
     new globalThis.Map(),
   );
-  const currentPopupRef = useRef<maptilersdk.Popup | null>(null);
-  const popupRootsRef = useRef<globalThis.Map<string, any>>(
-    new globalThis.Map(),
-  );
+
+  // State for popup management
+  const [activePopup, setActivePopup] = useState<{
+    markerData: MarkerData;
+    container: HTMLDivElement;
+  } | null>(null);
+
+  const popupRef = useRef<maptilersdk.Popup | null>(null);
+  const popupContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Filter markers based on regionId
   useEffect(() => {
@@ -65,15 +70,25 @@ const MapComponent: React.FC<MapProps> = ({
       zoom: defaultZoom,
     });
 
+    // Create reusable popup container
+    popupContainerRef.current = document.createElement("div");
+
+    // Create reusable popup
+    popupRef.current = new maptilersdk.Popup({
+      offset: 25,
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: "none",
+      className: "custom-popup",
+    });
+    popupRef.current.setDOMContent(popupContainerRef.current);
+
+    // Close Popup when click outside
+    map.current.on("click", () => {
+      closeCurrentPopup();
+    });
+
     return () => {
-      popupRootsRef.current.forEach((root) => {
-        try {
-          root.unmount();
-        } catch (e) {
-          console.error("Error unmounting popup root:", e);
-        }
-      });
-      popupRootsRef.current.clear();
       map.current?.remove();
       map.current = null;
     };
@@ -81,28 +96,41 @@ const MapComponent: React.FC<MapProps> = ({
 
   // Function to close current popup
   const closeCurrentPopup = () => {
-    if (currentPopupRef.current) {
-      currentPopupRef.current.remove();
-      currentPopupRef.current = null;
+    if (popupRef.current && map.current) {
+      popupRef.current.remove();
+      setActivePopup(null);
     }
+  };
+
+  // Function to show popup for a marker
+  const showPopupForMarker = (markerData: MarkerData) => {
+    if (!popupRef.current || !popupContainerRef.current || !map.current) return;
+
+    // Set active popup state (this will trigger portal render)
+    setActivePopup({
+      markerData,
+      container: popupContainerRef.current,
+    });
+
+    // Position and show the popup
+    popupRef.current.setLngLat([
+      markerData.coordinate.lng,
+      markerData.coordinate.lat,
+    ]);
+    popupRef.current.addTo(map.current);
+
+    // Call callback
+    onMarkerClick?.(markerData);
   };
 
   // Update markers
   useEffect(() => {
     if (!map.current) return;
 
-    // Remove old markers and popups
+    // Remove old markers
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current.clear();
     closeCurrentPopup();
-    popupRootsRef.current.forEach((root) => {
-      try {
-        root.unmount();
-      } catch (e) {
-        console.error("Error unmounting popup root:", e);
-      }
-    });
-    popupRootsRef.current.clear();
 
     // Add new markers
     filteredMarkers.forEach((markerData) => {
@@ -123,53 +151,15 @@ const MapComponent: React.FC<MapProps> = ({
         </svg>
       `;
 
-      // Create popup container
-      const popupContainer = document.createElement("div");
-
-      // Create popup with proper configuration
-      const popup = new maptilersdk.Popup({
-        offset: 25,
-        closeButton: false,
-        closeOnClick: false,
-        maxWidth: "none",
-        className: "custom-popup",
-      });
-
-      // Render React component into popup
-      const root = createRoot(popupContainer);
-      popupRootsRef.current.set(markerData.id, root);
-
-      root.render(
-        <PopupContent
-          markerData={markerData}
-          onClose={() => {
-            closeCurrentPopup();
-          }}
-        />,
-      );
-
-      // Set the DOM content after rendering
-      popup.setDOMContent(popupContainer);
-
       // Create marker
       const marker = new maptilersdk.Marker({ element: el })
         .setLngLat([markerData.coordinate.lng, markerData.coordinate.lat])
         .addTo(map.current!);
 
-      // Handle marker click - close previous popup before opening new one
+      // Handle marker click
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-
-        // Close any existing popup
-        closeCurrentPopup();
-
-        // Open new popup
-        popup.setLngLat([markerData.coordinate.lng, markerData.coordinate.lat]);
-        popup.addTo(map.current!);
-        currentPopupRef.current = popup;
-
-        // Call callback
-        onMarkerClick?.(markerData);
+        showPopupForMarker(markerData);
       });
 
       markersRef.current.set(markerData.id, marker);
@@ -177,7 +167,19 @@ const MapComponent: React.FC<MapProps> = ({
   }, [filteredMarkers, onMarkerClick]);
 
   return (
-    <div ref={mapContainer} style={{ minHeight: "400px", height: "100%" }} />
+    <>
+      <div ref={mapContainer} style={{ minHeight: "400px", height: "100%" }} />
+
+      {/* Portal for popup content - stays within React tree */}
+      {activePopup &&
+        createPortal(
+          <PopupContent
+            markerData={activePopup.markerData}
+            onClose={closeCurrentPopup}
+          />,
+          activePopup.container,
+        )}
+    </>
   );
 };
 
