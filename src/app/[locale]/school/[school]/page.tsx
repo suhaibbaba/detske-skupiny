@@ -25,7 +25,6 @@ import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
 import { routes } from "@/routes";
-import Map from "@/components/ui/map/MapComponent";
 import SchoolMap from "@/app/[locale]/school/[school]/components/SchoolMap";
 
 interface PageStyles {
