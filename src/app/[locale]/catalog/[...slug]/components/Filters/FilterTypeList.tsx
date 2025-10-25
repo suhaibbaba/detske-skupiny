@@ -65,6 +65,7 @@ const styles: FilterListStyles = {
       cursor: "pointer",
       bgcolor: "common.white",
       userSelect: "none",
+      maxWidth: 128,
       "&.selected": {
         borderColor: "primary.main",
         backgroundColor: "primary.light",

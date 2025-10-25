@@ -51,6 +51,10 @@ const styles: KinderGroupCardStyles = {
       width: "100%",
       gap: "13px",
       maxWidth: "290px",
+      m: {
+        xs: "0 auto",
+        sm: "0",
+      },
     }),
   },
   imageWrapper: {

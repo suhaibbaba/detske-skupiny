@@ -70,6 +70,7 @@ const styles: FilterListStyles = {
       color: "custom.ui20",
       bgcolor: backgroundColor,
       border: `1px solid ${backgroundColor}`,
+      maxWidth: 180,
       "& .MuiChip-label": {
         padding: 0,
       },

@@ -41,7 +41,7 @@ const styles: GroupsPageStyles = {
       display: "grid",
       gridTemplateColumns: {
         xs: "1fr",
-        sm: "300px 1fr",
+        md: "300px 1fr",
       },
       columnGap: "60px",
       mt: "80px",
@@ -87,11 +87,13 @@ const Page = async ({ params, searchParams }: Props) => {
         />
       </PageLayout>
       <Container {...styles.container}>
-        <FilterSidebar
-          catalog={catalog}
-          selectedSlug={selectedSlug}
-          filterContent={filterContent}
-        />
+        <Box sx={{ display: { xs: "none", md: "block" } }}>
+          <FilterSidebar
+            catalog={catalog}
+            selectedSlug={selectedSlug}
+            filterContent={filterContent}
+          />
+        </Box>
         <SchoolListWrapper
           totalSchools={totalSchools}
           initialFilters={{
@@ -99,6 +101,11 @@ const Page = async ({ params, searchParams }: Props) => {
             categories,
             tags,
             searchName,
+          }}
+          filterProps={{
+            catalog,
+            selectedSlug,
+            filterContent,
           }}
         />
       </Container>

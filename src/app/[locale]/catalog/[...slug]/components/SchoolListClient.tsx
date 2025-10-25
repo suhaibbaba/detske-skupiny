@@ -8,6 +8,7 @@ import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { FC, useCallback, useEffect, useState, useRef } from "react";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import SchoolsCount from "@/app/[locale]/catalog/[...slug]/components/SchoolCount";
+import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 
 interface Props {
   initialSchools: any[];
@@ -20,6 +21,7 @@ interface Props {
     searchName?: string;
     catalog: CatalogParams;
   };
+  filterProps: FilterSidebarProps;
 }
 
 interface SchoolListStyles {
@@ -43,8 +45,14 @@ const styles: SchoolListStyles = {
   listContainer: {
     sx: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 278px))",
-      gap: "26px",
+      gridTemplateColumns: {
+        xs: "repeat(auto-fit, minmax(232px, 1fr))",
+        md: "repeat(auto-fit, minmax(260px, 278px))",
+      },
+      gap: {
+        xs: "20px",
+        md: "24px",
+      },
     },
   },
   loadingContainer: {
@@ -63,6 +71,7 @@ const SchoolListClient: FC<Props> = ({
   totalSchools,
   pageSize,
   initialFilters,
+  filterProps,
 }) => {
   const {
     catalog: { country, region, area, subarea },
@@ -183,7 +192,11 @@ const SchoolListClient: FC<Props> = ({
 
   return (
     <Box {...styles.container} data-test-selector="SchoolList">
-      <SchoolsCount filterTotal={totalSelectedSchools} total={totalSchools} />
+      <SchoolsCount
+        filterTotal={totalSelectedSchools}
+        total={totalSchools}
+        filterProps={filterProps}
+      />
       <Box {...styles.listContainer}>
         {schools.length > 0 ? (
           <>

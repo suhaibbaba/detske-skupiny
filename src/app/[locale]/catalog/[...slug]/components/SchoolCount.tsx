@@ -3,27 +3,37 @@
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import SearchBar from "@/app/[locale]/catalog/[...slug]/components/SearchBar";
 import useTranslate from "@/hooks/useTranslate";
-import { useTranslations } from "next-intl";
+import FilterSidebarDialog from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebarDialog";
+import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 
 interface Props {
   total: number;
   filterTotal: number;
+  filterProps: FilterSidebarProps;
 }
 
 interface SchoolCountStyles {
   container?: BoxProps;
+  topRow?: BoxProps;
   text?: TypographyProps;
 }
 
 const styles: SchoolCountStyles = {
   container: {
     sx: {
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-between",
-      alignItems: "flex-start",
+      display: "grid",
       gap: "24px",
       width: "100%",
+      gridTemplateColumns: { xs: "1fr", md: "1fr auto" },
+    },
+  },
+  topRow: {
+    sx: {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexWrap: "nowrap",
+      gap: "12px",
     },
   },
   text: {
@@ -35,16 +45,29 @@ const styles: SchoolCountStyles = {
   },
 };
 
-const SchoolsCount = ({ total, filterTotal }: Props) => {
+const SchoolsCount = ({
+  total,
+  filterTotal,
+  filterProps: { catalog, selectedSlug, filterContent },
+}: Props) => {
   const translate = useTranslate("common");
   return (
     <Box {...styles.container}>
-      <Typography {...styles.text}>
-        {translate("showingResults", {
-          total,
-          filterTotal,
-        })}
-      </Typography>
+      <Box {...styles.topRow}>
+        <Box sx={{ display: { xs: "block", md: "none" } }}>
+          <FilterSidebarDialog
+            catalog={catalog}
+            selectedSlug={selectedSlug}
+            filterContent={filterContent}
+          />
+        </Box>
+        <Typography {...styles.text}>
+          {translate("showingResults", {
+            total,
+            filterTotal,
+          })}
+        </Typography>
+      </Box>
       <SearchBar />
     </Box>
   );

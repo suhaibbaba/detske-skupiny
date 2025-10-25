@@ -17,7 +17,7 @@ import FilterTagList from "@/app/[locale]/catalog/[...slug]/components/Filters/F
 import { useSchoolFilters } from "@/hooks/useSchoolFilters";
 import Button from "@/components/ui/button";
 
-interface Props {
+export interface Props {
   catalog: CatalogParams;
   selectedSlug: string;
   filterContent: FiltersResponse;
@@ -34,7 +34,10 @@ const styles: FilterSidebarStyles = {
   root: {
     sx: {
       width: "100%",
-      maxWidth: "300px",
+      maxWidth: {
+        xs: "100%",
+        md: "300px",
+      },
     },
   },
   headingContainer: {
@@ -66,6 +69,7 @@ const FilterSidebar = ({
   catalog,
   selectedSlug,
   filterContent: { regions, areas, subareas, tags, types },
+  hideTitle,
 }: Props) => {
   const translate = useTranslate();
   const { toggleTag, toggleType, hasActiveFilters, filters, clear } =

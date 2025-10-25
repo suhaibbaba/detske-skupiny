@@ -30,7 +30,7 @@ const styles: SearchBarStyles = {
       width: "100%",
       maxWidth: {
         xs: "100%",
-        sm: "291px",
+        md: "291px",
       },
     },
   },

@@ -50,7 +50,7 @@ const styles: FilterListStyles = {
   },
   listContainer: {
     sx: {
-      maxHeight: 190,
+      maxHeight: "660px",
       overflowY: "auto",
       display: "flex",
       flexDirection: "column",

@@ -3,6 +3,7 @@ import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { Box, BoxProps, CircularProgress } from "@mui/material";
 import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/SchoolListClient";
+import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 
 const PAGE_SIZE = 9;
 
@@ -14,6 +15,7 @@ interface Props {
     searchName?: string;
     catalog: CatalogParams;
   };
+  filterProps: FilterSidebarProps;
 }
 
 interface SchoolListWrapperStyles {
@@ -31,10 +33,11 @@ const styles: SchoolListWrapperStyles = {
   },
 };
 
-  // Server Component - renders on server, great for SEO
+// Server Component - renders on server, great for SEO
 const SchoolListWrapper = async ({
   initialFilters,
   totalSchools = 0,
+  filterProps,
 }: Props) => {
   const {
     catalog: { country, region, area, subarea },
@@ -74,6 +77,7 @@ const SchoolListWrapper = async ({
         totalSchools={totalSchools}
         initialFilters={initialFilters}
         pageSize={PAGE_SIZE}
+        filterProps={filterProps}
       />
     </Suspense>
   );
