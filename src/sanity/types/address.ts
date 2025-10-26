@@ -1,11 +1,11 @@
-import { Coordinate } from "@/sanity/types/geo";
+import { MapCoordinate } from "@/sanity/types/geo";
 
 export interface PostalAddress {
   street?: string;
   city?: string;
   postalCode?: string;
   extra?: string;
-  mapLocation: Coordinate;
+  mapLocation: MapCoordinate;
 }
 
 export interface GeoPoint {
