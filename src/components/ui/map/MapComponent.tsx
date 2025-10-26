@@ -9,19 +9,21 @@ import "@/components/ui/map/syles.css";
 import PopupContent from "@/components/ui/map/PopupContent";
 
 export interface MapProps {
-  regionId?: string;
+  selectedRegionId?: string;
   defaultCenter?: MapCoordinate;
   markers?: MarkerData[];
   defaultZoom?: number;
   onMarkerClick?: (marker: MarkerData) => void;
+  minHeight?: number;
 }
 
 const MapComponent: React.FC<MapProps> = ({
-  regionId,
+  selectedRegionId,
   markers = [],
   defaultCenter = { lat: 0, lng: 0 },
   defaultZoom = 9,
   onMarkerClick,
+  minHeight = 400,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maptilersdk.Map | null>(null);
@@ -41,12 +43,12 @@ const MapComponent: React.FC<MapProps> = ({
 
   // Filter markers based on regionId
   useEffect(() => {
-    const filtered = regionId
-      ? markers.filter((marker) => marker.selectedRegionId === regionId)
+    const filtered = selectedRegionId
+      ? markers.filter((marker) => marker.selectedRegionId === selectedRegionId)
       : markers;
 
     setFilteredMarkers(filtered);
-  }, [markers, regionId]);
+  }, [markers, selectedRegionId]);
 
   // Initialize map
   useEffect(() => {
@@ -168,7 +170,10 @@ const MapComponent: React.FC<MapProps> = ({
 
   return (
     <>
-      <div ref={mapContainer} style={{ minHeight: "400px", height: "100%" }} />
+      <div
+        ref={mapContainer}
+        style={{ minHeight: `${minHeight}px`, height: "100%" }}
+      />
 
       {/* Portal for popup content - stays within React tree */}
       {activePopup &&

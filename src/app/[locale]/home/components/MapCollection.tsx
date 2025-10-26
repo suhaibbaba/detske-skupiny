@@ -142,7 +142,7 @@ const MapCollection = ({ fields }: Props) => {
         </Box>
         <Box {...styles.mapWrapper}>
           <MapComponent
-            regionId={selectedRegionId}
+            selectedRegionId={selectedRegionId}
             defaultCenter={fields.defaultCenter}
             markers={fields.markers}
           />

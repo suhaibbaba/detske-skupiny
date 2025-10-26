@@ -73,6 +73,7 @@ const SchoolListWrapper = async ({
     >
       <SchoolListClient
         initialSchools={initialData.schools ?? []}
+        initialMarkers={initialData.markers ?? []}
         initialTotalSelected={initialData.totalSelectedSchools}
         totalSchools={totalSchools}
         initialFilters={initialFilters}

@@ -70,6 +70,7 @@ const BlogSection = async ({ fields }: Props) => {
   if (!blogs) {
     return null;
   }
+
   return (
     <Box {...styles.section} className={sharedClassNames.blog}>
       <Container {...styles.container}>

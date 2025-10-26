@@ -7,9 +7,9 @@ export function useTranslate() {
   const t = useIntlTranslations("common");
 
   return useCallback(
-    (key: string) => {
+    (key: string, values?: Record<string, string | number>) => {
       try {
-        return t(key);
+        return t(key, values);
       } catch {
         // Silently return key on any error
         return key;

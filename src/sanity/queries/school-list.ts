@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 import {
+  MarkerData,
   MiniSchool,
   PageHero,
   SchoolFilterQueryParams,
@@ -40,6 +41,33 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
         (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
         (!defined($search) || lower(name) match "*" + lower($search) + "*")
       ]),
+      "markers": *[_type == "schools" &&
+        (language == $locale || !defined(language)) &&
+        (!defined($country) || area->region->country->slug.current == $country) &&
+        (!defined($region) || area->region->slug.current == $region) &&
+        (!defined($area) || area->slug.current == $area) &&
+        (!defined($subarea) || subarea->slug.current == $subarea)]{
+          "id": _id,
+          "coordinate": address.mapLocation,
+          name,
+          "fullAddress": select(
+            defined(address.street) => address.street,
+              ""
+            ) + select(
+            defined(address.extraDistrict) => ", " + address.extraDistrict,
+              ""
+            ) + select(
+            defined(address.city) => ", " + address.city,
+              ""
+            ) + select(
+            defined(address.postalCode) => ", " + address.postalCode,
+              ""
+            ) + select(
+            defined(address.country) => ", " + address.country,
+              ""
+            ),
+            "slug": slug.current,
+      },
     "schools": *[
       _type == "schools" &&
       (language == $locale || !defined(language)) &&
@@ -84,6 +112,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
 
   return clientFetch<{
     totalSelectedSchools: number;
+    markers?: MarkerData[];
     schools: MiniSchool[];
   }>(query, {
     country: params.country ?? null,

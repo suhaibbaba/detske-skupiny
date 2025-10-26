@@ -9,9 +9,12 @@ import { FC, useCallback, useEffect, useState, useRef } from "react";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import SchoolsCount from "@/app/[locale]/catalog/[...slug]/components/SchoolCount";
 import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+import { MarkerData, MiniSchool } from "@/sanity/types";
+import SchoolsMap from "@/app/[locale]/catalog/[...slug]/components/SchoolsMap";
 
 interface Props {
-  initialSchools: any[];
+  initialSchools: MiniSchool[];
+  initialMarkers: MarkerData[];
   initialTotalSelected: number;
   totalSchools: number;
   pageSize: number;
@@ -67,6 +70,7 @@ const styles: SchoolListStyles = {
 
 const SchoolListClient: FC<Props> = ({
   initialSchools,
+  initialMarkers,
   initialTotalSelected,
   totalSchools,
   pageSize,
@@ -81,12 +85,13 @@ const SchoolListClient: FC<Props> = ({
   } = initialFilters;
   const translate = useTranslate();
 
-  const [schools, setSchools] = useState<any[]>(initialSchools);
+  const [schools, setSchools] = useState<MiniSchool[]>(initialSchools);
   const [page, setPage] = useState(1); // Start at 1 since we already have page 0
   const [hasMore, setHasMore] = useState(initialSchools.length >= pageSize);
   const [loading, setLoading] = useState(false);
   const [totalSelectedSchools, setTotalSelectedSchools] =
     useState(initialTotalSelected);
+  const [markers, setMarkers] = useState<MarkerData[]>(initialMarkers);
 
   const prevFiltersRef = useRef(initialFilters);
 
@@ -130,6 +135,7 @@ const SchoolListClient: FC<Props> = ({
         end: pageSize,
       });
 
+      setMarkers(result.markers || []);
       setSchools(result.schools ?? []);
       setHasMore((result.schools ?? []).length >= pageSize);
       setTotalSelectedSchools(result.totalSelectedSchools);
@@ -192,6 +198,7 @@ const SchoolListClient: FC<Props> = ({
 
   return (
     <Box {...styles.container} data-test-selector="SchoolList">
+      <SchoolsMap markers={markers} />
       <SchoolsCount
         filterTotal={totalSelectedSchools}
         total={totalSchools}
