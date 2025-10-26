@@ -15,6 +15,13 @@ export default getRequestConfig(
     return {
       locale,
       messages,
+      onError() {
+        // Completely suppress - no logging, no throwing
+      },
+
+      getMessageFallback({ key }) {
+        return key;
+      },
     };
   },
 );

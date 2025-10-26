@@ -1,8 +1,22 @@
 import { useTranslations as useIntlTranslations } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { useCallback } from "react";
 
-function useTranslate(namespace = "common") {
-  return useIntlTranslations(namespace);
+export function useTranslate() {
+  // Pass empty string or undefined to use root namespace
+  const t = useIntlTranslations("common");
+
+  return useCallback(
+    (key: string) => {
+      try {
+        return t(key);
+      } catch {
+        // Silently return key on any error
+        return key;
+      }
+    },
+    [t],
+  );
 }
 
 export const getTranslateServer = async () => {
