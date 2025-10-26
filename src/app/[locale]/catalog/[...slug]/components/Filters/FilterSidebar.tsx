@@ -69,7 +69,6 @@ const FilterSidebar = ({
   catalog,
   selectedSlug,
   filterContent: { regions, areas, subareas, tags, types },
-  hideTitle,
 }: Props) => {
   const translate = useTranslate();
   const { toggleTag, toggleType, hasActiveFilters, filters, clear } =

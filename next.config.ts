@@ -6,7 +6,7 @@ const CZ_DOMAIN = process.env.NEXT_PUBLIC_CZ_DOMAIN ?? "localhost";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  allowedDevOrigins: [EN_DOMAIN, CZ_DOMAIN],
+  allowedDevOrigins: [`*.school.local`],
 };
 
 const withNextIntl = createNextIntlPlugin();
