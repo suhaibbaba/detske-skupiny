@@ -145,7 +145,7 @@ const FilterList: FC<Props> = ({
   items: itemsProps,
   showDivider,
   selectedSlug,
-  initialItemsCount = 3,
+  initialItemsCount = 15,
 }) => {
   const [showAll, setShowAll] = useState(false);
   const items = itemsProps?.filter(Boolean);
