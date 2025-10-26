@@ -8,10 +8,11 @@ import {
   Divider,
   DividerProps,
   IconProps,
+  SvgIconProps,
   Typography,
   TypographyProps,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import MinusIcon from "@mui/icons-material/Remove";
 import { routes } from "@/routes";
 import { CategoryItem } from "@/sanity/queries";
@@ -19,12 +20,15 @@ import Button from "@/components/ui/button";
 import { normalizeSlug } from "@/sanity/utilites/helper";
 import DoneIcon from "@mui/icons-material/Done";
 import React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 interface Props {
   title: string;
   showDivider?: boolean;
   items?: CategoryItem[];
   selectedSlug?: string;
+  initialItemsCount?: number;
 }
 
 interface FilterListStyles {
@@ -38,6 +42,8 @@ interface FilterListStyles {
   itemText?: TypographyProps;
   itemCount?: TypographyProps;
   divider?: DividerProps;
+  showMoreIcon?: SvgIconProps;
+  showMoreButton?: ButtonProps;
 }
 
 const styles: FilterListStyles = {
@@ -50,8 +56,6 @@ const styles: FilterListStyles = {
   },
   listContainer: {
     sx: {
-      maxHeight: "660px",
-      overflowY: "auto",
       display: "flex",
       flexDirection: "column",
       gap: "16px",
@@ -115,6 +119,25 @@ const styles: FilterListStyles = {
       bgcolor: "common.ui18",
     },
   },
+  showMoreIcon: {
+    sx: {
+      width: 16,
+      height: 16,
+      mr: "8px",
+    },
+  },
+  showMoreButton: {
+    sx: {
+      mt: "8px",
+      color: "primary.main",
+      fontSize: "14px",
+      transition: "color 300ms ease-in-out",
+      "&:hover": {
+        bgcolor: "transparent",
+        color: "custom.ui14",
+      },
+    },
+  },
 };
 
 const FilterList: FC<Props> = ({
@@ -122,18 +145,24 @@ const FilterList: FC<Props> = ({
   items: itemsProps,
   showDivider,
   selectedSlug,
+  initialItemsCount = 3,
 }) => {
+  const [showAll, setShowAll] = useState(false);
   const items = itemsProps?.filter(Boolean);
+
   if (!items || items.length === 0) {
     return null;
   }
+
+  const shouldShowToggle = items.length > initialItemsCount;
+  const displayedItems = showAll ? items : items.slice(0, initialItemsCount);
 
   return (
     <Box {...styles.container}>
       {showDivider && <Divider {...styles.divider} />}
       <Typography {...styles.heading}>{title}</Typography>
       <Box {...styles.listContainer}>
-        {items.map((district) => {
+        {displayedItems.map((district) => {
           const selected =
             normalizeSlug(selectedSlug) === normalizeSlug(district.slug);
           return (
@@ -167,6 +196,20 @@ const FilterList: FC<Props> = ({
           );
         })}
       </Box>
+      {shouldShowToggle && (
+        <Button
+          {...styles.showMoreButton}
+          variant="text"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? (
+            <RemoveIcon {...styles.showMoreIcon} />
+          ) : (
+            <AddIcon {...styles.showMoreIcon} />
+          )}
+          {showAll ? "Show Less" : "Show More"}
+        </Button>
+      )}
     </Box>
   );
 };
