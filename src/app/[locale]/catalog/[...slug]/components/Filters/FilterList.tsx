@@ -22,6 +22,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import useTranslate from "@/hooks/useTranslate";
 
 interface Props {
   title: string;
@@ -147,6 +148,7 @@ const FilterList: FC<Props> = ({
   selectedSlug,
   initialItemsCount = 15,
 }) => {
+  const translate = useTranslate();
   const [showAll, setShowAll] = useState(false);
   const items = itemsProps?.filter(Boolean);
 
@@ -207,7 +209,7 @@ const FilterList: FC<Props> = ({
           ) : (
             <AddIcon {...styles.showMoreIcon} />
           )}
-          {showAll ? "Show Less" : "Show More"}
+          {showAll ? translate("showLess") : translate("showMore")}
         </Button>
       )}
     </Box>

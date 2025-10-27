@@ -12,7 +12,7 @@ import useTranslate from "@/hooks/useTranslate";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { FiltersResponse } from "@/sanity/queries";
 import FilterList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterList";
-import FilterTypeList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterTypeList";
+import FilterCategoriesList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterCategoriesList";
 import FilterTagList from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterTagList";
 import { useSchoolFilters } from "@/hooks/useSchoolFilters";
 import Button from "@/components/ui/button";
@@ -54,6 +54,7 @@ const styles: FilterSidebarStyles = {
     fontSize: "20px",
     color: "custom.ui13",
     fontWeight: 600,
+    textTransform: "capitalize",
   },
   clearButton: {
     variant: "primary",
@@ -68,7 +69,7 @@ const styles: FilterSidebarStyles = {
 const FilterSidebar = ({
   catalog,
   selectedSlug,
-  filterContent: { regions, areas, subareas, tags, types },
+  filterContent: { regions, areas, subareas, tags, categories },
 }: Props) => {
   const translate = useTranslate();
   const { toggleTag, toggleType, hasActiveFilters, filters, clear } =
@@ -112,11 +113,11 @@ const FilterSidebar = ({
         clear={clear}
         showDivider={true}
       />
-      <FilterTypeList
-        types={types}
+      <FilterCategoriesList
+        categories={categories}
         showDivider={true}
         toggleType={toggleType}
-        selectedTypes={filters.types ?? []}
+        selectedTypes={filters.categories ?? []}
         clear={clear}
       />
     </Box>

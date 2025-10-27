@@ -81,6 +81,7 @@ const styles: PageStyles = {
     color: "custom.ui13",
     fontSize: "24px",
     fontWeight: 600,
+    textTransform: "capitalize",
     mt: "80px",
     mb: "20px",
   },

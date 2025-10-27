@@ -1,6 +1,7 @@
 import { useTranslations as useIntlTranslations } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { useCallback } from "react";
+import { camelToDisplayText } from "@/utilites/strings";
 
 export function useTranslate() {
   // Pass empty string or undefined to use root namespace
@@ -12,7 +13,7 @@ export function useTranslate() {
         return t(key, values);
       } catch {
         // Silently return key on any error
-        return key;
+        return camelToDisplayText(key);
       }
     },
     [t],

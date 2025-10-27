@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export type Filters = {
-  types: string[];
+  categories: string[];
   tags: string[];
   name: string;
 };
@@ -22,7 +22,10 @@ export function useSchoolFilters({
   const searchParams = useSearchParams();
 
   // Parse filters from URL
-  const types = useMemo(() => searchParams.getAll("types"), [searchParams]);
+  const categories = useMemo(
+    () => searchParams.getAll("categories"),
+    [searchParams],
+  );
   const tags = useMemo(() => searchParams.getAll("tags"), [searchParams]);
   const nameFromUrl = useMemo(
     () => searchParams.get("name") ?? "",
@@ -38,8 +41,8 @@ export function useSchoolFilters({
   }, [nameFromUrl]);
 
   const filters: Filters = useMemo(
-    () => ({ types, tags, name: nameFromUrl }),
-    [types, tags, nameFromUrl],
+    () => ({ categories, tags, name: nameFromUrl }),
+    [categories, tags, nameFromUrl],
   );
 
   // Update query params in the URL
@@ -47,9 +50,9 @@ export function useSchoolFilters({
     (next: Partial<Filters>) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (next.types !== undefined) {
-        params.delete("types");
-        next.types.forEach((t) => params.append("types", t));
+      if (next.categories !== undefined) {
+        params.delete("categories");
+        next.categories.forEach((t) => params.append("categories", t));
       }
 
       if (next.tags !== undefined) {
@@ -66,18 +69,18 @@ export function useSchoolFilters({
 
       if (onChange) {
         onChange({
-          types: next.types ?? types,
+          categories: next.categories ?? categories,
           tags: next.tags ?? tags,
           name: next.name ?? nameFromUrl,
         });
       }
     },
-    [router, searchParams, types, tags, nameFromUrl, onChange],
+    [router, searchParams, categories, tags, nameFromUrl, onChange],
   );
 
-  // Helpers for types/tags
+  // Helpers for categories/tags
   const toggle = useCallback(
-    (key: "types" | "tags", value: string) => {
+    (key: "categories" | "tags", value: string) => {
       const list = new Set(filters[key]);
       list.has(value) ? list.delete(value) : list.add(value);
       updateQuery({ [key]: [...list] });
@@ -106,7 +109,7 @@ export function useSchoolFilters({
   const clear = useCallback(
     (key?: keyof Filters) => {
       if (!key) {
-        updateQuery({ types: [], tags: [], name: "" });
+        updateQuery({ categories: [], tags: [], name: "" });
       } else if (key === "name") {
         updateQuery({ name: "" });
       } else {
@@ -117,7 +120,10 @@ export function useSchoolFilters({
   );
 
   const hasActiveFilters = useMemo(
-    () => filters.types.length > 0 || filters.tags.length > 0 || !!filters.name,
+    () =>
+      filters.categories.length > 0 ||
+      filters.tags.length > 0 ||
+      !!filters.name,
     [filters],
   );
 
@@ -126,7 +132,7 @@ export function useSchoolFilters({
     localName,
     setLocalName,
     commitName, // call on Enter or Blur
-    toggleType: (slug: string) => toggle("types", slug),
+    toggleType: (slug: string) => toggle("categories", slug),
     toggleTag: (slug: string) => toggle("tags", slug),
     clear,
     hasActiveFilters,

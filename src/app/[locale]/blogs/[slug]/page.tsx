@@ -125,6 +125,7 @@ const styles: BlogDetailStyles = {
   },
   sectionHeading: {
     variant: "h3",
+    textTransform: "capitalize",
   },
   paragraph: {
     variant: "body1",

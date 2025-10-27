@@ -18,7 +18,6 @@ const styles: SchoolsMapStyles = {
       width: "100%",
       maxHeight: "400px",
       height: "400px",
-      mt: "48px",
       borderRadius: "24px",
       boxShadow: "var(--mui-palette-shadows-ui1)",
       p: "20px",

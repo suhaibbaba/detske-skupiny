@@ -17,7 +17,7 @@ import { Filters } from "@/hooks/useSchoolFilters";
 
 interface Props {
   showDivider?: boolean;
-  types?: FiltersResponse["types"];
+  categories?: FiltersResponse["categories"];
   selectedTypes?: string[];
   toggleType?: (slug: string) => void;
   clear?: (key?: keyof Filters) => void;
@@ -39,6 +39,7 @@ const styles: FilterListStyles = {
     fontWeight: 500,
     mb: "16px",
     color: "custom.ui13",
+    textTransform: "capitalize",
   },
   listContainer: {
     sx: {
@@ -103,17 +104,17 @@ const styles: FilterListStyles = {
   },
 };
 
-const FilterTypeList: FC<Props> = ({
-  types: typesProps,
+const FilterCategoriesList: FC<Props> = ({
+  categories: categoriesProps,
   selectedTypes,
   toggleType,
   clear,
   showDivider,
 }) => {
   const translate = useTranslate();
-  const types = typesProps?.filter(Boolean);
+  const categories = categoriesProps?.filter(Boolean);
 
-  if (!types || types.length === 0) {
+  if (!categories || categories.length === 0) {
     return null;
   }
 
@@ -124,35 +125,35 @@ const FilterTypeList: FC<Props> = ({
         {translate("kinderType")}
       </Typography>
       <Box {...styles.listContainer}>
-        {types.map((type) => {
-          const checked = selectedTypes?.includes(type.slug);
+        {categories.map((category) => {
+          const checked = selectedTypes?.includes(category.slug);
           return (
             <Box
-              key={type.id}
+              key={category.id}
               {...styles.item}
               className={checked ? "selected" : ""}
-              onClick={() => toggleType?.(type.slug)}
+              onClick={() => toggleType?.(category.slug)}
               role="checkbox"
               aria-checked={checked}
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === " " || e.key === "Enter") {
                   e.preventDefault();
-                  toggleType?.(type.slug);
+                  toggleType?.(category.slug);
                 }
               }}
             >
-              {type.emoji && (
-                <Box src={urlImageFor(type.emoji)} component="img" />
+              {category.emoji && (
+                <Box src={urlImageFor(category.emoji)} component="img" />
               )}
-              {type.name}
+              {category.name}
             </Box>
           );
         })}
       </Box>
       {clear && selectedTypes && selectedTypes.length > 0 && (
         <Box {...styles.viewAllContainer}>
-          <Typography {...styles.viewAll} onClick={() => clear("types")}>
+          <Typography {...styles.viewAll} onClick={() => clear("categories")}>
             {translate("viewAll")}
           </Typography>
         </Box>
@@ -161,4 +162,4 @@ const FilterTypeList: FC<Props> = ({
   );
 };
 
-export default FilterTypeList;
+export default FilterCategoriesList;

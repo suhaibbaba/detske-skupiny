@@ -19,7 +19,7 @@ export type FiltersResponse = {
   areas: CategoryItem[];
   subareas: CategoryItem[];
   tags: (SchoolTag & { count: number })[];
-  types: (SchoolCategory & { count: number })[];
+  categories: (SchoolCategory & { count: number })[];
 };
 
 /** Tags (counts respect "all") */
@@ -33,14 +33,14 @@ export const tagsQuery = groq`
         _type == "schools" &&
         (!defined($country) || area->region->country->slug.current == $country) &&
         (!defined($region) || area->region->slug.current == $region) &&
-        references(^._id)
+        (!defined(language) || language == $locale)
       ]),
     }[count > 0] | order(name asc)
 `;
 
 /** Types / categories (counts respect "all") */
-export const typesQuery = groq`
-    "types": *[
+export const categoriesQuery = groq`
+    "categories": *[
     _type == "schoolCategories" &&
     (!defined(language) || language == $locale)
     ]{
@@ -52,8 +52,7 @@ export const typesQuery = groq`
         _type == "schools" &&
         (!defined($country) || area->region->country->slug.current == $country) &&
         (!defined($region) || area->region->slug.current == $region) &&
-        (!defined(language) || language == $locale) &&
-        references(^._id)
+        (!defined(language) || language == $locale)
       ]),
     }[count > 0] | order(name asc),
 `;
@@ -108,7 +107,7 @@ export const countryQuery = groq`
         subarea->region._ref == ^._id
       ])
     },
-    ${typesQuery}
+    ${categoriesQuery}
     ${tagsQuery}
 }
 `;
@@ -170,7 +169,7 @@ export const regionQuery = groq`
         subarea._ref == ^._id
       ])
     },
-    ${typesQuery}
+    ${categoriesQuery}
     ${tagsQuery}
 }
 `;
@@ -201,7 +200,7 @@ export async function fetchFilters(
         areas: [],
         subareas: [],
         tags: [],
-        types: [],
+        categories: [],
       };
   }
 }

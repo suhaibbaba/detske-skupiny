@@ -39,10 +39,6 @@ const styles: SchoolListStyles = {
       display: "flex",
       flexDirection: "column",
       gap: "26px",
-      mt: {
-        xs: "44px",
-        sm: "0",
-      },
     },
   },
   listContainer: {
@@ -88,7 +84,7 @@ const SchoolListClient: FC<Props> = ({
   const [schools, setSchools] = useState<MiniSchool[]>(initialSchools);
   const [page, setPage] = useState(1); // Start at 1 since we already have page 0
   const [hasMore, setHasMore] = useState(initialSchools.length >= pageSize);
-  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [totalSelectedSchools, setTotalSelectedSchools] =
     useState(initialTotalSelected);
   const [markers, setMarkers] = useState<MarkerData[]>(initialMarkers);
@@ -118,7 +114,7 @@ const SchoolListClient: FC<Props> = ({
       return;
     }
 
-    setLoading(true);
+    setLoadingMore(true);
     setSchools([]);
     setPage(1);
 
@@ -140,16 +136,16 @@ const SchoolListClient: FC<Props> = ({
       setHasMore((result.schools ?? []).length >= pageSize);
       setTotalSelectedSchools(result.totalSelectedSchools);
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
   };
 
   const loadMoreSchools = useCallback(async () => {
-    if (!country || loading) {
+    if (!country || loadingMore) {
       return;
     }
 
-    setLoading(true);
+    setLoadingMore(true);
 
     try {
       const result = await fetchSchoolByFilter({
@@ -173,7 +169,7 @@ const SchoolListClient: FC<Props> = ({
       setPage((prev) => prev + 1);
       setTotalSelectedSchools(result.totalSelectedSchools);
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
   }, [
     page,
@@ -185,11 +181,11 @@ const SchoolListClient: FC<Props> = ({
     tags,
     searchName,
     pageSize,
-    loading,
+    loadingMore,
   ]);
 
   const [sentryRef] = useInfiniteScroll({
-    loading,
+    loading: loadingMore,
     hasNextPage: hasMore,
     onLoadMore: loadMoreSchools,
     disabled: false,
@@ -213,14 +209,14 @@ const SchoolListClient: FC<Props> = ({
             {hasMore && <div ref={sentryRef} />}
           </>
         ) : (
-          !loading && (
+          !loadingMore && (
             <Alert severity="info" sx={{ maxWidth: 600, gridColumn: "1 / -1" }}>
               {translate("noSchoolsFound")}
             </Alert>
           )
         )}
       </Box>
-      {loading && (
+      {loadingMore && (
         <Box {...styles.loadingContainer}>
           <CircularProgress />
         </Box>

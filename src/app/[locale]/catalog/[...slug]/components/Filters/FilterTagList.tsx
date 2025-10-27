@@ -42,6 +42,7 @@ const styles: FilterListStyles = {
     fontWeight: 500,
     mb: "16px",
     color: "custom.ui13",
+    textTransform: "capitalize",
   },
   listContainer: {
     sx: {
