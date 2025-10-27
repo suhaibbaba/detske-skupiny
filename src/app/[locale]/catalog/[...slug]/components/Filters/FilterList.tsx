@@ -167,7 +167,8 @@ const FilterList: FC<Props> = ({
         {displayedItems.map((district) => {
           const selected =
             normalizeSlug(selectedSlug) === normalizeSlug(district.slug);
-          return (
+
+            return (
             <React.Fragment key={district.id}>
               <Button
                 {...styles.itemButton}
