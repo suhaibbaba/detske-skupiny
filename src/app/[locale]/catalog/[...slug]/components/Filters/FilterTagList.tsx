@@ -72,7 +72,6 @@ const styles: FilterListStyles = {
       bgcolor: "white",
       border: `1px solid ${borderColor}`,
       maxWidth: 180,
-      justifyContent: "start",
       "& .MuiChip-label": {
         padding: 0,
       },
