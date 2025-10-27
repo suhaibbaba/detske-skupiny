@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   Breadcrumbs as MuiBreadcrumbs,
@@ -8,12 +6,11 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { usePathname } from "next/navigation";
 import ChevronRight from "@/components/icons/ChevronRight";
-import { useLocale } from "use-intl";
-import useTranslate from "@/hooks/useTranslate";
+import { getLocale, getTranslations } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { pathnames } from "@/i18n/routing";
+import { headers } from "next/headers";
 
 interface Props {
   addSpace?: boolean;
@@ -63,94 +60,82 @@ const styles: BreadcrumbsStyles = {
     },
   },
   text: {
-    sx: (theme) => ({
+    sx: {
       textDecoration: "none",
       fontSize: "14px",
-      color: theme.palette.custom.ui2,
+      color: "var(--mui-palette-custom-ui2)",
       lineHeight: "14px",
-    }),
+    },
   },
 };
 
-const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
-  const encodedPathname = usePathname();
-  const pathname = decodeURIComponent(encodedPathname);
+const formatSegment = (segment: string): string => {
+  return segment
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
 
-  const locale = useLocale();
-  const translate = useTranslate();
-  const [items, setItems] = React.useState<BreadcrumbItem[]>([]);
-  const [loading, setLoading] = React.useState(true);
+const Breadcrumbs = async ({ addSpace = true }: Props) => {
+  const locale = await getLocale();
+  const headerList = await headers();
+  const pathname = headerList.get("x-pathname") || "/";
 
-  React.useEffect(() => {
-    const fetchBreadcrumbs = async () => {
-      setLoading(true);
+  const decodedPathname = decodeURIComponent(pathname);
+  const t = await getTranslations();
 
-      const pathSegments = pathname
-        .split("/")
-        .filter((segment) => segment !== "" && segment !== locale);
+  const pathSegments = decodedPathname
+    .split("/")
+    .filter((segment) => segment !== "" && segment !== locale);
 
-      const breadcrumbs: BreadcrumbItem[] = [
-        {
-          label: translate("home"),
-          href: "/",
-        },
-      ];
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      label: t("home"),
+      href: "/",
+    },
+  ];
 
-      // Fetch all page names in one query for better performance
-      const slugs = pathSegments.filter(
-        (segment) => !excludeNavigation.includes(segment),
-      );
+  // Fetch all page names in one query for better performance
+  const slugs = pathSegments.filter(
+    (segment) => !excludeNavigation.includes(segment),
+  );
 
-      if (slugs.length > 0) {
-        try {
-          const pages = await fetchBreadcrumbList({ slugs });
+  if (slugs.length > 0) {
+    try {
+      const pages = await fetchBreadcrumbList({ slugs });
 
-          // Create a map for quick lookup
-          const pageMap = new Map(pages.map((page) => [page.slug, page.name]));
+      // Create a map for quick lookup
+      const pageMap = new Map(pages.map((page) => [page.slug, page.name]));
 
-          // Build breadcrumbs with proper names
-          pathSegments.forEach((segment, index) => {
-            const href = "/" + pathSegments.slice(0, index + 1).join("/");
+      // Build breadcrumbs with proper names
+      pathSegments.forEach((segment, index) => {
+        const href = "/" + pathSegments.slice(0, index + 1).join("/");
 
-            if (!excludeNavigation.includes(segment)) {
-              const label = pageMap.get(segment) || formatSegment(segment);
-              breadcrumbs.push({ label, href });
-            }
-          });
-        } catch (error) {
-          console.error("Error fetching breadcrumb data:", error);
+        if (!excludeNavigation.includes(segment)) {
+          const label = pageMap.get(segment) || formatSegment(segment);
+          breadcrumbs.push({ label, href });
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching breadcrumb data:", error);
 
-          // Fallback to formatted slugs on error
-          pathSegments.forEach((segment, index) => {
-            const href = "/" + pathSegments.slice(0, index + 1).join("/");
-            if (!excludeNavigation.includes(segment)) {
-              breadcrumbs.push({
-                label: formatSegment(segment),
-                href,
-              });
-            }
+      // Fallback to formatted slugs on error
+      pathSegments.forEach((segment, index) => {
+        const href = "/" + pathSegments.slice(0, index + 1).join("/");
+        if (!excludeNavigation.includes(segment)) {
+          breadcrumbs.push({
+            label: formatSegment(segment),
+            href,
           });
         }
-      }
-
-      setItems(breadcrumbs);
-      setLoading(false);
-    };
-
-    fetchBreadcrumbs();
-  }, [pathname, locale, translate]);
-
-  const formatSegment = (segment: string): string => {
-    return segment
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  };
-
-  if (loading || items.length === 0) {
-    return null; // or a loading skeleton
+      });
+    }
   }
 
-  const last = items[items.length - 1];
+  if (breadcrumbs.length === 0) {
+    return null;
+  }
+
+  const last = breadcrumbs[breadcrumbs.length - 1];
 
   return (
     <MuiBreadcrumbs
@@ -158,7 +143,7 @@ const Breadcrumbs: React.FC<Props> = ({ addSpace = true }) => {
       aria-label="breadcrumb"
       sx={{ mb: addSpace ? "40px" : 0 }}
     >
-      {items.slice(0, -1).map((item) => (
+      {breadcrumbs.slice(0, -1).map((item) => (
         <Link key={item.href} href={item.href} {...styles.link}>
           {item.label}
         </Link>

@@ -50,7 +50,7 @@ const SchoolsCount = ({
   filterTotal,
   filterProps: { catalog, selectedSlug, filterContent },
 }: Props) => {
-  const translate = useTranslate("common");
+  const translate = useTranslate();
   return (
     <Box {...styles.container}>
       <Box {...styles.topRow}>

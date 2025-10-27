@@ -37,7 +37,7 @@ const SchoolTag = ({ tag }: Props) => {
   return (
     <Chip
       label={tag.name}
-      {...styles.chip?.(tag.backgroundColor)}
+      {...styles.chip?.(tag.borderColor)}
       variant="outlined"
     />
   );

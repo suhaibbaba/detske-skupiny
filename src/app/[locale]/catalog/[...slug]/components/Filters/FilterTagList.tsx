@@ -61,7 +61,7 @@ const styles: FilterListStyles = {
       bgcolor: "common.ui18",
     },
   },
-  chip: (backgroundColor?: string) => ({
+  chip: (borderColor = "#9980B0") => ({
     sx: {
       borderRadius: "24px",
       px: "6px",
@@ -69,17 +69,20 @@ const styles: FilterListStyles = {
       fontSize: 12,
       fontWeight: 400,
       color: "custom.ui20",
-      bgcolor: backgroundColor,
-      border: `1px solid ${backgroundColor}`,
+      bgcolor: "white",
+      border: `1px solid ${borderColor}`,
       maxWidth: 180,
+      justifyContent: "start",
       "& .MuiChip-label": {
         padding: 0,
       },
       "&.checked": {
-        borderColor: "var(--mui-palette-primary-main)",
+        bgcolor: "white",
+        borderColor: borderColor,
       },
       "&:hover": {
-        bgcolor: alpha(backgroundColor || "#FFFFFF", 0.5),
+        bgcolor: "white",
+        borderColor: alpha(borderColor || "#FFFFFF", 0.5),
       },
       "& .MuiChip-icon": {
         mr: "4px",
@@ -120,6 +123,7 @@ const FilterTagList: FC<Props> = ({
   if (!tags || tags.length === 0) {
     return null;
   }
+
   return (
     <Box {...styles.container} data-test-selector="FilterTagList">
       {showDivider && <Divider {...styles.divider} />}
@@ -132,7 +136,7 @@ const FilterTagList: FC<Props> = ({
               key={tag.id}
               label={tag.name}
               onClick={() => toggleTag?.(tag.slug)}
-              {...styles.chip?.(tag.backgroundColor)}
+              {...styles.chip?.(tag.borderColor)}
               role="checkbox"
               aria-checked={checked}
               tabIndex={0}

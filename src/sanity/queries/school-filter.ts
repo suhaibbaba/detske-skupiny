@@ -28,7 +28,7 @@ export const tagsQuery = groq`
       "id": _id,
       name,
       "slug": slug.current,
-      "backgroundColor": backgroundColor.hex,
+      "borderColor": borderColor.hex,
       "count": count(*[
         _type == "schools" &&
         (!defined($country) || area->region->country->slug.current == $country) &&

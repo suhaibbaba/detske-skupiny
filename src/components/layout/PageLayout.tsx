@@ -1,14 +1,12 @@
-"use client";
-
 import { Box, BoxProps, Container } from "@mui/material";
 import Breadcrumbs from "@/components/ui/breadcrumb";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 
 interface Props {
   children: React.ReactNode;
   /**
-   * It means the content has maxwidth 100%
+   * It means the content has max-width 100%
    */
   contentFullWidth?: boolean;
   showBreadcrumb?: boolean;
@@ -27,9 +25,7 @@ const PageLayout: FC<Props> = ({
   showBreadcrumb = true,
   extendedStyles,
 }) => {
-  const [styles] = useState(() =>
-    mergeMuiProps(pageLayoutStyles, extendedStyles),
-  );
+  const styles = mergeMuiProps(pageLayoutStyles, extendedStyles);
 
   return (
     <Box component="section" pt={5} pb={12.5} {...styles.section}>

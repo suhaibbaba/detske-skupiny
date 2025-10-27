@@ -59,7 +59,7 @@ export type SchoolTag = {
   id: string;
   name: string;
   slug: string;
-  backgroundColor: string;
+  borderColor: string;
 };
 
 export interface School {
