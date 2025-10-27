@@ -10,15 +10,19 @@ const fredoka = Fredoka({
   subsets: ["latin"],
 });
 
+export const BREAKPOINTS = {
+  xs: 0,
+  sm: 768,
+  md: 1024,
+  lg: 1280,
+  xl: 1536,
+};
+
 const baseTheme = createTheme({
   cssVariables: true,
   breakpoints: {
     values: {
-      xs: 0,
-      sm: 768,
-      md: 1024,
-      lg: 1280,
-      xl: 1536,
+      ...BREAKPOINTS,
     },
   },
   palette: {
@@ -108,7 +112,6 @@ const theme = createTheme(baseTheme, {
         desktop: 48,
         tablet: 40,
         mobile: 36,
-        theme: baseTheme,
       }),
       marginBottom: "20px",
     },
@@ -119,7 +122,6 @@ const theme = createTheme(baseTheme, {
         desktop: 32,
         tablet: 30,
         mobile: 28,
-        theme: baseTheme,
       }),
       lineHeight: 1.5,
       marginBottom: "20px",

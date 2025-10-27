@@ -1,5 +1,3 @@
-"use client";
-
 import React, { FC } from "react";
 import { Box, BoxProps, TypographyProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
@@ -67,15 +65,14 @@ const styles: HeroSectionStyles = {
       },
     },
     title: {
-      sx: (theme) => ({
+      sx: {
         fontSize: autoClamp({
           desktop: 44,
           tablet: 40,
           mobile: 36,
-          theme,
         }),
         textAlign: "left",
-      }),
+      },
     },
     description: {
       sx: {

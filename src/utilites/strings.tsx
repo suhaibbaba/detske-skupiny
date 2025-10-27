@@ -1,5 +1,5 @@
-import { Theme } from "@mui/material";
 import React from "react";
+import { BREAKPOINTS } from "@/theme";
 
 export const formatMessage = (
   text: string,
@@ -26,14 +26,12 @@ export const autoClamp = ({
   mobile,
   tablet,
   desktop,
-  theme,
 }: {
   mobile: number;
   tablet: number;
   desktop: number;
-  theme: Theme;
 }) => {
-  const vw = ((tablet / theme.breakpoints.values.md) * 100).toFixed(2);
+  const vw = ((tablet / BREAKPOINTS.md) * 100).toFixed(2);
   return `clamp(${mobile}px, ${vw}vw, ${desktop}px)`;
 };
 
