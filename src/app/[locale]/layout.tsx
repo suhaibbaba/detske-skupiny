@@ -10,6 +10,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { setLocale } from "@/utilites/localeStore";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
 
 export const metadata: Metadata = {
   title: "Sousedske Skupinky",
@@ -36,11 +37,13 @@ export default async function RootLayout({
             <IntlErrorHandlingProvider locale={locale} messages={messages}>
               <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <Box>
-                  <Header />
-                  {children}
-                  <Footer />
-                </Box>
+                <DefaultImageProvider>
+                  <Box>
+                    <Header />
+                    {children}
+                    <Footer />
+                  </Box>
+                </DefaultImageProvider>
               </ThemeProvider>
             </IntlErrorHandlingProvider>
           </NuqsAdapter>

@@ -52,6 +52,8 @@ const MapComponent: React.FC<MapProps> = ({
 
   // Initialize map
   useEffect(() => {
+    const center = defaultCenter || { lat: 0, lng: 0 };
+
     if (map.current || !mapContainer.current) {
       return;
     }
@@ -68,7 +70,7 @@ const MapComponent: React.FC<MapProps> = ({
     map.current = new maptilersdk.Map({
       container: mapContainer.current,
       style: maptilersdk.MapStyle.STREETS,
-      center: [defaultCenter.lng, defaultCenter.lat],
+      center: [center.lng, center.lat],
       zoom: defaultZoom,
     });
 
@@ -94,7 +96,7 @@ const MapComponent: React.FC<MapProps> = ({
       map.current?.remove();
       map.current = null;
     };
-  }, [defaultCenter.lat, defaultCenter.lng, defaultZoom]);
+  }, [defaultCenter, defaultZoom]);
 
   // Function to close current popup
   const closeCurrentPopup = () => {

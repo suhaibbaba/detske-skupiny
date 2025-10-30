@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import {
   Box,
@@ -10,14 +8,14 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import SchoolTag from "@/app/[locale]/school/[school]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
-import useTranslate from "@/hooks/useTranslate";
+import { getTranslateServer } from "@/hooks/useTranslate";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
+import Image from "@/components/ui/image/Image";
 
 interface Props {
   school: MiniSchool;
@@ -38,18 +36,18 @@ interface KinderGroupCardStyles {
 
 const styles: KinderGroupCardStyles = {
   container: {
-    sx: (theme) => ({
+    sx: {
       display: "flex",
       maxWidth: "628px",
       borderRadius: "24px",
-      border: `1px solid ${theme.palette.custom.ui18}`,
-      bgcolor: theme.palette.common.white,
-      boxShadow: theme.palette.shadows.ui1,
+      border: `1px solid var(--mui-palette-custom-ui18)`,
+      bgcolor: "var(--mui-palette-common-white)",
+      boxShadow: "var(--mui-palette-shadows-ui1)",
       flexDirection: {
         xs: "column",
         lg: "row",
       },
-    }),
+    },
   },
   imageWrapper: {
     position: "relative",
@@ -129,13 +127,13 @@ const styles: KinderGroupCardStyles = {
     },
   },
   title: {
-    sx: (theme) => ({
+    sx: {
       textAlign: "left",
-      color: theme.palette.custom.ui13,
+      color: "var(--mui-palette-custom-ui13)",
       fontSize: "20px",
       fontWeight: 600,
       textTransform: "capitalize",
-    }),
+    },
   },
   description: {
     textAlign: "left",
@@ -169,17 +167,13 @@ const styles: KinderGroupCardStyles = {
   },
 };
 
-const SchoolCard = ({ school }: Props) => {
-  const translate = useTranslate();
+const SchoolCard = async ({ school }: Props) => {
+  const translate = await getTranslateServer();
 
   return (
     <Box {...styles.container} data-test-selector="SchoolCard">
       <Box {...styles.imageWrapper}>
-        <Box
-          component="img"
-          src={urlImageFor(school.primaryImage)}
-          {...styles.image}
-        />
+        <Image src={school.primaryImage} {...styles.image} />
         {school.area?.name && (
           <Typography {...styles.area}>
             <Location {...styles.locationIcon} />

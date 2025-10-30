@@ -19,6 +19,7 @@ import React from "react";
 import { formatDate } from "@/utilites/date";
 import RichText from "@/sanity/components/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import Image from "@/components/ui/image/Image";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -154,7 +155,8 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
             <Typography variant="h2" mb="24px">
               {blog.title}
             </Typography>
-            <Box component="img" src={blog.image} {...styles.image} />
+            <Image src={blog.image} {...styles.image} />
+            {/*<Box component="img" src={blog.image} {...styles.image} />*/}
             <Box {...styles.authorMeta}>
               {formatMessage(
                 `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} ${translate("minRead")}`,

@@ -7,3 +7,4 @@ export * from "@/sanity/types/page";
 export * from "@/sanity/types/group";
 export * from "@/sanity/types/school-filter";
 export * from "@/sanity/types/breadcrumb";
+export * from "@/sanity/types/settings";

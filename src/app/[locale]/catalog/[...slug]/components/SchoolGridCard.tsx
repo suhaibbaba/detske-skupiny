@@ -17,7 +17,7 @@ import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
 import { routes } from "@/routes";
-import Star from "@/components/icons/Star";
+import Image from "@/components/ui/image/Image";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 
 interface Props {
@@ -120,6 +120,11 @@ const styles: KinderGroupCardStyles = {
       mb: "13px",
     },
   },
+  description: {
+    sx: {
+      minHeight: "100px",
+    },
+  },
   cta: {
     variant: "ghost",
     sx: (theme) => ({
@@ -144,21 +149,18 @@ const SchoolGridCard = ({ school }: Props) => {
   return (
     <Box {...styles.card}>
       <Box {...styles.imageWrapper}>
-        <Box
-          component="img"
-          {...styles.image}
-          src={urlImageFor(primaryImage)}
-          alt={name}
-        />
+        <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
         <SchoolTypesBadge types={types} />
       </Box>
       <Box {...styles.nameWrapper}>
-        <Box
-          component="img"
-          {...styles.logo}
-          src={urlImageFor(logo)}
-          alt={name}
-        />
+        {logo && (
+          <Box
+            component="img"
+            {...styles.logo}
+            src={urlImageFor(logo)}
+            alt={name}
+          />
+        )}
         <Ellipsis limitOfLine={2} {...styles.name}>
           {name}
         </Ellipsis>
