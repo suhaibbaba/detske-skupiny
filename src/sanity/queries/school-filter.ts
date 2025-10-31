@@ -29,12 +29,6 @@ export const tagsQuery = groq`
       name,
       "slug": slug.current,
       "borderColor": borderColor.hex,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined($country) || area->region->country->slug.current == $country) &&
-        (!defined($region) || area->region->slug.current == $region) &&
-        (!defined(language) || language == $locale)
-      ]),
     }[count > 0] | order(name asc)
 `;
 
@@ -48,12 +42,6 @@ export const categoriesQuery = groq`
       name,
       "slug": slug.current,
       "emoji": emoji.asset->url,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined($country) || area->region->country->slug.current == $country) &&
-        (!defined($region) || area->region->slug.current == $region) &&
-        (!defined(language) || language == $locale)
-      ]),
     }[count > 0] | order(name asc),
 `;
 
@@ -74,11 +62,7 @@ export const countryQuery = groq`
       "id": _id,
       "name": name,
       "slug": slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        area->region->country._ref == ^._id
-      ])
+      "count": schoolCount,
     }
   ] + *[_type == "regions" && country->slug.current == $country && (!defined(language) || language == $locale)]{
       "id": _id,
@@ -86,26 +70,15 @@ export const countryQuery = groq`
       "slug": "/" 
         + country->slug.current + "/" 
         + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        area->region._ref == ^._id
-      ])
+      "count": schoolCount,
     },
   "areas": [],
-  "subareas": *[_type == "subareas" && area->region->country->slug.current == $country && (!defined(language) || language == $locale)]{
+  "subareas": *[_type == "subareas" && countrySlug == $country && (!defined(language) || language == $locale)]{
       "id": _id,
       name,
-      "slug": "/" 
-        + area->region->country->slug.current + "/" 
-        + area->region->slug.current + "/" 
-        + area->slug.current + "/" 
-        + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        subarea->region._ref == ^._id
-      ])
+      "slug": fullSlug,
+      "count": schoolCount,
+
     },
     ${categoriesQuery}
     ${tagsQuery}
@@ -131,43 +104,24 @@ export const regionQuery = groq`
       "id": _id,
       "name": name,
       "slug": "/" + country->slug.current + "/" + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        area->region._ref == ^._id
-      ])
+      "count": schoolCount,
     }
   ] + *[
       _type == "areas" &&
-      region->slug.current == $region &&
-      region->country->slug.current == $country &&
+      regionSlug == $region &&
+      countrySlug == $country &&
       (!defined(language) || language == $locale)
     ]{
       "id": _id,
       name,
-      "slug": "/" 
-        + region->country->slug.current + "/" 
-        + region->slug.current + "/" 
-        + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        area._ref == ^._id
-      ])
+      "slug": fullSlug,
+      "count": schoolCount,
     },
-  "subareas": *[_type == "subareas" && area->region->slug.current == $region && area->region->country->slug.current == $country && (!defined(language) || language == $locale)]{
+  "subareas": *[_type == "subareas" && regionSlug == $region && countrySlug == $country && (!defined(language) || language == $locale)]{
       "id": _id,
       name,
-      "slug": "/" 
-        + area->region->country->slug.current + "/" 
-        + area->region->slug.current + "/" 
-        + area->slug.current + "/" 
-        + slug.current,
-      "count": count(*[
-        _type == "schools" &&
-        (!defined(language) || language == $locale) &&
-        subarea._ref == ^._id
-      ])
+      "slug": fullSlug,
+      "count": schoolCount,
     },
     ${categoriesQuery}
     ${tagsQuery}
