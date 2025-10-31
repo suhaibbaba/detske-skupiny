@@ -1,4 +1,10 @@
-import { Box, BoxProps, Container, ContainerProps } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  CircularProgress,
+  Container,
+  ContainerProps,
+} from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import FilterSidebar from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 import { PageProps } from "@/types";
@@ -8,16 +14,24 @@ import {
 } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import { fetchSchoolPage } from "@/sanity/queries/school-list";
+import {
+  fetchSchoolByFilter,
+  fetchSchoolPage,
+} from "@/sanity/queries/school-list";
 import { toArray } from "@/sanity/utilites/helper";
-import SchoolListWrapper from "@/app/[locale]/catalog/[...slug]/components/SchoolListWrapper";
+import { Suspense } from "react";
+import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/SchoolListClient";
+import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
+import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 
 type Props = PageProps<{ slug: string[] }>;
+const PAGE_SIZE = 9;
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
   pageContainer?: BoxProps;
   container?: ContainerProps;
+  loadingBox?: BoxProps;
 }
 
 const styles: GroupsPageStyles = {
@@ -47,6 +61,14 @@ const styles: GroupsPageStyles = {
       mt: "80px",
     },
   },
+  loadingBox: {
+    sx: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      py: 4,
+    },
+  },
 };
 
 const Page = async ({ params, searchParams }: Props) => {
@@ -71,12 +93,28 @@ const Page = async ({ params, searchParams }: Props) => {
     return null;
   }
 
-  const filterContent = await fetchFilters(catalog);
-  const { pageHero, totalSchools } = await fetchSchoolPage({
-    country: catalog.country!,
+  const [filterContent, { pageHero, totalSchools }] = await Promise.all([
+    fetchFilters(catalog),
+    fetchSchoolPage({
+      country: catalog.country!,
+      region: catalog.region,
+    }),
+  ]);
+
+  const schoolsDataPromise = fetchSchoolByFilter({
+    country: catalog.country,
     region: catalog.region,
+    area: catalog.area,
+    subarea: catalog.subarea,
+    categories,
+    tags,
+    search: searchName,
+    start: 0,
+    end: PAGE_SIZE,
   });
 
+  const filterProps = { catalog, selectedSlug, filterContent };
+  const initialFilters = { catalog, categories, tags, searchName };
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
@@ -94,22 +132,57 @@ const Page = async ({ params, searchParams }: Props) => {
             filterContent={filterContent}
           />
         </Box>
-        <SchoolListWrapper
-          totalSchools={totalSchools}
-          initialFilters={{
-            catalog,
-            categories,
-            tags,
-            searchName,
-          }}
-          filterProps={{
-            catalog,
-            selectedSlug,
-            filterContent,
-          }}
-        />
+        <Suspense
+          fallback={
+            <Box {...styles.loadingBox}>
+              <CircularProgress />
+            </Box>
+          }
+        >
+          <SchoolListAsync
+            schoolsDataPromise={schoolsDataPromise}
+            totalSchools={totalSchools}
+            initialFilters={initialFilters}
+            pageSize={PAGE_SIZE}
+            filterProps={filterProps}
+          />
+        </Suspense>
       </Container>
     </Box>
+  );
+};
+
+// New component to unwrap the promise
+const SchoolListAsync = async ({
+  schoolsDataPromise,
+  totalSchools,
+  initialFilters,
+  pageSize,
+  filterProps,
+}: {
+  schoolsDataPromise: ReturnType<typeof fetchSchoolByFilter>;
+  totalSchools: number;
+  pageSize: number;
+  initialFilters: {
+    categories: string[];
+    tags: string[];
+    searchName?: string;
+    catalog: CatalogParams;
+  };
+  filterProps: FilterSidebarProps;
+}) => {
+  const schoolsDataView = await schoolsDataPromise;
+
+  return (
+    <SchoolListClient
+      initialSchools={schoolsDataView.schools ?? []}
+      initialMarkers={schoolsDataView.markers ?? []}
+      initialTotalSelected={schoolsDataView.totalSelectedSchools}
+      totalSchools={totalSchools}
+      initialFilters={initialFilters}
+      pageSize={pageSize}
+      filterProps={filterProps}
+    />
   );
 };
 

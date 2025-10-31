@@ -10,13 +10,16 @@ import { languageQuery } from "@/sanity/queries/index";
 import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchSchoolPage(params: SchoolPageQueryParams) {
+  const useCountryCount = params.country && !params.region;
+  const useRegionCount = params.country && params.region;
+
   const query = groq`{
     "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
-    "totalSchools": count(
-      *[_type == "schools" && ${languageQuery} && 
-        (!defined($country) || area->region->country->slug.current == $country) &&
-        (!defined($region) || area->region->slug.current == $region)]
-      ),
+    "totalSchools": select(
+      ${useRegionCount} => *[_type == "region" && ${languageQuery} && slug.current == $region][0].schoolCount,
+      ${useCountryCount} => *[_type == "country" && ${languageQuery} && slug.current == $country][0].schoolCount,
+      0
+    ),
   }`;
 
   return clientFetch<{
@@ -29,56 +32,35 @@ export async function fetchSchoolPage(params: SchoolPageQueryParams) {
 }
 
 export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
+  const baseFilter = `
+    _type == "schools" &&
+    (language == $locale || !defined(language)) &&
+    (!defined($country) || countrySlug == $country) &&
+    (!defined($region) || regionSlug == $region) &&
+    (!defined($area) || area->slug.current == $area) &&
+    (!defined($subarea) || subarea->slug.current == $subarea)`;
+  const extendedFilter =
+    baseFilter +
+    `&& (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
+    (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
+    (!defined($search) || lower(name) match "*" + lower($search) + "*")
+  `;
+
   const query = groq`{
-    "totalSelectedSchools": count(
-      *[_type == "schools" &&
-        (language == $locale || !defined(language)) &&
-        (!defined($country) || area->region->country->slug.current == $country) &&
-        (!defined($region) || area->region->slug.current == $region) &&
-        (!defined($area) || area->slug.current == $area) &&
-        (!defined($subarea) || subarea->slug.current == $subarea) &&
-        (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
-        (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
-        (!defined($search) || lower(name) match "*" + lower($search) + "*")
-      ]),
-      "markers": *[_type == "schools" &&
-        (language == $locale || !defined(language)) &&
-        (!defined($country) || area->region->country->slug.current == $country) &&
-        (!defined($region) || area->region->slug.current == $region) &&
-        (!defined($area) || area->slug.current == $area) &&
-        (!defined($subarea) || subarea->slug.current == $subarea)]{
-          "id": _id,
-          "coordinate": address.mapLocation,
-          name,
-          "fullAddress": select(
-            defined(address.street) => address.street,
-              ""
-            ) + select(
-            defined(address.extraDistrict) => ", " + address.extraDistrict,
-              ""
-            ) + select(
-            defined(address.city) => ", " + address.city,
-              ""
-            ) + select(
-            defined(address.postalCode) => ", " + address.postalCode,
-              ""
-            ) + select(
-            defined(address.country) => ", " + address.country,
-              ""
-            ),
-            "slug": slug.current,
-      },
-    "schools": *[
-      _type == "schools" &&
-      (language == $locale || !defined(language)) &&
-      (!defined($country) || area->region->country->slug.current == $country) &&
-      (!defined($region) || area->region->slug.current == $region) &&
-      (!defined($area) || area->slug.current == $area) &&
-      (!defined($subarea) || subarea->slug.current == $subarea) &&
-      (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
-      (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
-      (!defined($search) || lower(name) match "*" + lower($search) + "*")
-    ] | order((defined(types[0]->highPriority) && types[0]->highPriority == true) desc)[${params.start}...${params.end}]  {
+    "totalSelectedSchools": count(*[${extendedFilter}]),
+    "markers": *[${baseFilter}]{
+      "id": _id,
+      "coordinate": address.mapLocation,
+      name,
+      "fullAddress": 
+        select(defined(address.street) => address.street,  "") +
+        select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") + 
+        select(defined(address.city) => ", " + address.city, "") + 
+        select(defined(address.postalCode) => ", " + address.postalCode, "") +
+        select(defined(address.country) => ", " + address.country, ""),
+        "slug": slug.current,
+    },
+    "schools": *[${extendedFilter}] | order((defined(types[0]->highPriority) && types[0]->highPriority == true) desc)[${params.start}...${params.end}]  {
       "id": _id,
       name,
       "logo": logo.asset->url,

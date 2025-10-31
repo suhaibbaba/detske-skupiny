@@ -18,8 +18,8 @@ export type FiltersResponse = {
   regions: CategoryItem[];
   areas: CategoryItem[];
   subareas: CategoryItem[];
-  tags: (SchoolTag & { count: number })[];
-  categories: (SchoolCategory & { count: number })[];
+  tags: SchoolTag[];
+  categories: SchoolCategory[];
 };
 
 /** Tags (counts respect "all") */
@@ -29,7 +29,7 @@ export const tagsQuery = groq`
       name,
       "slug": slug.current,
       "borderColor": borderColor.hex,
-    }[count > 0] | order(name asc)
+    } | order(name asc)
 `;
 
 /** Types / categories (counts respect "all") */
@@ -42,7 +42,7 @@ export const categoriesQuery = groq`
       name,
       "slug": slug.current,
       "emoji": emoji.asset->url,
-    }[count > 0] | order(name asc),
+    } | order(name asc),
 `;
 
 // 1. Country level
@@ -132,12 +132,13 @@ export async function fetchFilters(
   catalog: CatalogParams,
 ): Promise<FiltersResponse> {
   switch (catalog.level) {
-    case FilterTypes.country:
+    case FilterTypes.country: {
       return clientFetch(countryQuery, {
         country: catalog.country,
         region: null,
         area: null,
-      });
+      }) as Promise<FiltersResponse>;
+    }
     case FilterTypes.area:
     case FilterTypes.region:
     case FilterTypes.subarea:
@@ -146,7 +147,7 @@ export async function fetchFilters(
         region: catalog.region,
         area: catalog.area,
         subarea: catalog.subarea,
-      });
+      }) as Promise<FiltersResponse>;
     default:
       return {
         country: null,

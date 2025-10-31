@@ -31,7 +31,7 @@ export async function clientFetch<T>(query: string, params?: FetchParams) {
   }
 
   const queryParams = { ...(params || {}), locale };
-  const data = await client.fetch<T>(query, queryParams, {
+  const data = client.fetch<T>(query, queryParams, {
     useCdn: true,
     perspective: "published", // Only published content
     next: {
