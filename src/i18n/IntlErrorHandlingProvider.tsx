@@ -1,21 +1,26 @@
 "use client";
 
-import { NextIntlClientProvider } from "next-intl";
-import React from "react";
+import { Messages, NextIntlClientProvider } from "next-intl";
+import React, { ReactNode } from "react";
+
+interface IntlErrorHandlingProviderProps {
+  children: ReactNode;
+  messages?: Messages;
+  locale?: string;
+}
 
 export default function IntlErrorHandlingProvider({
   children,
-  message,
+  messages,
   locale,
-}: any) {
+}: IntlErrorHandlingProviderProps) {
+  console.log(messages);
   return (
     <NextIntlClientProvider
       locale={locale}
-      messages={message}
+      messages={messages}
       // Display the key itself as a fallback message
-      getMessageFallback={({ namespace, key }) =>
-        key
-      }
+      getMessageFallback={({ namespace, key }) => key}
       // Suppress the error in the console by returning `undefined`
       onError={() => undefined}
     >
