@@ -59,7 +59,6 @@ const styles: SearchBarStyles = {
         opacity: 1,
       },
     },
-    placeholder: "Search here",
   },
   button: {
     variant: "primary",
@@ -89,6 +88,7 @@ const SearchBar = () => {
       </Box>
       <InputBase
         {...styles.input}
+        placeholder={translate("searchHere")}
         value={localName}
         onChange={(e) => setLocalName(e.target.value)}
         onBlur={() => commitName()}

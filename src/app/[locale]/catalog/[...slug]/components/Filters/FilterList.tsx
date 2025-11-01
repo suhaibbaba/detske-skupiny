@@ -9,6 +9,8 @@ import {
   DividerProps,
   IconProps,
   SvgIconProps,
+  TextField,
+  TextFieldProps,
   Typography,
   TypographyProps,
 } from "@mui/material";
@@ -45,13 +47,14 @@ interface FilterListStyles {
   divider?: DividerProps;
   showMoreIcon?: SvgIconProps;
   showMoreButton?: ButtonProps;
+  searchInput?: TextFieldProps;
 }
 
 const styles: FilterListStyles = {
   heading: {
     fontSize: "18px",
     fontWeight: 500,
-    mb: "16px",
+    mb: "8px",
     color: "custom.ui13",
     textTransform: "capitalize",
   },
@@ -59,8 +62,10 @@ const styles: FilterListStyles = {
     sx: {
       display: "flex",
       flexDirection: "column",
-      gap: "16px",
+      gap: "8px",
       pr: "14px",
+      maxHeight: "600px",
+      overflow: "auto",
     },
   },
   itemButton: {
@@ -99,8 +104,8 @@ const styles: FilterListStyles = {
   },
   itemCount: {
     sx: {
-      width: "34px",
-      height: "34px",
+      width: "42px",
+      height: "42px",
       aspectRatio: 1,
       fontSize: 14,
       color: "custom.ui13",
@@ -139,6 +144,13 @@ const styles: FilterListStyles = {
       },
     },
   },
+  searchInput: {
+    size: "small",
+    sx: {
+      width: "100%",
+      marginBottom: "12px",
+    },
+  },
 };
 
 const FilterList: FC<Props> = ({
@@ -146,29 +158,45 @@ const FilterList: FC<Props> = ({
   items: itemsProps,
   showDivider,
   selectedSlug,
-  initialItemsCount = 15,
+  initialItemsCount = 10,
 }) => {
   const translate = useTranslate();
   const [showAll, setShowAll] = useState(false);
+  const [search, setSearch] = useState("");
   const items = itemsProps?.filter(Boolean);
 
   if (!items || items.length === 0) {
     return null;
   }
 
-  const shouldShowToggle = items.length > initialItemsCount;
-  const displayedItems = showAll ? items : items.slice(0, initialItemsCount);
+  // Filter items based on search
+  const filteredItems = search
+    ? items.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase()),
+      )
+    : items;
+
+  const shouldShowToggle = filteredItems.length > initialItemsCount;
+  const displayedItems = showAll
+    ? filteredItems
+    : filteredItems.slice(0, initialItemsCount);
 
   return (
     <Box {...styles.container}>
       {showDivider && <Divider {...styles.divider} />}
       <Typography {...styles.heading}>{title}</Typography>
+      <TextField
+        placeholder="Search"
+        {...styles.searchInput}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <Box {...styles.listContainer}>
         {displayedItems.map((district) => {
           const selected =
             normalizeSlug(selectedSlug) === normalizeSlug(district.slug);
 
-            return (
+          return (
             <React.Fragment key={district.id}>
               <Button
                 {...styles.itemButton}

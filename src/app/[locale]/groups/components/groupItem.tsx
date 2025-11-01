@@ -64,8 +64,8 @@ const styles: GroupItemStyles = {
   },
   schoolCountBox: {
     sx: {
-      width: "34px",
-      height: "34px",
+      width: "42px",
+      height: "42px",
       aspectRatio: 1,
       borderRadius: "24px",
       border: 1,
