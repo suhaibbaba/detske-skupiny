@@ -25,6 +25,7 @@ interface GroupItemStyles {
   emoji?: BoxProps;
   stack?: StackProps;
   schoolCountBox?: BoxProps;
+  schoolCountText?: TypographyProps;
   arrowBox?: BoxProps;
   title?: TypographyProps;
 }
@@ -64,8 +65,8 @@ const styles: GroupItemStyles = {
   },
   schoolCountBox: {
     sx: {
-      width: "42px",
-      height: "42px",
+      width: "36px",
+      height: "36px",
       aspectRatio: 1,
       borderRadius: "24px",
       border: 1,
@@ -75,6 +76,11 @@ const styles: GroupItemStyles = {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+    },
+  },
+  schoolCountText: {
+    sx: {
+      fontSize: "13px",
     },
   },
   arrowBox: {
@@ -120,7 +126,9 @@ const GroupItem: FC<Props> = ({ baseSlug, item, hideNextArrow }) => {
             {...styles.schoolCountBox}
             ml={hideNextArrow ? "auto" : "initial"}
           >
-            <Typography>{item.schoolCount}</Typography>
+            <Typography {...styles.schoolCountText}>
+              {item.schoolCount}
+            </Typography>
           </Box>
         </Stack>
         {!hideNextArrow && (

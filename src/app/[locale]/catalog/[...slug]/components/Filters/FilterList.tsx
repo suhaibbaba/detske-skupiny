@@ -8,6 +8,7 @@ import {
   Divider,
   DividerProps,
   IconProps,
+  InputAdornment,
   SvgIconProps,
   TextField,
   TextFieldProps,
@@ -25,6 +26,7 @@ import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import useTranslate from "@/hooks/useTranslate";
+import SearchIcon from "@/components/icons/Search";
 
 interface Props {
   title: string;
@@ -104,10 +106,10 @@ const styles: FilterListStyles = {
   },
   itemCount: {
     sx: {
-      width: "42px",
-      height: "42px",
+      width: "36px",
+      height: "36px",
       aspectRatio: 1,
-      fontSize: 14,
+      fontSize: 13,
       color: "custom.ui13",
       fontWeight: 400,
       border: "1px solid #E0C3F9",
@@ -149,6 +151,20 @@ const styles: FilterListStyles = {
     sx: {
       width: "100%",
       marginBottom: "12px",
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": {
+          transition: "all 0.5s ease",
+          borderColor: "var(--mui-palette-custom-ui10)",
+        },
+        // Hover state border color
+        "&:hover fieldset": {
+          borderColor: "var(--mui-palette-custom-ui11)",
+        },
+        // Focused state border color
+        "&.Mui-focused fieldset": {
+          borderColor: "var(--mui-palette-custom-ui11)",
+        },
+      },
     },
   },
 };
@@ -186,9 +202,23 @@ const FilterList: FC<Props> = ({
       {showDivider && <Divider {...styles.divider} />}
       <Typography {...styles.heading}>{title}</Typography>
       <TextField
-        placeholder="Search"
+        placeholder={translate("search")}
         {...styles.searchInput}
         value={search}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon
+                  sx={{
+                    color: "primary.main",
+                    fontSize: 16,
+                  }}
+                />
+              </InputAdornment>
+            ),
+          },
+        }}
         onChange={(e) => setSearch(e.target.value)}
       />
       <Box {...styles.listContainer}>

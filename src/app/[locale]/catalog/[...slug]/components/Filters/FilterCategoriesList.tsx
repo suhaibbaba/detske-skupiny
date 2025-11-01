@@ -62,6 +62,7 @@ const styles: FilterListStyles = {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
       gap: "6px",
       cursor: "pointer",
       bgcolor: "common.white",

@@ -84,7 +84,7 @@ const SearchBar = () => {
   return (
     <Box {...styles.wrapper}>
       <Box {...styles.icon}>
-        <Search />
+        <Search isFilled={true} />
       </Box>
       <InputBase
         {...styles.input}

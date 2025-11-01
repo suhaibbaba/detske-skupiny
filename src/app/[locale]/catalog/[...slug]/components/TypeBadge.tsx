@@ -24,24 +24,28 @@ const styles: SchoolTypesBadgeStyles = {
       gap: "8px",
     },
   },
-  badge: (backgroundColor = "secondary.main") => ({
-    size: "small",
-    sx: {
-      bgcolor: backgroundColor,
-      color: "custom.ui1",
-      fontWeight: 400,
-      fontSize: "14px",
-      borderRadius: "24px",
-      px: "10px",
-      borderColor: backgroundColor,
-      "& .MuiChip-icon": {
-        color: "custom.ui19",
-        width: "13px",
-        height: "13px",
-        fontSize: "10px",
+  badge: (backgroundColorProps) => {
+    const backgroundColor = backgroundColorProps || "white";
+    const borderColor = backgroundColorProps || "primary.main";
+    return {
+      size: "small",
+      sx: {
+        bgcolor: backgroundColor,
+        color: "custom.ui1",
+        fontWeight: 400,
+        fontSize: "14px",
+        borderRadius: "24px",
+        px: "10px",
+        borderColor: borderColor,
+        "& .MuiChip-icon": {
+          color: "custom.ui19",
+          width: "13px",
+          height: "13px",
+          fontSize: "10px",
+        },
       },
-    },
-  }),
+    };
+  },
 };
 
 const SchoolTypesBadge: FC<Props> = ({ types }) => {

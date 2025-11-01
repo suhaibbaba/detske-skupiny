@@ -61,34 +61,38 @@ const styles: FilterListStyles = {
       bgcolor: "common.ui18",
     },
   },
-  chip: (borderColor = "#9980B0") => ({
-    sx: {
-      borderRadius: "24px",
-      px: "6px",
-      py: "2px",
-      fontSize: 12,
-      fontWeight: 400,
-      color: "custom.ui20",
-      bgcolor: "white",
-      border: `1px solid ${borderColor}`,
-      maxWidth: 180,
-      "& .MuiChip-label": {
-        padding: 0,
-      },
-      "&.checked": {
+  chip: (borderColorProps) => {
+    const borderColor = borderColorProps || "#9980B0";
+    return {
+      sx: {
+        borderRadius: "24px",
+        px: "6px",
+        py: "2px",
+        fontSize: 12,
+        fontWeight: 400,
+        color: "custom.ui20",
         bgcolor: "white",
-        borderColor: borderColor,
+        border: `1px solid ${borderColor}`,
+        transition: "all 0.3s ease",
+        maxWidth: 180,
+        "& .MuiChip-label": {
+          padding: 0,
+        },
+        "&.checked": {
+          bgcolor: "white",
+          borderColor: borderColor,
+        },
+        "&:hover": {
+          bgcolor: "white",
+          borderColor: alpha(borderColor, 0.5),
+        },
+        "& .MuiChip-icon": {
+          mr: "4px",
+          ml: 0,
+        },
       },
-      "&:hover": {
-        bgcolor: "white",
-        borderColor: alpha(borderColor || "#FFFFFF", 0.5),
-      },
-      "& .MuiChip-icon": {
-        mr: "4px",
-        ml: 0,
-      },
-    },
-  }),
+    };
+  },
   viewAllContainer: {
     sx: {
       display: "flex",
