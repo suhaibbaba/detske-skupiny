@@ -14,7 +14,6 @@ export default function IntlErrorHandlingProvider({
   messages,
   locale,
 }: IntlErrorHandlingProviderProps) {
-  console.log(messages);
   return (
     <NextIntlClientProvider
       locale={locale}
