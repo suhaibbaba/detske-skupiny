@@ -39,18 +39,7 @@ Add these lines at the end of the file:
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
-### 2. Set Up Port Forwarding (Optional)
-
-If you want to access the app on port 80 instead of 3000:
-
-```bash
-# Forward port 80 to port 3000
-echo "rdr pass on lo0 inet proto tcp from any to any port 80 -> 127.0.0.1 port 3000" | sudo pfctl -ef -
-```
-
-**Note:** This forwarding is temporary and will be removed after a system restart.
-
-### 3. Environment Variables
+### 2. Environment Variables
 
 Create a `.env.local` file in the project root:
 
@@ -58,28 +47,11 @@ Create a `.env.local` file in the project root:
 cp .env.example .env.local
 ```
 
-Add your domain configuration:
-
-```env
-NEXT_PUBLIC_EN_DOMAIN=en.school.local
-NEXT_PUBLIC_CZ_DOMAIN=cz.school.local
-```
-
-### 4. Run Development Server
+### 3. Run Development Server
 
 ```bash
 npm run dev
 ```
-
-### 5. Access the Application
-
-**With port forwarding (port 80):**
-- English: http://en.school.local
-- Czech: http://cz.school.local
-
-**Without port forwarding (port 3000):**
-- English: http://en.school.local:3000
-- Czech: http://cz.school.local:3000
 
 ## Troubleshooting
 
