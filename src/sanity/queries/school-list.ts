@@ -60,7 +60,12 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
         select(defined(address.country) => ", " + address.country, ""),
         "slug": slug.current,
     },
-    "schools": *[${extendedFilter}] | order((defined(types[0]->highPriority) && types[0]->highPriority == true) desc)[${params.start}...${params.end}]  {
+    "schools": *[${extendedFilter}]
+    | order(
+        (defined(types[0]->highPriority) && types[0]->highPriority == true) desc,
+        sortOrder asc
+      )
+     [${params.start}...${params.end}]  {
       "id": _id,
       name,
       "logo": logo.asset->url,
