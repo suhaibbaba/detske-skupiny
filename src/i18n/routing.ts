@@ -22,6 +22,10 @@ export const pathnames = {
     en: "/articles",
     cz: "/clanky",
   },
+  "/articles/[slug]": {
+    en: "/articles/[slug]",
+    cz: "/clanky/[slug]",
+  },
   "/contact-us": {
     en: "/contact-us",
     cz: "/kontakt",
@@ -73,7 +77,7 @@ export const localizeHref = (href: string, locale: string): string => {
     // Replace at start of path or after a slash
     localizedHref = localizedHref.replace(
       new RegExp(`(^|/)${enPath}(/|$)`, "g"),
-      `$1${localizedSegment}$2`
+      `$1${localizedSegment}$2`,
     );
   });
 
