@@ -1,7 +1,7 @@
 "use client";
 
 import EmblaCarousel from "@/components/shared/EmblaCarousel";
-import PreschoolCard from "@/app/[locale]/preschool/components/PreschoolCard";
+import PreschoolCard from "@/app/[locale]/cooperation/components/PreschoolCard";
 import { MiniSchool } from "@/sanity/types";
 import { FC } from "react";
 

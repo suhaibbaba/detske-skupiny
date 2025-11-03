@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import SchoolTag from "@/app/[locale]/school/[school]/components/SchoolTag";
+import SchoolTag from "@/app/[locale]/groups/[group]/components/SchoolTag";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
@@ -180,7 +180,7 @@ const SchoolGridCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {shortSummary}
         </Ellipsis>
-        <Button {...styles.cta} href={routes.school(school.slug)}>
+        <Button {...styles.cta} href={routes.group(school.slug)}>
           {translate("viewSchool")}
         </Button>
       </Box>

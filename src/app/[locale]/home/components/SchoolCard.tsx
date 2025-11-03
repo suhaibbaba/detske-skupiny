@@ -10,7 +10,7 @@ import {
 import { MiniSchool } from "@/sanity/types";
 import Location from "@/components/icons/Location";
 import Ellipsis from "@/components/ui/Typography/Ellipsis";
-import SchoolTag from "@/app/[locale]/school/[school]/components/SchoolTag";
+import SchoolTag from "@/app/[locale]/groups/[group]/components/SchoolTag";
 import { routes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
@@ -196,7 +196,7 @@ const SchoolCard = async ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {school.shortSummary}
         </Ellipsis>
-        <Button {...styles.cta} href={routes.school(school.slug)}>
+        <Button {...styles.cta} href={routes.group(school.slug)}>
           {translate("viewSchool")}
         </Button>
       </Box>

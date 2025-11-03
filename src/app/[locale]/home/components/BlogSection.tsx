@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import BlogCard, {
   BlogsCardStylesType,
-} from "@/app/[locale]/blogs/components/BlogCard";
+} from "@/app/[locale]/articles/components/BlogCard";
 import { fetchMiniBlogs } from "@/sanity/queries";
 import { sharedClassNames } from "@/app/[locale]/home/utility";
 

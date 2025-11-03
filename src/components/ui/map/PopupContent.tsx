@@ -97,7 +97,7 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
         </IconButton>
 
         {markerData.name && markerData.slug && (
-          <Link href={routes.school(markerData.slug)} {...styles.titleLink}>
+          <Link href={routes.group(markerData.slug)} {...styles.titleLink}>
             {markerData.name}
           </Link>
         )}

@@ -10,18 +10,17 @@ const isDev = process.env.NODE_ENV === "development";
 // Translation map for path segments
 export const pathTranslations: Record<string, Record<string, string>> = {
   catalog: { en: "catalog", cz: "katalog" },
-  blogs: { en: "blogs", cz: "blogy" },
-  school: { en: "school", cz: "škola" },
+  articles: { en: "articles", cz: "clanky" },
   groups: { en: "groups", cz: "skupiny" },
-  preschool: { en: "preschool", cz: "školka" },
+  cooperation: { en: "cooperation", cz: "spoluprace" },
   "contact-us": { en: "contact-us", cz: "kontakt" },
 };
 
 export const pathnames = {
   "/": "/",
-  "/blogs": {
-    en: "/blogs",
-    cz: "/blogy",
+  "/articles": {
+    en: "/articles",
+    cz: "/clanky",
   },
   "/contact-us": {
     en: "/contact-us",
@@ -31,13 +30,13 @@ export const pathnames = {
     en: "/groups",
     cz: "/skupiny",
   },
-  "/preschool": {
-    en: "/preschool",
-    cz: "/školka",
+  "/cooperation": {
+    en: "/cooperation",
+    cz: "/spoluprace",
   },
-  "/school/[school]": {
-    en: "/school/[school]",
-    cz: "/škola/[school]",
+  "/groups/[group]": {
+    en: "/groups/[group]",
+    cz: "/skupiny/[group]",
   },
   "/catalog/[...slug]": {
     en: "/catalog/[...slug]",
@@ -74,7 +73,7 @@ export const localizeHref = (href: string, locale: string): string => {
     // Replace at start of path or after a slash
     localizedHref = localizedHref.replace(
       new RegExp(`(^|/)${enPath}(/|$)`, "g"),
-      `$1${localizedSegment}$2`,
+      `$1${localizedSegment}$2`
     );
   });
 

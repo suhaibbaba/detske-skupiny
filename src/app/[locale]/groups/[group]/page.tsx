@@ -14,18 +14,18 @@ import {
 } from "@mui/material";
 import SchoolGallery, {
   SchoolGalleryStyles,
-} from "@/app/[locale]/school/[school]/components/SchoolGallery";
+} from "@/app/[locale]/groups/[group]/components/SchoolGallery";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import AboutSchool from "@/app/[locale]/school/[school]/components/AboutSchool";
-import SchoolHighlights from "@/app/[locale]/school/[school]/components/SchoolHighlights";
-import SchoolTimetable from "@/app/[locale]/school/[school]/components/SchoolTimetable";
-import SchoolHeader from "@/app/[locale]/school/[school]/components/SchoolHeader";
-import InfoCardGrid from "@/app/[locale]/school/[school]/components/InfoCardGrid";
+import AboutSchool from "@/app/[locale]/groups/[group]/components/AboutSchool";
+import SchoolHighlights from "@/app/[locale]/groups/[group]/components/SchoolHighlights";
+import SchoolTimetable from "@/app/[locale]/groups/[group]/components/SchoolTimetable";
+import SchoolHeader from "@/app/[locale]/groups/[group]/components/SchoolHeader";
+import InfoCardGrid from "@/app/[locale]/groups/[group]/components/InfoCardGrid";
 import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
 import { routes } from "@/routes";
-import SchoolMap from "@/app/[locale]/school/[school]/components/SchoolMap";
+import SchoolMap from "@/app/[locale]/groups/[group]/components/SchoolMap";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -107,14 +107,14 @@ const styles: PageStyles = {
   },
 };
 
-const Page = async ({ params }: PageProps<{ school: string }>) => {
-  const { school: schoolSlug } = await params;
-  if (!schoolSlug) {
+const Page = async ({ params }: PageProps<{ group: string }>) => {
+  const { group: groupSlug } = await params;
+  if (!groupSlug) {
     return redirect(routes.home);
   }
 
   const { pageHero, school } = await fetchSchoolBySlug({
-    slug: schoolSlug,
+    slug: groupSlug,
   });
 
   return (
@@ -141,7 +141,7 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
                       {formatMessage(
                         "{0}, {1}",
                         school.address?.street,
-                        school.address?.city,
+                        school.address?.city
                       )}
                     </Typography>
                     <Typography>{school.address?.postalCode}</Typography>
@@ -175,7 +175,7 @@ const Page = async ({ params }: PageProps<{ school: string }>) => {
                           `{0}  - {1} - {2}`,
                           <Link href={`tel:${item.phone}`}>{item.phone}</Link>,
                           item.name,
-                          item.role,
+                          item.role
                         )}
                       </Typography>
                     ))}

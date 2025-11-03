@@ -3,7 +3,7 @@ import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import { SanityCtaField } from "@/sanity/types";
 import { FC } from "react";
 import { fetchMiniSchools } from "@/sanity/queries";
-import SchoolsCarousel from "@/app/[locale]/preschool/components/SchoolsCarousel";
+import SchoolsCarousel from "@/app/[locale]/cooperation/components/SchoolsCarousel";
 
 interface Props {
   fields: {

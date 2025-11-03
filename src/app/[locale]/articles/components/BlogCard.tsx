@@ -152,13 +152,13 @@ const blogsCardStylesType: BlogsCardStylesType = {
 
 const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
   const [styles] = useState(() =>
-    mergeMuiProps(blogsCardStylesType, extendedStyles),
+    mergeMuiProps(blogsCardStylesType, extendedStyles)
   );
 
   const { title, slug, excerpt, image, publishedAt, readTime, author } = blog;
   const translate = useTranslate();
 
-  const url = routes.blogs(slug);
+  const url = routes.article(slug);
   return (
     <Card {...styles.card}>
       <CardMedia

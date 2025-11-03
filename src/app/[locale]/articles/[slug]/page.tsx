@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/blogs/components/BlogCategories";
+import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
 import { formatMessage } from "@/utilites/strings";
 import React from "react";
 import { formatDate } from "@/utilites/date";
@@ -168,7 +168,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
                 />,
                 <Typography {...styles.authorText} key="author">
                   {blog.author?.name}
-                </Typography>,
+                </Typography>
               )}
             </Box>
           </Box>
@@ -187,7 +187,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
                   />,
                   <Typography {...styles.authorText} key="author">
                     {blog.author.name}
-                  </Typography>,
+                  </Typography>
                 )}
               </Box>
               <Typography {...styles.paragraph}>{blog.author.bio}</Typography>

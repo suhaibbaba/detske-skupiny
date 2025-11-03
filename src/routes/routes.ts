@@ -6,8 +6,9 @@ export const routes = {
   about: "/about",
   contactUs: "/contact-us",
   groups: "/groups",
-  preschool: "/preschool",
-  blogs: (slug?: string) => (slug ? joinPath("/blogs", slug) : "/blogs"),
+  cooperation: "/cooperation",
+  article: (slug?: string) =>
+    slug ? joinPath("/articles", slug) : "/articles",
   catalogs: (slug?: string) => (slug ? joinPath("/catalog", slug) : "/"),
-  school: (slug?: string) => (slug ? joinPath("/school", slug) : "/"),
+  group: (slug?: string) => (slug ? joinPath("/groups", slug) : "/"),
 };
