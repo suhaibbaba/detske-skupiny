@@ -6,11 +6,12 @@ import {
   Typography,
 } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { pathnames } from "@/i18n/routing";
 import { headers } from "next/headers";
 import Link from "@/components/ui/link";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface Props {
   addSpace?: boolean;
@@ -81,7 +82,7 @@ const Breadcrumbs = async ({ addSpace = true }: Props) => {
   const pathname = headerList.get("x-pathname") || "/";
 
   const decodedPathname = decodeURIComponent(pathname);
-  const t = await getTranslations();
+  const t = await getTranslateServer();
 
   const pathSegments = decodedPathname
     .split("/")

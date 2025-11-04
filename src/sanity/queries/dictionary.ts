@@ -34,21 +34,3 @@ async function fetchDictionary(locale: string) {
 export const getDictionary = cache(async (locale: string) => {
   return fetchDictionary(locale);
 });
-
-/** Returns translator function bound to a locale */
-export async function getTranslator() {
-  const locale = await getLocale();
-  const dict = await getDictionary(locale);
-
-  return (enWord: string) => {
-    // keep the key exactly as it is in Sanity ("Contact Us", "Tax Id"...)
-    const value = dict.common[enWord];
-    return value ?? enWord;
-  };
-}
-
-/** One-off translate helper */
-export async function translate(enWord: string) {
-  const t = await getTranslator();
-  return t(enWord);
-}

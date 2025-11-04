@@ -73,7 +73,7 @@ export const countryQuery = groq`
       "count": schoolCount,
     },
   "areas": [],
-  "subareas": *[_type == "subareas" && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank) {
+  "subareas": *[_type == "subareas" && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank, schoolCount desc) {
       "id": _id,
       name,
       "slug": fullSlug,
@@ -117,7 +117,7 @@ export const regionQuery = groq`
       "slug": fullSlug,
       "count": schoolCount,
     },
-  "subareas": *[_type == "subareas" && regionSlug == $region && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank) {
+  "subareas": *[_type == "subareas" && regionSlug == $region && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank, schoolCount desc) {
       "id": _id,
       name,
       "slug": fullSlug,
