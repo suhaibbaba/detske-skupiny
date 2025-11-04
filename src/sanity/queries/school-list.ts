@@ -6,20 +6,18 @@ import {
   SchoolFilterQueryParams,
   SchoolPageQueryParams,
 } from "@/sanity/types";
-import { languageQuery } from "@/sanity/queries/index";
+import { excludeDraft, languageQuery } from "@/sanity/queries/index";
 import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchSchoolPage(params: SchoolPageQueryParams) {
-  const useCountryCount = params.country && !params.region;
-  const useRegionCount = params.country && params.region;
+  let totalQuery = `*[_type == "countries" && ${excludeDraft} && ${languageQuery} && slug.current == $country][0].schoolCount`;
+  if (params.country && params.region) {
+    totalQuery = `*[_type == "regions" && ${excludeDraft} && ${languageQuery} && slug.current == $region][0].schoolCount`;
+  }
 
   const query = groq`{
     "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
-    "totalSchools": select(
-      ${useRegionCount} => *[_type == "region" && ${languageQuery} && slug.current == $region][0].schoolCount,
-      ${useCountryCount} => *[_type == "country" && ${languageQuery} && slug.current == $country][0].schoolCount,
-      0
-    ),
+    "totalSchools": coalesce(${totalQuery}, 0),
   }`;
 
   return clientFetch<{
@@ -34,7 +32,8 @@ export async function fetchSchoolPage(params: SchoolPageQueryParams) {
 export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
   const baseFilter = `
     _type == "schools" &&
-    (language == $locale || !defined(language)) &&
+    ${languageQuery} &&
+    ${excludeDraft} &&
     (!defined($country) || countrySlug == $country) &&
     (!defined($region) || regionSlug == $region) &&
     (!defined($area) || area->slug.current == $area) &&
