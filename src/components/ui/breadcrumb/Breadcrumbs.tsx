@@ -3,7 +3,6 @@ import {
   Breadcrumbs as MuiBreadcrumbs,
   LinkProps,
   TypographyProps,
-  Link,
   Typography,
 } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
@@ -11,6 +10,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { pathnames } from "@/i18n/routing";
 import { headers } from "next/headers";
+import Link from "@/components/ui/link";
 
 interface Props {
   addSpace?: boolean;
