@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Avatar,
   Box,
@@ -8,7 +6,6 @@ import {
   TypographyOwnProps,
   BoxProps,
 } from "@mui/material";
-import { FC } from "react";
 import { Author } from "@/types/blog";
 
 type Props = Author;
@@ -57,9 +54,9 @@ const styles: WriterCardStyles = {
   },
 };
 
-const WriterCard: FC<Props> = ({ name, role, image }) => {
+const WriterCard = ({ name, role, image }: Props) => {
   return (
-    <Box {...styles.container}>
+    <Box {...styles.container} data-test-selector="WriterCard">
       <Avatar alt={name} src={image} {...styles.avatar} />
       <Box {...styles.content}>
         <Typography {...styles.name}>{name}</Typography>

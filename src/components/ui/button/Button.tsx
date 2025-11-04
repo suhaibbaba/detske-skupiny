@@ -32,15 +32,14 @@ const Button: FC<ButtonProps> = ({
   const styles = useMemo(() => mergeMuiProps(buttonStyles, { sx }), [sx]);
 
   if (link) {
-    const passedProps = parseLinkField(link);
-    const localizedUrl = localizeHref(passedProps.url, locale);
+    const passedProps = parseLinkField(link, { locale });
 
     return (
       <MuiButton
         component={NextLink}
         {...styles}
         {...otherProps}
-        href={localizedUrl}
+        href={passedProps.url}
         scroll={scroll}
       >
         {children || passedProps.text || cleanUrl(passedProps.url)}

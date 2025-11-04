@@ -13,9 +13,10 @@ import { GroupPage } from "@/sanity/types";
 import { FC } from "react";
 import GroupItem from "@/app/[locale]/groups/components/groupItem";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   group?: GroupPage;
@@ -64,6 +65,8 @@ const styles: GroupSectionStyles = {
 };
 
 const GroupSection: FC<Props> = async ({ group }) => {
+  const locale = await getLocale();
+
   if (!group) {
     return null;
   }
@@ -115,7 +118,10 @@ const GroupSection: FC<Props> = async ({ group }) => {
           ))}
         </Grid>
         <Box {...styles.viewAllContainer}>
-          <Button {...styles.viewAllButton} href={routes.catalogs(slug)}>
+          <Button
+            {...styles.viewAllButton}
+            href={getLocalizedRoutes(locale).catalogs(slug)}
+          >
             {translate("viewAllSchoolsInRegion", { region: name })}
           </Button>
         </Box>

@@ -4,6 +4,7 @@ import { School } from "@/sanity/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
+import { useLocale } from "next-intl";
 
 interface Props {
   school: School;
@@ -46,6 +47,7 @@ const styles: SchoolHeaderStyles = {
 
 const SchoolHeader = ({ school }: Props) => {
   const translate = useTranslate();
+  const locale = useLocale();
 
   return (
     <Box {...styles.wrapper}>
@@ -61,7 +63,10 @@ const SchoolHeader = ({ school }: Props) => {
         {school.name}
       </Typography>
       {school.website && (
-        <Button variant="secondary" href={parseLinkField(school.website).url}>
+        <Button
+          variant="secondary"
+          href={parseLinkField(school.website, { locale }).url}
+        >
           {translate("visitWebsite")}
         </Button>
       )}

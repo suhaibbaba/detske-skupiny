@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import ArrowRightIcon from "@/components/icons/ArrowRight";
 import { GroupPage } from "@/sanity/types";
-import { FC } from "react";
 import Link from "@/components/ui/link";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   item?: GroupPage["areas"][number] | GroupPage["schoolCategories"][number];
@@ -104,14 +104,16 @@ const styles: GroupItemStyles = {
   },
 };
 
-const GroupItem: FC<Props> = ({ baseSlug, item, hideNextArrow }) => {
+const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
+  const locale = await getLocale();
+
   if (!item) {
     return null;
   }
 
-  let url = routes.catalogs(item.slug);
+  let url = getLocalizedRoutes(locale).catalogs(item.slug);
   if (baseSlug) {
-    url = `${routes.catalogs(baseSlug)}?types=${item.slug}`;
+    url = `${getLocalizedRoutes(locale).catalogs(baseSlug)}?types=${item.slug}`;
   }
 
   return (

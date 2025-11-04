@@ -2,7 +2,8 @@
  * Sanity LinkField Parser - TypeScript Method Functions
  * Collection of functions to parse and validate Sanity CMS link field structures
  */
-import { routes } from "@/routes";
+import { defaultLocale } from "@/i18n/routing";
+import { getLocalizedRoutes } from "@/routes";
 
 // Types and Interfaces
 interface ParserOptions {
@@ -13,6 +14,7 @@ interface ParserOptions {
   allowFile?: boolean;
   requireText?: boolean;
   defaultTarget?: string;
+  locale?: string;
 }
 
 interface SanityReference {
@@ -73,6 +75,7 @@ const defaultOptions: Required<ParserOptions> = {
   allowFile: true,
   requireText: false,
   defaultTarget: "_self",
+  locale: defaultLocale,
 };
 
 /**
@@ -80,7 +83,7 @@ const defaultOptions: Required<ParserOptions> = {
  */
 function parseLinkField(
   linkField: SanityLinkField | null | undefined,
-  options: ParserOptions = {}
+  options: ParserOptions = {},
 ): ParsedLink {
   const config: Required<ParserOptions> = { ...defaultOptions, ...options };
 
@@ -150,7 +153,7 @@ function detectLinkType(linkField: SanityLinkField): LinkType {
  */
 function parseExternalLink(
   linkField: SanityLinkField,
-  config: Required<ParserOptions>
+  config: Required<ParserOptions>,
 ): string {
   if (!config.allowExternal) {
     throw new Error("External links are not allowed");
@@ -175,7 +178,7 @@ function parseExternalLink(
  */
 function parseInternalLink(
   linkField: SanityLinkField,
-  config: Required<ParserOptions>
+  config: Required<ParserOptions>,
 ): string {
   if (!config.allowInternal || !linkField.internalLink) {
     throw new Error("Internal links are not allowed");
@@ -188,23 +191,25 @@ function parseInternalLink(
 
   switch (type) {
     case "regions":
-      return routes.catalogs(
-        `${linkField.internalLink.country?.slug}/${linkField.internalLink.slug}`
+      return getLocalizedRoutes(config.locale).catalogs(
+        `${linkField.internalLink.country?.slug}/${linkField.internalLink.slug}`,
       );
     case "blog":
-      return routes.article(linkField.internalLink.slug);
+      return getLocalizedRoutes(config.locale).article(
+        linkField.internalLink.slug,
+      );
     case "contactUs":
-      return routes.contactUs;
+      return getLocalizedRoutes(config.locale).contactUs;
     case "group":
-      return routes.groups;
+      return getLocalizedRoutes(config.locale).groups;
     case "home":
-      return routes.home;
+      return getLocalizedRoutes(config.locale).home;
     case "preschoolPage":
-      return routes.cooperation;
+      return getLocalizedRoutes(config.locale).cooperation;
     case "about":
-      return routes.about;
+      return getLocalizedRoutes(config.locale).about;
     default:
-      return routes.home;
+      return getLocalizedRoutes(config.locale).home;
   }
 }
 
@@ -213,7 +218,7 @@ function parseInternalLink(
  */
 function parseEmailLink(
   linkField: SanityLinkField,
-  config: Required<ParserOptions>
+  config: Required<ParserOptions>,
 ): string {
   if (!config.allowEmail) {
     throw new Error("Email links are not allowed");
@@ -233,7 +238,7 @@ function parseEmailLink(
  */
 function parsePhoneLink(
   linkField: SanityLinkField,
-  config: Required<ParserOptions>
+  config: Required<ParserOptions>,
 ): string {
   if (!config.allowPhone) {
     throw new Error("Phone links are not allowed");
@@ -256,7 +261,7 @@ function parsePhoneLink(
  */
 function validateLink(
   result: ParsedLink,
-  config: Required<ParserOptions>
+  config: Required<ParserOptions>,
 ): boolean {
   if (config.requireText && !result.text) {
     result.errors.push("Link text is required");
@@ -311,7 +316,7 @@ function createEmptyLink(config: Required<ParserOptions>): ParsedLink {
  */
 function parseMultipleLinkFields(
   linkFields: (SanityLinkField | null | undefined)[],
-  options: ParserOptions = {}
+  options: ParserOptions = {},
 ): ParsedLink[] {
   if (!Array.isArray(linkFields)) {
     return [];

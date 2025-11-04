@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Avatar,
   Box,
@@ -14,15 +12,16 @@ import {
   TypographyOwnProps,
   CardContentProps,
 } from "@mui/material";
-import React, { FC, useState } from "react";
+import React from "react";
 import Link from "@/components/ui/link";
 import { ellipses } from "@/utilites/strings";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { MiniBlog } from "@/types/blog";
 import { formatDate } from "@/utilites/date";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
-import useTranslate from "@/hooks/useTranslate";
+import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   blog: MiniBlog;
@@ -45,15 +44,15 @@ export interface BlogsCardStylesType {
 
 const blogsCardStylesType: BlogsCardStylesType = {
   card: {
-    sx: (theme) => ({
+    sx: {
       borderRadius: "20px",
-      boxShadow: theme.palette.shadows.ui1,
+      boxShadow: "var(--mui-palette-shadows-ui1)",
       maxWidth: "394px",
       display: "flex",
       flexDirection: "column",
       gap: "24px",
       p: "24px",
-    }),
+    },
   },
   cardContent: {
     sx: {
@@ -68,9 +67,9 @@ const blogsCardStylesType: BlogsCardStylesType = {
     },
   },
   tag: {
-    sx: (theme) => ({
-      backgroundColor: theme.palette.custom.ui5,
-      color: theme.palette.custom.ui11,
+    sx: {
+      backgroundColor: "var(--mui-palette-custom-ui5)",
+      color: "var(--mui-palette-custom-ui11)",
       borderRadius: "8px",
       px: "10px",
       py: "2px",
@@ -78,18 +77,18 @@ const blogsCardStylesType: BlogsCardStylesType = {
       fontSize: "14px",
       display: "inline-block",
       alignSelf: "baseline",
-    }),
+    },
   },
   title: {
-    sx: (theme) => ({
-      color: theme.palette.custom.ui13,
+    sx: {
+      color: "var(--mui-palette-custom-ui13)",
       textDecoration: "none",
       fontWeight: 500,
       fontSize: "20px",
       minHeight: "60px",
       textAlign: "left",
       ...ellipses(2),
-    }),
+    },
   },
   description: {
     textAlign: "left",
@@ -134,9 +133,9 @@ const blogsCardStylesType: BlogsCardStylesType = {
     },
   },
   readNowButton: {
-    sx: (theme) => ({
-      backgroundColor: theme.palette.secondary.light,
-      color: theme.palette.custom.ui16,
+    sx: {
+      bgcolor: "var(--mui-palette-secondary-light)",
+      color: "var(--mui-palette-custom-ui16)",
       boxShadow: "none",
       fontSize: "14px",
       fontWeight: 500,
@@ -144,21 +143,20 @@ const blogsCardStylesType: BlogsCardStylesType = {
       borderRadius: "24px",
       whiteSpace: "nowrap",
       "&:hover": {
-        backgroundColor: theme.palette.secondary.dark,
+        bgcolor: "var(--mui-palette-secondary-dark)",
       },
-    }),
+    },
   },
 };
 
-const BlogCard: FC<Props> = ({ blog, extendedStyles }) => {
-  const [styles] = useState(() =>
-    mergeMuiProps(blogsCardStylesType, extendedStyles)
-  );
+const BlogCard = async ({ blog, extendedStyles }: Props) => {
+  const styles = mergeMuiProps(blogsCardStylesType, extendedStyles);
+  const translate = await getTranslateServer();
+  const locale = await getLocale();
 
   const { title, slug, excerpt, image, publishedAt, readTime, author } = blog;
-  const translate = useTranslate();
+  const url = getLocalizedRoutes(locale).article(slug);
 
-  const url = routes.article(slug);
   return (
     <Card {...styles.card}>
       <CardMedia

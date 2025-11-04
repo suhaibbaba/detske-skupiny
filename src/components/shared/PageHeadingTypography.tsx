@@ -13,6 +13,7 @@ import { SanityCtaField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import { useLocale } from "next-intl";
 
 interface Props {
   title?: string | SanityRichTextField;
@@ -70,6 +71,7 @@ const PageHeadingTypography: FC<Props> = ({
   ctaList,
   extendedStyles,
 }) => {
+  const locale = useLocale();
   const [styles] = useState(() =>
     mergeMuiProps(pageHeadingTypographyStyles, extendedStyles),
   );
@@ -89,7 +91,7 @@ const PageHeadingTypography: FC<Props> = ({
       {ctaList && ctaList.length > 0 && (
         <Box {...styles.ctaWrapper}>
           {ctaList.map((cta) => {
-            const link = parseLinkField(cta.link);
+            const link = parseLinkField(cta.link, { locale });
             return (
               <Button
                 key={cta._key}

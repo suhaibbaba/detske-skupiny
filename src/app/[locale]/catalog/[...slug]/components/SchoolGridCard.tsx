@@ -5,9 +5,7 @@ import {
   BoxProps,
   Typography,
   TypographyProps,
-  ChipProps,
   ButtonProps,
-  Chip,
 } from "@mui/material";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
@@ -16,9 +14,10 @@ import Ellipsis from "@/components/ui/Typography/Ellipsis";
 import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import Image from "@/components/ui/image/Image";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
+import { useLocale } from "next-intl";
 
 interface Props {
   school: MiniSchool;
@@ -32,7 +31,6 @@ interface KinderGroupCardStyles {
   nameWrapper?: BoxProps;
   name?: TypographyProps;
   tagsWrapper?: BoxProps;
-  tag?: ChipProps;
   location?: TypographyProps;
   description?: TypographyProps;
   cta?: ButtonProps;
@@ -102,15 +100,6 @@ const styles: KinderGroupCardStyles = {
       gap: "5px",
     },
   },
-  tag: {
-    size: "small",
-    variant: "outlined",
-    sx: {
-      fontSize: "12px",
-      fontWeight: 400,
-      borderRadius: "24px",
-    },
-  },
   location: {
     sx: {
       display: "flex",
@@ -142,6 +131,8 @@ const styles: KinderGroupCardStyles = {
 };
 
 const SchoolGridCard = ({ school }: Props) => {
+  const locale = useLocale();
+
   const translate = useTranslate();
   const { shortSummary, name, tags, primaryImage, logo, region, types } =
     school;
@@ -180,7 +171,10 @@ const SchoolGridCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={4} {...styles.description}>
           {shortSummary}
         </Ellipsis>
-        <Button {...styles.cta} href={routes.group(school.slug)}>
+        <Button
+          {...styles.cta}
+          href={getLocalizedRoutes(locale).group(school.slug)}
+        >
           {translate("viewSchool")}
         </Button>
       </Box>

@@ -21,6 +21,7 @@ import { ContactUsForm } from "@/sanity/types";
 import useTranslate from "@/hooks/useTranslate";
 import RichText from "@/sanity/components/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
+import { useLocale } from "next-intl";
 
 interface Props {
   contactUsForm?: ContactUsForm;
@@ -70,6 +71,7 @@ const styles: ContactUsStyles = {
 
 const ContactForm: FC<Props> = ({ contactUsForm }) => {
   const translate = useTranslate();
+  const locale = useLocale();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
@@ -131,7 +133,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   }
 
   const { title, description, privacyPolicy, sendMessageCta } = contactUsForm;
-  const link = parseLinkField(sendMessageCta.link);
+  const link = parseLinkField(sendMessageCta.link, { locale });
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-xl">

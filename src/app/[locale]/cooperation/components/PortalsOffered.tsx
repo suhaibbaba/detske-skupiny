@@ -22,6 +22,7 @@ import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import { useLocale } from "next-intl";
 
 interface Props {
   fields: {
@@ -146,7 +147,8 @@ const styles: PortalsOfferedStyles = {
 };
 
 const PortalsOffered: FC<Props> = ({ fields }) => {
-  const link = parseLinkField(fields.cta?.link);
+  const locale = useLocale();
+  const link = parseLinkField(fields.cta?.link, { locale });
 
   return (
     <Box {...styles.container}>

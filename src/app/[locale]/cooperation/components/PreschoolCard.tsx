@@ -17,8 +17,9 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import { ellipses } from "@/utilites/strings";
+import { useLocale } from "next-intl";
 
 interface Props {
   school: MiniSchool;
@@ -102,9 +103,10 @@ const styles: PreschoolCardStyles = {
 };
 
 const PreschoolCard: FC<Props> = ({ school }) => {
+  const locale = useLocale();
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
-      <CardActionArea href={routes.group(school.slug)}>
+      <CardActionArea href={getLocalizedRoutes(locale).group(school.slug)}>
         <Box p="10px" position="relative">
           <CardMedia
             {...styles.cardMedia}

@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import MinusIcon from "@mui/icons-material/Remove";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import { CategoryItem } from "@/sanity/queries";
 import Button from "@/components/ui/button";
 import { normalizeSlug } from "@/sanity/utilites/helper";
@@ -27,6 +27,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import useTranslate from "@/hooks/useTranslate";
 import SearchIcon from "@/components/icons/Search";
+import { useLocale } from "next-intl";
 
 interface Props {
   title: string;
@@ -176,6 +177,7 @@ const FilterList: FC<Props> = ({
   selectedSlug,
   initialItemsCount = 10,
 }) => {
+  const locale = useLocale();
   const translate = useTranslate();
   const [showAll, setShowAll] = useState(false);
   const [search, setSearch] = useState("");
@@ -230,7 +232,7 @@ const FilterList: FC<Props> = ({
             <React.Fragment key={district.id}>
               <Button
                 {...styles.itemButton}
-                href={routes.catalogs(district.slug)}
+                href={getLocalizedRoutes(locale).catalogs(district.slug)}
                 variant="text"
                 className={selected ? "selected" : ""}
                 scroll={false}

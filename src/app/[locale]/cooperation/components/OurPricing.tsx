@@ -23,6 +23,7 @@ import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import { useLocale } from "next-intl";
 
 interface Props {
   fields: {
@@ -174,6 +175,8 @@ const styles: PricingStyles = {
 };
 
 const OurPricing: FC<Props> = ({ fields }) => {
+  const locale = useLocale();
+
   return (
     <Box {...styles.container}>
       <Container>
@@ -183,7 +186,7 @@ const OurPricing: FC<Props> = ({ fields }) => {
         </Box>
         <Box {...styles.cardsWrapper}>
           {fields.plans?.map((plan) => {
-            const link = parseLinkField(plan.cta.link);
+            const link = parseLinkField(plan.cta.link, { locale });
 
             return (
               <Paper key={plan.name} {...styles.card}>

@@ -6,6 +6,7 @@ import React, { FC, useState } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
 import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
+import { useLocale } from "next-intl";
 
 interface LinkProps
   extends Omit<MuiLinkProps, "href">,
@@ -25,9 +26,10 @@ const linkStyles: MuiLinkProps = {
 
 const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
   const [styles] = useState(() => mergeMuiProps(linkStyles, { sx }));
+  const locale = useLocale();
 
   if (link) {
-    const passedProps = parseLinkField(link);
+    const passedProps = parseLinkField(link, { locale });
 
     return (
       <MuiLink

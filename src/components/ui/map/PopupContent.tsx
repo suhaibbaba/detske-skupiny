@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Box,
@@ -11,9 +13,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { MarkerData } from "@/sanity/types";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import Link from "@/components/ui/link";
 import theme from "@/theme";
+import { useLocale } from "next-intl";
 
 interface PopupContentProps {
   markerData: MarkerData;
@@ -38,7 +41,7 @@ const styles: PopupStyles = {
     disableRipple: true,
     sx: {
       position: "absolute",
-      top: "4px",
+      top: "13px",
       right: "2px",
       zIndex: 10,
       width: 26,
@@ -71,6 +74,7 @@ const styles: PopupStyles = {
       fontSize: "16px",
       mb: "16px",
       display: "inline-block",
+      maxWidth: "95%",
       "&:hover": {
         color: "primary.main",
       },
@@ -85,6 +89,7 @@ const styles: PopupStyles = {
 };
 
 const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
+  const locale = useLocale();
   return (
     <ThemeProvider theme={theme}>
       <Box {...styles.container} data-test-selector="PopupContent">
@@ -97,7 +102,10 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
         </IconButton>
 
         {markerData.name && markerData.slug && (
-          <Link href={routes.group(markerData.slug)} {...styles.titleLink}>
+          <Link
+            href={getLocalizedRoutes(locale).group(markerData.slug)}
+            {...styles.titleLink}
+          >
             {markerData.name}
           </Link>
         )}

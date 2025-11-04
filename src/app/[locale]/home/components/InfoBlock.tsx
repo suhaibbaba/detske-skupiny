@@ -12,6 +12,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import { sharedClassNames } from "@/app/[locale]/home/utility";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   fields: {
@@ -95,7 +96,8 @@ const styles: NeighbourKinderGroupSectionStyles = {
 };
 
 const InfoBlock = async ({ fields }: Props) => {
-  const link = parseLinkField(fields.cta?.link);
+  const locale = await getLocale();
+  const link = parseLinkField(fields.cta?.link, { locale });
 
   return (
     <Box {...styles.section} className={sharedClassNames.infoBlock}>

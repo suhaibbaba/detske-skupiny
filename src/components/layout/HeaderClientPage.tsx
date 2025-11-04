@@ -18,11 +18,12 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import Button from "@/components/ui/button";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import Menu from "@/components/shared/Menu";
 import { Header } from "@/types/header";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
+import { useLocale } from "next-intl";
 
 interface Props {
   header?: Header;
@@ -108,6 +109,7 @@ const styles: HeaderStyles = {
 };
 
 const HeaderClientPage = ({ header }: Props) => {
+  const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const scrollToSection = (className: string, closeMenu?: boolean) => {
@@ -129,7 +131,7 @@ const HeaderClientPage = ({ header }: Props) => {
       <Container>
         <AppBar position="static" {...styles.appBar}>
           <Toolbar {...styles.toolbar}>
-            <Link href={routes.home}>
+            <Link href={getLocalizedRoutes(locale).home}>
               <Box component="img" src={header.logo} {...styles.logo} />
             </Link>
             <IconButton

@@ -24,8 +24,9 @@ import InfoCardGrid from "@/app/[locale]/groups/[group]/components/InfoCardGrid"
 import { formatMessage } from "@/utilites/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
-import { routes } from "@/routes";
+import { getLocalizedRoutes } from "@/routes";
 import SchoolMap from "@/app/[locale]/groups/[group]/components/SchoolMap";
+import { getLocale } from "next-intl/server";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -109,8 +110,10 @@ const styles: PageStyles = {
 
 const Page = async ({ params }: PageProps<{ group: string }>) => {
   const { group: groupSlug } = await params;
+  const locale = await getLocale();
+
   if (!groupSlug) {
-    return redirect(routes.home);
+    return redirect(getLocalizedRoutes(locale).home);
   }
 
   const { pageHero, school } = await fetchSchoolBySlug({
@@ -141,7 +144,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                       {formatMessage(
                         "{0}, {1}",
                         school.address?.street,
-                        school.address?.city
+                        school.address?.city,
                       )}
                     </Typography>
                     <Typography>{school.address?.postalCode}</Typography>
@@ -175,7 +178,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                           `{0}  - {1} - {2}`,
                           <Link href={`tel:${item.phone}`}>{item.phone}</Link>,
                           item.name,
-                          item.role
+                          item.role,
                         )}
                       </Typography>
                     ))}

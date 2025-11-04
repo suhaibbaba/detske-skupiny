@@ -1,14 +1,18 @@
+import { defaultLocale, localizeHref } from "@/i18n/routing";
+
 const joinPath = (base: string, slug: string) =>
   `${base}/${slug.replace(/^\/+/, "")}`;
 
-export const routes = {
-  home: "/",
-  about: "/about",
-  contactUs: "/contact-us",
-  groups: "/groups",
-  cooperation: "/cooperation",
+export const getLocalizedRoutes = (locale: string = defaultLocale) => ({
+  home: localizeHref("/", locale),
+  about: localizeHref("/about", locale),
+  contactUs: localizeHref("/contact-us", locale),
+  groups: localizeHref("/groups", locale),
+  cooperation: localizeHref("/cooperation", locale),
   article: (slug?: string) =>
-    slug ? joinPath("/articles", slug) : "/articles",
-  catalogs: (slug?: string) => (slug ? joinPath("/catalog", slug) : "/"),
-  group: (slug?: string) => (slug ? joinPath("/groups", slug) : "/"),
-};
+    localizeHref(slug ? joinPath("/articles", slug) : "/articles", locale),
+  catalogs: (slug?: string) =>
+    localizeHref(slug ? joinPath("/catalog", slug) : "/", locale),
+  group: (slug?: string) =>
+    localizeHref(slug ? joinPath("/groups", slug) : "/groups", locale),
+});

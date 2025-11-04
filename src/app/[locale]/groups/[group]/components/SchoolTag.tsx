@@ -1,5 +1,3 @@
-"use client";
-
 import { Chip, ChipProps } from "@mui/material";
 import React from "react";
 import { SchoolTag as SchoolTagModal } from "@/sanity/types";
