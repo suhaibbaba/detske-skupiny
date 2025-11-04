@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -81,7 +79,7 @@ const styles: NeighbourKinderGroupSectionStyles = {
     },
   },
   imageWrapper: {
-    sx: (theme) => ({
+    sx: {
       flex: 1,
       width: "100%",
       display: "flex",
@@ -89,14 +87,14 @@ const styles: NeighbourKinderGroupSectionStyles = {
       justifyContent: "center",
       borderRadius: "24px",
       overflow: "hidden",
-      boxShadow: theme.palette.shadows.ui1,
-      bgcolor: theme.palette.common.white,
+      boxShadow: "var(--mui-palette-shadows-ui1)",
+      bgcolor: "var(--mui-palette-common-white)",
       p: "20px 24px",
-    }),
+    },
   },
 };
 
-const InfoBlock = ({ fields }: Props) => {
+const InfoBlock = async ({ fields }: Props) => {
   const link = parseLinkField(fields.cta?.link);
 
   return (

@@ -37,12 +37,12 @@ interface MapCollectionStyles {
 
 const styles: MapCollectionStyles = {
   section: {
-    sx: (theme) => ({
-      bgcolor: theme.palette.secondary.main,
+    sx: {
+      bgcolor: "var(--mui-palette-secondary-main)",
       pt: { xs: "100px", md: "100px" },
       pb: { xs: "100px", md: "120px" },
       textAlign: "center",
-    }),
+    },
   },
   container: {
     sx: {

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -53,21 +51,31 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
   },
   subheading: {},
   grid: {
-    sx: (theme) => ({
-      display: "grid",
-      gridTemplateColumns: "repeat(3, 1fr)",
-      columnGap: "94px",
+    sx: {
+      display: {
+        xs: "flex",
+        md: "grid",
+      },
+      flexDirection: {
+        xs: "column",
+        md: "row",
+      },
+      alignItems: {
+        xs: "center",
+        md: "unset",
+      },
+      gridTemplateColumns: {
+        md: "repeat(3, 1fr)",
+      },
+      columnGap: {
+        md: "94px",
+      },
       rowGap: {
         xs: "94px",
         sm: "70px",
       },
       mt: "80px",
-      [theme.breakpoints.down("md")]: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      },
-    }),
+    },
   },
   item: {
     sx: {

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   BoxProps,
@@ -58,7 +56,7 @@ const styles: FaqSectionStyles = {
     variant: "h1",
     fontSize: "40px",
     textAlign: "center",
-    sx: (theme) => ({
+    sx: {
       mx: "auto",
       mb: "80px",
       position: "relative",
@@ -70,8 +68,9 @@ const styles: FaqSectionStyles = {
         width: "122px",
         height: "1px",
         backgroundColor: "common.black",
-        [theme.breakpoints.down("sm")]: {
-          display: "none",
+        display: {
+          xs: "none", // hidden on mobile
+          sm: "block", // visible on sm and up
         },
       },
       "&::before": {
@@ -82,7 +81,7 @@ const styles: FaqSectionStyles = {
         left: "100%",
         marginLeft: "16px",
       },
-    }),
+    },
   },
   accordionList: {
     sx: {
