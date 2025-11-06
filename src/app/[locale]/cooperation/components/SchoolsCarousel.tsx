@@ -7,9 +7,10 @@ import { FC } from "react";
 
 interface Props {
   schools: MiniSchool[];
+  locale?: string;
 }
 
-const SchoolsCarousel: FC<Props> = ({ schools }) => {
+const SchoolsCarousel = ({ schools, locale }: Props) => {
   return (
     <EmblaCarousel
       gap={24}
@@ -18,7 +19,7 @@ const SchoolsCarousel: FC<Props> = ({ schools }) => {
       }}
     >
       {schools?.map((school) => (
-        <PreschoolCard key={school.id} school={school} />
+        <PreschoolCard key={school.id} school={school} locale={locale} />
       ))}
     </EmblaCarousel>
   );

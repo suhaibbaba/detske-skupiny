@@ -1,4 +1,3 @@
-import { NextIntlClientProvider } from "next-intl";
 import type { Metadata } from "next";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@/theme";

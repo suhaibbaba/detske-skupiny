@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import {
   Card,
   CardProps,
@@ -19,10 +19,11 @@ import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { getLocalizedRoutes } from "@/routes";
 import { ellipses } from "@/utilites/strings";
-import { useLocale } from "next-intl";
+import { useDefaultImage } from "@/providers";
 
 interface Props {
   school: MiniSchool;
+  locale?: string;
 }
 
 interface PreschoolCardStyles {
@@ -102,15 +103,17 @@ const styles: PreschoolCardStyles = {
   },
 };
 
-const PreschoolCard: FC<Props> = ({ school }) => {
-  const locale = useLocale();
+const PreschoolCard = ({ school, locale }: Props) => {
+  const defaultImageUrl = useDefaultImage();
+  const imagSrc = school.primaryImage || defaultImageUrl;
+
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
       <CardActionArea href={getLocalizedRoutes(locale).group(school.slug)}>
         <Box p="10px" position="relative">
           <CardMedia
             {...styles.cardMedia}
-            image={urlImageFor(school.primaryImage) || ""}
+            image={urlImageFor(imagSrc) || ""}
             title={school.name}
           />
           {school.area && (

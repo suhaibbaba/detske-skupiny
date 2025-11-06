@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Container,
@@ -23,7 +21,6 @@ import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
-import { useLocale } from "next-intl";
 
 interface Props {
   fields: {
@@ -42,6 +39,7 @@ interface Props {
       }[];
     }[];
   };
+  locale?: string;
 }
 
 interface PricingStyles {
@@ -103,7 +101,7 @@ const styles: PricingStyles = {
     },
   },
   card: {
-    sx: (theme) => ({
+    sx: {
       borderRadius: "24px",
       px: "28px",
       py: "40px",
@@ -113,10 +111,10 @@ const styles: PricingStyles = {
       alignItems: "center",
       position: "relative",
       boxShadow: `
-        0 4px 6px ${alpha(theme.palette.common.black, 0.06)},
-        0 2px 4px ${alpha(theme.palette.common.black, 0.08)}
+        0 4px 6px rgba(0, 0, 0, 0.06),
+        0 2px 4px rgba(0, 0, 0, 0.08)
       `,
-    }),
+    },
   },
   planLabel: {
     color: "custom.ui8",
@@ -136,12 +134,12 @@ const styles: PricingStyles = {
     mb: "24px",
   },
   featureList: {
-    sx: (theme) => ({
+    sx: {
       width: "100%",
       mb: "32px",
-      bgcolor: theme.palette.custom.ui9,
+      bgcolor: "var(--mui-palette-custom-ui9)",
       p: "8px",
-    }),
+    },
   },
   featureItem: {
     disableGutters: true,
@@ -174,11 +172,9 @@ const styles: PricingStyles = {
   },
 };
 
-const OurPricing: FC<Props> = ({ fields }) => {
-  const locale = useLocale();
-
+const OurPricing: FC<Props> = ({ fields, locale }) => {
   return (
-    <Box {...styles.container}>
+    <Box {...styles.container} data-test-selector="OurPricing">
       <Container>
         <Box {...styles.headingBox}>
           <Typography {...styles.title}>{fields.title}</Typography>
@@ -186,7 +182,9 @@ const OurPricing: FC<Props> = ({ fields }) => {
         </Box>
         <Box {...styles.cardsWrapper}>
           {fields.plans?.map((plan) => {
-            const link = parseLinkField(plan.cta.link, { locale });
+            const link = parseLinkField(plan.cta.link, {
+              locale: locale,
+            });
 
             return (
               <Paper key={plan.name} {...styles.card}>

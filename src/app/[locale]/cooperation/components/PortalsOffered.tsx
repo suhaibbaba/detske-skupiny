@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Container,
@@ -18,11 +16,9 @@ import {
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { SanityCtaField, SanityImageField } from "@/sanity/types";
-import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
-import { useLocale } from "next-intl";
 
 interface Props {
   fields: {
@@ -35,6 +31,7 @@ interface Props {
       title: string;
     }[];
   };
+  locale?: string;
 }
 
 interface PortalsOfferedStyles {
@@ -54,14 +51,14 @@ interface PortalsOfferedStyles {
 
 const styles: PortalsOfferedStyles = {
   container: {
-    sx: (theme) => ({
-      background: theme.palette.custom.ui7,
+    sx: {
+      background: "var(--mui-palette-custom-ui7)",
       pt: "100px",
       pb: {
         xs: "80px",
         sm: "120px",
       },
-    }),
+    },
   },
   innerBox: {
     sx: {
@@ -105,10 +102,10 @@ const styles: PortalsOfferedStyles = {
     },
   },
   listItemIcon: {
-    sx: (theme) => ({
+    sx: {
       minWidth: "auto",
-      color: theme.palette.custom.ui6,
-    }),
+      color: "var(--mui-palette-custom-ui6)",
+    },
   },
   listItemText: {
     sx: {
@@ -146,8 +143,7 @@ const styles: PortalsOfferedStyles = {
   },
 };
 
-const PortalsOffered: FC<Props> = ({ fields }) => {
-  const locale = useLocale();
+const PortalsOffered = ({ fields, locale }: Props) => {
   const link = parseLinkField(fields.cta?.link, { locale });
 
   return (

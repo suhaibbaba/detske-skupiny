@@ -90,11 +90,11 @@ const PageHeadingTypography: FC<Props> = ({
       )}
       {ctaList && ctaList.length > 0 && (
         <Box {...styles.ctaWrapper}>
-          {ctaList.map((cta) => {
+          {ctaList.map((cta, idx) => {
             const link = parseLinkField(cta.link, { locale });
             return (
               <Button
-                key={cta._key}
+                key={`${cta._key}_${idx}`}
                 {...styles.cta}
                 variant={cta.variant || "contained"}
                 href={link.url}

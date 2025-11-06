@@ -11,6 +11,7 @@ interface Props {
     subtitle: string;
     cta: SanityCtaField;
   };
+  locale?: string;
 }
 
 interface ListOfSchoolsStyles {
@@ -36,7 +37,7 @@ const styles: ListOfSchoolsStyles = {
   },
 };
 
-const ListOfSchools: FC<Props> = async ({ fields }) => {
+const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
   const { schools } = await fetchMiniSchools({
     numberOfSchools: 20,
   });
@@ -50,7 +51,7 @@ const ListOfSchools: FC<Props> = async ({ fields }) => {
           ctaList={[fields.cta]}
         />
       </Container>
-      <SchoolsCarousel schools={schools} />
+      <SchoolsCarousel schools={schools} locale={locale} />
     </Box>
   );
 };

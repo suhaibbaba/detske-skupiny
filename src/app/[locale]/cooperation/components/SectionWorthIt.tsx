@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Container,
@@ -24,6 +22,7 @@ interface Props {
       description: string;
     }[];
   };
+  locale?: string;
 }
 
 interface WhyJoinUsStyles {
@@ -40,14 +39,14 @@ interface WhyJoinUsStyles {
 
 const styles: WhyJoinUsStyles = {
   container: {
-    sx: (theme) => ({
-      bgcolor: theme.palette.custom.ui5,
+    sx: {
+      bgcolor: "var(--mui-palette-custom-ui5)",
       pt: "100px",
       pb: {
         xs: "80px",
         sm: "120px",
       },
-    }),
+    },
   },
   headingBox: {
     textAlign: "center",
@@ -74,7 +73,7 @@ const styles: WhyJoinUsStyles = {
     },
   },
   featureCard: {
-    sx: (theme) => ({
+    sx:{
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -84,7 +83,7 @@ const styles: WhyJoinUsStyles = {
       borderRadius: "24px",
       width: "258px",
       boxShadow: "none",
-    }),
+    },
   },
   iconWrapper: {
     bgcolor: "secondary.main",
