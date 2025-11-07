@@ -1,54 +1,23 @@
 import * as React from "react";
-import {
-  Breadcrumbs as MuiBreadcrumbs,
-  LinkProps,
-  TypographyProps,
-  Typography,
-} from "@mui/material";
+import { Breadcrumbs as MuiBreadcrumbs, Typography } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { getLocale } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
-import { pathnames } from "@/i18n/routing";
 import { headers } from "next/headers";
 import Link from "@/components/ui/link";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import {
+  BreadcrumbItem,
+  BreadcrumbsStyles,
+} from "@/components/ui/breadcrumb/types";
+import {
+  buildSchoolBreadcrumbs,
+  buildStandardBreadcrumbs,
+  EXCLUDED_SEGMENTS,
+} from "@/components/ui/breadcrumb/builders";
 
 interface Props {
   addSpace?: boolean;
-}
-
-const excludeNavigationEN = ["catalog", "school"];
-
-const excludeNavigationMaps = [
-  ...excludeNavigationEN,
-  ...Object.values(pathnames)
-    .filter((value) => typeof value === "object")
-    .flatMap((locales) =>
-      Object.values(locales)
-        .map((path) => path.split("/").find((s) => s && !s.startsWith("[")))
-        .filter(
-          (segment): segment is string =>
-            segment !== undefined &&
-            excludeNavigationEN.some((en) =>
-              Object.values(locales).some(
-                (p) => p.includes(`/${en}/`) || p.includes(`/${en}`),
-              ),
-            ),
-        ),
-    ),
-];
-
-// Remove duplicates
-const excludeNavigation = [...new Set(excludeNavigationMaps)];
-
-interface BreadcrumbsStyles {
-  link?: LinkProps;
-  text?: TypographyProps;
-}
-
-interface BreadcrumbItem {
-  label: string;
-  href: string;
 }
 
 const styles: BreadcrumbsStyles = {
@@ -70,71 +39,44 @@ const styles: BreadcrumbsStyles = {
   },
 };
 
-const formatSegment = (segment: string): string => {
-  return segment
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-};
-
 const Breadcrumbs = async ({ addSpace = true }: Props) => {
   const locale = await getLocale();
   const headerList = await headers();
   const pathname = headerList.get("x-pathname") || "/";
+  const translate = await getTranslateServer();
 
-  const decodedPathname = decodeURIComponent(pathname);
-  const t = await getTranslateServer();
-
-  const pathSegments = decodedPathname
+  const pathSegments = decodeURIComponent(pathname)
     .split("/")
-    .filter((segment) => segment !== "" && segment !== locale);
+    .filter((segment) => segment && segment !== locale);
 
   const breadcrumbs: BreadcrumbItem[] = [
-    {
-      label: t("home"),
-      href: "/",
-    },
+    { label: translate("home"), href: "/" },
   ];
 
-  // Fetch all page names in one query for better performance
-  const slugs = pathSegments.filter(
-    (segment) => !excludeNavigation.includes(segment),
-  );
+  const slugs = pathSegments.filter((s) => !EXCLUDED_SEGMENTS.includes(s));
 
   if (slugs.length > 0) {
     try {
       const pages = await fetchBreadcrumbList({ slugs });
+      const pageMap = new Map(pages.map((page) => [page.slug, page]));
 
-      // Create a map for quick lookup
-      const pageMap = new Map(pages.map((page) => [page.slug, page.name]));
+      const lastSegment = pathSegments[pathSegments.length - 1];
+      const isSchoolType = pageMap.get(lastSegment)?._type === "schools";
 
-      // Build breadcrumbs with proper names
-      pathSegments.forEach((segment, index) => {
-        const href = "/" + pathSegments.slice(0, index + 1).join("/");
+      const newBreadcrumbs = isSchoolType
+        ? await buildSchoolBreadcrumbs(pathSegments, pageMap, locale)
+        : buildStandardBreadcrumbs(pathSegments, pageMap, locale);
 
-        if (!excludeNavigation.includes(segment)) {
-          const label = pageMap.get(segment) || formatSegment(segment);
-          breadcrumbs.push({ label, href });
-        }
-      });
+      breadcrumbs.push(...newBreadcrumbs);
     } catch (error) {
       console.error("Error fetching breadcrumb data:", error);
-
-      // Fallback to formatted slugs on error
-      pathSegments.forEach((segment, index) => {
-        const href = "/" + pathSegments.slice(0, index + 1).join("/");
-        if (!excludeNavigation.includes(segment)) {
-          breadcrumbs.push({
-            label: formatSegment(segment),
-            href,
-          });
-        }
-      });
+      breadcrumbs.push(
+        ...buildStandardBreadcrumbs(pathSegments, new Map(), locale),
+      );
     }
   }
 
-  if (breadcrumbs.length === 0) {
-    return null;
-  }
+  if (breadcrumbs.length === 0) return null;
 
   const last = breadcrumbs[breadcrumbs.length - 1];
 
