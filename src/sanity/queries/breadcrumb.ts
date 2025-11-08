@@ -25,15 +25,15 @@ export async function fetchSchoolBreadcrumb(
       "breadcrumb": [
         {
           "name": area->region->country->name,
-          "slug": "/catalog/" + area->region->country->slug.current,
+          "slug": countrySlug,
         },
         {
           "name": area->region->name,
-          "slug": "/catalog/" + area->region->country->slug.current + "/" + area->region->slug.current,
+          "slug": "/" + countrySlug + "/" + regionSlug,
         },
         {
           "name": area->name,
-          "slug": "/catalog" + area->fullSlug,
+          "slug": area->fullSlug,
         },
         {
           "name": name,

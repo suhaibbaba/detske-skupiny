@@ -3,6 +3,7 @@ import { BreadcrumbItem } from "@/components/ui/breadcrumb/types";
 import { BASE_EXCLUDED_FOLDERS } from "@/components/ui/breadcrumb/constants";
 import { pathnames } from "@/i18n/routing";
 import { getFolderLabel } from "@/components/ui/breadcrumb/utils";
+import { getLocalizedRoutes } from "@/routes";
 
 /**
  * Complete list of navigation segments to exclude, including:
@@ -65,7 +66,7 @@ export const buildSchoolBreadcrumbs = async (
   schoolBreadcrumbs.forEach((item) => {
     breadcrumbs.push({
       label: item.name,
-      href: item.slug,
+      href: getLocalizedRoutes(locale).catalogs(item.slug),
     });
   });
 
