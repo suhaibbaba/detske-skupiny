@@ -112,16 +112,6 @@ const HeaderClientPage = ({ header }: Props) => {
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const scrollToSection = (className: string, closeMenu?: boolean) => {
-    const el = document.querySelector(`.${className}`);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    if (closeMenu) {
-      setMenuOpen(false);
-    }
-  };
-
   if (!header) {
     return null;
   }
@@ -151,17 +141,10 @@ const HeaderClientPage = ({ header }: Props) => {
                 <Box {...styles.drawerLogoContainer}>
                   <Box component="img" src={header.logo} {...styles.logo} />
                 </Box>
-                <Menu
-                  menuItems={header.menuItems}
-                  onClick={(className) => scrollToSection(className, true)}
-                />
+                <Menu menuItems={header.menuItems} />
               </Box>
             </Drawer>
-            <Menu
-              menuItems={header.menuItems}
-              onClick={scrollToSection}
-              hideOnMobile={true}
-            />
+            <Menu menuItems={header.menuItems} hideOnMobile={true} />
             {header.cta && (
               <Button
                 startIcon={<AddCircleRoundedIcon />}

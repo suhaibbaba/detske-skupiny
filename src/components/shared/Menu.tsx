@@ -1,25 +1,24 @@
 "use client";
 
-import { Typography, TypographyProps, Box, BoxProps } from "@mui/material";
+import { LinkProps, Box, BoxProps } from "@mui/material";
 import { MenuItem } from "@/types/header";
+import Link from "@/components/ui/link";
 
 interface Props {
   menuItems?: MenuItem[];
   hideOnMobile?: boolean;
-  onClick?: (className: string) => void;
 }
 
 interface MenuStyles {
   root: BoxProps;
-  item: TypographyProps;
+  item: LinkProps;
 }
 
 const styles: MenuStyles = {
   root: {
     component: "nav",
     sx: {
-      // fix desktop menu showing in mobile version due to useMediaQuery speed
-      display: { xs: "flex", md: "flex" }, // overridden by hideOnMobile below
+      display: { xs: "flex", md: "flex" },
       alignItems: {
         xs: "flex-start",
         md: "center",
@@ -35,7 +34,6 @@ const styles: MenuStyles = {
     },
   },
   item: {
-    component: "a",
     sx: {
       position: "relative",
       textDecoration: "none",
@@ -67,7 +65,7 @@ const styles: MenuStyles = {
   },
 };
 
-const Menu = ({ menuItems, hideOnMobile, onClick }: Props) => {
+const Menu = ({ menuItems, hideOnMobile }: Props) => {
   if (!menuItems || !menuItems.length) {
     return null;
   }
@@ -86,14 +84,12 @@ const Menu = ({ menuItems, hideOnMobile, onClick }: Props) => {
       }}
     >
       {menuItems.map((item) => (
-        <Typography
+        <Link
           key={item.id}
+          link={item.link}
           {...styles.item}
           className="drawer-item"
-          onClick={() => onClick?.(item.className)}
-        >
-          {item.name}
-        </Typography>
+        />
       ))}
     </Box>
   );

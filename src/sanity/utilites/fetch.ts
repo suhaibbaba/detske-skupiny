@@ -17,7 +17,13 @@ export async function sanityFetch<T>(
 ): Promise<T> {
   const locale = await getLocale();
   const queryParams = { ...(params || {}), locale };
-  const data = await client.fetch<T>(query, queryParams);
+  const data = await client.fetch<T>(query, queryParams, {
+    useCdn: true,
+    perspective: "published", // Only published content
+    next: {
+      revalidate: 300, // Next.js caches in seconds
+    },
+  });
   return expandLinks(data);
 }
 

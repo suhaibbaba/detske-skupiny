@@ -190,11 +190,14 @@ function parseInternalLink(
       : linkField.internalLink?._type;
 
   switch (type) {
+    case "countries":
     case "regions":
+    case "areas":
+    case "subareas":
       return getLocalizedRoutes(config.locale).catalogs(
-        `${linkField.internalLink.country?.slug}/${linkField.internalLink.slug}`,
+        linkField.internalLink.slug,
       );
-    case "blog":
+    case "blogs":
       return getLocalizedRoutes(config.locale).article(
         linkField.internalLink.slug,
       );
@@ -208,6 +211,10 @@ function parseInternalLink(
       return getLocalizedRoutes(config.locale).cooperation;
     case "about":
       return getLocalizedRoutes(config.locale).about;
+    case "schools":
+      return getLocalizedRoutes(config.locale).group(
+        linkField.internalLink.slug,
+      );
     default:
       return getLocalizedRoutes(config.locale).home;
   }

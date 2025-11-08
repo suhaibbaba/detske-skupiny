@@ -33,11 +33,24 @@ function collectInternalLinkRefs(data: any): string[] {
 // 2) Fetch map of refs -> expanded doc (slug/title)
 async function fetchRefMap(ids: string[]) {
   if (ids.length === 0) return new Map<string, any>();
-  const query = groq`*[_id in $ids]{ _id, _type, "slug": select(defined(slug.current)=>slug.current, slug), title,
-     _type == "regions" => {
-    "country": country-> { _id, title, "slug": slug.current }
-  }
-}`;
+  const query = groq`*[_id in $ids]{ 
+    _id, 
+    _type, 
+    "slug": select(defined(slug.current)=>slug.current, slug), 
+    title,
+    _type == "countries" => {
+      "slug": slug.current,
+    },
+    _type == "regions" => {
+      "slug": fullSlug,
+    },
+    _type == "areas" => {
+      "slug": fullSlug,
+    },
+    _type == "subareas" => {
+      "slug": fullSlug,
+    },
+  }`;
   const docs = await client.fetch(query, { ids });
   const map = new Map<string, any>();
   for (const d of docs) map.set(d._id, d);

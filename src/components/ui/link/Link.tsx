@@ -28,8 +28,16 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
   const [styles] = useState(() => mergeMuiProps(linkStyles, { sx }));
   const locale = useLocale();
 
+  if (!link && !otherProps.href) {
+    return null;
+  }
+
   if (link) {
     const passedProps = parseLinkField(link, { locale });
+
+    if (!passedProps.url) {
+      return null;
+    }
 
     return (
       <MuiLink
@@ -37,7 +45,7 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
         {...styles}
         {...otherProps}
         href={passedProps.url}
-        target={passedProps.target}
+        target={passedProps.target || "_self"}
       >
         {children || passedProps.text || cleanUrl(passedProps.url)}
       </MuiLink>
