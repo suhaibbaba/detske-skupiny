@@ -67,6 +67,9 @@ export interface School {
   logo: SanityImageField;
   name: string;
   slug: string;
+  capacity: number;
+  cin: string;
+  providerName: string;
   primaryImage: SanityImageField | null;
   primaryImages: SanityImageField[];
   region: Region;
@@ -77,10 +80,8 @@ export interface School {
   website?: SanityLinkField;
   categories?: SchoolCategory[];
   transportation?: TransportOption[];
-  about?: SanityRichTextField;
-  highlights?: SanityRichTextField;
-  timetable?: TimetableRow[];
-  isPrivate?: boolean;
+  tags?: SchoolTag[];
+  content?: SanityRichTextField;
   gallery?: SanityImageField[];
   notes?: string | null;
 }

@@ -7,6 +7,8 @@ import Link from "@/components/ui/link";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import CheckList from "@/components/shared/CheckList";
 import { SanityRichTextField } from "@/sanity/types";
+import Table from "@/components/shared/Table";
+import SchoolGallery from "@/app/[locale]/groups/[group]/components/SchoolGallery";
 
 /**
  * Utility: detect if a block renderer received only whitespace/empty content.
@@ -237,15 +239,23 @@ function RichText({
     /* ===================== Custom object types ===================== */
     types: {
       // Inline/standalone images in rich text
-      image: ({ value }) => (
-        <Box
-          component="img"
-          src={urlImageFor(value)}
-          alt={value?.alt || ""}
-          loading="lazy"
-          sx={{ maxWidth: "100%", borderRadius: 2, display: "block", my: 2 }}
-        />
-      ),
+      image: ({ value }) => {
+        return (
+          <Box
+            component="img"
+            src={urlImageFor(value.asset)}
+            alt={value?.alt || ""}
+            loading="lazy"
+            sx={{
+              maxWidth: value.maxWidth || "100%",
+              maxHeight: value.maxHeight || "initial",
+              borderRadius: 2,
+              display: "block",
+              my: 1,
+            }}
+          />
+        );
+      },
 
       /**
        * Checklist object support:
@@ -256,6 +266,12 @@ function RichText({
         const items = Array.isArray(value?.items) ? value.items : [];
         if (!items.length) return null;
         return <CheckList items={items} />;
+      },
+      table: ({ value }) => {
+        return <Table value={value} />;
+      },
+      gallery: ({ value }) => {
+        return <SchoolGallery gallery={value.images} />;
       },
       spacer: ({ value }) => {
         // Map presets to px; keep LG=80 as requested

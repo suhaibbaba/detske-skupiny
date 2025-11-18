@@ -16,8 +16,7 @@ import SchoolGallery, {
   SchoolGalleryStyles,
 } from "@/app/[locale]/groups/[group]/components/SchoolGallery";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import AboutSchool from "@/app/[locale]/groups/[group]/components/AboutSchool";
-import SchoolHighlights from "@/app/[locale]/groups/[group]/components/SchoolHighlights";
+import ContentSchool from "@/app/[locale]/groups/[group]/components/ContentSchool";
 import SchoolTimetable from "@/app/[locale]/groups/[group]/components/SchoolTimetable";
 import SchoolHeader from "@/app/[locale]/groups/[group]/components/SchoolHeader";
 import InfoCardGrid from "@/app/[locale]/groups/[group]/components/InfoCardGrid";
@@ -138,6 +137,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "Location",
                 icon: <Location />,
+                show: !!school.address,
                 content: (
                   <Box>
                     <Typography>
@@ -154,6 +154,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "Transportation Nearby",
                 icon: <Location />,
+                show: school.transportation && school.transportation.length > 0,
                 content: (
                   <Box>
                     {school.transportation?.map((item) => (
@@ -167,6 +168,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "Contacts",
                 icon: <Location />,
+                show: school.contacts && school.contacts.length > 0,
                 content: (
                   <Box>
                     {school.contacts?.map((item) => (
@@ -188,6 +190,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "Website & Social Media",
                 icon: <Location />,
+                show: school.links && school.links.length > 0,
                 content: (
                   <Box>
                     {school.links?.map((link) => (
@@ -198,11 +201,8 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               },
             ]}
           />
-          <AboutSchool about={school.about} />
-          <SchoolHighlights highlights={school.highlights} />
-          <SchoolTimetable timetable={school.timetable} />
+          <ContentSchool content={school.content} tags={school.tags} />
           <SchoolMap school={school} />
-          <SchoolGallery gallery={school.gallery} showTitle={true} />
         </Box>
       </Container>
     </Box>

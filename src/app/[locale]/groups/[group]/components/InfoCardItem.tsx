@@ -7,6 +7,7 @@ export interface InfoCardItemProps {
   icon: ReactNode;
   title: string;
   content: ReactNode;
+  show?: boolean;
 }
 
 interface InfoCardItemStyles {
@@ -44,7 +45,10 @@ const styles: InfoCardItemStyles = {
   },
 };
 
-const InfoCardItem = ({ icon, title, content }: InfoCardItemProps) => {
+const InfoCardItem = ({ icon, title, content, show }: InfoCardItemProps) => {
+  if (!show) {
+    return null;
+  }
   return (
     <Box {...styles.container}>
       <Box {...styles.iconWrapper}>{icon}</Box>

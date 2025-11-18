@@ -12,14 +12,12 @@ import useTranslate from "@/hooks/useTranslate";
 const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
 interface SchoolGalleryProps {
-  showTitle?: boolean;
   gallery?: School["primaryImages"];
   extendedStyles?: SchoolGalleryStyles;
 }
 
 export interface SchoolGalleryStyles {
   container?: BoxProps;
-  title?: TypographyProps;
   imageContainer?: BoxProps;
   imageBox?: BoxProps;
   img?: BoxProps;
@@ -30,12 +28,6 @@ const styles: SchoolGalleryStyles = {
     sx: {
       mt: "80px",
     },
-  },
-  title: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 600,
-    mb: "20px",
   },
   imageContainer: {
     sx: {
@@ -68,7 +60,7 @@ const styles: SchoolGalleryStyles = {
   },
 };
 
-const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery, showTitle }) => {
+const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
   const translate = useTranslate();
 
   const [open, setOpen] = useState(false);
@@ -103,9 +95,6 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery, showTitle }) => {
   return (
     <>
       <Box {...styles.container} data-test-selector="SchoolGallery">
-        {showTitle && (
-          <Typography {...styles.title}>{translate("gallery")}</Typography>
-        )}
         <Box {...styles.imageContainer}>
           {/* Left main */}
           {main && (

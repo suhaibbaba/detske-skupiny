@@ -1,25 +1,11 @@
 import React, { FC } from "react";
-import {
-  Box,
-  BoxProps,
-  Chip,
-  ChipProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box, BoxProps, Chip, ChipProps, TypographyProps } from "@mui/material";
 import { School } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
-import useTranslate from "@/hooks/useTranslate";
-
-const tags = [
-  { label: "Children’s Group", selected: true },
-  { label: "Montessori Preschool" },
-  { label: "Language Preschool" },
-  { label: "Language Preschool", error: true },
-];
 
 interface Props {
-  about: School["about"];
+  content: School["content"];
+  tags: School["tags"];
 }
 
 interface AboutSchoolStyles {
@@ -65,26 +51,25 @@ const styles: AboutSchoolStyles = {
   },
 };
 
-const AboutSchool: FC<Props> = ({ about }) => {
-  const translate = useTranslate();
-
+const ContentSchool: FC<Props> = ({ content, tags }) => {
   return (
     <Box {...styles.container}>
-      <Typography {...styles.title}>{translate("aboutUs")}</Typography>
-      <RichText {...styles.description}>{about}</RichText>
-      <Box {...styles.tagsContainer}>
-        {tags.map((tag, idx) => (
-          <Chip
-            key={idx}
-            label={tag.label}
-            variant={tag.selected ? "filled" : "outlined"}
-            color={"default"}
-            {...styles.chip}
-          />
-        ))}
-      </Box>
+      <RichText {...styles.description}>{content}</RichText>
+      {tags && (
+        <Box {...styles.tagsContainer}>
+          {tags.map((tag, idx) => (
+            <Chip
+              key={idx}
+              label={tag.name}
+              variant="filled"
+              color="default"
+              {...styles.chip}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };
 
-export default AboutSchool;
+export default ContentSchool;

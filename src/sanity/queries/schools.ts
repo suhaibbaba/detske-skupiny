@@ -50,9 +50,12 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
       "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
       "region": area->region->{ "id": _id, name},
+      capacity,
+      providerName,
       area->{ "id": _id, name },
       address,
       location,
+      cin,
       contacts[],
       links[]{
         "id": _key,
@@ -67,11 +70,13 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
         "id": _key,
         ...
       },
-      about,
-      highlights,
-      timetable[],
-      isPrivate,
-      "gallery": gallery[].asset->url,
+      content,
+      tags[]->{
+        "id": _id,
+        name,
+        "slug": slug.current,
+        "borderColor": borderColor.hex,
+      },
     }
   }`;
 
