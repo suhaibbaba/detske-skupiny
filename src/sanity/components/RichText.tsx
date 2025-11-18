@@ -9,6 +9,7 @@ import CheckList from "@/components/shared/CheckList";
 import { SanityRichTextField } from "@/sanity/types";
 import Table from "@/components/shared/Table";
 import SchoolGallery from "@/app/[locale]/groups/[group]/components/SchoolGallery";
+import GridBlock from "@/components/shared/GridBlock";
 
 /**
  * Utility: detect if a block renderer received only whitespace/empty content.
@@ -238,6 +239,13 @@ function RichText({
 
     /* ===================== Custom object types ===================== */
     types: {
+      gridBlock: ({ value }) => {
+        if (!value) {
+          return null;
+        }
+        return <GridBlock value={value} />;
+      },
+
       // Inline/standalone images in rich text
       image: ({ value }) => {
         return (
