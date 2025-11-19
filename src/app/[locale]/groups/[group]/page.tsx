@@ -123,9 +123,9 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
         <PageHeadingTypography
-          title={pageHero.title}
-          description={pageHero.description}
-          ctaList={pageHero.ctas}
+          title={pageHero?.title}
+          description={pageHero?.description}
+          ctaList={pageHero?.ctas}
         />
       </PageLayout>
       <Container {...styles.container}>

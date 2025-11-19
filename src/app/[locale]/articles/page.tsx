@@ -57,8 +57,8 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <Container>
             <PageHeadingTypography
-              title={content.title}
-              description={content.description}
+              title={content?.title}
+              description={content?.description}
             />
           </Container>
         </PageLayout>

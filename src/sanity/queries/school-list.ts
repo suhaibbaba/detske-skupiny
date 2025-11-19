@@ -16,7 +16,7 @@ export async function fetchSchoolPage(params: SchoolPageQueryParams) {
   }
 
   const query = groq`{
-    "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
+    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero,
     "totalSchools": coalesce(${totalQuery}, 0),
   }`;
 

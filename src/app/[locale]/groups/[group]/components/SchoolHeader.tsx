@@ -30,6 +30,7 @@ const styles: SchoolHeaderStyles = {
     variant: "h2",
     sx: {
       display: "flex",
+      flexGrow: 1,
       alignItems: "center",
       gap: "12px",
     },

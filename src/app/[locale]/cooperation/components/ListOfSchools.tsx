@@ -46,9 +46,9 @@ const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
     <Box {...styles.container} data-test-selector="ListOfSchools">
       <Container>
         <PageHeadingTypography
-          title={fields.title}
-          description={fields.subtitle}
-          ctaList={[fields.cta]}
+          title={fields?.title}
+          description={fields?.subtitle}
+          ctaList={fields.cta ? [fields.cta] : undefined}
         />
       </Container>
       <SchoolsCarousel schools={schools} locale={locale} />

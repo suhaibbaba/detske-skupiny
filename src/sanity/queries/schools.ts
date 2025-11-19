@@ -40,7 +40,7 @@ export async function fetchMiniSchools(params: { numberOfSchools: number }) {
 
 export async function fetchSchoolBySlug(params: { slug: string }) {
   const query = groq`{
-    "pageHero": *[_type == "schoolList" && ${languageQuery}][0].pageHero,
+    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero,
     "school": *[_type == "schools" && ${languageQuery} &&  slug.current == $slug][0]{
       "id": _id,
       "logo": logo.asset->url,

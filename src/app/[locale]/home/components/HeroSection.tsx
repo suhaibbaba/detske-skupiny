@@ -106,9 +106,9 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
     >
       <Box {...styles.contentWrapper}>
         <PageHeadingTypography
-          title={fields.title}
-          description={fields.description}
-          ctaList={fields.ctas}
+          title={fields?.title}
+          description={fields?.description}
+          ctaList={fields?.ctas}
           extendedStyles={styles.pageHeadingStyles}
         />
         <Box {...styles.imageWrapper}>

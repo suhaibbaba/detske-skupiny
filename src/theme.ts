@@ -18,7 +18,7 @@ export const BREAKPOINTS = {
   xl: 1536,
 };
 
-const baseTheme = createTheme({
+export const baseTheme = createTheme({
   cssVariables: true,
   breakpoints: {
     values: {
@@ -73,7 +73,7 @@ const baseTheme = createTheme({
   },
 });
 
-const createButtonStyle = ({
+export const createButtonStyle = ({
   bgColor,
   textColor,
   hoverBgColor,

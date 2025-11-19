@@ -144,8 +144,8 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
       {content && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <PageHeadingTypography
-            title={content.title}
-            description={content.description}
+            title={content?.title}
+            description={content?.description}
           />
         </PageLayout>
       )}
@@ -168,7 +168,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
                 />,
                 <Typography {...styles.authorText} key="author">
                   {blog.author?.name}
-                </Typography>
+                </Typography>,
               )}
             </Box>
           </Box>
@@ -187,7 +187,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
                   />,
                   <Typography {...styles.authorText} key="author">
                     {blog.author.name}
-                  </Typography>
+                  </Typography>,
                 )}
               </Box>
               <Typography {...styles.paragraph}>{blog.author.bio}</Typography>
