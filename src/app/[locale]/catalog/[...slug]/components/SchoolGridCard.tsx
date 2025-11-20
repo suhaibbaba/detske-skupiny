@@ -134,14 +134,14 @@ const SchoolGridCard = ({ school }: Props) => {
   const locale = useLocale();
 
   const translate = useTranslate();
-  const { shortSummary, name, tags, primaryImage, logo, region, types } =
+  const { shortSummary, name, tags, primaryImage, logo, region, area, types } =
     school;
 
   return (
     <Box {...styles.card}>
       <Box {...styles.imageWrapper}>
         <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
-        <SchoolTypesBadge types={types} />
+        <SchoolTypesBadge types={types?.filter((t) => t.visibility)} />
       </Box>
       <Box {...styles.nameWrapper}>
         {logo && (
@@ -166,7 +166,7 @@ const SchoolGridCard = ({ school }: Props) => {
           <Location
             sx={{ width: "16px", height: "20px", color: "secondary.dark" }}
           />
-          {region.name}
+          {area?.name || region.name}
         </Typography>
         <Ellipsis limitOfLine={4} {...styles.description}>
           {shortSummary}

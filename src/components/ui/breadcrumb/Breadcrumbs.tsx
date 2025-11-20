@@ -71,7 +71,7 @@ const Breadcrumbs = async ({ addSpace = true }: Props) => {
     } catch (error) {
       console.error("Error fetching breadcrumb data:", error);
       breadcrumbs.push(
-        ...buildStandardBreadcrumbs(pathSegments, new Map(), locale),
+        ...buildStandardBreadcrumbs(pathSegments, new Map(), locale)
       );
     }
   }
@@ -84,7 +84,7 @@ const Breadcrumbs = async ({ addSpace = true }: Props) => {
     <MuiBreadcrumbs
       separator={<ChevronRight sx={{ fontSize: "10px" }} />}
       aria-label="breadcrumb"
-      sx={{ mb: addSpace ? "40px" : 0 }}
+      sx={{ mb: addSpace ? "40px" : 0, ol: { rowGap: "8px" } }}
     >
       {breadcrumbs.slice(0, -1).map((item) => (
         <Link key={item.href} href={item.href} {...styles.link}>

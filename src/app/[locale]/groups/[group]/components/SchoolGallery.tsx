@@ -1,6 +1,12 @@
 "use client";
 
-import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  SxProps,
+  Typography,
+  TypographyProps,
+} from "@mui/material";
 import { FC, useState } from "react";
 import { School } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
@@ -13,6 +19,8 @@ const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
 interface SchoolGalleryProps {
   gallery?: School["primaryImages"];
+  logo?: School["logo"];
+  name?: School["name"];
   extendedStyles?: SchoolGalleryStyles;
 }
 
@@ -21,6 +29,7 @@ export interface SchoolGalleryStyles {
   imageContainer?: BoxProps;
   imageBox?: BoxProps;
   img?: BoxProps;
+  logo?: BoxProps;
 }
 
 const styles: SchoolGalleryStyles = {
@@ -58,11 +67,26 @@ const styles: SchoolGalleryStyles = {
       display: "block",
     },
   },
+  logo: {
+    sx: {
+      position: "absolute",
+      bottom: 0,
+      right: 0,
+      width: { xs: "100px", md: "160px" },
+      height: { xs: "100px", md: "160px" },
+      padding: "8px",
+      background: "white",
+      borderTopLeftRadius: "8px",
+    },
+  },
 };
 
-const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
-  const translate = useTranslate();
-
+const SchoolGallery: FC<SchoolGalleryProps> = ({
+  gallery,
+  logo,
+  name,
+  extendedStyles,
+}) => {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -94,12 +118,28 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({ gallery }) => {
 
   return (
     <>
-      <Box {...styles.container} data-test-selector="SchoolGallery">
+      <Box
+        sx={
+          {
+            ...styles?.container?.sx,
+            ...extendedStyles?.container?.sx,
+          } as SxProps
+        }
+        data-test-selector="SchoolGallery"
+      >
         <Box {...styles.imageContainer}>
           {/* Left main */}
           {main && (
             <Box {...styles.imageBox} onClick={() => openImage(0)}>
               <Box component="img" src={urlImageFor(main)} {...styles.img} />
+              {logo && (
+                <Box
+                  component="img"
+                  src={urlImageFor(logo)}
+                  alt={name}
+                  {...styles.logo}
+                />
+              )}
             </Box>
           )}
 

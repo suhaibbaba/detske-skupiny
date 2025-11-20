@@ -6,6 +6,7 @@ import RichText from "@/sanity/components/RichText";
 interface Props {
   content: School["content"];
   tags: School["tags"];
+  school: School;
 }
 
 interface AboutSchoolStyles {
@@ -51,11 +52,11 @@ const styles: AboutSchoolStyles = {
   },
 };
 
-const ContentSchool: FC<Props> = ({ content, tags }) => {
+const ContentSchool: FC<Props> = ({ content, tags, school }) => {
   return (
     <Box {...styles.container}>
       <RichText {...styles.description}>{content}</RichText>
-      {tags && (
+      {/* {tags && (
         <Box {...styles.tagsContainer}>
           {tags.map((tag, idx) => (
             <Chip
@@ -67,7 +68,34 @@ const ContentSchool: FC<Props> = ({ content, tags }) => {
             />
           ))}
         </Box>
-      )}
+      )} */}
+      {school?.categories?.map((category) => (
+        <Chip
+          component="a"
+          clickable
+          key={category.id}
+          label={category.name}
+          variant="outlined"
+          color="primary"
+          {...styles.chip}
+        />
+      ))}
+      <Chip
+        component="a"
+        clickable
+        label={school.region.name}
+        variant="outlined"
+        {...styles.chip}
+      />
+      <Chip
+        component="a"
+        clickable
+        href="https://en.wikipedia.org/wiki/Administrative_divisions_of_the_Czech_Republic#Districts"
+        label={school.area.name}
+        {...styles.chip}
+        variant="outlined"
+        sx={{ borderColor: "#B2AD88" }}
+      />
     </Box>
   );
 };

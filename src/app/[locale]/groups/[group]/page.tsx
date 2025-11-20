@@ -26,6 +26,10 @@ import Link from "@/components/ui/link";
 import { getLocalizedRoutes } from "@/routes";
 import SchoolMap from "@/app/[locale]/groups/[group]/components/SchoolMap";
 import { getLocale } from "next-intl/server";
+import Globe from "@/components/icons/GlobeIcon";
+import Phone from "@/components/icons/PhoneIcon";
+import Transportation from "@/components/icons/TransportationIcon";
+import ExternalLink from "@/components/icons/ExternalLinkIcon";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -45,6 +49,7 @@ const styles: PageStyles = {
     section: {
       sx: {
         background: "var(--mui-palette-gradients-ui3)",
+        pb: 7,
       },
     },
   },
@@ -58,7 +63,7 @@ const styles: PageStyles = {
   },
   container: {
     sx: {
-      mt: "100px",
+      mt: "20px",
     },
   },
   name: {
@@ -115,27 +120,28 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
     return redirect(getLocalizedRoutes(locale).home);
   }
 
-  const { pageHero, school } = await fetchSchoolBySlug({
+  const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
   });
 
   return (
     <Box {...styles.pageContainer}>
       <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
-        <PageHeadingTypography
-          title={pageHero?.title}
-          description={pageHero?.description}
-          ctaList={pageHero?.ctas}
-        />
+        <PageHeadingTypography title={school?.name} />
       </PageLayout>
       <Container {...styles.container}>
         <Box {...styles.contentWrapper}>
-          <SchoolHeader school={school} />
-          <SchoolGallery gallery={school.primaryImages} />
+          <SchoolGallery
+            gallery={school.primaryImages}
+            logo={school.logo}
+            name={school.name}
+            extendedStyles={{ container: { sx: { mt: "40px" } } }}
+          />
+          {/* <SchoolHeader school={school} /> */}
           <InfoCardGrid
             items={[
               {
-                title: "Location",
+                title: "location",
                 icon: <Location />,
                 show: !!school.address,
                 content: (
@@ -144,7 +150,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                       {formatMessage(
                         "{0}, {1}",
                         school.address?.street,
-                        school.address?.city,
+                        school.address?.city
                       )}
                     </Typography>
                     <Typography>{school.address?.postalCode}</Typography>
@@ -152,8 +158,8 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 ),
               },
               {
-                title: "Transportation Nearby",
-                icon: <Location />,
+                title: "transportationNearby",
+                icon: <Transportation />,
                 show: school.transportation && school.transportation.length > 0,
                 content: (
                   <Box>
@@ -166,8 +172,8 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 ),
               },
               {
-                title: "Contacts",
-                icon: <Location />,
+                title: "contacts",
+                icon: <Phone />,
                 show: school.contacts && school.contacts.length > 0,
                 content: (
                   <Box>
@@ -177,10 +183,10 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                         sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
                       >
                         {formatMessage(
-                          `{0}  - {1} - {2}`,
+                          `{0}  - {1} ${item.role ? `- {2}` : ""}`,
                           <Link href={`tel:${item.phone}`}>{item.phone}</Link>,
                           item.name,
-                          item.role,
+                          item.role
                         )}
                       </Typography>
                     ))}
@@ -188,20 +194,41 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 ),
               },
               {
-                title: "Website & Social Media",
-                icon: <Location />,
+                title: "socialsAndLinks",
+                icon: <Globe />,
                 show: school.links && school.links.length > 0,
                 content: (
                   <Box>
                     {school.links?.map((link) => (
-                      <Link link={link} key={link.id} />
+                      <Box
+                        key={link.id}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <Link
+                          link={link}
+                          key={link.id}
+                          target="_blank"
+                          sx={{ textTransform: "none" }}
+                        />
+                        <ExternalLink
+                          sx={{ "&&": { width: "16px", height: "16px" } }}
+                        />
+                      </Box>
                     ))}
                   </Box>
                 ),
               },
             ]}
           />
-          <ContentSchool content={school.content} tags={school.tags} />
+          <ContentSchool
+            content={school.content}
+            school={school}
+            tags={school.tags}
+          />
           <SchoolMap school={school} />
         </Box>
       </Container>

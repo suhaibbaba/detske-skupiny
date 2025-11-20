@@ -30,6 +30,12 @@ export async function fetchMiniSchools(params: { numberOfSchools: number }) {
         "icon": icon.asset->url,
         "backgroundColor": backgroundColor.hex,
       },
+      categories[]->{
+        "id": _id,
+        name,
+        "slug": slug.current,
+        "emoji": emoji.asset->url,
+      },
     },
   }`;
 
@@ -65,6 +71,12 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
         "id": _id,
         name,
         "slug": slug.current
+      },
+      categories[]->{
+        "id": _id,
+        name,
+        "slug": slug.current,
+        "emoji": emoji.asset->url,
       },
       transportation[]{
         "id": _key,

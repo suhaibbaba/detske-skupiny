@@ -51,6 +51,7 @@ export type SchoolType = {
   id: string;
   name: string;
   highPriority: boolean;
+  visibility: boolean;
   backgroundColor: string;
   icon?: SanityImageField;
 };

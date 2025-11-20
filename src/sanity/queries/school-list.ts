@@ -79,6 +79,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
         "id": _id,
         name,
         highPriority,
+        visibility,
         "icon": icon.asset->url,
         "backgroundColor": backgroundColor.hex,
       },
