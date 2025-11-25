@@ -175,7 +175,7 @@ const SchoolCard = async ({ school }: Props) => {
   return (
     <Box {...styles.container} data-test-selector="SchoolCard">
       <Box {...styles.imageWrapper}>
-        <Image src={school.primaryImage} {...styles.image} />
+        <Image src={school.primaryImage} alt={school.name} {...styles.image} />
         {school.area?.name && (
           <Typography {...styles.area}>
             <Location {...styles.locationIcon} />

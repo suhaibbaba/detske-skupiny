@@ -28,9 +28,6 @@ interface TableStyles {
 
 const styles: TableStyles = {
   title: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 600,
     mt: "80px",
     mb: "20px",
   },
@@ -45,7 +42,9 @@ export default function Table({ value }: Props) {
   return (
     <Box component="section">
       {value.heading && (
-        <Typography {...styles.title}>{translate(value.heading)}</Typography>
+        <Typography variant="h2" {...styles.title}>
+          {translate(value.heading)}
+        </Typography>
       )}
       <TableContainer>
         <MuiTable>

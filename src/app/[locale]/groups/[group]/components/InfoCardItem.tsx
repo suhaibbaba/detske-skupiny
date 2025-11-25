@@ -18,23 +18,6 @@ interface InfoCardItemStyles {
 }
 
 const styles: InfoCardItemStyles = {
-  container: {
-    sx: (theme) => ({
-      bgcolor: "primary.light",
-      border: `1px solid ${theme.palette.custom.ui14}`,
-      borderRadius: "12px",
-      p: "24px 12px",
-      display: "flex",
-      alignItems: "flex-start",
-      gap: "8px",
-      mt: "2px",
-      ".MuiSvgIcon-root": {
-        width: "20px",
-        height: "20px",
-        color: theme.palette.secondary.dark,
-      },
-    }),
-  },
   title: {
     sx: (theme) => ({
       fontSize: "16px",
@@ -46,11 +29,25 @@ const styles: InfoCardItemStyles = {
 };
 
 const InfoCardItem = ({ icon, title, content, show }: InfoCardItemProps) => {
-  if (!show) {
-    return null;
-  }
   return (
-    <Box {...styles.container}>
+    <Box
+      sx={(theme) => ({
+        bgcolor: "primary.light",
+        border: `1px solid ${theme.palette.custom.ui14}`,
+        borderRadius: "12px",
+        p: "24px 12px",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "8px",
+        mt: "2px",
+        ".MuiSvgIcon-root": {
+          width: "20px",
+          height: "20px",
+          color: theme.palette.secondary.dark,
+        },
+        opacity: !show ? 0.5 : 1,
+      })}
+    >
       <Box {...styles.iconWrapper}>{icon}</Box>
       <Box data-test-selector={"info-card"}>
         <Typography {...styles.title}>{title}</Typography>

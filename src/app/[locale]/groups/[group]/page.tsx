@@ -11,6 +11,10 @@ import {
   ListProps,
   Typography,
   TypographyProps,
+  Chip,
+  ChipProps,
+  Button,
+  IconButton,
 } from "@mui/material";
 import SchoolGallery, {
   SchoolGalleryStyles,
@@ -30,6 +34,8 @@ import Globe from "@/components/icons/GlobeIcon";
 import Phone from "@/components/icons/PhoneIcon";
 import Transportation from "@/components/icons/TransportationIcon";
 import ExternalLink from "@/components/icons/ExternalLinkIcon";
+import MapIcon from "@mui/icons-material/Map";
+import Offer from "./components/Offer";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -42,6 +48,8 @@ interface PageStyles {
   list?: ListProps;
   listItem?: ListItemProps;
   sectionHeading?: TypographyProps;
+  chip?: ChipProps;
+  chipContainer?: BoxProps;
 }
 
 const styles: PageStyles = {
@@ -110,6 +118,30 @@ const styles: PageStyles = {
       gap: "8px",
     },
   },
+  chipContainer: {
+    sx: {
+      display: "flex",
+      gap: "8px",
+      my: "20px",
+    },
+  },
+  chip: {
+    sx: {
+      borderRadius: "24px",
+      px: "6px",
+      py: "2px",
+      fontSize: 12,
+      fontWeight: 400,
+      color: "custom.ui20",
+      "& .MuiChip-label": {
+        padding: 0,
+      },
+      "& .MuiChip-icon": {
+        marginRight: "4px",
+        marginLeft: 0,
+      },
+    },
+  },
 };
 
 const Page = async ({ params }: PageProps<{ group: string }>) => {
@@ -138,6 +170,34 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
             extendedStyles={{ container: { sx: { mt: "40px" } } }}
           />
           {/* <SchoolHeader school={school} /> */}
+          <Box {...styles.chipContainer}>
+            {school?.categories?.map((category) => (
+              <Chip
+                component="a"
+                clickable
+                key={category.id}
+                label={category.name}
+                variant="outlined"
+                color="primary"
+                {...styles.chip}
+              />
+            ))}
+            <Chip
+              component="a"
+              clickable
+              label={school.region.name}
+              variant="outlined"
+              {...styles.chip}
+            />
+            <Chip
+              component="a"
+              clickable
+              label={school.area.name}
+              {...styles.chip}
+              variant="outlined"
+              sx={{ borderColor: "#B2AD88" }}
+            />
+          </Box>
           <InfoCardGrid
             items={[
               {
@@ -145,15 +205,26 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 icon: <Location />,
                 show: !!school.address,
                 content: (
-                  <Box>
-                    <Typography>
-                      {formatMessage(
-                        "{0}, {1}",
-                        school.address?.street,
-                        school.address?.city
-                      )}
-                    </Typography>
-                    <Typography>{school.address?.postalCode}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "12px",
+                    }}
+                  >
+                    <Box>
+                      <Typography>
+                        {formatMessage(
+                          "{0}, {1}",
+                          school.address?.street,
+                          school.address?.city
+                        )}
+                      </Typography>
+                      <Typography>{school.address?.postalCode}</Typography>
+                    </Box>
+                    <IconButton color="primary" href="#map">
+                      <MapIcon />
+                    </IconButton>
                   </Box>
                 ),
               },
@@ -177,19 +248,39 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 show: school.contacts && school.contacts.length > 0,
                 content: (
                   <Box>
-                    {school.contacts?.map((item) => (
-                      <Typography
-                        key={item.name}
-                        sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
-                      >
-                        {formatMessage(
-                          `{0}  - {1} ${item.role ? `- {2}` : ""}`,
-                          <Link href={`tel:${item.phone}`}>{item.phone}</Link>,
-                          item.name,
-                          item.role
-                        )}
-                      </Typography>
-                    ))}
+                    {school.contacts?.map((item) => {
+                      // Determine the link based on priority: phone first, then email
+                      const linkHref = item.phone
+                        ? `tel:${item.phone}`
+                        : item.email
+                          ? `mailto:${item.email}`
+                          : null;
+
+                      const linkText = item.phone || item.email;
+
+                      return (
+                        <Typography
+                          key={item.name}
+                          sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
+                        >
+                          {formatMessage(
+                            `{0}  - {1} ${item.role ? `- {2}` : ""}`,
+                            linkHref && linkText ? (
+                              <Link
+                                sx={{ textTransform: "none" }}
+                                href={linkHref}
+                              >
+                                {linkText}
+                              </Link>
+                            ) : (
+                              linkText
+                            ),
+                            item.name,
+                            item.role
+                          )}
+                        </Typography>
+                      );
+                    })}
                   </Box>
                 ),
               },
@@ -224,6 +315,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               },
             ]}
           />
+          {!school.content && <Offer />}
           <ContentSchool
             content={school.content}
             school={school}

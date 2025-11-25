@@ -118,7 +118,8 @@ const FeaturesGrid = ({ fields }: Props) => {
             const index = idx + 1; // Start from 1 to simplify logic
 
             let gridColumn: number;
-            let gridRow: number;
+            let gridRow: number | string;
+            let alignSelf: string | undefined = undefined;
 
             if (index % 3 === 1) {
               // First in zigzag pair (1, 4, 7, ...)
@@ -131,7 +132,8 @@ const FeaturesGrid = ({ fields }: Props) => {
             } else {
               // Centered item (3, 6, 9, ...)
               gridColumn = 2;
-              gridRow = Math.ceil(index / 3) * 2;
+              gridRow = "3 span";
+              alignSelf = "center";
             }
 
             return (
@@ -142,6 +144,7 @@ const FeaturesGrid = ({ fields }: Props) => {
                   ...styles.item?.sx,
                   gridColumn,
                   gridRow,
+                  alignSelf,
                 }}
               >
                 <Box

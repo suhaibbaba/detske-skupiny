@@ -20,7 +20,6 @@ const styles: InfoCardGridStyles = {
       display: "grid",
       gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
       gap: "24px 20px",
-      mt: "80px",
     },
   },
 };

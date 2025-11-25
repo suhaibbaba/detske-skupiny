@@ -159,15 +159,17 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
 
   return (
     <Card {...styles.card}>
-      <CardMedia
-        component="img"
-        image={image}
-        title={title}
-        height="224px"
-        sx={{
-          borderRadius: "8px",
-        }}
-      />
+      <Link href={url}>
+        <CardMedia
+          component="img"
+          image={image}
+          title={title}
+          height="224px"
+          sx={{
+            borderRadius: "8px",
+          }}
+        />
+      </Link>
       <CardContent {...styles.cardContent}>
         {blog.category && (
           <Typography {...styles.tag}>{blog.category.name}</Typography>
@@ -177,7 +179,7 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
         </Link>
         <Typography {...styles.description}>{excerpt}</Typography>
         <Box {...styles.footer}>
-          <Box {...styles.authorBox}>
+          {/* <Box {...styles.authorBox}>
             <Avatar src={author?.image} {...styles.avatar} />
             <Box>
               <Typography {...styles.authorName}>{author?.name}</Typography>
@@ -185,8 +187,8 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
                 {formatDate(publishedAt)} · {readTime} {translate("minRead")}
               </Typography>
             </Box>
-          </Box>
-          <Button {...styles.readNowButton} href={url}>
+          </Box> */}
+          <Button {...styles.readNowButton} href={url} fullWidth>
             {translate("readNow")}
           </Button>
         </Box>

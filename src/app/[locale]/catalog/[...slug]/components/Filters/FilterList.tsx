@@ -32,6 +32,7 @@ import { useLocale } from "next-intl";
 interface Props {
   title: string;
   showDivider?: boolean;
+  showSearch?: boolean;
   items?: CategoryItem[];
   selectedSlug?: string;
   initialItemsCount?: number;
@@ -75,6 +76,7 @@ const styles: FilterListStyles = {
     sx: (theme) => ({
       justifyContent: "space-between",
       minHeight: "auto",
+      p: "2px",
       "&:hover:not(.selected)": {
         bgcolor: alpha(theme.palette.custom.ui14, 0.3),
       },
@@ -107,10 +109,10 @@ const styles: FilterListStyles = {
   },
   itemCount: {
     sx: {
-      width: "36px",
-      height: "36px",
+      width: "28px",
+      height: "28px",
       aspectRatio: 1,
-      fontSize: 13,
+      fontSize: 11,
       color: "custom.ui13",
       fontWeight: 400,
       border: "1px solid #E0C3F9",
@@ -174,8 +176,9 @@ const FilterList: FC<Props> = ({
   title,
   items: itemsProps,
   showDivider,
+  showSearch = true,
   selectedSlug,
-  initialItemsCount = 10,
+  initialItemsCount = 15,
 }) => {
   const locale = useLocale();
   const translate = useTranslate();
@@ -190,7 +193,7 @@ const FilterList: FC<Props> = ({
   // Filter items based on search
   const filteredItems = search
     ? items.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()),
+        item.name.toLowerCase().includes(search.toLowerCase())
       )
     : items;
 
@@ -203,26 +206,28 @@ const FilterList: FC<Props> = ({
     <Box {...styles.container}>
       {showDivider && <Divider {...styles.divider} />}
       <Typography {...styles.heading}>{title}</Typography>
-      <TextField
-        placeholder={translate("search")}
-        {...styles.searchInput}
-        value={search}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon
-                  sx={{
-                    color: "primary.main",
-                    fontSize: 16,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          },
-        }}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      {showSearch && shouldShowToggle && (
+        <TextField
+          placeholder={translate("search")}
+          {...styles.searchInput}
+          value={search}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon
+                    sx={{
+                      color: "primary.main",
+                      fontSize: 16,
+                    }}
+                  />
+                </InputAdornment>
+              ),
+            },
+          }}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      )}
       <Box {...styles.listContainer}>
         {displayedItems.map((district) => {
           const selected =

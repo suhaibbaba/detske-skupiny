@@ -18,7 +18,13 @@ const Footer = () => {
               HEAD OFFICE
             </Typography>
             <Typography color="inherit">+420 731 146 894</Typography>
-            <Typography color="inherit">info@sousedskeskupinky.cz</Typography>
+            <Typography
+              color="inherit"
+              component="a"
+              href="mailto:info@detskeskupinky.cz"
+            >
+              info@detskeskupinky.cz
+            </Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <Typography
@@ -40,7 +46,7 @@ const Footer = () => {
                 Sousedské skupiny Jihomoravský kraj
               </Typography>
               <Typography color="inherit">
-                Sousedské skupiny Moravskouslezský kraj
+                Sousedské skupiny Moravskoslezský kraj
               </Typography>
             </Stack>
           </Grid>
@@ -81,7 +87,7 @@ const Footer = () => {
         >
           <Typography color="inherit">LOGO</Typography>
           <Typography color="inherit">
-            &copy; {new Date().getFullYear()} SousedkéSkupinky.cz
+            &copy; {new Date().getFullYear()} DetskeSkupinky.cz
           </Typography>
           <Typography color="inherit">English (US)</Typography>
         </Stack>

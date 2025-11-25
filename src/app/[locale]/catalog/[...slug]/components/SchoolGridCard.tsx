@@ -18,6 +18,7 @@ import { getLocalizedRoutes } from "@/routes";
 import Image from "@/components/ui/image/Image";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 import { useLocale } from "next-intl";
+import Link from "@/components/ui/link/Link";
 
 interface Props {
   school: MiniSchool;
@@ -139,11 +140,17 @@ const SchoolGridCard = ({ school }: Props) => {
 
   return (
     <Box {...styles.card}>
-      <Box {...styles.imageWrapper}>
+      <Link
+        sx={styles.imageWrapper?.sx}
+        href={getLocalizedRoutes(locale).group(school.slug)}
+      >
         <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
         <SchoolTypesBadge types={types?.filter((t) => t.visibility)} />
-      </Box>
-      <Box {...styles.nameWrapper}>
+      </Link>
+      <Link
+        sx={styles.nameWrapper?.sx}
+        href={getLocalizedRoutes(locale).group(school.slug)}
+      >
         {logo && (
           <Box
             component="img"
@@ -155,7 +162,7 @@ const SchoolGridCard = ({ school }: Props) => {
         <Ellipsis limitOfLine={2} {...styles.name}>
           {name}
         </Ellipsis>
-      </Box>
+      </Link>
       <Box {...styles.tagsWrapper}>
         {tags?.map((tag) => (
           <SchoolTag tag={tag} key={tag.id} />

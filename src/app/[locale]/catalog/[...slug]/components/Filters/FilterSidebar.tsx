@@ -90,9 +90,10 @@ const FilterSidebar = ({
           catalog.region ? "mainDistrictsByRegion" : "mainDistricts",
           {
             region: catalog.region || "",
-          },
+          }
         )}
         selectedSlug={selectedSlug}
+        showSearch={+catalog.level > 0}
         items={+catalog.level > 0 ? areas : regions}
       />
       <FilterList
@@ -100,7 +101,7 @@ const FilterSidebar = ({
           catalog.region ? "otherDistrictsByRegion" : "otherDistricts",
           {
             region: catalog.region || "",
-          },
+          }
         )}
         selectedSlug={selectedSlug}
         items={subareas}

@@ -15,9 +15,6 @@ interface SchoolMapStyles {
 
 const styles: SchoolMapStyles = {
   title: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 600,
     mt: "80px",
     mb: "20px",
   },
@@ -42,10 +39,16 @@ const SchoolMap = ({ school }: Props) => {
   }
 
   return (
-    <Box component="section">
-      <Typography {...styles.title}>{translate("Map")}</Typography>
+    <Box component="section" id="map">
+      <Typography variant="h2" {...styles.title}>
+        {translate("map")}
+      </Typography>
       <Box {...styles.mapWrapper}>
-        <MapComponent defaultCenter={marker.coordinate} markers={[marker]} />
+        <MapComponent
+          defaultCenter={marker.coordinate}
+          markers={[marker]}
+          defaultZoom={14}
+        />
       </Box>
     </Box>
   );
