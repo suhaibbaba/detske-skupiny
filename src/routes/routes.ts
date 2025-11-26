@@ -11,8 +11,11 @@ export const getLocalizedRoutes = (locale: string = defaultLocale) => ({
   cooperation: localizeHref("/cooperation", locale),
   article: (slug?: string) =>
     localizeHref(slug ? joinPath("/articles", slug) : "/articles", locale),
-  catalogs: (slug?: string) =>
-    localizeHref(slug ? joinPath("/catalog", slug) : "/", locale),
+  catalogs: (slug?: string, query?: string) => {
+    const basePath = slug ? joinPath("/catalog", slug) : "/";
+    const url = localizeHref(basePath, locale);
+    return query ? `${url}?${query}` : url;
+  },
   group: (slug?: string) =>
     localizeHref(slug ? joinPath("/groups", slug) : "/groups", locale),
 });

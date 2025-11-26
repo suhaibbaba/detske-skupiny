@@ -177,6 +177,10 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 clickable
                 key={category.id}
                 label={category.name}
+                href={getLocalizedRoutes(locale).catalogs(
+                  school.region.countrySlug,
+                  `categories=${category.slug}`,
+                )}
                 variant="outlined"
                 color="primary"
                 {...styles.chip}

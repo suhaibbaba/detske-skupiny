@@ -55,7 +55,7 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
       website,
       "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
-      "region": area->region->{ "id": _id, name, fullSlug },
+      "region": area->region->{ "id": _id, name, countrySlug, fullSlug },
       capacity,
       providerName,
       area->{ "id": _id, name, fullSlug },

@@ -12,6 +12,7 @@ export type Region = {
   backgroundCover: string;
   areas: Area[];
   fullSlug: string;
+  countrySlug: string;
 };
 
 export type MapCoordinate = {
