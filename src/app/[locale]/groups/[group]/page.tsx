@@ -186,6 +186,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               component="a"
               clickable
               label={school.region.name}
+              href={getLocalizedRoutes(locale).catalogs(school.region.fullSlug)}
               variant="outlined"
               {...styles.chip}
             />
@@ -193,6 +194,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               component="a"
               clickable
               label={school.area.name}
+              href={getLocalizedRoutes(locale).catalogs(school.area.fullSlug)}
               {...styles.chip}
               variant="outlined"
               sx={{ borderColor: "#B2AD88" }}
@@ -217,7 +219,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                         {formatMessage(
                           "{0}, {1}",
                           school.address?.street,
-                          school.address?.city
+                          school.address?.city,
                         )}
                       </Typography>
                       <Typography>{school.address?.postalCode}</Typography>
@@ -276,7 +278,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                               linkText
                             ),
                             item.name,
-                            item.role
+                            item.role,
                           )}
                         </Typography>
                       );

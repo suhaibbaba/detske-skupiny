@@ -2,6 +2,7 @@ export type Area = {
   id: string;
   name: string;
   slug: string;
+  fullSlug: string;
 };
 
 export type Region = {
@@ -10,6 +11,7 @@ export type Region = {
   slug: string;
   backgroundCover: string;
   areas: Area[];
+  fullSlug: string;
 };
 
 export type MapCoordinate = {
