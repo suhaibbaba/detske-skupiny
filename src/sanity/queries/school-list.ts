@@ -8,6 +8,7 @@ import {
 } from "@/sanity/types";
 import { excludeDraft, languageQuery } from "@/sanity/queries/index";
 import { clientFetch } from "@/sanity/utilites/fetch";
+import { removeDiacritics } from "@/utilites/strings";
 
 export async function fetchSchoolPage(params: SchoolPageQueryParams) {
   let totalQuery = `*[_type == "countries" && ${excludeDraft} && ${languageQuery} && slug.current == $country][0].schoolCount`;
@@ -42,7 +43,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
     baseFilter +
     `&& (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
     (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) && 
-    (!defined($search) || lower(name) match "*" + lower($search) + "*")
+    (!defined($search) || lower(nameNormalized) match "*" + lower($search) + "*")
   `;
 
   const query = groq`{
@@ -103,7 +104,7 @@ export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
     subarea: params.subarea ?? null,
     categories: params.categories ?? [],
     tags: params.tags ?? [],
-    search: params.search ?? null,
+    search: removeDiacritics(params.search) ?? null,
     start: params.start ?? 0,
     end: params.end ?? 10000,
   });

@@ -95,7 +95,6 @@ const LanguageSwitcher = () => {
     const targetDomain = languages[selectedLocale].domain;
     const newUrl = buildUrl(targetDomain);
 
-    console.log({ newUrl });
     // Redirect to the new domain while preserving the current path
     window.location.href = newUrl;
   };

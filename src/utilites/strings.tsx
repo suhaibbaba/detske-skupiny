@@ -62,3 +62,14 @@ export const camelToDisplayText = (str?: string): string => {
     .replace(/\b\w/g, (c) => c.toUpperCase())
     .trim();
 };
+
+export function removeDiacritics(str?: string): string {
+  if (!str) {
+    return "";
+  }
+
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
