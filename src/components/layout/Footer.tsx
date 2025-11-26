@@ -168,7 +168,7 @@ const Footer = async () => {
               <Link
                 key={index}
                 href={link.url}
-                target="_blank"
+                target={link.target}
                 {...styles.link}
               >
                 {link.type === "email" && <EmailIcon {...styles.iconLink} />}
@@ -179,7 +179,12 @@ const Footer = async () => {
           }
 
           return (
-            <Link key={index} href={link.url} {...styles.link}>
+            <Link
+              key={index}
+              href={link.url}
+              {...styles.link}
+              target={link.target}
+            >
               {link.text}
             </Link>
           );
