@@ -94,8 +94,12 @@ function parseLinkField(
   const result = {
     type: detectLinkType(linkField),
     url: " ",
-    text: linkField.text || "",
-    title: linkField.title || "",
+    text:
+      linkField.text ||
+      linkField.internalLink?.text ||
+      linkField.internalLink?.title ||
+      "",
+    title: linkField.text || linkField.internalLink?.title || "",
     target: linkField.target || config.defaultTarget,
     valid: false,
     errors: [],

@@ -39,21 +39,27 @@ async function fetchRefMap(ids: string[]) {
     "slug": select(defined(slug.current)=>slug.current, slug), 
     title,
     _type == "countries" => {
+      "text": name,
       "slug": slug.current,
     },
     _type == "regions" => {
+      "text": name,
       "slug": fullSlug,
     },
     _type == "areas" => {
+      "text": name,
       "slug": fullSlug,
     },
     _type == "subareas" => {
+      "text": name,
       "slug": fullSlug,
     },
   }`;
   const docs = await client.fetch(query, { ids });
   const map = new Map<string, any>();
-  for (const d of docs) map.set(d._id, d);
+  for (const d of docs) {
+    map.set(d._id, d);
+  }
   return map;
 }
 
