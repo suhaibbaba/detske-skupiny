@@ -37,11 +37,13 @@ export async function clientFetch<T>(query: string, params?: FetchParams) {
   }
 
   const queryParams = { ...(params || {}), locale };
-  return client.fetch<T>(query, queryParams, {
+  const data = await client.fetch<T>(query, queryParams, {
     useCdn: true,
     perspective: "published", // Only published content
     next: {
       revalidate: 300, // Next.js caches in seconds
     },
   });
+
+  return expandLinks(data);
 }

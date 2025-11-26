@@ -7,6 +7,7 @@ import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
 import BlogCard from "@/app/[locale]/articles/components/BlogCard";
 import WritersSection from "@/app/[locale]/articles/components/WritersSection";
 import Alert from "@/components/ui/alert";
+import { cx } from "next/dist/client/components/react-dev-overlay/ui/utils/cx";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
@@ -15,6 +16,13 @@ interface BlogsStyles {
 }
 
 const styles: BlogsStyles = {
+  container: {
+    sx: {
+      "&.pt-80": {
+        pt: "80px",
+      },
+    },
+  },
   pageLayout: {
     section: {
       sx: {
@@ -52,7 +60,7 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
   });
 
   return (
-    <Box {...styles.container}>
+    <Box {...styles.container} className={cx(!content && "pt-80")}>
       {content && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <Container>

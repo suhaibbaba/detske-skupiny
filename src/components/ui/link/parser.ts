@@ -215,6 +215,10 @@ function parseInternalLink(
       return getLocalizedRoutes(config.locale).group(
         linkField.internalLink.slug,
       );
+    case "blogPage":
+      return getLocalizedRoutes(config.locale).article(
+        linkField.internalLink.slug,
+      );
     default:
       return getLocalizedRoutes(config.locale).home;
   }
