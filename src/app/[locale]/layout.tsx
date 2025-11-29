@@ -12,7 +12,10 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
 
 export const metadata: Metadata = {
-  title: "Sousedske Skupinky",
+  title: {
+    template: "%s | Sousedske Skupinky",
+    default: "Sousedske Skupinky",
+  },
   description: "Sousedske Skupinky",
 };
 

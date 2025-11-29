@@ -5,6 +5,8 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import GroupSection from "@/app/[locale]/groups/components/groupSection";
 import React from "react";
+import { Metadata } from "next";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface GroupsStyles {
   container?: BoxProps;
@@ -23,6 +25,13 @@ const styles: GroupsStyles = {
     },
   },
 };
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const translate = await getTranslateServer();
+  return {
+    title: translate("groups"),
+  };
+}
 
 const Page = async ({ params }: PageProps) => {
   const { content, groups } = await fetchGroupPage();

@@ -1,4 +1,4 @@
-import { fetchBlogBySlug } from "@/sanity/queries";
+import { fetchBlogBySlug, fetchBlogPage } from "@/sanity/queries";
 import { PageProps } from "@/types";
 import {
   Box,
@@ -20,6 +20,8 @@ import { formatDate } from "@/utilites/date";
 import RichText from "@/sanity/components/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import Image from "@/components/ui/image/Image";
+import { Metadata } from "next";
+import { cx } from "next/dist/client/components/react-dev-overlay/ui/utils/cx";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -41,6 +43,11 @@ interface BlogDetailStyles {
 const styles: BlogDetailStyles = {
   container: {
     pb: "116px",
+    sx: {
+      "&.pt-20": {
+        pt: "20px",
+      },
+    },
   },
   pageLayout: {
     section: {
@@ -133,6 +140,20 @@ const styles: BlogDetailStyles = {
   },
 };
 
+export async function generateMetadata({
+  params,
+}: PageProps<{ slug: string }>): Promise<Metadata> {
+  const translate = await getTranslateServer();
+
+  const { slug } = await params;
+  const { blog, content } = await fetchBlogBySlug({ slug });
+
+  return {
+    title: blog.title || content?.title || translate("article"),
+    description: content?.description,
+  };
+}
+
 const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const { slug } = await params;
   const { blog, content } = await fetchBlogBySlug({ slug });
@@ -140,7 +161,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const translate = await getTranslateServer();
 
   return (
-    <Box {...styles.container}>
+    <Box {...styles.container} className={cx(!content && "pt-20")}>
       {content && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <PageHeadingTypography

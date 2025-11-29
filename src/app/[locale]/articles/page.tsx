@@ -8,6 +8,8 @@ import BlogCard from "@/app/[locale]/articles/components/BlogCard";
 import WritersSection from "@/app/[locale]/articles/components/WritersSection";
 import Alert from "@/components/ui/alert";
 import { cx } from "next/dist/client/components/react-dev-overlay/ui/utils/cx";
+import { getTranslateServer } from "@/hooks/useTranslate";
+import { Metadata } from "next";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
@@ -51,7 +53,27 @@ const styles: BlogsStyles = {
   },
 };
 
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const { category: categorySelected } = (await searchParams) as {
+    category?: string;
+  };
+
+  const { content } = await fetchBlogPage({
+    categorySelected: categorySelected || "",
+  });
+
+  const translate = await getTranslateServer();
+
+  return {
+    title: content?.title || translate("articles"),
+    description: content?.description,
+  };
+}
+
 const BlogsPage = async ({ params, searchParams }: PageProps) => {
+  const translate = await getTranslateServer();
   const { category: categorySelected } = (await searchParams) as {
     category?: string;
   };
@@ -84,7 +106,7 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
             <Alert
               severity="info"
               sx={{ maxWidth: 600, gridColumn: "1/3" }}
-              message={"No Blogs Found"}
+              message={translate("No Blogs Found")}
             />
           )}
         </Box>

@@ -5,6 +5,8 @@ import { Box, BoxProps } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import ContactInfoCard from "@/app/[locale]/contact-us/components/ContactInfoCard";
 import ContactForm from "@/components/forms/ContactForm";
+import { Metadata } from "next";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface ContactUsStyles {
   pageLayout?: PageLayoutStyles;
@@ -60,6 +62,13 @@ const styles: ContactUsStyles = {
     },
   },
 };
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const translate = await getTranslateServer();
+  return {
+    title: translate("contact-us"),
+  };
+}
 
 const Page = async ({ params }: PageProps) => {
   const {

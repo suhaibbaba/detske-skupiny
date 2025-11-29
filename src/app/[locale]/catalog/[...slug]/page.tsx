@@ -12,7 +12,7 @@ import {
   getSelectedSlug,
   parseCatalogSlug,
 } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
-import { fetchFilters } from "@/sanity/queries";
+import { fetchBlogBySlug, fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import {
   fetchSchoolByFilter,
@@ -23,6 +23,9 @@ import { Suspense } from "react";
 import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/SchoolListClient";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+import { Metadata } from "next";
+import { getTranslateServer } from "@/hooks/useTranslate";
+import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 
 type Props = PageProps<{ slug: string[] }>;
 const PAGE_SIZE = 9;
@@ -70,6 +73,22 @@ const styles: GroupsPageStyles = {
     },
   },
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const translate = await getTranslateServer();
+  const { slug } = await params;
+
+  const lastSegment = slug[slug.length - 1];
+  if (!lastSegment) {
+    return {
+      title: translate("catalog"),
+    };
+  }
+  const pages = await fetchBreadcrumbList({ slugs: [lastSegment] });
+  return {
+    title: pages.length > 0 ? pages[0].name : translate("catalog"),
+  };
+}
 
 const Page = async ({ params, searchParams }: Props) => {
   const { slug } = await params;

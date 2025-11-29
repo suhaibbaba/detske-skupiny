@@ -36,6 +36,8 @@ import Transportation from "@/components/icons/TransportationIcon";
 import ExternalLink from "@/components/icons/ExternalLinkIcon";
 import MapIcon from "@mui/icons-material/Map";
 import Offer from "./components/Offer";
+import { Metadata } from "next";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -143,6 +145,28 @@ const styles: PageStyles = {
     },
   },
 };
+
+export async function generateMetadata({
+  params,
+}: PageProps<{ group: string }>): Promise<Metadata> {
+  const translate = await getTranslateServer();
+  const { group: groupSlug } = await params;
+  const locale = await getLocale();
+
+  if (!groupSlug) {
+    return {
+      title: translate("school"),
+    };
+  }
+
+  const { school } = await fetchSchoolBySlug({
+    slug: groupSlug,
+  });
+
+  return {
+    title: school.name,
+  };
+}
 
 const Page = async ({ params }: PageProps<{ group: string }>) => {
   const { group: groupSlug } = await params;
