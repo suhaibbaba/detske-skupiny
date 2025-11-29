@@ -332,7 +332,6 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                         <Link
                           link={link}
                           key={link.id}
-                          target="_blank"
                           sx={{ textTransform: "none" }}
                         />
                         <ExternalLink

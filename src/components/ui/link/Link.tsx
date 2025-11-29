@@ -53,7 +53,12 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
   }
 
   return (
-    <MuiLink component={NextLink} {...styles} {...otherProps}>
+    <MuiLink
+      component={NextLink}
+      {...styles}
+      {...otherProps}
+      target={otherProps.target || "_self"}
+    >
       {children}
     </MuiLink>
   );

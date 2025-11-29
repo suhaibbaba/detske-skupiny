@@ -38,7 +38,7 @@ interface SanityLinkField {
   url?: string;
   text?: string;
   title?: string;
-  target?: string;
+  blank?: boolean;
   email?: string;
   phone?: string;
   internalLink?: {
@@ -100,7 +100,7 @@ function parseLinkField(
       linkField.internalLink?.title ||
       "",
     title: linkField.text || linkField.internalLink?.title || "",
-    target: linkField.target || config.defaultTarget,
+    target: linkField.blank ? "_blank" : "_self",
     valid: false,
     errors: [],
   };
@@ -212,6 +212,7 @@ function parseInternalLink(
     case "home":
       return getLocalizedRoutes(config.locale).home;
     case "preschoolPage":
+    case "preschool":
       return getLocalizedRoutes(config.locale).cooperation;
     case "about":
       return getLocalizedRoutes(config.locale).about;
