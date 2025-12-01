@@ -14,6 +14,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 const Page = async ({ params }: PageProps) => {
+  const queryParams = await params;
   const data = await fetchPageByType("preschool");
 
   return (
@@ -21,7 +22,7 @@ const Page = async ({ params }: PageProps) => {
       <Container sx={{ pt: "40px" }}>
         <Breadcrumbs addSpace={false} />
       </Container>
-      <Zone sections={data?.sections} types="all" {...params} />
+      <Zone sections={data?.sections} types="all" {...queryParams} />
     </Box>
   );
 };

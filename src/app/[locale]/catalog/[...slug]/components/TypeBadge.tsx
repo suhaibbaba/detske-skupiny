@@ -48,7 +48,13 @@ const styles: SchoolTypesBadgeStyles = {
   },
 };
 
-const SchoolTypesBadge: FC<Props> = ({ types }) => {
+const SchoolTypesBadge: FC<Props> = ({ types: typesProps }) => {
+  const types = typesProps?.sort((a, b) => {
+    if (a.highPriority && !b.highPriority) return -1;
+    if (!a.highPriority && b.highPriority) return 1;
+    return 0;
+  });
+
   if (!types || types.length === 0) {
     return null;
   }
