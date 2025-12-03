@@ -1,0 +1,27 @@
+import { SvgIcon, SvgIconProps } from "@mui/material";
+
+interface SearchIconProps extends SvgIconProps {
+  /** If false, the icon's main path will have a transparent fill, showing only the stroke. Defaults to true. */
+  isFilled?: boolean;
+}
+
+const Search = ({ isFilled, ...props }: SearchIconProps) => {
+  const pathFill = isFilled ? "currentColor" : "none";
+
+  return (
+    <SvgIcon
+      viewBox="0 0 16 17"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M11.9121 12.0938C11.9961 12.093 12.0772 12.1254 12.1377 12.1836L15.4102 15.4561L15.4492 15.5049C15.4829 15.5571 15.5005 15.6186 15.5 15.6816C15.4993 15.7658 15.4658 15.8467 15.4062 15.9062C15.3467 15.9658 15.2658 15.9993 15.1816 16C15.1186 16.0005 15.0571 15.9829 15.0049 15.9492L14.9561 15.9102L11.6836 12.6377H11.6846C11.6261 12.5771 11.593 12.4963 11.5938 12.4121C11.5945 12.328 11.629 12.248 11.6885 12.1885C11.748 12.129 11.828 12.0945 11.9121 12.0938ZM6.1582 1C9.28266 1.00026 11.8154 3.53369 11.8154 6.6582C11.8152 9.7825 9.2825 12.3152 6.1582 12.3154C3.03369 12.3154 0.500258 9.78266 0.5 6.6582C0.5 3.53353 3.03353 1 6.1582 1Z"
+        fill={pathFill}
+        stroke="currentColor"
+      />
+    </SvgIcon>
+  );
+};
+
+export default Search;

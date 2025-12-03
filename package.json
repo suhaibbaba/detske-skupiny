@@ -9,23 +9,38 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@maptiler/sdk": "^3.8.0",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
+    "@mui/material-nextjs": "^7.3.3",
+    "@portabletext/react": "^3.2.1",
+    "@sanity/image-url": "^1.1.0",
+    "@vis.gl/react-google-maps": "^1.5.5",
+    "embla-carousel-react": "^8.6.0",
+    "lodash.mergewith": "^4.6.2",
     "next": "15.3.2",
     "next-intl": "^4.1.0",
+    "next-sanity": "^10.0.10",
+    "nuqs": "^2.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "yet-another-react-lightbox": "^3.24.0"
+    "react-infinite-scroll-hook": "^6.0.1",
+    "sanity-plugin-link-field": "^1.4.1",
+    "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/lodash.mergewith": "^4.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
     "typescript": "^5"
   }
 }

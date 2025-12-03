@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js i18n Domain-Based Routing Setup
 
-## Getting Started
+This guide explains how to set up domain-based internationalization (i18n) routing for local development on macOS.
 
-First, run the development server:
+## Overview
+
+This project uses `next-intl` with domain-based routing, where different domains serve different languages:
+- `en.school.local` → English
+- `cz.school.local` → Czech
+
+## Prerequisites
+
+- Node.js installed
+- macOS (for the setup commands below)
+- Terminal access with sudo privileges
+
+## Local Development Setup
+
+### 1. Configure Local Domains
+
+Add custom domain entries to your hosts file:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Add these lines at the end of the file:
+
+```
+127.0.0.1 en.school.local
+127.0.0.1 cz.school.local
+```
+
+**Save and exit:** Press `Ctrl + X`, then `Y`, then `Enter`
+
+**Flush DNS cache** to make changes take effect immediately:
+
+```bash
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
+### 2. Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```bash
+cp .env.example .env.local
+```
+
+### 3. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Troubleshooting
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Issue: Getting 404 errors
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Solution:** Ensure you have the `[locale]` folder in your app directory. All routes must be inside `src/app/[locale]/`.
 
-## Learn More
+### Issue: Still showing English on Czech domain
 
-To learn more about Next.js, take a look at the following resources:
+**Solution:** 
+1. Clear Next.js cache: `rm -rf .next`
+2. Restart the dev server
+3. Make sure you're accessing via the correct domain (not `localhost`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Issue: Cross-origin warnings
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Solution:** Add this to your `next.config.js`:
 
-## Deploy on Vercel
+```javascript
+const nextConfig = {
+  allowedDevOrigins: [
+    'http://en.school.local',
+    'http://cz.school.local',
+  ],
+};
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Production Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+In production, point your actual domains to your server:
+- `en.yourdomain.com` → Your server IP
+- `cz.yourdomain.com` → Your server IP
+
+Update environment variables:
+```env
+NEXT_PUBLIC_EN_DOMAIN=en.yourdomain.com
+NEXT_PUBLIC_CZ_DOMAIN=cz.yourdomain.com
+```
+
+No hosts file modifications or port forwarding needed in production.
