@@ -60,7 +60,7 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
     sx: {
       padding: "14px 10px",
       letterSpacing: 0,
-      minWidth: "172px",
+      minWidth: { xs: "100px", sm: "172px" },
     },
   },
 };
@@ -73,7 +73,7 @@ const PageHeadingTypography: FC<Props> = ({
 }) => {
   const locale = useLocale();
   const [styles] = useState(() =>
-    mergeMuiProps(pageHeadingTypographyStyles, extendedStyles),
+    mergeMuiProps(pageHeadingTypographyStyles, extendedStyles)
   );
 
   return (

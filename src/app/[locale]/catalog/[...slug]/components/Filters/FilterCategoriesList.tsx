@@ -36,7 +36,7 @@ interface FilterListStyles {
 const styles: FilterListStyles = {
   sectionHeading: {
     fontSize: "18px",
-    fontWeight: 500,
+    fontWeight: 900,
     mb: "16px",
     color: "custom.ui13",
     textTransform: "capitalize",
@@ -152,13 +152,6 @@ const FilterCategoriesList: FC<Props> = ({
           );
         })}
       </Box>
-      {clear && selectedTypes && selectedTypes.length > 0 && (
-        <Box {...styles.viewAllContainer}>
-          <Typography {...styles.viewAll} onClick={() => clear("categories")}>
-            {translate("viewAll")}
-          </Typography>
-        </Box>
-      )}
     </Box>
   );
 };

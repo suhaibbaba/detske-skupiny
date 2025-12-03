@@ -3,7 +3,7 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@/theme";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-import { Fredoka } from "next/font/google";
+import { Nunito } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getLocale, getMessages } from "next-intl/server";
 import { setLocale } from "@/utilites/localeStore";
@@ -13,13 +13,14 @@ import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Sousedske Skupinky",
-    default: "Sousedske Skupinky",
+    template: "%s | Dětské Skupiny po celé ČR",
+    default: "Dětské Skupiny po celé ČR",
   },
-  description: "Sousedske Skupinky",
+  description:
+    "Všechny dětské skupiny na jednom místě. Díky datům MPSV nabízíme nejaktuálnější přehled v Praze, Brně i po celé ČR, abyste mohli vybrat tu nejlepší péči pro své dítě.",
 };
 
-const fredoka = Fredoka({ subsets: ["latin"] });
+const nunito = Nunito({ subsets: ["latin"] });
 
 export default async function RootLayout({
   children,
@@ -33,7 +34,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={fredoka.className}>
+      <body className={nunito.className}>
         <AppRouterCacheProvider>
           <NuqsAdapter>
             <IntlErrorHandlingProvider locale={locale} messages={messages}>

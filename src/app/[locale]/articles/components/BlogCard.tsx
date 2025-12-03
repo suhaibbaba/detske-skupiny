@@ -47,7 +47,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
     sx: {
       borderRadius: "20px",
       boxShadow: "var(--mui-palette-shadows-ui1)",
-      maxWidth: "394px",
+      maxWidth: { xs: "100%", md: "394px" },
       display: "flex",
       flexDirection: "column",
       gap: "24px",

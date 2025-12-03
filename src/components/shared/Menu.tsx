@@ -19,10 +19,7 @@ const styles: MenuStyles = {
     component: "nav",
     sx: {
       display: { xs: "flex", md: "flex" },
-      alignItems: {
-        xs: "flex-start",
-        md: "center",
-      },
+      alignItems: "center",
       flexDirection: {
         xs: "column",
         md: "row",
@@ -37,7 +34,7 @@ const styles: MenuStyles = {
     sx: {
       position: "relative",
       textDecoration: "none",
-      color: "custom.ui13",
+      color: { xs: "common.white", md: "custom.ui13" },
       fontSize: 16,
       mx: 3,
       pb: 0.5,
@@ -45,7 +42,7 @@ const styles: MenuStyles = {
       "&::after": {
         content: '""',
         position: "absolute",
-        bgcolor: "primary.main",
+        bgcolor: { xs: "common.white", md: "primary.main" },
         width: "0",
         height: "2px",
         left: "0",
@@ -55,6 +52,9 @@ const styles: MenuStyles = {
       "&:hover": {
         "&:after": {
           width: "100%",
+        },
+        "&&": {
+          color: { xs: "common.white", md: "primary.main" },
         },
       },
       "&.drawer-item": {

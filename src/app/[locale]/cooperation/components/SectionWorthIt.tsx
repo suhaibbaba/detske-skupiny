@@ -73,7 +73,7 @@ const styles: WhyJoinUsStyles = {
     },
   },
   featureCard: {
-    sx:{
+    sx: {
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -100,7 +100,7 @@ const styles: WhyJoinUsStyles = {
   cardTitle: {
     variant: "h3",
     fontSize: "20px",
-    fontWeight: 600,
+    fontWeight: 900,
     align: "center",
   },
   cardDescription: {
@@ -119,11 +119,10 @@ const SectionWorthIt: FC<Props> = ({ fields }) => {
         <Box {...styles.featuresWrapper}>
           {fields.features?.map((item) => (
             <Paper key={item._key} {...styles.featureCard}>
-              <Box
-                component="img"
-                src={urlImageFor(item.icon)}
-                {...styles.iconWrapper}
-              />
+              <Box {...styles.iconWrapper}>
+                <Box component="img" src={urlImageFor(item.icon)} />
+              </Box>
+
               <Typography {...styles.cardTitle}>{item.title}</Typography>
               <Typography {...styles.cardDescription}>
                 {item.description}

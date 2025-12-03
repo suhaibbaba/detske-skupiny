@@ -8,6 +8,7 @@ export type MenuItem = {
 
 export type Header = {
   logo?: SanityImageField;
+  logoInverse?: SanityImageField;
   menuItems: MenuItem[];
   cta?: SanityCtaField;
 };

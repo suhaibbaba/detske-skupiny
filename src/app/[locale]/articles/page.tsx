@@ -29,7 +29,7 @@ const styles: BlogsStyles = {
     section: {
       sx: {
         background: "var(--mui-palette-gradients-ui2)",
-        pb: "150px",
+        pb: { xs: "80px", md: "100px" },
       },
     },
   },
@@ -60,15 +60,15 @@ export async function generateMetadata({
     category?: string;
   };
 
-  const { content } = await fetchBlogPage({
+  const { pageHero } = await fetchBlogPage({
     categorySelected: categorySelected || "",
   });
 
   const translate = await getTranslateServer();
 
   return {
-    title: content?.title || translate("articles"),
-    description: content?.description,
+    title: pageHero?.title || translate("articles"),
+    description: pageHero?.description,
   };
 }
 
@@ -77,18 +77,18 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
   const { category: categorySelected } = (await searchParams) as {
     category?: string;
   };
-  const { blogs, writers, content, categories } = await fetchBlogPage({
+  const { blogs, pageHero, categories } = await fetchBlogPage({
     categorySelected: categorySelected || "",
   });
 
   return (
-    <Box {...styles.container} className={cx(!content && "pt-80")}>
-      {content && (
+    <Box {...styles.container} className={cx(!pageHero && "pt-80")}>
+      {pageHero && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <Container>
             <PageHeadingTypography
-              title={content?.title}
-              description={content?.description}
+              title={pageHero?.title}
+              description={pageHero?.description}
             />
           </Container>
         </PageLayout>
@@ -111,7 +111,6 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
           )}
         </Box>
       </Container>
-      <WritersSection writers={writers} />
     </Box>
   );
 };

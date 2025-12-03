@@ -61,7 +61,7 @@ const styles: GroupsPageStyles = {
         md: "300px 1fr",
       },
       columnGap: "60px",
-      mt: "80px",
+      mt: { xs: "40px", md: "80px" },
     },
   },
   loadingBox: {

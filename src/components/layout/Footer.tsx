@@ -164,6 +164,11 @@ const Footer = async () => {
 
         if (link) {
           if (["email", "phone"].includes(link.type)) {
+            // remove protocol prefix (mailto: or tel:) from the URL for display
+            const displayUrl = link.url.includes(":")
+              ? link.url.split(":")[1]
+              : link.url;
+
             return (
               <Link
                 key={index}
@@ -173,7 +178,7 @@ const Footer = async () => {
               >
                 {link.type === "email" && <EmailIcon {...styles.iconLink} />}
                 {link.type === "phone" && <PhoneIcon {...styles.iconLink} />}
-                {`${link.text} ${link.url}`}
+                {displayUrl}
               </Link>
             );
           }
@@ -206,7 +211,7 @@ const Footer = async () => {
               )}
               <Stack gap="12px">
                 {column.content?.map((item, itemIndex: number) =>
-                  renderContentItem(item, itemIndex),
+                  renderContentItem(item, itemIndex)
                 )}
               </Stack>
             </Grid>
@@ -227,7 +232,7 @@ const Footer = async () => {
             <Typography {...styles.copyright}>
               {footer.copyright.replace(
                 "{0}",
-                new Date().getFullYear().toString(),
+                new Date().getFullYear().toString()
               )}
             </Typography>
           )}

@@ -49,7 +49,7 @@ const styles: KinderGroupCardStyles = {
       p: "20px",
       width: "100%",
       gap: "13px",
-      maxWidth: "290px",
+      maxWidth: { md: "290px" },
       m: {
         xs: "0 auto",
         sm: "0",

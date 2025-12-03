@@ -119,7 +119,7 @@ const styles: PricingStyles = {
   planLabel: {
     color: "custom.ui8",
     fontSize: "25px",
-    fontWeight: 600,
+    fontWeight: 900,
     mb: "12px",
   },
   planDescription: {
@@ -129,7 +129,7 @@ const styles: PricingStyles = {
   },
   price: {
     fontSize: "44px",
-    fontWeight: 600,
+    fontWeight: 900,
     color: "custom.ui10",
     mb: "24px",
   },

@@ -146,74 +146,41 @@ export async function generateMetadata({
   const translate = await getTranslateServer();
 
   const { slug } = await params;
-  const { blog, content } = await fetchBlogBySlug({ slug });
+  const { blog } = await fetchBlogBySlug({ slug });
 
   return {
-    title: blog.title || content?.title || translate("article"),
-    description: content?.description,
+    title: blog.title || translate("article"),
+    description: blog.excerpt || "",
   };
 }
 
 const Page = async ({ params }: PageProps<{ slug: string }>) => {
-  const { slug } = await params;
-  const { blog, content } = await fetchBlogBySlug({ slug });
+  const { slug, locale } = await params;
+  const { blog } = await fetchBlogBySlug({ slug });
 
   const translate = await getTranslateServer();
 
   return (
-    <Box {...styles.container} className={cx(!content && "pt-20")}>
-      {content && (
+    <Box {...styles.container} className={cx(!blog?.title && "pt-20")}>
+      {blog?.title && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
-          <PageHeadingTypography
-            title={content?.title}
-            description={content?.description}
-          />
+          <PageHeadingTypography title={blog?.title} />
         </PageLayout>
       )}
       <Container>
         <Box {...styles.detailsHintBox} data-test-selector="details-hint">
           <Box>
-            <Typography variant="h2" mb="24px">
-              {blog.title}
-            </Typography>
-            <Image src={blog.image} {...styles.image} />
+            <Image src={blog.image} {...styles.image} alt={blog.title} />
             {/*<Box component="img" src={blog.image} {...styles.image} />*/}
             <Box {...styles.authorMeta}>
               {formatMessage(
-                `{0}{1}{2}${formatDate(blog.publishedAt)} • ${blog.readTime} ${translate("minRead")}`,
-                translate("by"),
-                <Avatar
-                  alt={blog.author?.name}
-                  src={blog.author?.image}
-                  {...styles.avatar}
-                />,
-                <Typography {...styles.authorText} key="author">
-                  {blog.author?.name}
-                </Typography>,
+                `{0}{1}${formatDate(blog.publishedAt, locale === "cz" ? "cs-CZ" : "en-US")} • ${blog.readTime} ${translate("minRead")}`
               )}
             </Box>
           </Box>
           <Box>
             <RichText>{blog.content}</RichText>
           </Box>
-          {blog.author && (
-            <Box {...styles.bioBox}>
-              <Box {...styles.authorBox}>
-                {formatMessage(
-                  `{0}{1}`,
-                  <Avatar
-                    alt={blog.author.name}
-                    src={blog.author.image}
-                    {...styles.avatar}
-                  />,
-                  <Typography {...styles.authorText} key="author">
-                    {blog.author.name}
-                  </Typography>,
-                )}
-              </Box>
-              <Typography {...styles.paragraph}>{blog.author.bio}</Typography>
-            </Box>
-          )}
         </Box>
       </Container>
     </Box>

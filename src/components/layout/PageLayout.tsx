@@ -28,7 +28,12 @@ const PageLayout: FC<Props> = ({
   const styles = mergeMuiProps(pageLayoutStyles, extendedStyles);
 
   return (
-    <Box component="section" pt={5} pb={12.5} {...styles.section}>
+    <Box
+      component="section"
+      pt={5}
+      pb={{ xs: 6, md: 12.5 }}
+      {...styles.section}
+    >
       <Container
         maxWidth={contentFullWidth ? false : "lg"}
         disableGutters={!contentFullWidth}

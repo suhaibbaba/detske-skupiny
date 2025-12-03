@@ -6,7 +6,7 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchBlogPage(params: { categorySelected?: string }) {
   const query = groq`{
-    "content": *[_type == "blogPage" && ${languageQuery}][0].pageHero,
+    "pageHero": *[_type == "blogPage" && ${languageQuery}][0].pageHero,
     "categories": *[_type == "blogCategories" && ${languageQuery}] {
       "id": _id,
       name,
@@ -38,17 +38,11 @@ export async function fetchBlogPage(params: { categorySelected?: string }) {
         "image": avatar.asset->url,
         bio
       }
-    },
-    "writers": *[_type == "authors" && ${languageQuery}]{
-      "id": _id,
-      name,
-      role,
-      "image": avatar.asset->url,
-    } | order(blogCount desc)[0..7]
+    }
   }`;
 
   return clientFetch<{
-    content?: PageHero;
+    pageHero?: PageHero;
     categories?: BlogCategory[];
     blogs?: Blog[];
     writers?: Author[];

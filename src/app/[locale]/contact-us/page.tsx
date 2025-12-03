@@ -65,8 +65,11 @@ const styles: ContactUsStyles = {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const translate = await getTranslateServer();
+  const { pageHero } = await fetchContactUs();
+
   return {
-    title: translate("contact-us"),
+    title: pageHero?.title || translate("contact-us"),
+    description: pageHero?.description || "",
   };
 }
 

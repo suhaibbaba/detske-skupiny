@@ -38,6 +38,7 @@ interface HeaderStyles {
   menuButton: IconButtonProps;
   menuIcon: SvgIconProps;
   cta?: ButtonProps;
+  ctaMobile?: ButtonProps;
   drawer?: DrawerProps;
 }
 
@@ -66,12 +67,15 @@ const styles: HeaderStyles = {
   },
   logo: {
     sx: {
-      width: "55px",
+      width: "120px",
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
   },
   drawerLogoContainer: {
     sx: {
-      pb: "8px",
+      p: "8px 0 9px",
       mb: "12px",
       borderBottom: `1px solid var(--mui-palette-custom-ui14)`,
     },
@@ -99,7 +103,20 @@ const styles: HeaderStyles = {
       },
     },
   },
+  ctaMobile: {
+    variant: "ghost",
+    sx: {
+      mt: "16px",
+    },
+  },
   drawer: {
+    slotProps: {
+      paper: {
+        sx: {
+          backgroundColor: "primary.main",
+        },
+      },
+    },
     sx: {
       display: {
         md: "none",
@@ -137,11 +154,22 @@ const HeaderClientPage = ({ header }: Props) => {
               ModalProps={{ keepMounted: true }}
               {...styles.drawer}
             >
-              <Box sx={{ p: "8px 20px 8px 8px" }}>
+              <Box sx={{ p: "8px" }}>
                 <Box {...styles.drawerLogoContainer}>
-                  <Box component="img" src={header.logo} {...styles.logo} />
+                  <Box
+                    component="img"
+                    src={header.logoInverse}
+                    {...styles.logo}
+                  />
                 </Box>
                 <Menu menuItems={header.menuItems} />
+                {header.cta && (
+                  <Button
+                    startIcon={<AddCircleRoundedIcon />}
+                    link={header.cta.link}
+                    {...styles.ctaMobile}
+                  />
+                )}
               </Box>
             </Drawer>
             <Menu menuItems={header.menuItems} hideOnMobile={true} />

@@ -57,7 +57,7 @@ interface FilterListStyles {
 const styles: FilterListStyles = {
   heading: {
     fontSize: "18px",
-    fontWeight: 500,
+    fontWeight: 900,
     mb: "8px",
     color: "custom.ui13",
     textTransform: "capitalize",
@@ -197,7 +197,7 @@ const FilterList: FC<Props> = ({
       )
     : items;
 
-  const shouldShowToggle = filteredItems.length > initialItemsCount;
+  const shouldShowToggle = items.length > initialItemsCount;
   const displayedItems = showAll
     ? filteredItems
     : filteredItems.slice(0, initialItemsCount);

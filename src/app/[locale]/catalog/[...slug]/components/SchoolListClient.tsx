@@ -44,10 +44,7 @@ const styles: SchoolListStyles = {
   listContainer: {
     sx: {
       display: "grid",
-      gridTemplateColumns: {
-        xs: "repeat(auto-fit, minmax(232px, 1fr))",
-        md: "repeat(auto-fit, minmax(260px, 278px))",
-      },
+      gridTemplateColumns: "repeat(auto-fit, minmax(232px, 1fr))",
       gap: {
         xs: "20px",
         md: "24px",

@@ -17,6 +17,7 @@ import { getTranslateServer } from "@/hooks/useTranslate";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 import Image from "@/components/ui/image/Image";
 import { getLocale } from "next-intl/server";
+import Link from "@/components/ui/link/Link";
 
 interface Props {
   school: MiniSchool;
@@ -139,7 +140,7 @@ const styles: KinderGroupCardStyles = {
   description: {
     textAlign: "left",
     sx: {
-      mt: "auto",
+      flexGrow: 1,
     },
   },
   cta: {
@@ -182,12 +183,14 @@ const SchoolCard = async ({ school }: Props) => {
             {school.area?.name}
           </Typography>
         )}
-        <SchoolTypesBadge types={school.types} />
+        <SchoolTypesBadge types={school.types?.filter((t) => t.visibility)} />
       </Box>
       <Box {...styles.infoContainer}>
-        <Ellipsis {...styles.title} limitOfLine={1}>
-          {school.name}
-        </Ellipsis>
+        <Link href={getLocalizedRoutes(locale).group(school.slug)}>
+          <Ellipsis {...styles.title} limitOfLine={1}>
+            {school.name}
+          </Ellipsis>
+        </Link>
         {school.tags && school.tags.length > 0 && (
           <Box {...styles.tagWrapper}>
             {school.tags.map((tag) => (

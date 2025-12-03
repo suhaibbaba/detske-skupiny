@@ -1,12 +1,12 @@
 "use client";
 
 import { createTheme } from "@mui/material/styles";
-import { Fredoka } from "next/font/google";
+import { Nunito } from "next/font/google";
 import { alpha, Theme } from "@mui/material";
 import { autoClamp } from "@/utilites/strings";
 import CheckedIcon from "@/components/icons/CheckedIcon";
 
-const fredoka = Fredoka({
+const nunito = Nunito({
   subsets: ["latin"],
 });
 
@@ -101,13 +101,13 @@ export const createButtonStyle = ({
 
 const theme = createTheme(baseTheme, {
   typography: {
-    fontFamily: fredoka.style.fontFamily,
+    fontFamily: nunito.style.fontFamily,
     body1: {
       color: "#6C7685",
     },
     h1: {
       color: "#272E39",
-      fontWeight: 600,
+      fontWeight: 900,
       fontSize: autoClamp({
         desktop: 48,
         tablet: 40,
@@ -182,7 +182,7 @@ const theme = createTheme(baseTheme, {
           fontWeight: 500,
           fontSize: 16,
           lineHeight: "16px",
-          fontFamily: fredoka.style.fontFamily,
+          fontFamily: nunito.style.fontFamily,
         },
         outlined: {
           color: baseTheme.palette.custom.ui1,
@@ -243,7 +243,7 @@ const theme = createTheme(baseTheme, {
           boxShadow: "none",
           "&:before": {
             display: "none",
-            fontFamily: fredoka.style.fontFamily,
+            fontFamily: nunito.style.fontFamily,
           },
         },
       },
@@ -254,7 +254,7 @@ const theme = createTheme(baseTheme, {
           padding: "0 24px 24px 48px",
           color: "#6C7685",
           fontSize: "20px",
-          fontFamily: fredoka.style.fontFamily,
+          fontFamily: nunito.style.fontFamily,
         },
       },
     },
@@ -270,7 +270,10 @@ const theme = createTheme(baseTheme, {
             fontSize: "20px",
             fontWeight: "600",
           },
-          fontFamily: fredoka.style.fontFamily,
+          fontFamily: nunito.style.fontFamily,
+          ".MuiAccordionSummary-expandIconWrapper": {
+            flexShrink: 0,
+          },
         },
         content: {
           "&.Mui-expanded": {
@@ -285,7 +288,7 @@ const theme = createTheme(baseTheme, {
           boxShadow:
             "0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1)",
           borderRadius: "16px",
-          fontFamily: fredoka.style.fontFamily,
+          fontFamily: nunito.style.fontFamily,
         },
       },
     },
@@ -298,7 +301,7 @@ const theme = createTheme(baseTheme, {
       styleOverrides: {
         root: {
           backgroundColor: "#FBF8FE",
-          fontFamily: fredoka.style.fontFamily,
+          fontFamily: nunito.style.fontFamily,
         },
       },
     },
@@ -378,7 +381,7 @@ const theme = createTheme(baseTheme, {
     },
     MuiTypography: {
       defaultProps: {
-        fontFamily: fredoka.style.fontFamily,
+        fontFamily: nunito.style.fontFamily,
       },
       styleOverrides: {
         root: {

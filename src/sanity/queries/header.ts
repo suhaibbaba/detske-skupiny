@@ -7,6 +7,7 @@ export async function fetchHeaderPage() {
   const query = groq`{
     "header": *[_type == "header" && ${languageQuery}][0]{
       "logo": logo.asset->url,
+      "logoInverse": logoInverse.asset->url,
       menuItems[]{
         _type,
         "id": _key,

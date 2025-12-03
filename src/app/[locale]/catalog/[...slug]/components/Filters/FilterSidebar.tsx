@@ -53,7 +53,7 @@ const styles: FilterSidebarStyles = {
   heading: {
     fontSize: "20px",
     color: "custom.ui13",
-    fontWeight: 600,
+    fontWeight: 900,
     textTransform: "capitalize",
   },
   clearButton: {
