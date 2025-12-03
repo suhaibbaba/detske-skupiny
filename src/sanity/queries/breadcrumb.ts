@@ -10,7 +10,7 @@ export async function fetchBreadcrumbList(params: BreadcrumbParams) {
   const query = groq`*[slug.current in $slugs]{
       _type,
       "slug": slug.current,
-      name,
+      "name": coalesce(name, title, ""),
       language,
     }`;
 

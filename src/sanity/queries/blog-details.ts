@@ -6,7 +6,7 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchBlogBySlug(params: { slug: string }) {
   const query = groq`{
-    "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
+    "content": *[_type == "blogPage" && ${languageQuery}][0].pageHero,
     "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
       "id": _id,
       title,

@@ -6,7 +6,7 @@ import { clientFetch } from "@/sanity/utilites/fetch";
 
 export async function fetchBlogPage(params: { categorySelected?: string }) {
   const query = groq`{
-    "content": *[_type == "blog" && ${languageQuery}][0].pageHero,
+    "content": *[_type == "blogPage" && ${languageQuery}][0].pageHero,
     "categories": *[_type == "blogCategories" && ${languageQuery}] {
       "id": _id,
       name,
