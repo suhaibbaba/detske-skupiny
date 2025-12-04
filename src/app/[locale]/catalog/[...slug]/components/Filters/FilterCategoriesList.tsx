@@ -45,8 +45,8 @@ const styles: FilterListStyles = {
     sx: {
       display: "grid",
       gridTemplateColumns: {
-        xs: "repeat(auto-fit, minmax(132px, 1fr))",
-        sm: "repeat(2,1fr)",
+        xs: "repeat(auto-fit, 132px)",
+        sm: "repeat(2, 1fr)",
       },
       gap: "16px",
     },

@@ -35,6 +35,8 @@ interface KinderGroupCardStyles {
   location?: TypographyProps;
   description?: TypographyProps;
   cta?: ButtonProps;
+  defaultImageWrapper?: BoxProps;
+  defaultImage?: BoxProps;
 }
 
 const styles: KinderGroupCardStyles = {
@@ -49,7 +51,7 @@ const styles: KinderGroupCardStyles = {
       p: "20px",
       width: "100%",
       gap: "13px",
-      maxWidth: { md: "290px" },
+      maxWidth: { md: "280px" },
       m: {
         xs: "0 auto",
         sm: "0",
@@ -69,6 +71,24 @@ const styles: KinderGroupCardStyles = {
       objectFit: "cover",
       display: "block",
       borderRadius: "12px",
+    },
+  },
+  defaultImageWrapper: {
+    sx: {
+      display: "flex",
+      opacity: "0.5",
+      justifyContent: "center",
+      alignItems: "center",
+      bgcolor: "custom.ui12",
+      height: "158px",
+      borderRadius: "12px",
+    },
+  },
+  defaultImage: {
+    sx: {
+      width: "80px",
+      height: "80px",
+      margin: "auto",
     },
   },
   logo: {
@@ -144,7 +164,14 @@ const SchoolGridCard = ({ school }: Props) => {
         sx={styles.imageWrapper?.sx}
         href={getLocalizedRoutes(locale).group(school.slug)}
       >
-        <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
+        {urlImageFor(primaryImage) === "" ? (
+          <Box {...styles.defaultImageWrapper}>
+            <Image {...styles.defaultImage} alt={name} />
+          </Box>
+        ) : (
+          <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
+        )}
+
         <SchoolTypesBadge types={types?.filter((t) => t.visibility)} />
       </Link>
       <Link

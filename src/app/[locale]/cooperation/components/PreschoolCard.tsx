@@ -13,6 +13,7 @@ import {
   Chip,
   ChipProps,
   TypographyProps,
+  BoxProps,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { MiniSchool } from "@/sanity/types";
@@ -32,6 +33,8 @@ interface PreschoolCardStyles {
   cardContent?: CardContentProps;
   locationChip?: ChipProps;
   schoolTitle?: TypographyProps;
+  defaultCardMediaWrapper?: BoxProps;
+  defaultCardMedia?: CardMediaProps;
 }
 
 const styles: PreschoolCardStyles = {
@@ -58,6 +61,24 @@ const styles: PreschoolCardStyles = {
       position: "relative",
       height: 158,
       borderRadius: "24px",
+    },
+  },
+  defaultCardMediaWrapper: {
+    sx: {
+      display: "flex",
+      opacity: "0.5",
+      justifyContent: "center",
+      alignItems: "center",
+      bgcolor: "custom.ui12",
+      height: "158px",
+      borderRadius: "24px",
+    },
+  },
+  defaultCardMedia: {
+    sx: {
+      width: "80px",
+      height: "80px",
+      margin: "auto",
     },
   },
   cardContent: {
@@ -111,11 +132,21 @@ const PreschoolCard = ({ school, locale }: Props) => {
     <Card {...styles.container} data-test-selector="PreschoolCard">
       <CardActionArea href={getLocalizedRoutes(locale).group(school.slug)}>
         <Box p="10px" position="relative">
-          <CardMedia
-            {...styles.cardMedia}
-            image={urlImageFor(imagSrc) || ""}
-            title={school.name}
-          />
+          {!school.primaryImage ? (
+            <Box {...styles.defaultCardMediaWrapper}>
+              <CardMedia
+                {...styles.defaultCardMedia}
+                image={urlImageFor(imagSrc)}
+                title={school.name}
+              />
+            </Box>
+          ) : (
+            <CardMedia
+              {...styles.cardMedia}
+              image={urlImageFor(imagSrc) || ""}
+              title={school.name}
+            />
+          )}
           {school.area && (
             <Chip
               icon={<LocationOnIcon />}

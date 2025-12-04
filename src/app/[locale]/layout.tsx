@@ -10,15 +10,19 @@ import { setLocale } from "@/utilites/localeStore";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Dětské Skupiny po celé ČR",
-    default: "Dětské Skupiny po celé ČR",
-  },
-  description:
-    "Všechny dětské skupiny na jednom místě. Díky datům MPSV nabízíme nejaktuálnější přehled v Praze, Brně i po celé ČR, abyste mohli vybrat tu nejlepší péči pro své dítě.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const translate = await getTranslateServer();
+
+  return {
+    title: {
+      template: `%s | ${translate("metaTitle")}`,
+      default: translate("metaTitle"),
+    },
+    description: translate("metaDescription"),
+  };
+}
 
 const nunito = Nunito({ subsets: ["latin"] });
 

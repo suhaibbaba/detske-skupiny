@@ -34,6 +34,8 @@ interface KinderGroupCardStyles {
   cta?: ButtonProps;
   area?: TypographyProps;
   locationIcon?: SvgIconProps;
+  defaultImageWrapper?: BoxProps;
+  defaultImage?: BoxProps;
 }
 
 const styles: KinderGroupCardStyles = {
@@ -82,6 +84,28 @@ const styles: KinderGroupCardStyles = {
         xs: "8px",
         lg: 0,
       },
+    },
+  },
+  defaultImageWrapper: {
+    sx: {
+      display: "flex",
+      opacity: "0.5",
+      justifyContent: "center",
+      alignItems: "center",
+      bgcolor: "custom.ui12",
+      height: "calc(100% - 45px)",
+      borderTopLeftRadius: "24px",
+      borderTopRightRadius: {
+        xs: "24px",
+        lg: 0,
+      },
+    },
+  },
+  defaultImage: {
+    sx: {
+      width: "120px",
+      height: "120px",
+      margin: "auto",
     },
   },
   area: {
@@ -176,7 +200,17 @@ const SchoolCard = async ({ school }: Props) => {
   return (
     <Box {...styles.container} data-test-selector="SchoolCard">
       <Box {...styles.imageWrapper}>
-        <Image src={school.primaryImage} alt={school.name} {...styles.image} />
+        {school.primaryImage ? (
+          <Image
+            src={school.primaryImage}
+            alt={school.name}
+            {...styles.image}
+          />
+        ) : (
+          <Box {...styles.defaultImageWrapper}>
+            <Image {...styles.defaultImage} alt={school.name} />
+          </Box>
+        )}
         {school.area?.name && (
           <Typography {...styles.area}>
             <Location {...styles.locationIcon} />

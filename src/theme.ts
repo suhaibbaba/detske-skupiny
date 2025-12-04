@@ -395,7 +395,6 @@ const theme = createTheme(baseTheme, {
     MuiLink: {
       styleOverrides: {
         root: {
-          textTransform: "capitalize",
           color: baseTheme.palette.primary.main,
           "&:hover": {
             color: baseTheme.palette.primary.dark,

@@ -59,7 +59,7 @@ const styles: PageStyles = {
     section: {
       sx: {
         background: "var(--mui-palette-gradients-ui3)",
-        pb: 7,
+        pb: { xs: 5 },
       },
     },
   },
@@ -203,7 +203,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                 label={category.name}
                 href={getLocalizedRoutes(locale).catalogs(
                   school.region.countrySlug,
-                  `categories=${category.slug}`,
+                  `categories=${category.slug}`
                 )}
                 variant="outlined"
                 color="primary"
@@ -225,7 +225,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
               href={getLocalizedRoutes(locale).catalogs(school.area.fullSlug)}
               {...styles.chip}
               variant="outlined"
-              sx={{ borderColor: "#B2AD88" }}
+              sx={{ color: "custom.ui20", borderColor: "#B2AD88" }}
             />
           </Box>
           <InfoCardGrid
@@ -247,7 +247,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                         {formatMessage(
                           "{0}, {1}",
                           school.address?.street,
-                          school.address?.city,
+                          school.address?.city
                         )}
                       </Typography>
                       <Typography>{school.address?.postalCode}</Typography>
@@ -306,7 +306,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
                               linkText
                             ),
                             item.name,
-                            item.role,
+                            item.role
                           )}
                         </Typography>
                       );

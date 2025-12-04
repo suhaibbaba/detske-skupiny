@@ -220,6 +220,7 @@ function RichText({
             href={value?.href}
             target={target}
             rel={target ? "noreferrer" : undefined}
+            sx={{ display: "inline" }}
           >
             {children}
           </Link>

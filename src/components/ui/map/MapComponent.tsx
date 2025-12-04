@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
@@ -28,9 +28,7 @@ const MapComponent: React.FC<MapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maptilersdk.Map | null>(null);
   const [filteredMarkers, setFilteredMarkers] = useState<MarkerData[]>([]);
-  const markersRef = useRef<globalThis.Map<string, maptilersdk.Marker>>(
-    new globalThis.Map()
-  );
+  const markersMapRef = useRef<Map<string, MarkerData>>(new Map());
 
   // State for popup management
   const [activePopup, setActivePopup] = useState<{
@@ -49,6 +47,39 @@ const MapComponent: React.FC<MapProps> = ({
 
     setFilteredMarkers(filtered);
   }, [markers, selectedRegionId]);
+
+  // Function to close current popup
+  const closeCurrentPopup = useCallback(() => {
+    if (popupRef.current && map.current) {
+      popupRef.current.remove();
+      setActivePopup(null);
+    }
+  }, []);
+
+  // Function to show popup for a marker
+  const showPopupForMarker = useCallback(
+    (markerData: MarkerData) => {
+      if (!popupRef.current || !popupContainerRef.current || !map.current)
+        return;
+
+      // Set active popup state (this will trigger portal render)
+      setActivePopup({
+        markerData,
+        container: popupContainerRef.current,
+      });
+
+      // Position and show the popup
+      popupRef.current.setLngLat([
+        markerData.coordinate.lng,
+        markerData.coordinate.lat,
+      ]);
+      popupRef.current.addTo(map.current);
+
+      // Call callback
+      onMarkerClick?.(markerData);
+    },
+    [onMarkerClick]
+  );
 
   // Initialize map
   useEffect(() => {
@@ -87,86 +118,251 @@ const MapComponent: React.FC<MapProps> = ({
     });
     popupRef.current.setDOMContent(popupContainerRef.current);
 
-    // Close Popup when click outside
-    map.current.on("click", () => {
-      closeCurrentPopup();
+    // Wait for map to load before adding sources and layers
+    map.current.on("load", () => {
+      if (!map.current) return;
+
+      // Add a GeoJSON source for markers with clustering enabled
+      map.current.addSource("markers", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 50, // Radius of each cluster when clustering points
+      });
+
+      // Add layer for clustered points
+      map.current.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "markers",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": "#9980B0",
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            20, // radius for clusters with < 10 points
+            10,
+            30, // radius for clusters with 10-99 points
+            100,
+            40, // radius for clusters with 100+ points
+          ],
+          "circle-stroke-width": 3,
+          "circle-stroke-color": "#fff",
+        },
+      });
+
+      // Add layer for cluster count labels
+      map.current.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "markers",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": "{point_count_abbreviated}",
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          "text-size": 12,
+        },
+        paint: {
+          "text-color": "#ffffff",
+        },
+      });
+
+      // Add layer for unclustered points (individual markers)
+      map.current.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "markers",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": "#9980B0",
+          "circle-radius": 8,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#fff",
+        },
+      });
+
+      // Handle cluster clicks - zoom in
+      map.current.on("click", "clusters", async (e) => {
+        if (!map.current) return;
+        const features = map.current.queryRenderedFeatures(e.point, {
+          layers: ["clusters"],
+        });
+        const clusterId = features[0].properties.cluster_id;
+        const source = map.current.getSource(
+          "markers"
+        ) as maptilersdk.GeoJSONSource;
+
+        try {
+          const zoom = await source.getClusterExpansionZoom(clusterId);
+          if (!map.current) return;
+
+          map.current.easeTo({
+            center: (features[0].geometry as any).coordinates,
+            zoom: zoom,
+          });
+        } catch (err) {
+          console.error("Error getting cluster expansion zoom:", err);
+        }
+      });
+
+      // Handle unclustered point clicks - show popup
+      map.current.on("click", "unclustered-point", (e) => {
+        if (!e.features || !e.features[0].properties) return;
+
+        const markerId = e.features[0].properties.id;
+        const markerData = markersMapRef.current.get(markerId);
+
+        if (markerData) {
+          showPopupForMarker(markerData);
+        }
+      });
+
+      // Change cursor on hover
+      map.current.on("mouseenter", "clusters", () => {
+        if (map.current) map.current.getCanvas().style.cursor = "pointer";
+      });
+      map.current.on("mouseleave", "clusters", () => {
+        if (map.current) map.current.getCanvas().style.cursor = "";
+      });
+      map.current.on("mouseenter", "unclustered-point", () => {
+        if (map.current) map.current.getCanvas().style.cursor = "pointer";
+      });
+      map.current.on("mouseleave", "unclustered-point", () => {
+        if (map.current) map.current.getCanvas().style.cursor = "";
+      });
+    });
+
+    // Close Popup when click on map (not on markers)
+    map.current.on("click", (e) => {
+      const features = map.current?.queryRenderedFeatures(e.point, {
+        layers: ["clusters", "unclustered-point"],
+      });
+
+      if (!features || features.length === 0) {
+        closeCurrentPopup();
+      }
     });
 
     return () => {
       map.current?.remove();
       map.current = null;
     };
-  }, [defaultCenter, defaultZoom]);
-
-  // Function to close current popup
-  const closeCurrentPopup = () => {
-    if (popupRef.current && map.current) {
-      popupRef.current.remove();
-      setActivePopup(null);
-    }
-  };
-
-  // Function to show popup for a marker
-  const showPopupForMarker = (markerData: MarkerData) => {
-    if (!popupRef.current || !popupContainerRef.current || !map.current) return;
-
-    // Set active popup state (this will trigger portal render)
-    setActivePopup({
-      markerData,
-      container: popupContainerRef.current,
-    });
-
-    // Position and show the popup
-    popupRef.current.setLngLat([
-      markerData.coordinate.lng,
-      markerData.coordinate.lat,
-    ]);
-    popupRef.current.addTo(map.current);
-
-    // Call callback
-    onMarkerClick?.(markerData);
-  };
+  }, [defaultCenter, defaultZoom, closeCurrentPopup, showPopupForMarker]);
 
   // Update markers
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current) {
+      console.log("Map not initialized yet");
+      return;
+    }
 
-    // Remove old markers
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current.clear();
-    closeCurrentPopup();
+    // Wait for the map to be loaded before updating markers
+    const updateMarkers = () => {
+      const source = map.current?.getSource(
+        "markers"
+      ) as maptilersdk.GeoJSONSource;
+      if (!source) {
+        console.log("Source not ready yet");
+        return;
+      }
 
-    // Add new markers
-    filteredMarkers.forEach((markerData) => {
-      if (!markerData.coordinate) return;
+      closeCurrentPopup();
 
-      // Create custom marker element
-      const el = document.createElement("div");
-      el.className = "custom-marker";
-      el.style.width = "20px";
-      el.style.height = "20px";
-      el.style.cursor = "pointer";
-      el.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10.0003 9.89899C11.2276 9.89899 12.2225 8.97778 12.2225 7.84141C12.2225 6.70505 11.2276 5.78384 10.0003 5.78384C8.77302 5.78384 7.7781 6.70505 7.7781 7.84141C7.7781 8.97778 8.77302 9.89899 10.0003 9.89899Z" fill="#9980B0"/>
-          <path d="M10.0003 0C7.79091 0.00217861 5.67267 0.815801 4.11038 2.26234C2.54809 3.70888 1.66936 5.67019 1.66701 7.7159C1.66364 9.36627 2.23787 10.9732 3.30367 12.2961C3.32381 12.3285 3.34608 12.3598 3.37034 12.3897L9.11143 19.583C9.21475 19.7123 9.34939 19.8174 9.50454 19.8898C9.65968 19.9623 9.83101 20 10.0048 20C10.1785 20 10.3498 19.9623 10.505 19.8898C10.6601 19.8174 10.7948 19.7123 10.8981 19.583L16.6347 12.3897C16.659 12.3601 16.6813 12.3292 16.7014 12.2971C17.7656 10.9734 18.3383 9.36612 18.3336 7.7159C18.3313 5.67019 17.4526 3.70888 15.8903 2.26234C14.328 0.815801 12.2097 0.00217861 10.0003 0ZM10.0003 11.9566C9.12129 11.9566 8.26201 11.7152 7.53112 11.263C6.80024 10.8109 6.23059 10.1682 5.8942 9.41621C5.55781 8.66427 5.46979 7.83685 5.64128 7.03859C5.81277 6.24033 6.23606 5.50708 6.85763 4.93157C7.47919 4.35605 8.27112 3.96412 9.13325 3.80534C9.99539 3.64655 10.889 3.72805 11.7011 4.03951C12.5132 4.35098 13.2074 4.87843 13.6957 5.55516C14.1841 6.23189 14.4448 7.02751 14.4448 7.84141C14.4448 8.93282 13.9765 9.97952 13.143 10.7513C12.3095 11.523 11.1791 11.9566 10.0003 11.9566Z" fill="#9980B0"/>
-        </svg>
-      `;
+      // Clear markers map and rebuild
+      markersMapRef.current.clear();
 
-      // Create marker
-      const marker = new maptilersdk.Marker({ element: el })
-        .setLngLat([markerData.coordinate.lng, markerData.coordinate.lat])
-        .addTo(map.current!);
+      // Group markers by coordinates to handle overlapping
+      const coordMap = new Map<string, MarkerData[]>();
+      filteredMarkers
+        .filter((m) => m.coordinate)
+        .forEach((m) => {
+          const key = `${m.coordinate.lng.toFixed(6)},${m.coordinate.lat.toFixed(6)}`;
+          const existing = coordMap.get(key) || [];
+          coordMap.set(key, [...existing, m]);
+        });
 
-      // Handle marker click
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showPopupForMarker(markerData);
+      // Convert markers to GeoJSON features with offset for overlapping markers
+      const features: any[] = [];
+
+      coordMap.forEach((markersAtLocation, coordKey) => {
+        if (markersAtLocation.length === 1) {
+          // Single marker - no offset needed
+          const m = markersAtLocation[0];
+          markersMapRef.current.set(m.id, m);
+
+          features.push({
+            type: "Feature" as const,
+            geometry: {
+              type: "Point" as const,
+              coordinates: [m.coordinate.lng, m.coordinate.lat],
+            },
+            properties: {
+              id: m.id,
+              name: m.name,
+              count: 1,
+            },
+          });
+        } else {
+          // Multiple markers - apply circular offset pattern
+          const offsetDistance = 0.0003; // ~30 meters
+          markersAtLocation.forEach((m, index) => {
+            markersMapRef.current.set(m.id, m);
+
+            // Calculate offset in a circular pattern
+            const angle = (index * 2 * Math.PI) / markersAtLocation.length;
+            const offsetLng = Math.cos(angle) * offsetDistance;
+            const offsetLat = Math.sin(angle) * offsetDistance;
+
+            features.push({
+              type: "Feature" as const,
+              geometry: {
+                type: "Point" as const,
+                coordinates: [
+                  m.coordinate.lng + offsetLng,
+                  m.coordinate.lat + offsetLat,
+                ],
+              },
+              properties: {
+                id: m.id,
+                name: m.name,
+                count: markersAtLocation.length,
+                overlapping: true,
+              },
+            });
+          });
+        }
       });
 
-      markersRef.current.set(markerData.id, marker);
-    });
-  }, [filteredMarkers, onMarkerClick]);
+      console.log("Updating markers:", {
+        totalMarkers: markers.length,
+        filteredMarkers: filteredMarkers.length,
+        features: features.length,
+        overlappingLocations: Array.from(coordMap.values()).filter(
+          (m) => m.length > 1
+        ).length,
+        sampleFeature: features[0],
+      });
+
+      // Update the GeoJSON source with new data
+      source.setData({
+        type: "FeatureCollection",
+        features: features,
+      });
+    };
+
+    // If map is already loaded, update immediately
+    if (map.current.loaded()) {
+      updateMarkers();
+    } else {
+      // Otherwise wait for load event
+      map.current.once("load", updateMarkers);
+    }
+  }, [filteredMarkers, closeCurrentPopup, markers]);
 
   return (
     <>
