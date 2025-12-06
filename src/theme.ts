@@ -5,18 +5,11 @@ import { Nunito } from "next/font/google";
 import { alpha, Theme } from "@mui/material";
 import { autoClamp } from "@/utilites/strings";
 import CheckedIcon from "@/components/icons/CheckedIcon";
+import { BREAKPOINTS } from "@/constants";
 
 const nunito = Nunito({
   subsets: ["latin"],
 });
-
-export const BREAKPOINTS = {
-  xs: 0,
-  sm: 768,
-  md: 1024,
-  lg: 1280,
-  xl: 1536,
-};
 
 export const baseTheme = createTheme({
   cssVariables: true,

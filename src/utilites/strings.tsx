@@ -1,5 +1,5 @@
 import React from "react";
-import { BREAKPOINTS } from "@/theme";
+import { BREAKPOINTS } from "@/constants";
 
 export const formatMessage = (
   text: string,
