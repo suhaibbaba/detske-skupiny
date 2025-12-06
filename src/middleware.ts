@@ -7,8 +7,12 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
   const response = intlMiddleware(request);
 
-  // Add the pathname as a custom header
-  response.headers.set("x-pathname", request.nextUrl.pathname);
+  // Set pathname in cookie
+  response.cookies.set("x-current-pathname", request.nextUrl.pathname, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+  });
 
   return response;
 }

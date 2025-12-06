@@ -3,7 +3,7 @@ import { Breadcrumbs as MuiBreadcrumbs, Typography } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { getLocale } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import Link from "@/components/ui/link";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import {
@@ -41,9 +41,11 @@ const styles: BreadcrumbsStyles = {
 
 const Breadcrumbs = async ({ addSpace = true }: Props) => {
   const locale = await getLocale();
-  const headerList = await headers();
-  const pathname = headerList.get("x-pathname") || "/";
   const translate = await getTranslateServer();
+
+  // Get pathname from cookie
+  const cookieStore = await cookies();
+  const pathname = cookieStore.get("x-current-pathname")?.value || "/";
 
   const pathSegments = decodeURIComponent(pathname)
     .split("/")
@@ -71,7 +73,7 @@ const Breadcrumbs = async ({ addSpace = true }: Props) => {
     } catch (error) {
       console.error("Error fetching breadcrumb data:", error);
       breadcrumbs.push(
-        ...buildStandardBreadcrumbs(pathSegments, new Map(), locale)
+        ...buildStandardBreadcrumbs(pathSegments, new Map(), locale),
       );
     }
   }
