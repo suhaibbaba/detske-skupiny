@@ -21,7 +21,7 @@
     "@vis.gl/react-google-maps": "^1.5.5",
     "embla-carousel-react": "^8.6.0",
     "lodash.mergewith": "^4.6.2",
-    "next": "15.3.2",
+    "next": "15.3.6",
     "next-intl": "^4.1.0",
     "next-sanity": "^10.0.10",
     "nuqs": "^2.5.1",
