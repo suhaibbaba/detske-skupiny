@@ -157,7 +157,7 @@ const styles: KinderGroupCardStyles = {
       textAlign: "left",
       color: "var(--mui-palette-custom-ui13)",
       fontSize: "20px",
-      fontWeight: 600,
+      fontWeight: 900,
       textTransform: "capitalize",
     },
   },

@@ -106,7 +106,7 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
             <Alert
               severity="info"
               sx={{ maxWidth: 600, gridColumn: "1/3" }}
-              message={translate("No Blogs Found")}
+              message={translate("noArticlesFound")}
             />
           )}
         </Box>

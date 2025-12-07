@@ -11,6 +11,7 @@ import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import Script from "next/script";
 
 export async function generateMetadata(): Promise<Metadata> {
   const translate = await getTranslateServer();
@@ -55,6 +56,12 @@ export default async function RootLayout({
             </IntlErrorHandlingProvider>
           </NuqsAdapter>
         </AppRouterCacheProvider>
+        <Script
+          defer
+          src="https://api.pirsch.io/pa.js"
+          id="pianjs"
+          data-code="pxqYRrg0YF8DPBC3yuiEKV4uHjlIZJ29"
+        />
       </body>
     </html>
   );

@@ -1,9 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
+import { Box, Dialog, DialogContent } from "@mui/material";
 import FilterSidebar, {
   Props as FilterSidebarProps,
 } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
@@ -29,11 +27,11 @@ export default function FilterSidebarDialog({
   };
 
   return (
-    <React.Fragment>
+    <Box sx={{ flexShrink: 0 }}>
       <IconButton
         size="small"
         onClick={handleClickOpen}
-        sx={{ aspectRatio: 1 }}
+        sx={{ aspectRatio: 1, border: 1, borderColor: "primary.main", p: 1 }}
       >
         <TuneIcon
           sx={{ width: 30, height: 30, aspectRatio: 1, color: "primary.main" }}
@@ -61,6 +59,6 @@ export default function FilterSidebarDialog({
           />
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </Box>
   );
 }

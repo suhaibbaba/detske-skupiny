@@ -39,7 +39,7 @@ const styles: SchoolCountStyles = {
   text: {
     sx: {
       fontSize: "28px",
-      fontWeight: 600,
+      fontWeight: 900,
       color: "custom.ui13",
     },
   },
@@ -53,6 +53,14 @@ const SchoolsCount = ({
   const translate = useTranslate();
   return (
     <Box {...styles.container}>
+      <Box>
+        <Typography {...styles.text}>
+          {translate("showingResults", {
+            total,
+            filterTotal,
+          })}
+        </Typography>
+      </Box>
       <Box {...styles.topRow}>
         <Box sx={{ display: { xs: "block", md: "none" } }}>
           <FilterSidebarDialog
@@ -61,14 +69,8 @@ const SchoolsCount = ({
             filterContent={filterContent}
           />
         </Box>
-        <Typography {...styles.text}>
-          {translate("showingResults", {
-            total,
-            filterTotal,
-          })}
-        </Typography>
+        <SearchBar />
       </Box>
-      <SearchBar />
     </Box>
   );
 };

@@ -338,16 +338,6 @@ const MapComponent: React.FC<MapProps> = ({
         }
       });
 
-      console.log("Updating markers:", {
-        totalMarkers: markers.length,
-        filteredMarkers: filteredMarkers.length,
-        features: features.length,
-        overlappingLocations: Array.from(coordMap.values()).filter(
-          (m) => m.length > 1
-        ).length,
-        sampleFeature: features[0],
-      });
-
       // Update the GeoJSON source with new data
       source.setData({
         type: "FeatureCollection",

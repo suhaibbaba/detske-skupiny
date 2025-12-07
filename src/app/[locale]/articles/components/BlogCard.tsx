@@ -73,7 +73,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
       borderRadius: "8px",
       px: "10px",
       py: "2px",
-      fontWeight: 500,
+      fontWeight: 900,
       fontSize: "14px",
       display: "inline-block",
       alignSelf: "baseline",
@@ -83,7 +83,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
     sx: {
       color: "var(--mui-palette-custom-ui13)",
       textDecoration: "none",
-      fontWeight: 500,
+      fontWeight: 900,
       fontSize: "20px",
       minHeight: "60px",
       textAlign: "left",

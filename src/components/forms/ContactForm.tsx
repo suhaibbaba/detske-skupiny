@@ -73,24 +73,23 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   const translate = useTranslate();
   const locale = useLocale();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [agree, setAgree] = useState(false);
+  // const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle",
+    "idle"
   );
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const isEmailValid = useMemo(
     () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email),
-    [form.email],
+    [form.email]
   );
 
   const isValid = useMemo(
     () =>
       form.name.trim().length >= 2 &&
       isEmailValid &&
-      form.message.trim().length >= 5 &&
-      agree,
-    [form, isEmailValid, agree],
+      form.message.trim().length >= 5,
+    [form, isEmailValid]
   );
 
   const onChange =
@@ -106,26 +105,25 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
     setStatus("sending");
     setErrorMsg("");
 
-    // TODO: Handle contact us
-    // try {
-    //   const res = await fetch("/api/contact", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(form),
-    //   });
-    //
-    //   if (!res.ok) {
-    //     const data = await res.json().catch(() => ({}));
-    //     throw new Error(data?.error || "Failed to send");
-    //   }
-    //
-    //   setStatus("ok");
-    //   setForm({ name: "", email: "", message: "" });
-    //   setAgree(false);
-    // } catch (err: any) {
-    //   setStatus("error");
-    //   setErrorMsg(err?.message || "Failed to send");
-    // }
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || "Failed to send");
+      }
+
+      setStatus("ok");
+      setForm({ name: "", email: "", message: "" });
+      // setAgree(false);
+    } catch (err: any) {
+      setStatus("error");
+      setErrorMsg(err?.message || "Failed to send");
+    }
   };
 
   if (!contactUsForm) {
@@ -143,22 +141,22 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
 
         {status === "ok" && (
           <Alert severity="success" sx={{ mb: 2 }}>
-            {translate("successMessageSent")}
+            {translate("contactFormSuccessMessageSent")}
           </Alert>
         )}
         {status === "error" && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMsg || translate("failedMessageSent")}
+            {translate("contactFormFailedMessageSent")}
           </Alert>
         )}
 
         <Grid container rowSpacing="24px" columnSpacing="32px">
           <Grid {...styles.halfWidthGrid}>
             <TextField
-              name={translate("name")}
+              name="name"
               value={form.name}
               onChange={onChange("name")}
-              placeholder={translate("yourName")}
+              placeholder={translate("contactFormNamePlaceholder")}
               variant="outlined"
               fullWidth
               className="rounded"
@@ -168,11 +166,11 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
           </Grid>
           <Grid {...styles.halfWidthGrid}>
             <TextField
-              name={translate("email")}
+              name="email"
               type="email"
               value={form.email}
               onChange={onChange("email")}
-              placeholder={translate("name@example.com")}
+              placeholder={translate("contactFormEmailPlaceholder")}
               variant="outlined"
               fullWidth
               className="rounded"
@@ -188,17 +186,17 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
           </Grid>
           <Grid {...styles.fullWidthGrid}>
             <Textarea
-              name={translate("message")}
+              name="message"
               value={form.message}
               onChange={onChange("message") as any}
               aria-label="message"
               minRows={5}
               maxRows={7}
-              placeholder={translate("writeTextHere")}
+              placeholder={translate("contactFormMessagePlaceholder")}
               required
             />
           </Grid>
-          <Grid {...styles.fullWidthGrid}>
+          {/* <Grid {...styles.fullWidthGrid}>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -210,7 +208,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
                 label={<RichText fontSize="12px">{privacyPolicy}</RichText>}
               />
             </FormGroup>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid {...styles.fullWidthGrid}>
           <Button

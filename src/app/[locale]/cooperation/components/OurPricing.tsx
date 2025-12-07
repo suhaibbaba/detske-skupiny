@@ -21,6 +21,7 @@ import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface Props {
   fields: {
@@ -57,6 +58,7 @@ interface PricingStyles {
   featureIcon?: BoxProps;
   button?: ButtonProps;
   mostPopular?: BoxProps;
+  interval?: TypographyOwnProps;
 }
 
 const styles: PricingStyles = {
@@ -125,13 +127,13 @@ const styles: PricingStyles = {
   planDescription: {
     color: "text.secondary",
     textAlign: "center",
-    mb: "16px",
+    mb: "24px",
   },
   price: {
     fontSize: "44px",
     fontWeight: 900,
     color: "custom.ui10",
-    mb: "24px",
+    lineHeight: 1,
   },
   featureList: {
     sx: {
@@ -170,9 +172,18 @@ const styles: PricingStyles = {
       right: "16px",
     },
   },
+  interval: {
+    sx: {
+      textAlign: "center",
+      fontSize: "14px",
+      mb: "24px",
+    },
+  },
 };
 
 const OurPricing: FC<Props> = ({ fields, locale }) => {
+  const translate = useTranslate();
+
   return (
     <Box {...styles.container} data-test-selector="OurPricing">
       <Container>
@@ -199,7 +210,12 @@ const OurPricing: FC<Props> = ({ fields, locale }) => {
                 <Typography {...styles.planDescription}>
                   {plan.description}
                 </Typography>
-                <Typography {...styles.price}>{plan.price}</Typography>
+                <Box>
+                  <Typography {...styles.price}>{plan.price}</Typography>
+                  <Typography {...styles.interval}>
+                    {translate("monthly")}
+                  </Typography>
+                </Box>
                 <List {...styles.featureList}>
                   {plan.features?.map((f) => (
                     <ListItem key={f.label} {...styles.featureItem}>

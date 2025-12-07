@@ -129,6 +129,10 @@ const HeaderClientPage = ({ header }: Props) => {
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleCloseDrawer = () => {
+    setMenuOpen(false);
+  };
+
   if (!header) {
     return null;
   }
@@ -162,12 +166,16 @@ const HeaderClientPage = ({ header }: Props) => {
                     {...styles.logo}
                   />
                 </Box>
-                <Menu menuItems={header.menuItems} />
+                <Menu
+                  menuItems={header.menuItems}
+                  onItemClick={handleCloseDrawer}
+                />
                 {header.cta && (
                   <Button
                     startIcon={<AddCircleRoundedIcon />}
                     link={header.cta.link}
                     {...styles.ctaMobile}
+                    onClick={handleCloseDrawer}
                   />
                 )}
               </Box>

@@ -7,6 +7,7 @@ import Link from "@/components/ui/link";
 interface Props {
   menuItems?: MenuItem[];
   hideOnMobile?: boolean;
+  onItemClick?: () => void;
 }
 
 interface MenuStyles {
@@ -65,7 +66,7 @@ const styles: MenuStyles = {
   },
 };
 
-const Menu = ({ menuItems, hideOnMobile }: Props) => {
+const Menu = ({ menuItems, hideOnMobile, onItemClick }: Props) => {
   if (!menuItems || !menuItems.length) {
     return null;
   }
@@ -89,6 +90,7 @@ const Menu = ({ menuItems, hideOnMobile }: Props) => {
           link={item.link}
           {...styles.item}
           className="drawer-item"
+          onClick={onItemClick}
         />
       ))}
     </Box>

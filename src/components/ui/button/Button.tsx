@@ -26,6 +26,7 @@ const Button: FC<ButtonProps> = ({
   sx,
   link,
   scroll,
+  onClick,
   ...otherProps
 }) => {
   const locale = useLocale();
@@ -41,6 +42,7 @@ const Button: FC<ButtonProps> = ({
         {...otherProps}
         href={passedProps.url}
         scroll={scroll}
+        onClick={onClick}
       >
         {children || passedProps.text || cleanUrl(passedProps.url)}
       </MuiButton>
@@ -57,6 +59,7 @@ const Button: FC<ButtonProps> = ({
         {...otherProps}
         href={localizedHref}
         scroll={scroll}
+        onClick={onClick}
       >
         {children}
       </MuiButton>
@@ -64,7 +67,7 @@ const Button: FC<ButtonProps> = ({
   }
 
   return (
-    <MuiButton {...styles} {...otherProps}>
+    <MuiButton {...styles} {...otherProps} onClick={onClick}>
       {children}
     </MuiButton>
   );
