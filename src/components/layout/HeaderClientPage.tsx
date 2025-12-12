@@ -24,6 +24,7 @@ import { Header } from "@/types/header";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
 import { useLocale } from "next-intl";
+import LanguageSwitcher from "../ui/Language/LanguageSwitcher";
 
 interface Props {
   header?: Header;
@@ -158,7 +159,14 @@ const HeaderClientPage = ({ header }: Props) => {
               ModalProps={{ keepMounted: true }}
               {...styles.drawer}
             >
-              <Box sx={{ p: "8px" }}>
+              <Box
+                sx={{
+                  p: "8px",
+                  display: "flex",
+                  flexDirection: "column",
+                  flexGrow: 1,
+                }}
+              >
                 <Box {...styles.drawerLogoContainer}>
                   <Box
                     component="img"
@@ -178,6 +186,9 @@ const HeaderClientPage = ({ header }: Props) => {
                     onClick={handleCloseDrawer}
                   />
                 )}
+                <Box sx={{ mt: "auto", alignSelf: "center" }}>
+                  <LanguageSwitcher />
+                </Box>
               </Box>
             </Drawer>
             <Menu menuItems={header.menuItems} hideOnMobile={true} />

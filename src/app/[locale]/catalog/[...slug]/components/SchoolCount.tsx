@@ -55,8 +55,7 @@ const SchoolsCount = ({
     <Box {...styles.container}>
       <Box>
         <Typography {...styles.text}>
-          {translate("showingResults", {
-            total,
+          {translate("showingResultsShort", {
             filterTotal,
           })}
         </Typography>
