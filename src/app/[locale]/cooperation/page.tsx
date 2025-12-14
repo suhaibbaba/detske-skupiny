@@ -1,10 +1,36 @@
 import { fetchPageByType } from "@/sanity/queries";
-import { Box, Container } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 import Zone from "@/sanity/components/Zone";
 import { PageProps } from "@/types";
-import Breadcrumbs from "@/components/ui/breadcrumb";
+import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
+import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
+
+interface CooperationStyles {
+  pageLayout?: PageLayoutStyles;
+  container?: BoxProps;
+}
+
+const styles: CooperationStyles = {
+  pageLayout: {
+    section: {
+      sx: {
+        background: "var(--mui-palette-gradients-ui1)",
+        pb: {
+          xs: "64px",
+          sm: "130px",
+        },
+      },
+    },
+  },
+  container: {
+    sx: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+    },
+  },
+};
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const translate = await getTranslateServer();
@@ -18,12 +44,11 @@ const Page = async ({ params }: PageProps) => {
   const data = await fetchPageByType("preschool");
 
   return (
-    <Box data-test-selector="preschool-page">
-      <Container sx={{ pt: "40px" }}>
-        <Breadcrumbs addSpace={false} />
-      </Container>
-      <Zone sections={data?.sections} types="all" {...queryParams} />
-    </Box>
+    <PageLayout extendedStyles={styles.pageLayout} contentFullWidth>
+      <Box {...styles.container}>
+        <Zone sections={data?.sections} types="all" {...queryParams} />
+      </Box>
+    </PageLayout>
   );
 };
 

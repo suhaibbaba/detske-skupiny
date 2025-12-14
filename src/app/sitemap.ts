@@ -37,19 +37,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: {
         languages: {
           cs: `${csBase}/katalog/ceska-republika`,
-          en: `${enBase}/catalog/ceska-republika`,
+          en: `${enBase}/catalog/czech-republic`,
         },
       },
     },
     {
-      url: `${enBase}/catalog/ceska-republika`,
+      url: `${enBase}/catalog/czech-republic`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
       alternates: {
         languages: {
           cs: `${csBase}/katalog/ceska-republika`,
-          en: `${enBase}/catalog/ceska-republika`,
+          en: `${enBase}/catalog/czech-republic`,
         },
       },
     },
@@ -125,29 +125,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
       },
     },
-    {
-      url: `${csBase}/ochrana-soukromi`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-      alternates: {
-        languages: {
-          cs: `${csBase}/ochrana-soukromi`,
-          en: `${enBase}/privacy-policy`,
-        },
-      },
-    },
-    {
-      url: `${enBase}/privacy-policy`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-      alternates: {
-        languages: {
-          cs: `${csBase}/ochrana-soukromi`,
-          en: `${enBase}/privacy-policy`,
-        },
-      },
-    },
+    // {
+    //   url: `${csBase}/ochrana-soukromi`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "weekly",
+    //   priority: 0.1,
+    //   alternates: {
+    //     languages: {
+    //       cs: `${csBase}/ochrana-soukromi`,
+    //       en: `${enBase}/privacy-policy`,
+    //     },
+    //   },
+    // },
+    // {
+    //   url: `${enBase}/privacy-policy`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "weekly",
+    //   priority: 0.1,
+    //   alternates: {
+    //     languages: {
+    //       cs: `${csBase}/ochrana-soukromi`,
+    //       en: `${enBase}/privacy-policy`,
+    //     },
+    //   },
+    // },
   ];
 }

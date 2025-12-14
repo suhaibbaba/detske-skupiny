@@ -20,7 +20,7 @@ export interface PageLayoutStyles {
 const pageLayoutStyles: PageLayoutStyles = {
   section: {
     sx: {
-      pt: 5,
+      pt: { xs: 2, md: 5 },
       pb: { xs: 5, md: 12.5 },
     },
   },

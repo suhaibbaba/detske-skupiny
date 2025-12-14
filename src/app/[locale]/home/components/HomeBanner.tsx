@@ -39,7 +39,7 @@ const styles: HomeBannerStyles = {
       backgroundSize: "cover",
       backgroundPosition: "center",
       textAlign: "center",
-      py: "96px",
+      py: { xs: "50px", md: "96px" },
     },
   }),
   container: {

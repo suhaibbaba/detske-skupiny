@@ -26,12 +26,11 @@ const styles: ListOfSchoolsStyles = {
       gridTemplateColumns: "1fr",
       gap: "54px",
       pt: {
-        xs: "120px",
-        sm: "20px",
+        md: "20px",
       },
       pb: {
-        xs: "100px",
-        sm: "120px",
+        xs: "40px",
+        md: "80px",
       },
     },
   },

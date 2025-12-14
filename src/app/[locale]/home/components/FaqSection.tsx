@@ -40,7 +40,7 @@ const styles: FaqSectionStyles = {
   section: {
     sx: {
       bgcolor: "common.white",
-      py: "120px",
+      py: { xs: "50px", md: "120px" },
     },
   },
   container: {
@@ -58,7 +58,7 @@ const styles: FaqSectionStyles = {
     textAlign: "center",
     sx: {
       mx: "auto",
-      mb: "80px",
+      mb: { xs: "40px", md: "80px" },
       position: "relative",
       alignSelf: "baseline",
       "&::before, &::after": {

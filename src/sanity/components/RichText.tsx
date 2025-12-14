@@ -191,7 +191,7 @@ function RichText({
       strong: ({ children }) => (
         <Typography
           component="span"
-          fontWeight={700}
+          fontWeight={900}
           variant="inherit"
           sx={textSx}
         >

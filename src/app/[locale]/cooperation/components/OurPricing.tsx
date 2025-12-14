@@ -99,7 +99,7 @@ const styles: PricingStyles = {
         sm: "stretch",
       },
       columnGap: "32px",
-      rowGap: "42px",
+      rowGap: "60px",
     },
   },
   card: {

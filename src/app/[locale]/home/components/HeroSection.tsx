@@ -72,6 +72,9 @@ const styles: HeroSectionStyles = {
           mobile: 36,
         }),
         textAlign: "left",
+        span: {
+          fontWeight: "inherit",
+        },
       },
     },
     description: {

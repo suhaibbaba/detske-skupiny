@@ -32,7 +32,7 @@ const styles: ContactUsStyles = {
     sx: {
       display: "grid",
       gridTemplateColumns: "1fr",
-      gap: 15,
+      gap: { xs: "40px", sm: 15 },
     },
   },
   infoContainer: {

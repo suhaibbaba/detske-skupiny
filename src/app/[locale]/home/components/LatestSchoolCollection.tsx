@@ -30,8 +30,8 @@ const styles: LatestKinderGroupsSectionStyles = {
   section: {
     component: "section",
     sx: {
-      pt: "100px",
-      pb: "74px",
+      pt: { xs: "50px", md: "100px" },
+      pb: { xs: "50px", md: "74px" },
       bgcolor: "primary.light",
       textAlign: "center",
     },
@@ -51,7 +51,7 @@ const styles: LatestKinderGroupsSectionStyles = {
   },
   description: {
     sx: {
-      mb: "80px",
+      mb: { xs: "40px", md: "80px" },
     },
   },
   grid: {

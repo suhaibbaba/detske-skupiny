@@ -36,7 +36,7 @@ const styles: GroupSectionStyles = {
       background: `linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${backgroundCover})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
-      py: "100px",
+      py: { xs: "50px", md: "100px" },
     },
   }),
   stack: {
@@ -94,7 +94,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
         </Typography>
         <Grid container spacing="24px">
           {areas.map((area) => (
-            <Grid size={4} key={area.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={area.id}>
               <GroupItem item={area} />
             </Grid>
           ))}
@@ -104,7 +104,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
         </Typography>
         <Grid container spacing="24px">
           {schoolCategories.map((category) => (
-            <Grid size={4} key={category.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.id}>
               <GroupItem item={category} baseSlug={slug} hideNextArrow={true} />
             </Grid>
           ))}

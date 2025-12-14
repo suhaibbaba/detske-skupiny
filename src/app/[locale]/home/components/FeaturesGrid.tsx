@@ -39,7 +39,7 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
   section: {
     sx: {
       bgcolor: "secondary.main",
-      py: "100px",
+      py: { xs: "50px", md: "100px" },
       textAlign: "center",
     },
   },
@@ -71,7 +71,7 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
         md: "94px",
       },
       rowGap: {
-        xs: "94px",
+        xs: "60px",
         sm: "70px",
       },
       mt: "80px",
