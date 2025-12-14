@@ -6,7 +6,6 @@ import Header from "@/components/layout/Header";
 import { Nunito } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getLocale, getMessages } from "next-intl/server";
-import { setLocale } from "@/utilites/localeStore";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
@@ -34,8 +33,6 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale();
   const messages = await getMessages({ locale });
-
-  setLocale(locale);
 
   return (
     <html lang={locale}>

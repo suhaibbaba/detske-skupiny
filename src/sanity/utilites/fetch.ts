@@ -3,12 +3,15 @@ import { expandLinks } from "@/sanity/utilites/expandLinks";
 import type { SanityClient } from "next-sanity";
 import { getLocale } from "next-intl/server";
 import { defaultLocale } from "@/i18n/routing";
-import { currentLocale } from "@/utilites/localeStore";
 
 type FetchParams = Parameters<SanityClient["fetch"]>[1];
 
 function getClientLocale() {
-  return currentLocale ?? defaultLocale;
+  let locale;
+  if (typeof window !== "undefined") {
+    locale = window.currentLocale;
+  }
+  return locale ?? defaultLocale;
 }
 
 export async function sanityFetch<T>(

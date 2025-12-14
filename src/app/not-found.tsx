@@ -2,7 +2,6 @@ import { Box, Button, Typography, Paper } from "@mui/material";
 import Link from "next/link";
 import { Nunito } from "next/font/google";
 import { getLocale } from "next-intl/server";
-import { setLocale } from "@/utilites/localeStore";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import type { Metadata } from "next";
 
@@ -23,8 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function NotFound() {
   const locale = await getLocale();
   const translate = await getTranslateServer();
-
-  setLocale(locale);
 
   return (
     <html lang={locale}>
