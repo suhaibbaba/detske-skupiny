@@ -57,15 +57,10 @@ const buildUrl = (targetDomain: string): string => {
 
   const protocol = window.location.protocol; // http: or https:
   const port = window.location.port;
-  const pathname = window.location.pathname;
-  const search = window.location.search;
-  const hash = window.location.hash;
-
   // Build port string (only if port exists)
   const portString = port ? `:${port}` : "";
 
-  // Construct the full URL
-  return `${protocol}//${targetDomain}${portString}${pathname}${search}${hash}`;
+  return `${protocol}//${targetDomain}${portString}/`;
 };
 
 const LanguageSwitcher = () => {
