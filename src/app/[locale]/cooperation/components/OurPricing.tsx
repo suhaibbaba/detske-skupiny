@@ -139,7 +139,6 @@ const styles: PricingStyles = {
     sx: {
       width: "100%",
       mb: "32px",
-      bgcolor: "var(--mui-palette-custom-ui9)",
       p: "8px",
     },
   },

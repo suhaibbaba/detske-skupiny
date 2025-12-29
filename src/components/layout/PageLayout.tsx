@@ -1,6 +1,6 @@
 import { Box, BoxProps, Container } from "@mui/material";
 import Breadcrumbs from "@/components/ui/breadcrumb";
-import React, { FC } from "react";
+import React, { FC, Fragment } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 
 interface Props {
@@ -39,12 +39,13 @@ const PageLayout: FC<Props> = ({
       <Container
         maxWidth={contentFullWidth ? false : "lg"}
         disableGutters={!contentFullWidth}
+        sx={{ px: contentFullWidth ? "0 !important" : undefined }}
       >
         {contentFullWidth ? (
-          <Container>
-            {showBreadcrumb && <Breadcrumbs />}
+          <Fragment>
+            <Container>{showBreadcrumb && <Breadcrumbs />}</Container>
             {children}
-          </Container>
+          </Fragment>
         ) : (
           <>
             {showBreadcrumb && <Breadcrumbs />}
