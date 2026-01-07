@@ -57,7 +57,11 @@ export default async function RootLayout({
           defer
           src="https://api.pirsch.io/pa.js"
           id="pianjs"
-          data-code="pxqYRrg0YF8DPBC3yuiEKV4uHjlIZJ29"
+          data-code={
+            locale === "en"
+              ? "WMoqdQxGnE1HVNPl3KhE8rmc8zxh0Ijq"
+              : "pxqYRrg0YF8DPBC3yuiEKV4uHjlIZJ29"
+          }
         />
       </body>
     </html>
