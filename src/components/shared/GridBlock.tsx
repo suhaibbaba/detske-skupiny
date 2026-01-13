@@ -29,6 +29,7 @@ interface Props {
   value: {
     columns: number;
     gap: string;
+    margin: number;
     items: GridItem[];
     mobileColumns: number;
     tabletColumns: number;
@@ -41,6 +42,7 @@ const GridBlock = ({ value }: Props) => {
   const mobileColumns = value.mobileColumns || 1;
   const tabletColumns = value.tabletColumns || 2;
   const gap = parseInt(value.gap || "0");
+  const margin = value.margin || 4;
 
   const getJustifyContent = (align: string) => {
     switch (align) {
@@ -121,7 +123,7 @@ const GridBlock = ({ value }: Props) => {
   };
 
   return (
-    <Box sx={{ my: 4 }}>
+    <Box sx={{ my: margin }}>
       <Grid
         container
         spacing={gap}
