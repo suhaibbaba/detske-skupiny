@@ -82,11 +82,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!lastSegment) {
     return {
       title: translate("catalog"),
+      description: translate("catalogMetaDescription"),
     };
   }
   const pages = await fetchBreadcrumbList({ slugs: [lastSegment] });
   return {
     title: pages.length > 0 ? pages[0].name : translate("catalog"),
+    description:
+      pages.length > 0
+        ? translate("catalogLocationMetaDescription", {
+            location: pages[0].name,
+          })
+        : translate("catalogMetaDescription"),
   };
 }
 

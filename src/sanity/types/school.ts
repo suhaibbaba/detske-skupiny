@@ -85,4 +85,5 @@ export interface School {
   content?: SanityRichTextField;
   gallery?: SanityImageField[];
   notes?: string | null;
+  metaDescription?: string;
 }

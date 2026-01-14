@@ -51,6 +51,7 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
       "id": _id,
       "logo": logo.asset->url,
       name,
+      metaDescription,
       "slug": slug.current,
       website,
       "primaryImages": primaryImages[].asset->url,
