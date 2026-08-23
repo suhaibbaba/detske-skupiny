@@ -1,5 +1,5 @@
 {
-  "name": "schools",
+  "name": "@detske-skupiny/studio",
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
@@ -11,7 +11,8 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "random-sort-order": "node schedules/randomizeSortOrder.mjs",
-    "update-school-count": "node schedules/updateSchoolCount.mjs"
+    "update-school-count": "node schedules/updateSchoolCount.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "sanity"
@@ -37,6 +38,7 @@
     "eslint": "^9.28",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.6.2",
-    "typescript": "^5.8"
+    "typescript": "^5.8",
+    "vite": "^7.3.6"
   }
 }

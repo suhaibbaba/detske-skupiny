@@ -1,0 +1,26 @@
+{
+  "name": "detske-skupiny",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w apps/web",
+    "dev:studio": "npm run dev -w apps/studio",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "overrides": {
+    "@mui/core-downloads-tracker": "7.1.0",
+    "@mui/icons-material": "7.1.0",
+    "@mui/material": "7.1.0",
+    "@mui/material-nextjs": "7.3.3",
+    "@mui/private-theming": "7.1.0",
+    "@mui/styled-engine": "7.1.0",
+    "@mui/system": "7.1.0",
+    "@mui/types": "7.4.2",
+    "@mui/utils": "7.1.0"
+  }
+}
