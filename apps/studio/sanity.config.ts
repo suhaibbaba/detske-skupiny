@@ -73,21 +73,21 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
-  // Uncomment the following to restrict actions on singleton documents
-  // document: {
-  //   // Remove Delete/Duplicate (and optionally Unpublish) for singletons
-  //   actions: (prev, { schemaType }) =>
-  //     SINGLETON_TYPES.includes(schemaType)
-  //       ? prev.filter(
-  //           (a) =>
-  //             !["delete", "duplicate" /*, 'unpublish'*/].includes(
-  //               a.action as any,
-  //             ),
-  //         )
-  //       : prev,
+  // Restrict actions on singleton documents (home, settings, header, footer, …)
+  document: {
+    // Remove Delete/Duplicate (and optionally Unpublish) for singletons
+    actions: (prev, { schemaType }) =>
+      SINGLETON_TYPES.includes(schemaType)
+        ? prev.filter(
+            (a) =>
+              !["delete", "duplicate" /*, 'unpublish'*/].includes(
+                a.action as string,
+              ),
+          )
+        : prev,
 
-  //   // Remove “New …” menu items for singletons
-  //   newDocumentOptions: (prev) =>
-  //     prev.filter((t) => !SINGLETON_TYPES.includes(t.templateId || "")),
-  // },
+    // Remove "New …" menu items for singletons
+    newDocumentOptions: (prev) =>
+      prev.filter((t) => !SINGLETON_TYPES.includes(t.templateId || "")),
+  },
 });

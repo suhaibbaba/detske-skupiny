@@ -31,7 +31,11 @@ if (!envLoaded) {
 const client = createClient({
   projectId: process.env.SANITY_STUDIO_PROJECT_ID,
   dataset: process.env.SANITY_STUDIO_DATASET,
-  token: process.env.SANITY_STUDIO_API_TOKEN,
+  // Read from the plain environment (CI secret or an untracked .env.local).
+  // Deliberately NOT prefixed with SANITY_STUDIO_, because every
+  // SANITY_STUDIO_* variable is inlined into the publicly served studio bundle.
+  // This script runs in Node only, so the write token stays server-side.
+  token: process.env.SANITY_SCRIPT_TOKEN,
   apiVersion: process.env.SANITY_STUDIO_API_VERSION,
   useCdn: false,
 });
