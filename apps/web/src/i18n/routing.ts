@@ -5,7 +5,7 @@ export const locales = LOCALES.map((locale) => locale.id);
 export const defaultLocale = "cs";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
-const CZ_DOMAIN = process.env.NEXT_PUBLIC_CZ_DOMAIN ?? "localhost";
+const CS_DOMAIN = process.env.NEXT_PUBLIC_CS_DOMAIN ?? "localhost";
 const isDev = process.env.NODE_ENV === "development";
 
 // Translation map for path segments
@@ -59,7 +59,7 @@ export const routing = defineRouting({
       locales: ["en"],
     },
     {
-      domain: isDev ? `${CZ_DOMAIN}:3000` : CZ_DOMAIN,
+      domain: isDev ? `${CS_DOMAIN}:3000` : CS_DOMAIN,
       defaultLocale: "cs",
       locales: ["cs"],
     },

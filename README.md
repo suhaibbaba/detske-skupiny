@@ -6,7 +6,7 @@ This guide explains how to set up domain-based internationalization (i18n) routi
 
 This project uses `next-intl` with domain-based routing, where different domains serve different languages:
 - `en.school.local` → English
-- `cz.school.local` → Czech
+- `cs.school.local` → Czech
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ Add these lines at the end of the file:
 
 ```
 127.0.0.1 en.school.local
-127.0.0.1 cz.school.local
+127.0.0.1 cs.school.local
 ```
 
 **Save and exit:** Press `Ctrl + X`, then `Y`, then `Enter`
@@ -74,7 +74,7 @@ npm run dev
 const nextConfig = {
   allowedDevOrigins: [
     'http://en.school.local',
-    'http://cz.school.local',
+    'http://cs.school.local',
   ],
 };
 ```
@@ -83,12 +83,12 @@ const nextConfig = {
 
 In production, point your actual domains to your server:
 - `en.yourdomain.com` → Your server IP
-- `cz.yourdomain.com` → Your server IP
+- `cs.yourdomain.com` → Your server IP
 
 Update environment variables:
 ```env
 NEXT_PUBLIC_EN_DOMAIN=en.yourdomain.com
-NEXT_PUBLIC_CZ_DOMAIN=cz.yourdomain.com
+NEXT_PUBLIC_CS_DOMAIN=cs.yourdomain.com
 ```
 
 No hosts file modifications or port forwarding needed in production.

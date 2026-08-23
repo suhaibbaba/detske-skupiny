@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useEffect, useState } from "react";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
-const CZ_DOMAIN = process.env.NEXT_PUBLIC_CZ_DOMAIN ?? "localhost";
+const CS_DOMAIN = process.env.NEXT_PUBLIC_CS_DOMAIN ?? "localhost";
 
 interface LanguageSwitcherStyles {
   select?: SelectProps;
@@ -82,7 +82,7 @@ const LanguageSwitcher = () => {
     [key: string]: { domain: string; name: string; flag: string };
   } = {
     en: { domain: EN_DOMAIN, name: "English (US)", flag: "🇬🇧" },
-    cs: { domain: CZ_DOMAIN, name: "Čeština (CZ)", flag: "🇨🇿" },
+    cs: { domain: CS_DOMAIN, name: "Čeština (CZ)", flag: "🇨🇿" },
   };
 
   const handleChange = (e: any) => {
