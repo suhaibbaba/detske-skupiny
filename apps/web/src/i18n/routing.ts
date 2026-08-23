@@ -2,7 +2,7 @@ import { defineRouting, Pathnames } from "next-intl/routing";
 import { LOCALES } from "@detske-skupiny/config/locales";
 
 export const locales = LOCALES.map((locale) => locale.id);
-export const defaultLocale = "cz";
+export const defaultLocale = "cs";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
 const CZ_DOMAIN = process.env.NEXT_PUBLIC_CZ_DOMAIN ?? "localhost";
@@ -10,42 +10,42 @@ const isDev = process.env.NODE_ENV === "development";
 
 // Translation map for path segments
 export const pathTranslations: Record<string, Record<string, string>> = {
-  catalog: { en: "catalog", cz: "katalog" },
-  articles: { en: "articles", cz: "clanky" },
-  groups: { en: "groups", cz: "skupiny" },
-  cooperation: { en: "cooperation", cz: "spoluprace" },
-  "contact-us": { en: "contact-us", cz: "kontakt" },
+  catalog: { en: "catalog", cs: "katalog" },
+  articles: { en: "articles", cs: "clanky" },
+  groups: { en: "groups", cs: "skupiny" },
+  cooperation: { en: "cooperation", cs: "spoluprace" },
+  "contact-us": { en: "contact-us", cs: "kontakt" },
 };
 
 export const pathnames = {
   "/": "/",
   "/articles": {
     en: "/articles",
-    cz: "/clanky",
+    cs: "/clanky",
   },
   "/articles/[slug]": {
     en: "/articles/[slug]",
-    cz: "/clanky/[slug]",
+    cs: "/clanky/[slug]",
   },
   "/contact-us": {
     en: "/contact-us",
-    cz: "/kontakt",
+    cs: "/kontakt",
   },
   "/groups": {
     en: "/groups",
-    cz: "/skupiny",
+    cs: "/skupiny",
   },
   "/cooperation": {
     en: "/cooperation",
-    cz: "/spoluprace",
+    cs: "/spoluprace",
   },
   "/groups/[group]": {
     en: "/groups/[group]",
-    cz: "/skupiny/[group]",
+    cs: "/skupiny/[group]",
   },
   "/catalog/[...slug]": {
     en: "/catalog/[...slug]",
-    cz: "/katalog/[...slug]",
+    cs: "/katalog/[...slug]",
   },
 } satisfies Pathnames<typeof locales>;
 
@@ -60,8 +60,8 @@ export const routing = defineRouting({
     },
     {
       domain: isDev ? `${CZ_DOMAIN}:3000` : CZ_DOMAIN,
-      defaultLocale: "cz",
-      locales: ["cz"],
+      defaultLocale: "cs",
+      locales: ["cs"],
     },
   ],
   localePrefix: { mode: "never" },
