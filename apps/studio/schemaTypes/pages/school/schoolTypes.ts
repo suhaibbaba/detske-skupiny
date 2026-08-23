@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
 import * as process from "node:process";
-import { StackIcon } from "@sanity/icons";
+import { StackIcon } from "@sanity/icons/Stack";
 
 export default defineType({
   name: "schoolTypes",

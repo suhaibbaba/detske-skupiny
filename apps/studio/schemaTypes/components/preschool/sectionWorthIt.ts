@@ -1,5 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { BulbOutlineIcon } from "@sanity/icons";
+import { BulbOutlineIcon } from "@sanity/icons/BulbOutline";
 import { appendLanguageSubtitle } from "@/utility";
 
 export default defineType({

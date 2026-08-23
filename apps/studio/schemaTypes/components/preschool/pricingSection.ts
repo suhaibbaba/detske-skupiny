@@ -1,5 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { TagIcon } from "@sanity/icons";
+import { TagIcon } from "@sanity/icons/Tag";
 
 export default defineType({
   name: "pricingSection",

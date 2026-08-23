@@ -27,6 +27,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
+import { getLocalizedRoutes } from "@/routes";
 
 type Props = PageProps<{ slug: string[] }>;
 const PAGE_SIZE = 9;
@@ -99,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const Page = async ({ params, searchParams }: Props) => {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const {
     categories: categoriesQuery,
     tags: tagsQuery,
@@ -145,7 +146,11 @@ const Page = async ({ params, searchParams }: Props) => {
   const initialFilters = { catalog, categories, tags, searchName };
   return (
     <Box {...styles.pageContainer}>
-      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+      <PageLayout
+        contentFullWidth={false}
+        extendedStyles={styles.pageLayout}
+        pathname={getLocalizedRoutes(locale).catalogs(slug.join("/"))}
+      >
         <PageHeadingTypography
           title={pageHero?.title}
           description={pageHero?.description}

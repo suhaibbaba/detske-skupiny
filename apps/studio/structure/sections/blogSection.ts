@@ -1,5 +1,6 @@
 import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
-import { BookIcon, DocumentTextIcon } from "@sanity/icons";
+import { BookIcon } from "@sanity/icons/Book";
+import { DocumentTextIcon } from "@sanity/icons/DocumentText";
 
 export function createBlogSection(S: StructureBuilder): ListItemBuilder {
   return S.listItem()

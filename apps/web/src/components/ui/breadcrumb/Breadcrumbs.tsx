@@ -3,7 +3,6 @@ import { Breadcrumbs as MuiBreadcrumbs, Typography } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { getLocale } from "next-intl/server";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
-import { cookies } from "next/headers";
 import Link from "@/components/ui/link";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import {
@@ -17,6 +16,14 @@ import {
 } from "@/components/ui/breadcrumb/builders";
 
 interface Props {
+  /**
+   * The localized pathname of the page rendering the breadcrumbs, e.g.
+   * "/katalog/praha". Passed in by the page rather than read from a request
+   * cookie: the App Router exposes no pathname to server components, and the
+   * `x-current-pathname` cookie that used to carry it was set by the old
+   * middleware, which Next 16's `proxy` replaces with next-intl handling only.
+   */
+  pathname: string;
   addSpace?: boolean;
 }
 
@@ -39,15 +46,11 @@ const styles: BreadcrumbsStyles = {
   },
 };
 
-const Breadcrumbs = async ({ addSpace = true }: Props) => {
+const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
   const locale = await getLocale();
   const translate = await getTranslateServer();
 
-  // Get pathname from cookie
-  const cookieStore = await cookies();
-  const pathname = cookieStore.get("x-current-pathname")?.value || "/";
-
-  const pathSegments = decodeURIComponent(pathname)
+  const pathSegments = pathname
     .split("/")
     .filter((segment) => segment && segment !== locale);
 

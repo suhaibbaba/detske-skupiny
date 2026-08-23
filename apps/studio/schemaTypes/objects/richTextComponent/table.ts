@@ -1,5 +1,5 @@
 import { defineType, defineField } from "sanity";
-import { ThLargeIcon } from "@sanity/icons";
+import { ThLargeIcon } from "@sanity/icons/ThLarge";
 
 export default defineType({
   name: "table",

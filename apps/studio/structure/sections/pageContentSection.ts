@@ -1,5 +1,6 @@
 import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
-import { DocumentTextIcon, BlockContentIcon } from "@sanity/icons";
+import { DocumentTextIcon } from "@sanity/icons/DocumentText";
+import { BlockContentIcon } from "@sanity/icons/BlockContent";
 import { SINGLETONS } from "@/structure";
 
 /**
@@ -20,10 +21,8 @@ export function createPageContentSection(S: StructureBuilder): ListItemBuilder {
         .title("Page Content")
         .items([
           ...SINGLETONS.map((s) =>
-            S.documentTypeListItem(s.schemaType)
-              .title(s.title)
+            S.documentTypeListItem(s.schemaType).title(s.title),
           ),
-        ])
+        ]),
     );
 }
-

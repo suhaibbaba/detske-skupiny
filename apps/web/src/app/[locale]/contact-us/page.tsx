@@ -7,6 +7,7 @@ import ContactInfoCard from "@/app/[locale]/contact-us/components/ContactInfoCar
 import ContactForm from "@/components/forms/ContactForm";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocalizedRoutes } from "@/routes";
 
 interface ContactUsStyles {
   pageLayout?: PageLayoutStyles;
@@ -74,6 +75,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 const Page = async ({ params }: PageProps) => {
+  const { locale } = await params;
   const {
     pageHero,
     items: contactUsItem,
@@ -81,7 +83,10 @@ const Page = async ({ params }: PageProps) => {
   } = await fetchContactUs();
 
   return (
-    <PageLayout extendedStyles={styles.pageLayout}>
+    <PageLayout
+      extendedStyles={styles.pageLayout}
+      pathname={getLocalizedRoutes(locale).contactUs}
+    >
       <Box {...styles.container}>
         <PageHeadingTypography
           title={pageHero?.title}

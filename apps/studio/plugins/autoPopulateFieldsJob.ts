@@ -1,6 +1,6 @@
 import { definePlugin, SanityClient } from "sanity";
 import { DocumentActionComponent, useClient } from "sanity";
-import { SparklesIcon } from "@sanity/icons";
+import { SparklesIcon } from "@sanity/icons/Sparkles";
 import { useToast } from "@sanity/ui";
 import { useState } from "react";
 import { Address } from "@/types/school";

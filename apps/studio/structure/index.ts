@@ -20,8 +20,7 @@ const singletonModules = import.meta.glob<
   string,
   {
     default:
-      | { name: string; title?: string }
-      | { name: string; title?: string }[];
+      { name: string; title?: string } | { name: string; title?: string }[];
   }
 >(
   ["../schemaTypes/singletons/**/*.ts", "!../schemaTypes/singletons/index.ts"],
@@ -35,8 +34,7 @@ const pagesModules = import.meta.glob<
   string,
   {
     default:
-      | { name: string; title?: string }
-      | { name: string; title?: string }[];
+      { name: string; title?: string } | { name: string; title?: string }[];
   }
 >(["../schemaTypes/pages/**/*.ts", "!../schemaTypes/pages/index.ts"], {
   eager: true,

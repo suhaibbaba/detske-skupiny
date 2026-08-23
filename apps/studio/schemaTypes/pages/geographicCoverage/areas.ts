@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { MarkerIcon } from "@sanity/icons";
+import { MarkerIcon } from "@sanity/icons/Marker";
 import {
   orderRankField,
   orderRankOrdering,

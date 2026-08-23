@@ -1,5 +1,5 @@
 import { defineType, defineField } from "sanity";
-import { EllipsisVerticalIcon } from "@sanity/icons";
+import { EllipsisVerticalIcon } from "@sanity/icons/EllipsisVertical";
 
 export default defineType({
   name: "spacer",

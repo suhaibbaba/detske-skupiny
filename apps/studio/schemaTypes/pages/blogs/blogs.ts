@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { ThListIcon } from "@sanity/icons";
+import { ThListIcon } from "@sanity/icons/ThList";
 
 export default defineType({
   name: "blogs",

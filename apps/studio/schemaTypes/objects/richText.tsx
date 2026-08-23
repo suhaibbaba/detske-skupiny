@@ -1,5 +1,5 @@
 import { defineType, defineArrayMember, defineField } from "sanity";
-import { ColorWheelIcon } from "@sanity/icons";
+import { ColorWheelIcon } from "@sanity/icons/ColorWheel";
 
 export const richText = defineType({
   name: "richText",

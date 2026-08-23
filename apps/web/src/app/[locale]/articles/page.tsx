@@ -9,6 +9,7 @@ import WritersSection from "@/app/[locale]/articles/components/WritersSection";
 import Alert from "@/components/ui/alert";
 import clsx from "clsx";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocalizedRoutes } from "@/routes";
 import { Metadata } from "next";
 
 interface BlogsStyles {
@@ -74,6 +75,7 @@ export async function generateMetadata({
 
 const BlogsPage = async ({ params, searchParams }: PageProps) => {
   const translate = await getTranslateServer();
+  const { locale } = await params;
   const { category: categorySelected } = (await searchParams) as {
     category?: string;
   };
@@ -84,7 +86,11 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
   return (
     <Box {...styles.container} className={clsx(!pageHero && "pt-80")}>
       {pageHero && (
-        <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+        <PageLayout
+          contentFullWidth={false}
+          extendedStyles={styles.pageLayout}
+          pathname={getLocalizedRoutes(locale).article()}
+        >
           <Container>
             <PageHeadingTypography
               title={pageHero?.title}

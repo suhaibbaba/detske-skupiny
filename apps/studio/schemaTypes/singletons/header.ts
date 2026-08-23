@@ -1,6 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { LinkIcon } from "@sanity/icons";
+import { LinkIcon } from "@sanity/icons/Link";
 
 export default defineType({
   name: "header",

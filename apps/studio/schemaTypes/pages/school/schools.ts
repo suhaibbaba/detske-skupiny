@@ -1,16 +1,14 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage, upperCase } from "@/utility";
-import {
-  ThListIcon,
-  InfoOutlineIcon,
-  DocumentTextIcon,
-  UsersIcon,
-  PinIcon,
-  TagIcon,
-  DocumentsIcon,
-  ImageIcon,
-} from "@sanity/icons";
+import { ThListIcon } from "@sanity/icons/ThList";
+import { InfoOutlineIcon } from "@sanity/icons/InfoOutline";
+import { DocumentTextIcon } from "@sanity/icons/DocumentText";
+import { UsersIcon } from "@sanity/icons/Users";
+import { PinIcon } from "@sanity/icons/Pin";
+import { TagIcon } from "@sanity/icons/Tag";
+import { DocumentsIcon } from "@sanity/icons/Documents";
+import { ImageIcon } from "@sanity/icons/Image";
 
 export default defineType({
   name: "schools",
