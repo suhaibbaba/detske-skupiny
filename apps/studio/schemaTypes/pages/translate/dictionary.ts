@@ -1,9 +1,5 @@
 import { defineType, defineField } from "sanity";
-
-export const LOCALES = [
-  { id: "en", title: "English" },
-  { id: "cz", title: "Czech" },
-];
+import { LOCALES } from "@detske-skupiny/config/locales";
 
 export default defineType({
   name: "dictionaries",

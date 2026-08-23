@@ -4,6 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: [`*.school.local`],
+  transpilePackages: ["@detske-skupiny/config"],
 };
 
 // Pass the path to your i18n request config

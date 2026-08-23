@@ -1,0 +1,9 @@
+{
+  "name": "@detske-skupiny/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./locales": "./src/locales.ts"
+  }
+}

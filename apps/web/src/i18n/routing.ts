@@ -1,6 +1,7 @@
 import { defineRouting, Pathnames } from "next-intl/routing";
+import { LOCALES } from "@detske-skupiny/config/locales";
 
-export const locales = ["cz", "en"];
+export const locales = LOCALES.map((locale) => locale.id);
 export const defaultLocale = "cz";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";

@@ -1,4 +1,5 @@
 // sanity.config.ts
+import { LOCALES } from "@detske-skupiny/config/locales";
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
@@ -15,11 +16,6 @@ import { autoPopulateSchoolPlugin } from "@/plugins/autoPopulateSchoolFields";
 import { autoPopulateFieldsJobPlugin } from "@/plugins/autoPopulateFieldsJob";
 import { autoPopulateRegionPlugin } from "@/plugins/autoPopulateRegionFields";
 import { autoPopulateSchoolSortOrderPlugin } from "@/plugins/autoPopulateSchoolOrderFields";
-
-export const LOCALES = [
-  { id: "cz", title: "Czech" },
-  { id: "en", title: "English" },
-];
 
 export default defineConfig({
   name: "default",
