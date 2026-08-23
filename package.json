@@ -5,6 +5,9 @@
     "apps/*",
     "packages/*"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev:web": "npm run dev -w apps/web",
     "dev:studio": "npm run dev -w apps/studio",
