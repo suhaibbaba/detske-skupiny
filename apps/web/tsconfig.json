@@ -23,5 +23,10 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // vitest.config.ts is tooling config compiled by Vite, not by tsc. It is
+  // excluded because vitest 4 pulls in its own vite (rolldown-based) while the
+  // studio workspace uses vite 7 (rollup-based), and the two plugin types are
+  // structurally incompatible. The config is exercised by actually running the
+  // suite; the tests themselves are still typechecked.
+  "exclude": ["node_modules", "vitest.config.ts"]
 }
