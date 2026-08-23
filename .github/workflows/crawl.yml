@@ -1,0 +1,74 @@
+name: Full-site crawl
+
+# The crawler walks the whole site and is far slower than the e2e specs, so it
+# is deliberately kept out of PR runs: weekly, plus on demand.
+on:
+  schedule:
+    # Mondays at 04:00 UTC.
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      max_pages:
+        description: "Maximum pages to visit"
+        required: false
+        default: "300"
+      max_depth:
+        description: "Maximum link depth from /"
+        required: false
+        default: "6"
+
+# Required repository secrets - same as ci.yml:
+#   SANITY_PROJECT_ID, SANITY_DATASET, and optionally MAPTILER_API_KEY.
+# The crawl only follows links and never submits anything, so it is safe to
+# point at the production dataset.
+
+jobs:
+  crawl:
+    name: crawl
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Crawl
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          NEXT_PUBLIC_MAPTILER_API_KEY: ${{ secrets.MAPTILER_API_KEY }}
+          NEXT_PUBLIC_CZ_DOMAIN: localhost
+          NEXT_PUBLIC_EN_DOMAIN: en.localhost
+          CRAWL_MAX_PAGES: ${{ inputs.max_pages || '300' }}
+          CRAWL_MAX_DEPTH: ${{ inputs.max_depth || '6' }}
+        run: npm run test:crawl
+
+      # The report is the point of the run, so upload it whether or not the
+      # assertions passed.
+      - name: Upload crawl report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawl-report
+          path: e2e/reports/
+          retention-days: 30
+
+      - name: Upload Playwright report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-crawl
+          path: playwright-report/
+          retention-days: 14

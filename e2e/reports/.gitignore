@@ -1,0 +1,4 @@
+# Crawl output is regenerated on every run and uploaded as a CI artifact.
+*.json
+*.md
+!.gitignore
