@@ -24,6 +24,7 @@ import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/School
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 
@@ -113,11 +114,12 @@ const Page = async ({ params, searchParams }: Props) => {
   const tags = toArray(tagsQuery);
 
   const catalog = parseCatalogSlug(slug);
-  const selectedSlug = getSelectedSlug(catalog);
 
   if (!catalog || !catalog.country) {
-    return null;
+    notFound();
   }
+
+  const selectedSlug = getSelectedSlug(catalog);
 
   const [filterContent, { pageHero, totalSchools }] = await Promise.all([
     fetchFilters(catalog),

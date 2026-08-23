@@ -120,7 +120,7 @@ const SectionWorthIt: FC<Props> = ({ fields }) => {
           {fields.features?.map((item) => (
             <Paper key={item._key} {...styles.featureCard}>
               <Box {...styles.iconWrapper}>
-                <Box component="img" src={urlImageFor(item.icon)} />
+                <Box component="img" src={urlImageFor(item.icon)} alt={item.title} />
               </Box>
 
               <Typography {...styles.cardTitle}>{item.title}</Typography>

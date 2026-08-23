@@ -20,7 +20,7 @@ async function fetchDictionary(locale: string) {
   const data = await client.fetch<Wire>(
     messagesQuery(locale),
     {},
-    { next: { revalidate: 0.5 } }, // revalidate every 5 minutes
+    { next: { revalidate: 300 } }, // revalidate every 5 minutes
   );
 
   const common: Record<string, string> = {};

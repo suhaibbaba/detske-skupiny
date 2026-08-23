@@ -7,7 +7,7 @@ import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
 import BlogCard from "@/app/[locale]/articles/components/BlogCard";
 import WritersSection from "@/app/[locale]/articles/components/WritersSection";
 import Alert from "@/components/ui/alert";
-import { cx } from "next/dist/client/components/react-dev-overlay/ui/utils/cx";
+import clsx from "clsx";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { Metadata } from "next";
 
@@ -82,7 +82,7 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
   });
 
   return (
-    <Box {...styles.container} className={cx(!pageHero && "pt-80")}>
+    <Box {...styles.container} className={clsx(!pageHero && "pt-80")}>
       {pageHero && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <Container>

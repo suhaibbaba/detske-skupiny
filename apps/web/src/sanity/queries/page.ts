@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { languageQuery } from "@/sanity/queries/index";
+import { excludeDraft, languageQuery } from "@/sanity/queries/index";
 import { PageSections } from "@/sanity/types";
 import { sanityFetch } from "@/sanity/utilites/fetch";
 
@@ -10,7 +10,7 @@ export async function fetchPageByType(type: string) {
         ...,
         _type == "mapCollection" => {
           ...,
-          "markers": *[_type == "schools"]{
+          "markers": *[_type == "schools" && ${excludeDraft} && ${languageQuery}]{
             "id": _id,
             "coordinate": address.mapLocation,
             name,

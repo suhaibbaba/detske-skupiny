@@ -163,6 +163,7 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
         <CardMedia
           component="img"
           image={image}
+          alt={title}
           title={title}
           height="224px"
           sx={{
