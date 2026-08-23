@@ -72,7 +72,7 @@ const styles: ContactInfoCardStyles = {
 const ContactInfoCard: React.FC<Props> = ({ image, title, description }) => {
   return (
     <Box {...styles.container}>
-      {image && <Box component="img" src={urlImageFor(image)} />}
+      {image && <Box component="img" src={urlImageFor(image)} alt={title} />}
       <Typography {...styles.title}>{title}</Typography>
       {description && (
         <RichText {...styles.description}>{description}</RichText>

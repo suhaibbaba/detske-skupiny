@@ -180,6 +180,7 @@ const PortalsOffered = ({ fields, locale }: Props) => {
               {...styles.image}
               component="img"
               src={urlImageFor(fields.image)}
+              alt={fields.heading}
             />
           </Box>
         </Box>

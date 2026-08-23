@@ -131,7 +131,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
           {/* Left main */}
           {main && (
             <Box {...styles.imageBox} onClick={() => openImage(0)}>
-              <Box component="img" src={urlImageFor(main)} {...styles.img} />
+              <Box component="img" src={urlImageFor(main)} alt={name} {...styles.img} />
               {logo && (
                 <Box
                   component="img"
@@ -161,7 +161,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
                 {...styles.imageBox}
                 onClick={() => openImage(idx + 1)}
               >
-                <Box component="img" src={urlImageFor(img)} {...styles.img} />
+                <Box component="img" src={urlImageFor(img)} alt={name} {...styles.img} />
               </Box>
             ))}
           </Box>

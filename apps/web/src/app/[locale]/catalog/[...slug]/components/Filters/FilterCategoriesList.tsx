@@ -145,7 +145,7 @@ const FilterCategoriesList: FC<Props> = ({
               }}
             >
               {category.emoji && (
-                <Box src={urlImageFor(category.emoji)} component="img" />
+                <Box src={urlImageFor(category.emoji)} component="img" alt="" />
               )}
               {category.name}
             </Box>

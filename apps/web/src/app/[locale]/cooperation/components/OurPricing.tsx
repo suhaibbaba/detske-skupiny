@@ -202,6 +202,7 @@ const OurPricing: FC<Props> = ({ fields, locale }) => {
                   <Box
                     src={urlImageFor(fields.mostPopularImage)}
                     component="img"
+                    alt=""
                     {...styles.mostPopular}
                   />
                 )}

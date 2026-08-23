@@ -214,8 +214,6 @@ function parseInternalLink(
     case "preschoolPage":
     case "preschool":
       return getLocalizedRoutes(config.locale).cooperation;
-    case "about":
-      return getLocalizedRoutes(config.locale).about;
     case "schools":
       return getLocalizedRoutes(config.locale).group(
         linkField.internalLink.slug,

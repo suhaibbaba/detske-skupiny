@@ -5,7 +5,6 @@ const joinPath = (base: string, slug: string) =>
 
 export const getLocalizedRoutes = (locale: string = defaultLocale) => ({
   home: localizeHref("/", locale),
-  about: localizeHref("/about", locale),
   contactUs: localizeHref("/contact-us", locale),
   groups: localizeHref("/groups", locale),
   cooperation: localizeHref("/cooperation", locale),

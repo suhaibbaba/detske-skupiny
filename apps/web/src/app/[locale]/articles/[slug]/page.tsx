@@ -21,7 +21,8 @@ import RichText from "@/sanity/components/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import Image from "@/components/ui/image/Image";
 import { Metadata } from "next";
-import { cx } from "next/dist/client/components/react-dev-overlay/ui/utils/cx";
+import { notFound } from "next/navigation";
+import clsx from "clsx";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -148,6 +149,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const { blog } = await fetchBlogBySlug({ slug });
 
+  if (!blog) {
+    return {
+      title: translate("article"),
+    };
+  }
+
   return {
     title: blog.title || translate("article"),
     description: blog.excerpt || "",
@@ -158,10 +165,24 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const { slug, locale } = await params;
   const { blog } = await fetchBlogBySlug({ slug });
 
+  if (!blog) {
+    notFound();
+  }
+
   const translate = await getTranslateServer();
 
+  const authorName = blog.author?.name;
+  const publishedAt = formatDate(
+    blog.publishedAt,
+    locale === "cz" ? "cs-CZ" : "en-US"
+  );
+  const readTime = blog.readTime
+    ? `${blog.readTime} ${translate("minRead")}`
+    : "";
+  const articleMeta = [publishedAt, readTime].filter(Boolean).join(" • ");
+
   return (
-    <Box {...styles.container} className={cx(!blog?.title && "pt-20")}>
+    <Box {...styles.container} className={clsx(!blog?.title && "pt-20")}>
       {blog?.title && (
         <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
           <PageHeadingTypography title={blog?.title} />
@@ -174,7 +195,13 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
             {/*<Box component="img" src={blog.image} {...styles.image} />*/}
             <Box {...styles.authorMeta}>
               {formatMessage(
-                `{0}{1}${formatDate(blog.publishedAt, locale === "cz" ? "cs-CZ" : "en-US")} • ${blog.readTime} ${translate("minRead")}`
+                `{0}{1}${articleMeta}`,
+                authorName ? (
+                  <Typography {...styles.authorText}>{authorName}</Typography>
+                ) : (
+                  ""
+                ),
+                authorName && articleMeta ? " • " : ""
               )}
             </Box>
           </Box>

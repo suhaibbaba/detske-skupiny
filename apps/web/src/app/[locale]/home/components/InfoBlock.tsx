@@ -117,7 +117,7 @@ const InfoBlock = async ({ fields }: Props) => {
         </Box>
 
         <Box {...styles.imageWrapper}>
-          <Box src={urlImageFor(fields.image)} component="img" />
+          <Box src={urlImageFor(fields.image)} component="img" alt={fields.title} />
         </Box>
       </Container>
     </Box>

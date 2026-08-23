@@ -115,7 +115,7 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
           extendedStyles={styles.pageHeadingStyles}
         />
         <Box {...styles.imageWrapper}>
-          <Box component="img" src={urlImageFor(fields.image)} />
+          <Box component="img" src={urlImageFor(fields.image)} alt="" />
         </Box>
       </Box>
     </PageLayout>

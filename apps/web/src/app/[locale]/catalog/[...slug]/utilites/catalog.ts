@@ -22,7 +22,7 @@ export function getSelectedSlug(params: CatalogParams): string {
   );
 }
 
-export function parseCatalogSlug(slug: string[] = []): CatalogParams {
+export function parseCatalogSlug(slug: string[] = []): CatalogParams | null {
   switch (slug.length) {
     case 1:
       return { level: FilterTypes.country, country: slug[0] };
@@ -43,15 +43,8 @@ export function parseCatalogSlug(slug: string[] = []): CatalogParams {
         area: slug[2],
         subarea: slug[3],
       };
-    case 4:
-      return {
-        level: FilterTypes.subarea,
-        country: slug[0],
-        region: slug[1],
-        area: slug[2],
-        subarea: slug[3],
-      };
     default:
-      throw new Error("Invalid catalog path");
+      // Empty slug, or 5+ segments: no such catalog page.
+      return null;
   }
 }

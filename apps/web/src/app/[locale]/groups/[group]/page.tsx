@@ -1,5 +1,5 @@
 import { fetchSchoolBySlug } from "@/sanity/queries";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import {
@@ -37,6 +37,7 @@ import ExternalLink from "@/components/icons/ExternalLinkIcon";
 import MapIcon from "@mui/icons-material/Map";
 import Offer from "./components/Offer";
 import { Metadata } from "next";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -149,10 +150,17 @@ export async function generateMetadata({
   params,
 }: PageProps<{ group: string }>): Promise<Metadata> {
   const { group: groupSlug } = await params;
+  const translate = await getTranslateServer();
 
   const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
   });
+
+  if (!school) {
+    return {
+      title: translate("groups"),
+    };
+  }
 
   return {
     title: school.name,
@@ -171,6 +179,10 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
   const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
   });
+
+  if (!school) {
+    notFound();
+  }
 
   return (
     <Box {...styles.pageContainer}>

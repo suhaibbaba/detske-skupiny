@@ -150,7 +150,7 @@ const HeaderClientPage = ({ header }: Props) => {
         <AppBar position="static" {...styles.appBar}>
           <Toolbar {...styles.toolbar}>
             <Link href={getLocalizedRoutes(locale).home}>
-              <Box component="img" src={header.logo} {...styles.logo} />
+              <Box component="img" src={header.logo} alt="Logo" {...styles.logo} />
             </Link>
             <IconButton
               {...styles.menuButton}
@@ -177,6 +177,7 @@ const HeaderClientPage = ({ header }: Props) => {
                   <Box
                     component="img"
                     src={header.logoInverse}
+                    alt="Logo"
                     {...styles.logo}
                   />
                 </Box>

@@ -16,6 +16,7 @@ const Image = ({ src, ...otherProps }: Props) => {
   return (
     <Box
       component="img"
+      alt=""
       src={imagSrc ? urlImageFor(imagSrc) : null}
       {...otherProps}
     />

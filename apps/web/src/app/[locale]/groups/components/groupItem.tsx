@@ -121,7 +121,7 @@ const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
       <ButtonBase {...styles.container}>
         <Stack {...styles.stack}>
           {"emoji" in item && item.emoji && (
-            <Box component="img" src={item.emoji} {...styles.emoji} />
+            <Box component="img" src={item.emoji} alt="" {...styles.emoji} />
           )}
           <Typography {...styles.title}>{item.name}</Typography>
           <Box
