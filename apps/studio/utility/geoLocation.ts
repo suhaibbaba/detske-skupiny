@@ -17,7 +17,7 @@ export const getGeoLocation = async (address?: SchoolType["address"]) => {
     .join(", ");
 
   const response = await fetch(
-    `https://api.maptiler.com/geocoding/${encodeURIComponent(addressString)}.json?key=${MAPTILER_API_KEY}&types=poi&limit=1`,
+    `https://api.maptiler.com/geocoding/${encodeURIComponent(addressString)}.json?key=${MAPTILER_API_KEY}&types=address&limit=1`,
   );
 
   const data = await response.json();
@@ -78,7 +78,7 @@ export const getGeoLocationBatch = async (
 
         try {
           const response = await fetch(
-            `https://api.maptiler.com/geocoding/${encodeURIComponent(addressString)}.json?key=${MAPTILER_API_KEY}&types=poi&limit=1`,
+            `https://api.maptiler.com/geocoding/${encodeURIComponent(addressString)}.json?key=${MAPTILER_API_KEY}&types=address&limit=1`,
           );
 
           const data = await response.json();

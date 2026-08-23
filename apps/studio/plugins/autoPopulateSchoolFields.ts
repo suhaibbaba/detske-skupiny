@@ -30,11 +30,12 @@ type SchoolDocument = {
 
 // This action runs whenever a School document is published
 const AutoPopulateSchoolFieldsAction: DocumentActionComponent = (props) => {
-  const { patch, publish } = useDocumentOperation(props.id, props.type);
+  const { publish } = useDocumentOperation(props.id, props.type);
   const client = useClient({
     apiVersion: import.meta.env.SANITY_STUDIO_API_VERSION || "",
   });
   const draft = props.draft as SchoolDocument | null;
+  const draftId = draft?._id || `drafts.${props.id}`;
 
   return {
     label: "Publish",
@@ -73,7 +74,7 @@ const AutoPopulateSchoolFieldsAction: DocumentActionComponent = (props) => {
       // Add address
       const addressModel = draft?.address;
 
-      if (!addressModel?.mapLocation?.lat && !addressModel?.mapLocation?.lng) {
+      if (!addressModel?.mapLocation?.lat || !addressModel?.mapLocation?.lng) {
         const result = await getGeoLocation(draft?.address);
         if (result) {
           path = {
@@ -110,17 +111,9 @@ const AutoPopulateSchoolFieldsAction: DocumentActionComponent = (props) => {
         };
       }
 
-      // Patch the document with computed fields
-      patch.execute([
-        {
-          set: {
-            ...path,
-          },
-        },
-      ]);
-
-      // Small delay to ensure patch completes
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Patch the draft with the computed fields and wait for the commit to
+      // land before publishing, so the published document always includes them.
+      await client.patch(draftId).set(path).commit();
 
       // Now publish
       publish.execute();

@@ -78,6 +78,9 @@ const UpdateFieldsAction: DocumentActionComponent = (props) => {
   };
 };
 
+// Maximum number of document patches sent in a single transaction
+const BATCH_SIZE = 100;
+
 async function updateFields(client: SanityClient) {
   try {
     const [countries, regions, areas, subareas, schools] = await Promise.all([
@@ -125,21 +128,21 @@ async function updateFields(client: SanityClient) {
       `),
     ]);
 
-    // Use transaction for atomic updates
-    let transaction = client.transaction();
+    // Collect every patch first, then commit them in batches — a single
+    // transaction over all schools + regions is too large to be accepted.
+    const patches: Array<{ id: string; set: Record<string, unknown> }> = [];
 
     // Only patch if count is defined
     for (const item of countries) {
       if (item.count !== undefined) {
-        transaction = transaction.patch(item._id, {
-          set: { schoolCount: item.count },
-        });
+        patches.push({ id: item._id, set: { schoolCount: item.count } });
       }
     }
 
     for (const item of regions) {
       if (item.count !== undefined) {
-        transaction = transaction.patch(item._id, {
+        patches.push({
+          id: item._id,
           set: {
             schoolCount: item.count,
             countrySlug: item.countrySlug,
@@ -152,7 +155,8 @@ async function updateFields(client: SanityClient) {
     for (const item of areas) {
       // Only update if we have all required data
       if (item.slug && item.regionSlug && item.countrySlug) {
-        transaction = transaction.patch(item._id, {
+        patches.push({
+          id: item._id,
           set: {
             schoolCount: item.count ?? 0,
             countrySlug: item.countrySlug,
@@ -166,7 +170,8 @@ async function updateFields(client: SanityClient) {
     for (const item of subareas) {
       // Only update if we have all required data
       if (item.slug && item.areaSlug && item.regionSlug && item.countrySlug) {
-        transaction = transaction.patch(item._id, {
+        patches.push({
+          id: item._id,
           set: {
             schoolCount: item.count ?? 0,
             countrySlug: item.countrySlug,
@@ -179,21 +184,20 @@ async function updateFields(client: SanityClient) {
 
     // Update countrySlug/regionSlug for schools
     for (const item of schools) {
-      const patchData: any = {
-        nameNormalized: removeDiacritics(item.name || ""),
-        countrySlug: item.countrySlug,
-        regionSlug: item.regionSlug,
-      };
-
-      transaction = transaction.patch(item._id, {
-        set: patchData,
+      patches.push({
+        id: item._id,
+        set: {
+          nameNormalized: removeDiacritics(item.name || ""),
+          countrySlug: item.countrySlug,
+          regionSlug: item.regionSlug,
+        },
       });
     }
 
     // Update lat/lng for schools
     const schoolsMissingAddress = schools.filter(
       (school) =>
-        !school.address?.mapLocation?.lat || !school.address?.mapLocation?.lat,
+        !school.address?.mapLocation?.lat || !school.address?.mapLocation?.lng,
     );
 
     const geoResults = await getGeoLocationBatch(schoolsMissingAddress);
@@ -201,7 +205,8 @@ async function updateFields(client: SanityClient) {
     // Update lat/lng for schools
     for (const result of geoResults) {
       if (result.success && result.lat && result.lng) {
-        transaction = transaction.patch(result.schoolId, {
+        patches.push({
+          id: result.schoolId,
           set: {
             "address.mapLocation": {
               _type: "geopoint",
@@ -217,7 +222,23 @@ async function updateFields(client: SanityClient) {
       }
     }
 
-    await transaction.commit();
+    // Commit sequentially, BATCH_SIZE documents per transaction
+    for (let i = 0; i < patches.length; i += BATCH_SIZE) {
+      const batch = patches.slice(i, i + BATCH_SIZE);
+      let transaction = client.transaction();
+
+      for (const item of batch) {
+        transaction = transaction.patch(item.id, { set: item.set });
+      }
+
+      await transaction.commit();
+      console.log(
+        `Batch ${Math.floor(i / BATCH_SIZE) + 1}: committed ${Math.min(
+          i + BATCH_SIZE,
+          patches.length,
+        )}/${patches.length} document patches`,
+      );
+    }
   } catch (error) {
     console.error("Error updating fields:", error);
     throw error;
@@ -229,6 +250,11 @@ export const autoPopulateFieldsJobPlugin = definePlugin({
   name: "auto-populate-fields-jobs",
   document: {
     actions: (prev, context) => {
+      // This job touches every geo/school document, so only expose it on the
+      // settings singleton instead of on every document type.
+      if (context.schemaType !== "settings") {
+        return prev;
+      }
       return [...prev, UpdateFieldsAction];
     },
   },
