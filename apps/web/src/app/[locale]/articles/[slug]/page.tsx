@@ -174,7 +174,7 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
   const authorName = blog.author?.name;
   const publishedAt = formatDate(
     blog.publishedAt,
-    locale === "cz" ? "cs-CZ" : "en-US"
+    locale === "cs" ? "cs-CZ" : "en-US"
   );
   const readTime = blog.readTime
     ? `${blog.readTime} ${translate("minRead")}`

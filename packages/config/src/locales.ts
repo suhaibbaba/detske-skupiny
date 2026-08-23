@@ -1,4 +1,4 @@
 export const LOCALES = [
-  { id: "cz", title: "Czech" },
+  { id: "cs", title: "Czech" },
   { id: "en", title: "English" },
 ];

@@ -49,7 +49,7 @@ export default defineConfig({
       },
     }),
     googleMapsInput({
-      defaultLocale: "cz",
+      defaultLocale: "cs",
       defaultLocation: {
         lat: 49.8175, // Latitude of Czech Republic (Celá ČR)
         lng: 15.473, // Longitude of Czech Republic (Celá ČR)
