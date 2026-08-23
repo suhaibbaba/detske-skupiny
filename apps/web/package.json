@@ -32,7 +32,8 @@
     "react-dom": "^19.0.0",
     "react-infinite-scroll-hook": "^6.0.1",
     "sanity-plugin-link-field": "^1.4.1",
-    "yet-another-react-lightbox": "^3.25.0"
+    "yet-another-react-lightbox": "^3.25.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

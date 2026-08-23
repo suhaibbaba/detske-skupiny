@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Link as MuiLink,
   TextField,
   Typography,
   Alert,
@@ -22,6 +23,8 @@ import useTranslate from "@/hooks/useTranslate";
 import RichText from "@/sanity/components/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
+import TurnstileWidget from "@/components/forms/TurnstileWidget";
+import type { ContactPayload } from "@/app/api/contact/schema";
 
 interface Props {
   contactUsForm?: ContactUsForm;
@@ -34,7 +37,12 @@ interface ContactUsStyles {
   fullWidthGrid?: GridBaseProps;
   halfWidthGrid?: GridBaseProps;
   cta?: ButtonProps;
+  honeypot?: BoxProps;
 }
+
+const PRIVACY_POLICY_URL = "/ochrana-osobnich-udaju.pdf";
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const styles: ContactUsStyles = {
   container: {
@@ -67,29 +75,48 @@ const styles: ContactUsStyles = {
       mt: "24px",
     },
   },
+  // Visually hidden, but still reachable for bots that parse the DOM.
+  // Deliberately not `display: none` - naive bots skip those.
+  honeypot: {
+    sx: {
+      position: "absolute",
+      left: "-9999px",
+      top: "auto",
+      width: "1px",
+      height: "1px",
+      overflow: "hidden",
+      opacity: 0,
+    },
+  },
 };
 
 const ContactForm: FC<Props> = ({ contactUsForm }) => {
   const translate = useTranslate();
   const locale = useLocale();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  // const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(false);
+  const [website, setWebsite] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle"
+    "idle",
   );
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const isEmailValid = useMemo(
     () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email),
-    [form.email]
+    [form.email],
   );
 
   const isValid = useMemo(
     () =>
       form.name.trim().length >= 2 &&
       isEmailValid &&
-      form.message.trim().length >= 5,
-    [form, isEmailValid]
+      form.message.trim().length >= 5 &&
+      agree &&
+      // Without a site key the widget is not rendered at all (dev fallback).
+      (!TURNSTILE_SITE_KEY || turnstileToken.length > 0),
+    [form, isEmailValid, agree, turnstileToken],
   );
 
   const onChange =
@@ -105,11 +132,20 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
     setStatus("sending");
     setErrorMsg("");
 
+    const payload: ContactPayload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+      consent: true,
+      turnstileToken: turnstileToken || undefined,
+    };
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        // `website` is the honeypot - it is not part of the payload schema.
+        body: JSON.stringify({ ...payload, website }),
       });
 
       if (!res.ok) {
@@ -119,10 +155,14 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
 
       setStatus("ok");
       setForm({ name: "", email: "", message: "" });
-      // setAgree(false);
+      setAgree(false);
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     } catch (err: any) {
       setStatus("error");
       setErrorMsg(err?.message || "Failed to send");
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     }
   };
 
@@ -162,6 +202,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               className="rounded"
               size="small"
               required
+              slotProps={{ htmlInput: { maxLength: 100 } }}
             />
           </Grid>
           <Grid {...styles.halfWidthGrid}>
@@ -182,6 +223,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
                   ? translate("invalidEmail")
                   : ""
               }
+              slotProps={{ htmlInput: { maxLength: 200 } }}
             />
           </Grid>
           <Grid {...styles.fullWidthGrid}>
@@ -194,22 +236,75 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               maxRows={7}
               placeholder={translate("contactFormMessagePlaceholder")}
               required
+              maxLength={2000}
             />
           </Grid>
-          {/* <Grid {...styles.fullWidthGrid}>
+          <Grid {...styles.fullWidthGrid}>
             <FormGroup>
               <FormControlLabel
                 control={
                   <Checkbox
+                    name="consent"
+                    required
                     checked={agree}
                     onChange={(e) => setAgree(e.target.checked)}
                   />
                 }
-                label={<RichText fontSize="12px">{privacyPolicy}</RichText>}
+                label={
+                  <Box>
+                    {privacyPolicy?.length ? (
+                      <RichText fontSize="12px" compactParagraphs>
+                        {privacyPolicy}
+                      </RichText>
+                    ) : (
+                      // TODO(sanity): add dictionary key `contactFormConsentLabel`
+                      // (used only when the `privacyPolicy` rich text is empty).
+                      <Typography fontSize="12px">
+                        {translate("contactFormConsentLabel")}
+                      </Typography>
+                    )}
+                    {/* TODO(sanity): add dictionary key `contactFormPrivacyPolicyLinkLabel`
+                        for the link text below. */}
+                    <MuiLink
+                      href={PRIVACY_POLICY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      fontSize="12px"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {translate("contactFormPrivacyPolicyLinkLabel")}
+                    </MuiLink>
+                  </Box>
+                }
               />
             </FormGroup>
-          </Grid> */}
+          </Grid>
         </Grid>
+
+        {/* Honeypot: hidden from humans and assistive tech, tempting for bots. */}
+        <Box
+          component="input"
+          type="text"
+          name="website"
+          value={website}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setWebsite(e.target.value)
+          }
+          tabIndex={-1}
+          aria-hidden="true"
+          autoComplete="off"
+          {...styles.honeypot}
+        />
+
+        {TURNSTILE_SITE_KEY && (
+          <TurnstileWidget
+            siteKey={TURNSTILE_SITE_KEY}
+            onVerify={setTurnstileToken}
+            onExpire={() => setTurnstileToken("")}
+            resetKey={turnstileResetKey}
+          />
+        )}
+
         <Grid {...styles.fullWidthGrid}>
           <Button
             type="submit"
