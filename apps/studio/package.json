@@ -28,21 +28,21 @@
     "@sanity/ui": "^3.5.3",
     "@sanity/vision": "^5.31.2",
     "@types/lodash.kebabcase": "^4.1.9",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "lodash.kebabcase": "^4.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sanity": "5.31.2",
     "sanity-plugin-link-field": "1.7.0",
-    "styled-components": "^6.1.18"
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^5.0.2",
+    "@sanity/eslint-config-studio": "^6.0.0",
     "@types/react": "^19.2.18",
-    "eslint": "^9.28",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.6",
     "typescript": "^5.9.3",
-    "vite": "^7.3.6"
+    "vite": "^8.2.2"
   }
 }
