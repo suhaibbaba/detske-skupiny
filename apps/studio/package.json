@@ -1,0 +1,42 @@
+{
+  "name": "schools",
+  "private": true,
+  "version": "1.0.0",
+  "main": "package.json",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-graphql": "sanity graphql deploy",
+    "random-sort-order": "node schedules/randomizeSortOrder.mjs",
+    "update-school-count": "node schedules/updateSchoolCount.mjs"
+  },
+  "keywords": [
+    "sanity"
+  ],
+  "dependencies": {
+    "@sanity/color-input": "^4.0.6",
+    "@sanity/document-internationalization": "^4.0.0",
+    "@sanity/google-maps-input": "^4.2.0",
+    "@sanity/orderable-document-list": "^1.4.0",
+    "@sanity/vision": "^4.14.2",
+    "@types/lodash.kebabcase": "^4.1.9",
+    "dotenv": "^17.2.3",
+    "lodash.kebabcase": "^4.1.1",
+    "react": "^19.1",
+    "react-dom": "^19.1",
+    "sanity": "^4.14.2",
+    "sanity-plugin-link-field": "^1.4.1",
+    "styled-components": "^6.1.18"
+  },
+  "devDependencies": {
+    "@sanity/eslint-config-studio": "^5.0.2",
+    "@types/react": "^19.1",
+    "eslint": "^9.28",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8"
+  }
+}
