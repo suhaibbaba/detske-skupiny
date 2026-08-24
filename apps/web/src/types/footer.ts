@@ -1,18 +1,9 @@
-import { SanityCtaField, SanityImageField } from "@/sanity/types";
-import { SanityLinkField } from "@/components/ui/link/parser";
+import type { FooterQueryResult } from "@detske-skupiny/types";
 
-export type FooterContent = {
-  id: string;
-  _type: string;
-  text?: string;
-  link?: SanityLinkField;
-};
+/** The footer document, exactly as `footerQuery` projects it. */
+export type Footer = NonNullable<FooterQueryResult["footer"]>;
 
-export type Footer = {
-  logo?: SanityImageField;
-  columns: {
-    title?: string;
-    content?: FooterContent[];
-  }[];
-  copyright?: string;
-};
+export type FooterColumn = NonNullable<Footer["columns"]>[number];
+
+/** One entry of a footer column: a `textItem` or a resolved `linkItem`. */
+export type FooterContent = NonNullable<FooterColumn["content"]>[number];

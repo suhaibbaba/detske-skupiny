@@ -66,7 +66,14 @@ const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
   if (slugs.length > 0) {
     try {
       const pages = await fetchBreadcrumbList({ slugs });
-      const pageMap = new Map(pages.map((page) => [page.slug, page]));
+      // `slug` is `slug.current` and the query matches on it, so every row has
+      // one; the filter is what convinces the compiler of that, and it keeps
+      // the map keyed by string rather than by `string | null`.
+      const pageMap = new Map(
+        pages.flatMap((page) =>
+          page.slug ? [[page.slug, page] as const] : [],
+        ),
+      );
 
       const lastSegment = pathSegments[pathSegments.length - 1];
       const isSchoolType = pageMap.get(lastSegment)?._type === "schools";

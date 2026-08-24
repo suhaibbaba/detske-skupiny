@@ -1,6 +1,6 @@
 import { defineQuery } from "next-sanity";
 import { languageQuery } from "@/sanity/queries/filters";
-import { Header } from "@/types/header";
+import type { HeaderQueryResult } from "@detske-skupiny/types";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { ctaFields, imageUrl, linkField } from "@/lib/sanity/fragments";
 
@@ -18,7 +18,5 @@ export const headerQuery = defineQuery(`{
 }`);
 
 export async function fetchHeaderPage(locale: string) {
-  return sanityFetch<{ header?: Header }>(headerQuery, { locale }, [
-    "settings",
-  ]);
+  return sanityFetch<HeaderQueryResult>(headerQuery, { locale }, ["settings"]);
 }

@@ -28,7 +28,7 @@ import LanguageSwitcher from "../ui/Language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
-  header?: Header;
+  header?: Header | null;
 }
 
 interface HeaderStyles {

@@ -1,6 +1,6 @@
 import { defineQuery } from "next-sanity";
 import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
-import { PageSections } from "@/sanity/types";
+import type { PageByTypeQueryResult } from "@detske-skupiny/types";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { markerFields, sectionLinkFields } from "@/lib/sanity/fragments";
 
@@ -32,7 +32,7 @@ export const pageByTypeQuery =
  * response even though no page document was touched.
  */
 export async function fetchPageByType(type: string, locale: string) {
-  return sanityFetch<PageSections>(pageByTypeQuery, { type, locale }, [
+  return sanityFetch<PageByTypeQueryResult>(pageByTypeQuery, { type, locale }, [
     `page:${type}`,
     "schools",
   ]);

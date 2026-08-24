@@ -12,14 +12,17 @@ import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
 import React, { FC } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
-import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
+import {
+  cleanUrl,
+  parseLinkField,
+  type SanityLinkField,
+} from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
 
 interface LinkProps
   extends Omit<MuiLinkProps, "href">, Omit<NextLinkProps, "href"> {
   href?: string;
-  link?: SanityLinkProps;
+  link?: SanityLinkField | null;
   children?: React.ReactNode;
   scroll?: boolean;
 }

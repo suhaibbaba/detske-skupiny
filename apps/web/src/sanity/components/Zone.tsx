@@ -1,34 +1,40 @@
 import React from "react";
 import { SECTION_COMPONENTS } from "@/sanity/sections/registry";
-import { PageSections } from "@/sanity/types";
+import type { PageSection } from "@/sanity/types";
 
 interface ZoneProps {
-  sections?: PageSections["sections"];
+  sections?: PageSection[] | null;
   types: string | string[] | "all";
-  [key: string]: any;
+  /**
+   * Route params forwarded to every section - `{ locale }`, and whatever else
+   * the page's own params carry. Sections that need one declare it; the rest
+   * ignore it, which is why this is a bag rather than a named prop.
+   */
+  [key: string]: unknown;
 }
 
 const Zone: React.FC<ZoneProps> = ({ sections, types, ...props }) => {
-  let matches: ZoneProps["sections"];
-
   if (!sections || sections.length === 0) {
     return;
   }
 
-  if (types === "all") {
-    matches = sections;
-  } else {
-    const allow = new Set(Array.isArray(types) ? types : [types]);
-    matches = sections.filter((s) => allow.has(s._type));
-  }
+  const matches =
+    types === "all"
+      ? sections
+      : (() => {
+          const allow = new Set(Array.isArray(types) ? types : [types]);
+          return sections.filter((section) => allow.has(section._type));
+        })();
 
   if (!matches.length) return null;
 
   return (
     <>
-      {matches.map((s) => {
-        const Cmp = SECTION_COMPONENTS[s._type];
-        return Cmp ? <Cmp key={s._key} {...{ fields: s }} {...props} /> : null;
+      {matches.map((section) => {
+        const Section = SECTION_COMPONENTS[section._type];
+        return Section ? (
+          <Section key={section._key} {...{ fields: section }} {...props} />
+        ) : null;
       })}
     </>
   );

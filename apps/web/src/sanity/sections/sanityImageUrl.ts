@@ -20,7 +20,7 @@ const builder = imageUrlBuilder({
   dataset: process.env.SANITY_DATASET!,
 });
 
-export function urlImageFor(source?: SanityImageSource) {
+export function urlImageFor(source?: SanityImageSource | null) {
   if (!source) {
     return "";
   }

@@ -1,10 +1,10 @@
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import {
-  BreadcrumbItem,
-  BreadcrumbParams,
-  SchoolBreadcrumbParams,
-} from "@/sanity/types";
+import { BreadcrumbParams, SchoolBreadcrumbParams } from "@/sanity/types";
+import type {
+  BreadcrumbListQueryResult,
+  SchoolBreadcrumbQueryResult,
+} from "@detske-skupiny/types";
 
 export const breadcrumbListQuery = defineQuery(`*[slug.current in $slugs]{
       _type,
@@ -18,11 +18,11 @@ export const breadcrumbListQuery = defineQuery(`*[slug.current in $slugs]{
  * the content tags rather than one of them.
  */
 export async function fetchBreadcrumbList(params: BreadcrumbParams) {
-  return sanityFetch<BreadcrumbItem[]>(breadcrumbListQuery, { ...params }, [
-    "schools",
-    "geo",
-    "blogs",
-  ]);
+  return sanityFetch<BreadcrumbListQueryResult>(
+    breadcrumbListQuery,
+    { ...params },
+    ["schools", "geo", "blogs"],
+  );
 }
 
 export const schoolBreadcrumbQuery =
@@ -50,12 +50,12 @@ export const schoolBreadcrumbQuery =
       ]
     }`);
 
-export async function fetchSchoolBreadcrumb(
-  params: SchoolBreadcrumbParams,
-): Promise<{ name: string; slug: string }[]> {
-  const result = await sanityFetch<{
-    breadcrumb?: { name: string; slug: string }[];
-  } | null>(schoolBreadcrumbQuery, { ...params }, ["schools", "geo"]);
+export async function fetchSchoolBreadcrumb(params: SchoolBreadcrumbParams) {
+  const result = await sanityFetch<SchoolBreadcrumbQueryResult>(
+    schoolBreadcrumbQuery,
+    { ...params },
+    ["schools", "geo"],
+  );
 
-  return result?.breadcrumb || [];
+  return result?.breadcrumb ?? [];
 }

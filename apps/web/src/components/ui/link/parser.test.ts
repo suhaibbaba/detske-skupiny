@@ -1,5 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { cleanUrl, parseLinkField, parseMultipleLinkFields } from "./parser";
+import {
+  cleanUrl,
+  parseLinkField,
+  parseMultipleLinkFields,
+  type SanityInternalLink,
+} from "./parser";
+
+/**
+ * A dereferenced internal link, with only the fields a case cares about set.
+ *
+ * The generated union requires `_id`, `title` and `name` on every member and
+ * closes `_type` to the document types the Studio actually has. The parser
+ * reads none of the first three unless a case says so, and one case
+ * deliberately passes an unknown `_type` to exercise the fallback branch - so
+ * the widening lives here, in one helper, rather than at every call site.
+ */
+const internalLink = (fields: {
+  _type: string;
+  slug?: string;
+  title?: string;
+}): SanityInternalLink =>
+  ({ _id: "doc-id", title: null, name: null, ...fields }) as SanityInternalLink;
 
 describe("parseLinkField - external", () => {
   it("keeps an absolute https url", () => {
@@ -47,7 +68,7 @@ describe("parseLinkField - internal", () => {
     const link = parseLinkField(
       {
         type: "internal",
-        internalLink: { _type: "blogs", slug: "muj-clanek" },
+        internalLink: internalLink({ _type: "blogs", slug: "muj-clanek" }),
       },
       { locale: "cs" },
     );
@@ -59,7 +80,10 @@ describe("parseLinkField - internal", () => {
   it("routes geography references into the catalog", () => {
     for (const type of ["countries", "regions", "areas", "subareas"]) {
       const link = parseLinkField(
-        { type: "internal", internalLink: { _type: type, slug: "praha" } },
+        {
+          type: "internal",
+          internalLink: internalLink({ _type: type, slug: "praha" }),
+        },
         { locale: "cs" },
       );
       expect(link.url).toBe("/katalog/praha");
@@ -71,7 +95,7 @@ describe("parseLinkField - internal", () => {
       parseLinkField(
         {
           type: "internal",
-          internalLink: { _type: "schools", slug: "skolka" },
+          internalLink: internalLink({ _type: "schools", slug: "skolka" }),
         },
         { locale: "cs" },
       ).url,
@@ -81,7 +105,10 @@ describe("parseLinkField - internal", () => {
   it("routes singleton references to their pages", () => {
     const at = (type: string) =>
       parseLinkField(
-        { type: "internal", internalLink: { _type: type, slug: "" } },
+        {
+          type: "internal",
+          internalLink: internalLink({ _type: type, slug: "" }),
+        },
         { locale: "cs" },
       ).url;
 
@@ -94,7 +121,10 @@ describe("parseLinkField - internal", () => {
   it("honours the locale option", () => {
     expect(
       parseLinkField(
-        { type: "internal", internalLink: { _type: "blogs", slug: "p" } },
+        {
+          type: "internal",
+          internalLink: internalLink({ _type: "blogs", slug: "p" }),
+        },
         { locale: "en" },
       ).url,
     ).toBe("/articles/p");
@@ -103,7 +133,10 @@ describe("parseLinkField - internal", () => {
   it("falls back to home for an unknown document type", () => {
     expect(
       parseLinkField(
-        { type: "internal", internalLink: { _type: "mystery", slug: "x" } },
+        {
+          type: "internal",
+          internalLink: internalLink({ _type: "mystery", slug: "x" }),
+        },
         { locale: "cs" },
       ).url,
     ).toBe("/");
@@ -111,7 +144,7 @@ describe("parseLinkField - internal", () => {
 
   it("still produces a path when the slug is missing", () => {
     const link = parseLinkField(
-      { type: "internal", internalLink: { _type: "blogs" } as never },
+      { type: "internal", internalLink: internalLink({ _type: "blogs" }) },
       { locale: "cs" },
     );
     expect(link.url).toBe("/clanky");
@@ -119,7 +152,10 @@ describe("parseLinkField - internal", () => {
 
   it("is not valid when internal links are disallowed", () => {
     const link = parseLinkField(
-      { type: "internal", internalLink: { _type: "blogs", slug: "x" } },
+      {
+        type: "internal",
+        internalLink: internalLink({ _type: "blogs", slug: "x" }),
+      },
       { allowInternal: false },
     );
     expect(link.valid).toBe(false);
@@ -208,7 +244,11 @@ describe("parseLinkField - empty and malformed input", () => {
   it("falls back to the referenced document title for text", () => {
     const link = parseLinkField({
       type: "internal",
-      internalLink: { _type: "blogs", slug: "x", title: "Doc title" },
+      internalLink: internalLink({
+        _type: "blogs",
+        slug: "x",
+        title: "Doc title",
+      }),
     });
     expect(link.text).toBe("Doc title");
   });

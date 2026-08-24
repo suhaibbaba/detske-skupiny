@@ -2,7 +2,7 @@ import { defineQuery } from "next-sanity";
 import { languageQuery } from "@/sanity/queries/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { linkField } from "@/lib/sanity/fragments";
-import { Footer } from "@/types/footer";
+import type { FooterQueryResult } from "@detske-skupiny/types";
 
 export const footerQuery = defineQuery(`
   {
@@ -27,7 +27,5 @@ export const footerQuery = defineQuery(`
 `);
 
 export async function fetchFooterPage(locale: string) {
-  return sanityFetch<{ footer?: Footer }>(footerQuery, { locale }, [
-    "settings",
-  ]);
+  return sanityFetch<FooterQueryResult>(footerQuery, { locale }, ["settings"]);
 }

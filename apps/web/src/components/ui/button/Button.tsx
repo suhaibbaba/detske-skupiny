@@ -18,13 +18,16 @@ import {
 import React, { FC } from "react";
 import { useLocale } from "next-intl";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
-import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
+import {
+  cleanUrl,
+  parseLinkField,
+  type SanityLinkField,
+} from "@/components/ui/link/parser";
 import { localizeHref } from "@/i18n/routing";
 
 interface ButtonProps extends Omit<MuiButtonProps, "href"> {
   href?: string;
-  link?: SanityLinkProps;
+  link?: SanityLinkField | null;
   children?: React.ReactNode;
   scroll?: boolean;
 }

@@ -5,7 +5,7 @@ import { MenuItem } from "@/types/header";
 import Link from "@/components/ui/link";
 
 interface Props {
-  menuItems?: MenuItem[];
+  menuItems?: MenuItem[] | null;
   hideOnMobile?: boolean;
   onItemClick?: () => void;
 }

@@ -1,14 +1,6 @@
-import { SanityCtaField, SanityImageField } from "@/sanity/types";
-import { SanityLinkField } from "@/components/ui/link/parser";
+import type { HeaderQueryResult } from "@detske-skupiny/types";
 
-export type MenuItem = {
-  id: string;
-  link: SanityLinkField;
-};
+/** The header document, exactly as `headerQuery` projects it. */
+export type Header = NonNullable<HeaderQueryResult["header"]>;
 
-export type Header = {
-  logo?: SanityImageField;
-  logoInverse?: SanityImageField;
-  menuItems: MenuItem[];
-  cta?: SanityCtaField;
-};
+export type MenuItem = NonNullable<Header["menuItems"]>[number];
