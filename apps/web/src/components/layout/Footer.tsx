@@ -19,6 +19,10 @@ import PhoneIcon from "@/components/icons/Phone";
 import { FooterContent } from "@/types/footer";
 import LanguageSwitcher from "@/components/ui/Language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
+import CopyrightYear from "@/components/layout/CopyrightYear";
+
+/** The placeholder Sanity authors write into the copyright line. */
+const YEAR_PLACEHOLDER = "{0}";
 
 interface FooterStyles {
   container?: BoxProps;
@@ -235,10 +239,18 @@ const Footer = async ({ locale }: { locale: string }) => {
           )}
           {footer.copyright && (
             <Typography {...styles.copyright}>
-              {footer.copyright.replace(
-                "{0}",
-                new Date().getFullYear().toString(),
-              )}
+              {/*
+               * `{0}` is spliced, not replaced. Reading the clock here would
+               * bake a year into the cached render of this server component;
+               * CopyrightYear is a client leaf that reads it per visitor.
+               */}
+              {footer.copyright
+                .split(YEAR_PLACEHOLDER)
+                .flatMap((part, index) =>
+                  index === 0
+                    ? [part]
+                    : [<CopyrightYear key={`year-${index}`} />, part],
+                )}
             </Typography>
           )}
 
