@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import { ComponentIcon } from "@sanity/icons/Component";
 
 export default defineType({
@@ -29,13 +29,14 @@ export default defineType({
   preview: {
     select: {
       title: "name",
-      subtitle: "slug.current",
+      slug: "slug.current",
       language: "language",
     },
-    prepare({ title, subtitle, language }) {
+    prepare({ title, slug, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language, subtitle),
+        title: title || "Unnamed category",
+        subtitle: localizedSubtitle(language, slug),
+        media: ComponentIcon,
       };
     },
   },

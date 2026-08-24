@@ -1,11 +1,13 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
 import { LinkIcon } from "@sanity/icons/Link";
+import { PanelLeftIcon } from "@sanity/icons/PanelLeft";
 
 export default defineType({
   name: "header",
   title: "Header Page",
   type: "document",
+  icon: PanelLeftIcon,
   fields: [
     defineField({
       name: "title",
@@ -74,7 +76,8 @@ export default defineType({
     prepare({ language }) {
       return {
         title: "Header Page",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: PanelLeftIcon,
       };
     },
   },

@@ -1,9 +1,10 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { StarIcon } from "@sanity/icons/Star";
 
 export default defineType({
   name: "featureItem",
   type: "object",
+  icon: StarIcon,
   title: "Feature Item",
   fields: [
     defineField({
@@ -27,11 +28,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", media: "icon", language: "language" },
-    prepare: ({ title, media, language }) => ({
-      title,
-      subtitle: appendLanguageSubtitle(language),
-      media,
+    select: { title: "title", description: "description", media: "icon" },
+    prepare: ({ title, description, media }) => ({
+      title: title || "Untitled feature",
+      subtitle: description,
+      media: media || StarIcon,
     }),
   },
 });

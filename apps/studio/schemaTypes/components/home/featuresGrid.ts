@@ -1,9 +1,11 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { countLabel, subtitle } from "@/utility";
+import { ThLargeIcon } from "@sanity/icons/ThLarge";
 
 export default defineType({
   name: "featuresGrid",
   type: "object",
+  icon: ThLargeIcon,
   title: "Features Grid",
   fields: [
     defineField({
@@ -28,13 +30,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", items: "items", language: "language" },
-    prepare: ({ title, items, language }) => {
-      const count = items?.length || 0;
-      return {
-        title,
-        subtitle: appendLanguageSubtitle(language, `${count ?? 0} feature(s)`),
-      };
-    },
+    select: { title: "title", items: "items" },
+    prepare: ({ title, items }) => ({
+      title: title || "Features grid",
+      media: ThLargeIcon,
+      subtitle: subtitle("Features grid", countLabel(items, "feature")),
+    }),
   },
 });

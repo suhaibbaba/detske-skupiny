@@ -1,5 +1,7 @@
 import { defineType, defineField } from "sanity";
 import { BlockElementIcon } from "@sanity/icons/BlockElement";
+import { ThLargeIcon } from "@sanity/icons/ThLarge";
+import { countLabel } from "@/utility";
 
 export default defineType({
   name: "gridBlock",
@@ -193,10 +195,10 @@ export default defineType({
       items: "items",
     },
     prepare({ columns, items }) {
-      const itemCount = items?.length || 0;
       return {
         title: `Grid: ${columns} columns`,
-        subtitle: `${itemCount} item(s)`,
+        subtitle: countLabel(items, "item"),
+        media: ThLargeIcon,
       };
     },
   },

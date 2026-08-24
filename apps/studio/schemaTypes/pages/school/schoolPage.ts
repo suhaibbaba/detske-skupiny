@@ -1,10 +1,12 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
+import { ThListIcon } from "@sanity/icons/ThList";
 
 export default defineType({
   name: "schoolPage",
   title: "School Page",
   type: "document",
+  icon: ThListIcon,
   fields: [
     defineField({
       name: "title",
@@ -26,7 +28,8 @@ export default defineType({
     prepare({ title, language }) {
       return {
         title: title,
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: ThListIcon,
       };
     },
   },

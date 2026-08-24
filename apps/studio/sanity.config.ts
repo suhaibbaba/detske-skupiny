@@ -8,32 +8,87 @@ import { colorInput } from "@sanity/color-input";
 import { linkField } from "sanity-plugin-link-field";
 import { documentInternationalization } from "@sanity/document-internationalization";
 import { googleMapsInput } from "@sanity/google-maps-input";
-import { MULTIPLE_PAGES_TYPES, SINGLETON_TYPES, structure } from "@/structure";
+import {
+  MULTIPLE_PAGES_TYPES,
+  PAGE_CONFIG_TYPES,
+  SINGLETON_TYPES,
+  structure,
+} from "@/structure";
 import { computedFieldsPlugin } from "@/plugins/computedFields";
+import {
+  initialValueTemplates,
+  REPLACED_DEFAULT_TEMPLATES,
+} from "@/structure/templates";
+import BrandMark from "@/icons/BrandMark";
+
+/**
+ * Vision is a query console with the editor's own credentials. It is a
+ * development tool - useful while writing the GROQ behind a structure list,
+ * noise (and a wider surface) in the studio the content team logs into. The
+ * bundler statically replaces `process.env.NODE_ENV`, so in a production build
+ * this is `false` and the plugin is dropped from the bundle rather than merely
+ * hidden.
+ */
+const isDev = process.env.NODE_ENV === "development";
 
 export default defineConfig({
   name: "default",
-  title: process.env.SANITY_STUDIO_PROJECT_Name || "My Project",
+  /**
+   * Hard-coded, not read from the environment.
+   *
+   * This used to be `process.env.SANITY_STUDIO_PROJECT_Name`, which no build
+   * ever set - Vite only inlines names it is given verbatim, and the mixed-case
+   * `_Name` in `.env.example` never matched anything a deploy exported. Every
+   * studio therefore fell through to the `"My Project"` fallback. One studio
+   * serves one project, so the name is not configuration; it is a constant.
+   */
+  title: "Dětské skupinky",
+  /**
+   * The navbar mark. `icon` rather than `studio.components.logo`: the logo slot
+   * is deprecated in v5 ("Custom logo components are no longer supported. Users
+   * are encouraged to provide custom components for individual workspace icons
+   * instead") and `StudioLogo` is no longer rendered by the navbar at all. The
+   * navbar's `HomeButton` reads `activeWorkspace.icon`, which is this - so the
+   * mark appears in the top-left corner exactly where the logo used to, off a
+   * supported API. See icons/BrandMark.tsx.
+   */
+  icon: BrandMark,
+  /**
+   * No `theme`. The brand purple would have to arrive through `buildLegacyTheme`
+   * into `theme?: StudioTheme`, and in 5.31 both the builder and the whole
+   * `StudioTheme` interface carry "@deprecated - Will be removed in upcoming
+   * major version"; the config field itself is `@beta @hidden`. A legacy theme
+   * also replaces the palette wholesale rather than tinting it, so every future
+   * Sanity UI colour lands unstyled. The default theme is maintained and
+   * accessible in both colour schemes; the brand lives in the title and the
+   * mark, which are supported surfaces.
+   */
   projectId: process.env.SANITY_STUDIO_PROJECT_ID || "",
   dataset: process.env.SANITY_STUDIO_DATASET || "",
   plugins: [
     structureTool({ structure }),
-    visionTool(),
+    ...(isDev ? [visionTool()] : []),
     colorInput(),
     linkField({
       linkableSchemaTypes: [...SINGLETON_TYPES, ...MULTIPLE_PAGES_TYPES],
+      /**
+       * A link picker only offers documents in the language of the document
+       * being edited, plus the ones that have no language at all (objects and
+       * the untranslated singletons).
+       *
+       * `$defaultLanguage` used to be passed alongside `$language` here. The
+       * filter never referenced it, and GROQ rejects nothing for an unused
+       * param, so it was invisible - a second language the code looked like it
+       * honoured and did not.
+       */
       referenceFilterOptions: {
         filter: ({ document }) => {
           const currentLanguage = document?.language || document?.lang;
-          const defaultLanguage = "en";
 
           if (currentLanguage) {
             return {
               filter: "language == $language || !defined(language)",
-              params: {
-                language: currentLanguage,
-                defaultLanguage: defaultLanguage,
-              },
+              params: { language: currentLanguage },
             };
           }
 
@@ -62,12 +117,24 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+    /**
+     * Sanity generates one template per document type automatically. These are
+     * the extra ones - what a new school or post starts out as, and the
+     * geography documents that need to know their parent. See
+     * structure/templates.ts.
+     */
+    templates: (prev) => [...prev, ...initialValueTemplates],
   },
-  // Restrict actions on singleton documents (home, settings, header, footer, …)
   document: {
-    // Remove Delete/Duplicate (and optionally Unpublish) for singletons
+    /**
+     * There is exactly one of each of these per language, and the site reads
+     * each with `*[_type == "..."][0]`. A duplicate therefore does not add a
+     * page - it makes which page the site serves arbitrary - and a delete
+     * takes a route down. Both actions are removed; every other type keeps
+     * them.
+     */
     actions: (prev, { schemaType }) =>
-      SINGLETON_TYPES.includes(schemaType)
+      [...SINGLETON_TYPES, ...PAGE_CONFIG_TYPES].includes(schemaType)
         ? prev.filter(
             (a) =>
               !["delete", "duplicate" /*, 'unpublish'*/].includes(
@@ -76,8 +143,30 @@ export default defineConfig({
           )
         : prev,
 
-    // Remove "New …" menu items for singletons
+    /**
+     * What the global "New document" button offers.
+     *
+     * Two removals. The one-per-language pages are reached from the sidebar,
+     * so a second copy made from this menu would be a document the site never
+     * reads. And the stock `schools` / `blogs` templates are dropped in favour
+     * of the base-language ones beside them, which set `language` (and a
+     * post's date) on creation - keeping both would offer two identically
+     * named "School" entries, one of which quietly produces a school in no
+     * language at all.
+     *
+     * The parameterised geography templates never reach this list: Sanity
+     * excludes any template declaring `parameters` from menus that cannot
+     * supply them, which is exactly what "a region, but in which country?"
+     * needs.
+     */
     newDocumentOptions: (prev) =>
-      prev.filter((t) => !SINGLETON_TYPES.includes(t.templateId || "")),
+      prev.filter(
+        (template) =>
+          ![
+            ...SINGLETON_TYPES,
+            ...PAGE_CONFIG_TYPES,
+            ...REPLACED_DEFAULT_TEMPLATES,
+          ].includes(template.templateId || ""),
+      ),
   },
 });

@@ -1,11 +1,13 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
 import { LinkIcon } from "@sanity/icons/Link";
+import { StackCompactIcon } from "@sanity/icons/StackCompact";
 
 export default defineType({
   name: "footer",
   title: "Footer Page",
   type: "document",
+  icon: StackCompactIcon,
   fields: [
     defineField({
       name: "logo",
@@ -98,7 +100,8 @@ export default defineType({
     prepare({ language }) {
       return {
         title: "Footer Page",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: StackCompactIcon,
       };
     },
   },

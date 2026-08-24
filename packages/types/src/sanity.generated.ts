@@ -691,6 +691,9 @@ export type Schools = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  name?: string;
+  shortSummary?: string;
+  slug?: Slug;
   logo?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -698,30 +701,8 @@ export type Schools = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  name?: string;
-  nameNormalized?: string;
-  isHighPriority?: boolean;
-  shortSummary?: string;
-  slug?: Slug;
   website?: Link;
   capacity?: number;
-  contacts?: Array<
-    {
-      _key: string;
-    } & ContactInfo
-  >;
-  transportation?: Array<
-    {
-      _key: string;
-    } & TransportItem
-  >;
-  links?: Array<{
-    link?: Link;
-    _type: "linkItem";
-    _key: string;
-  }>;
-  cin?: string;
-  providerName?: string;
   area?: AreasReference;
   subarea?: SubareasReference;
   address?: PostalAddress;
@@ -749,6 +730,25 @@ export type Schools = {
     _type: "image";
     _key: string;
   }>;
+  contacts?: Array<
+    {
+      _key: string;
+    } & ContactInfo
+  >;
+  transportation?: Array<
+    {
+      _key: string;
+    } & TransportItem
+  >;
+  links?: Array<{
+    link?: Link;
+    _type: "linkItem";
+    _key: string;
+  }>;
+  cin?: string;
+  providerName?: string;
+  nameNormalized?: string;
+  isHighPriority?: boolean;
   countrySlug?: string;
   regionSlug?: string;
   language?: string;

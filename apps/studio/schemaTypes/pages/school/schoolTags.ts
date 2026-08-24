@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import { TagsIcon } from "@sanity/icons/Tags";
 
 export default defineType({
@@ -34,16 +34,24 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * A tag has no image, so the media slot carries the type icon and the colour
+   * the site outlines the tag with goes in the subtitle - it is the only thing
+   * that distinguishes two tags beyond their names, and getting it wrong is
+   * only visible on the live site otherwise.
+   */
   preview: {
     select: {
       title: "name",
-      subtitle: "slug.current",
+      slug: "slug.current",
+      borderColor: "borderColor.hex",
       language: "language",
     },
-    prepare({ title, subtitle, language }) {
+    prepare({ title, slug, borderColor, language }) {
       return {
-        title: title,
-        subtitle: appendLanguageSubtitle(language, subtitle),
+        title: title || "Unnamed tag",
+        subtitle: localizedSubtitle(language, slug, borderColor),
+        media: TagsIcon,
       };
     },
   },

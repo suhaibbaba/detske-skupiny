@@ -48,15 +48,6 @@ export const upperCase = (value?: string) => {
   return value ? value.toUpperCase() : value;
 };
 
-export const appendLanguageSubtitle = (
-  language?: string,
-  subtitle?: string,
-) => {
-  const languagePart = language ? `🌐 ${upperCase(language)}` : "";
-  const parts = [languagePart, subtitle].filter(Boolean);
-  return parts.join(" - ");
-};
-
 export function removeDiacritics(str: string) {
   return str
     .normalize("NFD")

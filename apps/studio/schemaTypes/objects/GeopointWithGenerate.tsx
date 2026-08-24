@@ -3,13 +3,13 @@ import { Button, Box } from "@sanity/ui";
 import { useState } from "react";
 import { set, useFormValue } from "sanity";
 import { getGeoLocation } from "@/utility/geoLocation";
-import { Address } from "@/types/school";
+import type { PostalAddress } from "@detske-skupiny/types";
 
 export function GenerateLocationButton(props: any) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Get the parent postalAddress values
-  const addressValue: Address = useFormValue(["address"]) || {};
+  const addressValue = (useFormValue(["address"]) || {}) as PostalAddress;
   // const { patch } = useDocumentOperation(props.parent._id, props.parent._type);
 
   const generateMapLocation = async () => {

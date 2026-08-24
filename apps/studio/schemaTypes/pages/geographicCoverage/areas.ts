@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import { MarkerIcon } from "@sanity/icons/Marker";
 import {
   orderRankField,
@@ -36,7 +36,12 @@ export default defineType({
       title: "Region",
       type: "reference",
       to: [{ type: "regions" }],
-      validation: (Rule) => Rule.required(),
+      description:
+        "The region this area sits in. Schools inherit their region from here, which is what the catalog's region filter reads.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "An area with no region has no URL, and every school in it loses its region too.",
+        ),
     }),
     defineField({
       name: "countrySlug",
@@ -59,12 +64,19 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /** The two levels above, so the row reads "Praha · Česká republika". */
   preview: {
-    select: { title: "name", language: "language" },
-    prepare({ title, language }) {
+    select: {
+      title: "name",
+      region: "region.name",
+      country: "region.country.name",
+      language: "language",
+    },
+    prepare({ title, region, country, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
+        title: title || "Unnamed area",
+        subtitle: localizedSubtitle(language, region ?? "No region", country),
+        media: MarkerIcon,
       };
     },
   },

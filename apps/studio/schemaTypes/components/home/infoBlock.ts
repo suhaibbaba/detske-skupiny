@@ -1,10 +1,12 @@
-import { appendLanguageSubtitle, toPlainText } from "@/utility";
+import { toPlainText } from "@/utility";
 import { PortableTextBlock } from "@portabletext/types";
 import { defineField, defineType } from "sanity";
+import { BlockContentIcon } from "@sanity/icons/BlockContent";
 
 export default defineType({
   name: "infoBlock",
   type: "object",
+  icon: BlockContentIcon,
   title: "Info Block",
   fields: [
     defineField({
@@ -32,14 +34,12 @@ export default defineType({
     }),
   ],
   preview: {
-    select: {
-      titleBlocks: "title",
-      language: "language",
-    },
-    prepare({ titleBlocks, language }) {
+    select: { titleBlocks: "title" },
+    prepare({ titleBlocks }) {
       return {
-        title: toPlainText(titleBlocks) || "Neighbour Kinder Group",
-        subtitle: appendLanguageSubtitle(language),
+        title: toPlainText(titleBlocks) || "Info block",
+        media: BlockContentIcon,
+        subtitle: "Info block",
       };
     },
   },

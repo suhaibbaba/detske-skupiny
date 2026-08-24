@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import { ComponentIcon } from "@sanity/icons/Component";
 
 export default defineType({
@@ -31,12 +31,23 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * `emoji` is an image field despite the name, and it is what the site shows
+   * beside a category - so it is the row's media here too, and a category
+   * without one is visibly a category the catalog will render bare.
+   */
   preview: {
-    select: { title: "name", subtitle: "slug.current", language: "language" },
-    prepare({ title, subtitle, language }) {
+    select: {
+      title: "name",
+      slug: "slug.current",
+      media: "emoji",
+      language: "language",
+    },
+    prepare({ title, slug, media, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language, subtitle),
+        title: title || "Unnamed category",
+        subtitle: localizedSubtitle(language, slug),
+        media: media || ComponentIcon,
       };
     },
   },

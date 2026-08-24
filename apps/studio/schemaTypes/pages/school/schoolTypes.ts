@@ -1,7 +1,5 @@
 import { defineType, defineField } from "sanity";
-import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import * as process from "node:process";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import { StackIcon } from "@sanity/icons/Stack";
 
 export default defineType({
@@ -42,21 +40,28 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * Both flags, not just one. `visibility` is off by exception and a hidden
+   * type silently disappears from every filter on the site, so "Hidden" is the
+   * most important thing a row can say - it was not said anywhere before.
+   */
   preview: {
     select: {
       title: "name",
       highPriority: "highPriority",
+      visibility: "visibility",
       media: "icon",
       language: "language",
     },
-    prepare({ title, highPriority, media, language }) {
+    prepare({ title, highPriority, visibility, media, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(
+        title: title || "Unnamed type",
+        subtitle: localizedSubtitle(
           language,
-          highPriority ? "High Priority" : "",
+          visibility === false && "Hidden",
+          highPriority && "High priority",
         ),
-        media,
+        media: media || StackIcon,
       };
     },
   },

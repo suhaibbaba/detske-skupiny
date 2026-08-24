@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import PinMapIcon from "@/icons/PinMap";
 import {
   orderRankField,
@@ -36,7 +36,12 @@ export default defineType({
       title: "Area",
       type: "reference",
       to: [{ type: "areas" }],
-      validation: (Rule) => Rule.required(),
+      description:
+        "The area this subarea sits in. The whole chain above it - area, region, country - is composed from this one reference.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "A subarea with no area has no URL: the catalog builds its path from the chain above it.",
+        ),
     }),
     {
       name: "countrySlug",
@@ -59,12 +64,19 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /** The two levels above, so the row reads "Praha 6 · Praha". */
   preview: {
-    select: { title: "name", language: "language" },
-    prepare({ title, language }) {
+    select: {
+      title: "name",
+      area: "area.name",
+      region: "area.region.name",
+      language: "language",
+    },
+    prepare({ title, area, region, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
+        title: title || "Unnamed subarea",
+        subtitle: localizedSubtitle(language, area ?? "No area", region),
+        media: PinMapIcon,
       };
     },
   },
