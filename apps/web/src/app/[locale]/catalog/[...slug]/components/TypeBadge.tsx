@@ -1,8 +1,25 @@
+"use client";
+
+/**
+ * A Client Component because it hands MUI's `Chip` a React element as its
+ * `icon` prop.
+ *
+ * `Chip` clones that element, and an element created on the server and passed
+ * into a Client Component does not survive the trip: the server rendered the
+ * chip with its label and no icon, the client rendered it with both, and React
+ * reported a hydration mismatch on every page showing a highlighted school
+ * type. It only surfaced on the home page - the catalog's card is already a
+ * Client Component, so there was no boundary for the icon to cross.
+ *
+ * Pre-existing; it predates the switch to `next/image` here and reproduces
+ * with the plain `<img>` this used to render.
+ */
 import { Box, BoxProps, Chip, ChipProps } from "@mui/material";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import Star from "@/components/icons/Star";
 import { SchoolType } from "@/sanity/types";
 import { FC } from "react";
+import Image from "@/components/ui/image";
 
 interface Props {
   types?: SchoolType[];
@@ -64,9 +81,7 @@ const SchoolTypesBadge: FC<Props> = ({ types: typesProps }) => {
       {types.map((type) => {
         let icon;
         if (type.icon) {
-          icon = (
-            <Box component="img" src={urlImageFor(type.icon)} alt={type.name} />
-          );
+          icon = <Image src={type.icon} alt={type.name} sizes="24px" />;
         } else if (type.highPriority) {
           icon = <Star />;
         }

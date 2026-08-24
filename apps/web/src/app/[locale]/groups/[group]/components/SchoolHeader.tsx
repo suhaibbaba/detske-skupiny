@@ -5,6 +5,7 @@ import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
 import { useLocale } from "next-intl";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   school: School;
@@ -13,7 +14,7 @@ interface Props {
 interface SchoolHeaderStyles {
   wrapper: BoxProps;
   name: TypographyProps;
-  logo: BoxProps;
+  logo: ImageProps;
 }
 
 const styles: SchoolHeaderStyles = {
@@ -54,11 +55,11 @@ const SchoolHeader = ({ school }: Props) => {
     <Box {...styles.wrapper}>
       <Typography {...styles.name}>
         {school.logo && (
-          <Box
+          <Image
             {...styles.logo}
-            src={urlImageFor(school.logo)}
+            src={school.logo}
             alt={school.name}
-            component="img"
+            sizes="35px"
           />
         )}
         {school.name}

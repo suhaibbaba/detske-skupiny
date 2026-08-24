@@ -181,11 +181,9 @@ export async function fetchSchoolList(params: SchoolFilterQueryParams) {
     return { totalSelectedSchools: ordered.length, schools: [] };
   }
 
-  const cards = await sanityFetch<MiniSchool[]>(
-    schoolCardsQuery,
-    { ids },
-    ["schools"],
-  );
+  const cards = await sanityFetch<MiniSchool[]>(schoolCardsQuery, { ids }, [
+    "schools",
+  ]);
 
   // `_id in $ids` returns documents in the dataset's own order, so the page is
   // put back into the order that produced the ids.

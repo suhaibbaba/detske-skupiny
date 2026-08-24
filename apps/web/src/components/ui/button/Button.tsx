@@ -1,11 +1,21 @@
 "use client";
 
+/**
+ * A Client Component, and it has to be one: it hands MUI `component={NextLink}`,
+ * and a component reference is a function - functions do not serialise across
+ * the server/client boundary, so a Server Component rendering this would throw
+ * "Functions cannot be passed directly to Client Components".
+ *
+ * The `useMemo` it used to carry is gone regardless; it only wrapped a two-key
+ * object merge, which is cheaper to redo than to memoize, and the React
+ * Compiler now decides that for itself.
+ */
 import NextLink from "next/link";
 import {
   Button as MuiButton,
   ButtonProps as MuiButtonProps,
 } from "@mui/material";
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import { useLocale } from "next-intl";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
@@ -30,7 +40,7 @@ const Button: FC<ButtonProps> = ({
   ...otherProps
 }) => {
   const locale = useLocale();
-  const styles = useMemo(() => mergeMuiProps(buttonStyles, { sx }), [sx]);
+  const styles = mergeMuiProps(buttonStyles, { sx });
 
   if (link) {
     const passedProps = parseLinkField(link, { locale });

@@ -16,7 +16,7 @@ import {
   ButtonProps,
 } from "@mui/material";
 import Textarea from "@/components/ui/textarea/Textarea";
-import { FC, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import Button from "@/components/ui/button";
 import { ContactUsForm } from "@/sanity/types";
 import useTranslate from "@/hooks/useTranslate";
@@ -103,21 +103,18 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   );
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const isEmailValid = useMemo(
-    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email),
-    [form.email],
-  );
+  // Both were `useMemo`. Neither feeds a dependency array, and a regex test
+  // over one short string costs less than the comparison that would skip it -
+  // the React Compiler memoizes them anyway if it decides it is worth it.
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
-  const isValid = useMemo(
-    () =>
-      form.name.trim().length >= 2 &&
-      isEmailValid &&
-      form.message.trim().length >= 5 &&
-      agree &&
-      // Without a site key the widget is not rendered at all (dev fallback).
-      (!TURNSTILE_SITE_KEY || turnstileToken.length > 0),
-    [form, isEmailValid, agree, turnstileToken],
-  );
+  const isValid =
+    form.name.trim().length >= 2 &&
+    isEmailValid &&
+    form.message.trim().length >= 5 &&
+    agree &&
+    // Without a site key the widget is not rendered at all (dev fallback).
+    (!TURNSTILE_SITE_KEY || turnstileToken.length > 0);
 
   const onChange =
     (field: "name" | "email" | "message") =>

@@ -13,6 +13,7 @@ import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import { sharedClassNames } from "@/app/[locale]/home/utility";
 import { getLocale } from "next-intl/server";
+import Image from "@/components/ui/image";
 
 interface Props {
   fields: {
@@ -117,7 +118,11 @@ const InfoBlock = async ({ fields }: Props) => {
         </Box>
 
         <Box {...styles.imageWrapper}>
-          <Box src={urlImageFor(fields.image)} component="img" alt={fields.title} />
+          <Image
+            src={fields.image}
+            alt={fields.title}
+            sizes="(max-width: 900px) 100vw, 50vw"
+          />
         </Box>
       </Container>
     </Box>

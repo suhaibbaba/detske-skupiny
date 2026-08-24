@@ -49,13 +49,7 @@ interface SanityLinkField {
 }
 
 type LinkType =
-  | "external"
-  | "internal"
-  | "email"
-  | "phone"
-  | "file"
-  | "empty"
-  | "unknown";
+  "external" | "internal" | "email" | "phone" | "file" | "empty" | "unknown";
 
 interface ParsedLink {
   type: LinkType;

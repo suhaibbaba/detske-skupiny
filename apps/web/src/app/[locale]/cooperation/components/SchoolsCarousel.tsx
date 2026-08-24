@@ -1,5 +1,11 @@
-"use client";
-
+/**
+ * Deliberately not a Client Component.
+ *
+ * The only thing here that needs a browser is `EmblaCarousel`. With the
+ * directive on this file, every `PreschoolCard` it renders was client code
+ * too; without it, the cards render on the server and are handed to Embla as
+ * children, so only the carousel itself hydrates.
+ */
 import EmblaCarousel from "@/components/shared/EmblaCarousel";
 import PreschoolCard from "@/app/[locale]/cooperation/components/PreschoolCard";
 import { MiniSchool } from "@/sanity/types";

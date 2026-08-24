@@ -271,6 +271,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
             gallery={school.primaryImages}
             logo={school.logo}
             name={school.name}
+            mainImageLqip={school.primaryImageLqip}
             extendedStyles={{ container: { sx: { mt: "40px" } } }}
           />
           {/* <SchoolHeader school={school} /> */}

@@ -14,12 +14,15 @@ import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import useTranslate from "@/hooks/useTranslate";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
 interface SchoolGalleryProps {
   gallery?: School["primaryImages"];
   logo?: School["logo"];
+  /** Base64 thumbnail for the first image, which is this page's LCP element. */
+  mainImageLqip?: string;
   name?: School["name"];
   extendedStyles?: SchoolGalleryStyles;
 }
@@ -28,8 +31,8 @@ export interface SchoolGalleryStyles {
   container?: BoxProps;
   imageContainer?: BoxProps;
   imageBox?: BoxProps;
-  img?: BoxProps;
-  logo?: BoxProps;
+  img?: ImageProps;
+  logo?: ImageProps;
 }
 
 const styles: SchoolGalleryStyles = {
@@ -85,6 +88,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
   gallery,
   logo,
   name,
+  mainImageLqip,
   extendedStyles,
 }) => {
   const [open, setOpen] = useState(false);
@@ -131,14 +135,27 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
           {/* Left main */}
           {main && (
             <Box {...styles.imageBox} onClick={() => openImage(0)}>
-              <Box component="img" src={urlImageFor(main)} alt={name} {...styles.img} />
+              {/*
+               * The first gallery image is the school page's LCP element, so
+               * it is fetched eagerly. The four thumbnails beside it stay
+               * lazy - they are the same size on screen but not the thing a
+               * visitor is waiting for.
+               */}
+              <Image
+                src={main}
+                alt={name}
+                priority
+                sizes="(max-width: 900px) 100vw, 60vw"
+                {...(mainImageLqip
+                  ? {
+                      placeholder: "blur" as const,
+                      blurDataURL: mainImageLqip,
+                    }
+                  : {})}
+                {...styles.img}
+              />
               {logo && (
-                <Box
-                  component="img"
-                  src={urlImageFor(logo)}
-                  alt={name}
-                  {...styles.logo}
-                />
+                <Image src={logo} alt={name} sizes="64px" {...styles.logo} />
               )}
             </Box>
           )}
@@ -161,7 +178,12 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
                 {...styles.imageBox}
                 onClick={() => openImage(idx + 1)}
               >
-                <Box component="img" src={urlImageFor(img)} alt={name} {...styles.img} />
+                <Image
+                  src={img}
+                  alt={name}
+                  sizes="(max-width: 900px) 50vw, 20vw"
+                  {...styles.img}
+                />
               </Box>
             ))}
           </Box>

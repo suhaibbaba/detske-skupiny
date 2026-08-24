@@ -94,7 +94,7 @@ describe("orderByDailyShuffle", () => {
 
   it("produces a different order on a different day", () => {
     expect(ids(orderByDailyShuffle(many, "2026-08-24"))).not.toEqual(
-      ids(orderByDailyShuffle(many, "2026-08-25"))
+      ids(orderByDailyShuffle(many, "2026-08-25")),
     );
   });
 

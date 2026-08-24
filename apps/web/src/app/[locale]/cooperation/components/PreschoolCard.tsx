@@ -1,3 +1,15 @@
+"use client";
+
+/**
+ * A Client Component, for the same reason as `catalog/.../TypeBadge.tsx`: it
+ * hands MUI's `Chip` an element as its `icon` prop, and an element created on
+ * the server does not survive that trip - the server renders the chip without
+ * the icon and the client renders it with one, which is a hydration mismatch.
+ *
+ * This is why demoting `SchoolsCarousel` did not carry the card to the server
+ * with it. The carousel demotion still stands on its own: the client boundary
+ * now sits on `EmblaCarousel`, which is the thing that actually needs one.
+ */
 import React from "react";
 import {
   Card,
@@ -9,7 +21,6 @@ import {
   Typography,
   CardActionArea,
   Box,
-  alpha,
   Chip,
   ChipProps,
   TypographyProps,
@@ -20,7 +31,7 @@ import { MiniSchool } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { getLocalizedRoutes } from "@/routes";
 import { ellipses } from "@/utilites/strings";
-import { useDefaultImage } from "@/providers";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   school: MiniSchool;
@@ -29,17 +40,23 @@ interface Props {
 
 interface PreschoolCardStyles {
   container?: CardProps;
-  cardMedia?: CardMediaProps;
+  cardMedia?: BoxProps;
   cardContent?: CardContentProps;
   locationChip?: ChipProps;
   schoolTitle?: TypographyProps;
   defaultCardMediaWrapper?: BoxProps;
-  defaultCardMedia?: CardMediaProps;
+  defaultCardMedia?: ImageProps;
 }
 
 const styles: PreschoolCardStyles = {
   container: {
-    sx: (theme) => ({
+    /*
+     * Was `sx: (theme) => ...`, which a Server Component cannot hand to a
+     * Client Component - a function does not serialise across the boundary.
+     * Both callbacks only read `palette.common.black`, which the theme pins to
+     * #000000, so the shadows are written out directly instead.
+     */
+    sx: {
       width: {
         xs: "272px",
         sm: "302px",
@@ -50,10 +67,10 @@ const styles: PreschoolCardStyles = {
       flexDirection: "column",
       gap: "12px",
       boxShadow: `
-        0 4px 6px ${alpha(theme.palette.common.black, 0.06)},
-        0 2px 4px ${alpha(theme.palette.common.black, 0.08)}
+        0 4px 6px rgba(0, 0, 0, 0.06),
+        0 2px 4px rgba(0, 0, 0, 0.08)
       `,
-    }),
+    },
   },
   cardMedia: {
     sx: {
@@ -87,7 +104,7 @@ const styles: PreschoolCardStyles = {
     },
   },
   locationChip: {
-    sx: (theme) => ({
+    sx: {
       position: "absolute",
       bottom: 17,
       left: 22,
@@ -97,8 +114,8 @@ const styles: PreschoolCardStyles = {
       py: "8px",
       borderRadius: "24px",
       boxShadow: `
-        0px 4px 6px 0px ${alpha(theme.palette.common.black, 0.05)}, 
-        0px 10px 15px -3px ${alpha(theme.palette.common.black, 0.1)}
+        0px 4px 6px 0px rgba(0, 0, 0, 0.05),
+        0px 10px 15px -3px rgba(0, 0, 0, 0.1)
       `,
       "& .MuiChip-icon": {
         width: "20px",
@@ -112,7 +129,7 @@ const styles: PreschoolCardStyles = {
         p: "0 0 0 6px",
         fontWeight: 400,
       },
-    }),
+    },
   },
   schoolTitle: {
     variant: "h4",
@@ -125,8 +142,9 @@ const styles: PreschoolCardStyles = {
 };
 
 const PreschoolCard = ({ school, locale }: Props) => {
-  const defaultImageUrl = useDefaultImage();
-  const imagSrc = school.primaryImage || defaultImageUrl;
+  // The default-image fallback lives inside `<Image>` itself, so reading the
+  // context here as well was duplicate work - and it was the one thing keeping
+  // this card on the client once `SchoolsCarousel` stopped forcing it there.
 
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
@@ -134,18 +152,30 @@ const PreschoolCard = ({ school, locale }: Props) => {
         <Box p="10px" position="relative">
           {!school.primaryImage ? (
             <Box {...styles.defaultCardMediaWrapper}>
-              <CardMedia
+              <Image
                 {...styles.defaultCardMedia}
-                image={urlImageFor(imagSrc)}
-                title={school.name}
+                src={school.primaryImage}
+                alt={school.name}
+                sizes="80px"
               />
             </Box>
           ) : (
-            <CardMedia
-              {...styles.cardMedia}
-              image={urlImageFor(imagSrc) || ""}
-              title={school.name}
-            />
+            /*
+             * Was a `CardMedia` with no `component`, which renders a div with
+             * a CSS background-image: no srcset, no lazy loading, and nothing
+             * for a preload scanner to find. The wrapper keeps the same fixed
+             * 158px box, so `fill` reserves exactly the space the background
+             * used to occupy.
+             */
+            <Box {...styles.cardMedia}>
+              <Image
+                src={school.primaryImage}
+                alt={school.name}
+                fill
+                sizes="(max-width: 900px) 100vw, 320px"
+                sx={{ objectFit: "cover", borderRadius: "24px" }}
+              />
+            </Box>
           )}
           {school.area && (
             <Chip

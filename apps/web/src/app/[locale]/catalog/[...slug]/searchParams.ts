@@ -70,9 +70,8 @@ export const catalogScopeSchema = z.object({
   }),
 });
 
-export const loadMoreInputSchema = catalogScopeSchema.merge(
-  catalogFiltersSchema,
-);
+export const loadMoreInputSchema =
+  catalogScopeSchema.merge(catalogFiltersSchema);
 
 export type LoadMoreInput = z.infer<typeof loadMoreInputSchema>;
 

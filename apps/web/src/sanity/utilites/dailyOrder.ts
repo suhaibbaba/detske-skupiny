@@ -77,7 +77,8 @@ export function orderByDailyShuffle<T extends DailyOrderable>(
   );
 
   return [...items].sort((a, b) => {
-    const priority = Number(Boolean(b.isHighPriority)) - Number(Boolean(a.isHighPriority));
+    const priority =
+      Number(Boolean(b.isHighPriority)) - Number(Boolean(a.isHighPriority));
     if (priority !== 0) {
       return priority;
     }

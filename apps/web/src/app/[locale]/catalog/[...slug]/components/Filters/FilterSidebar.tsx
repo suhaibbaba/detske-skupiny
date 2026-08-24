@@ -90,7 +90,7 @@ const FilterSidebar = ({
           catalog.region ? "mainDistrictsByRegion" : "mainDistricts",
           {
             region: catalog.region || "",
-          }
+          },
         )}
         selectedSlug={selectedSlug}
         showSearch={+catalog.level > 0}
@@ -101,7 +101,7 @@ const FilterSidebar = ({
           catalog.region ? "otherDistrictsByRegion" : "otherDistricts",
           {
             region: catalog.region || "",
-          }
+          },
         )}
         selectedSlug={selectedSlug}
         items={subareas}

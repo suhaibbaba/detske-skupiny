@@ -193,7 +193,7 @@ const FilterList: FC<Props> = ({
   // Filter items based on search
   const filteredItems = search
     ? items.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
+        item.name.toLowerCase().includes(search.toLowerCase()),
       )
     : items;
 

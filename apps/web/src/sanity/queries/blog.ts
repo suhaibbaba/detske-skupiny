@@ -56,7 +56,10 @@ export async function fetchBlogPage(params: {
     writers?: Author[];
   }>(
     blogPageQuery,
-    { categorySelected: params.categorySelected ?? null, locale: params.locale },
+    {
+      categorySelected: params.categorySelected ?? null,
+      locale: params.locale,
+    },
     ["blogs", "page:blogPage"],
   );
 }

@@ -11,6 +11,7 @@ import { SvgIconComponent } from "@mui/icons-material";
 import { SanityImageField, SanityRichTextField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import RichText from "@/sanity/components/RichText";
+import Image from "@/components/ui/image";
 
 interface Props {
   image?: SanityImageField;
@@ -72,7 +73,7 @@ const styles: ContactInfoCardStyles = {
 const ContactInfoCard: React.FC<Props> = ({ image, title, description }) => {
   return (
     <Box {...styles.container}>
-      {image && <Box component="img" src={urlImageFor(image)} alt={title} />}
+      {image && <Image src={image} alt={title} sizes="80px" />}
       <Typography {...styles.title}>{title}</Typography>
       {description && (
         <RichText {...styles.description}>{description}</RichText>

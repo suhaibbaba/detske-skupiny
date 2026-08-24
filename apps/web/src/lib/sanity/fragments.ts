@@ -16,6 +16,25 @@ export const imageUrl = (field: string, alias = field) =>
   groq`"${alias}": ${field}.asset->url`;
 
 /**
+ * The same URL, plus the base64 thumbnail Sanity generates for every asset.
+ *
+ * `next/image` can paint a `blurDataURL` immediately and cross-fade to the
+ * real file, which turns the gap before a large image arrives from a blank box
+ * into something that looks deliberate. It is only worth the extra field where
+ * that gap is actually visible - the LCP image of a route - so this is used by
+ * the school detail and article queries rather than by every image projection.
+ *
+ * Dimensions are deliberately NOT projected here: they are already encoded in
+ * the asset id, and `imageDimensions` in sanity/sections/sanityImageUrl.ts
+ * reads them from there. Adding them would change the shape every consumer
+ * receives for a number the URL already carries.
+ */
+export const imageUrlWithLqip = (field: string, alias = field) => groq`
+  "${alias}": ${field}.asset->url,
+  "${alias}Lqip": ${field}.asset->metadata.lqip
+`;
+
+/**
  * The catalog path of a geography document, composed from its reference chain.
  *
  * These replace the `fullSlug` field the studio used to denormalise onto every

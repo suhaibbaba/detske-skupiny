@@ -15,7 +15,7 @@ import Location from "@/components/icons/Location";
 import Button from "@/components/ui/button";
 import useTranslate from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
-import Image from "@/components/ui/image/Image";
+import Image, { type ImageProps } from "@/components/ui/image";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
 import { useLocale } from "next-intl";
 import Link from "@/components/ui/link/Link";
@@ -27,8 +27,8 @@ interface Props {
 interface KinderGroupCardStyles {
   card?: BoxProps;
   imageWrapper?: BoxProps;
-  image?: BoxProps;
-  logo?: BoxProps;
+  image?: ImageProps;
+  logo?: ImageProps;
   nameWrapper?: BoxProps;
   name?: TypographyProps;
   tagsWrapper?: BoxProps;
@@ -36,7 +36,7 @@ interface KinderGroupCardStyles {
   description?: TypographyProps;
   cta?: ButtonProps;
   defaultImageWrapper?: BoxProps;
-  defaultImage?: BoxProps;
+  defaultImage?: ImageProps;
 }
 
 const styles: KinderGroupCardStyles = {
@@ -166,10 +166,17 @@ const SchoolGridCard = ({ school }: Props) => {
       >
         {urlImageFor(primaryImage) === "" ? (
           <Box {...styles.defaultImageWrapper}>
-            <Image {...styles.defaultImage} alt={name} />
+            <Image {...styles.defaultImage} alt={name} sizes="80px" />
           </Box>
         ) : (
-          <Image {...styles.image} src={urlImageFor(primaryImage)} alt={name} />
+          <Image
+            {...styles.image}
+            src={primaryImage}
+            alt={name}
+            // The grid is 1 / 2 / 3 columns inside a max-width container, so a
+            // card is never wider than about a third of a large viewport.
+            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+          />
         )}
 
         <SchoolTypesBadge types={types?.filter((t) => t.visibility)} />
@@ -178,14 +185,7 @@ const SchoolGridCard = ({ school }: Props) => {
         sx={styles.nameWrapper?.sx}
         href={getLocalizedRoutes(locale).group(school.slug)}
       >
-        {logo && (
-          <Box
-            component="img"
-            {...styles.logo}
-            src={urlImageFor(logo)}
-            alt={name}
-          />
-        )}
+        {logo && <Image {...styles.logo} src={logo} alt={name} sizes="30px" />}
         <Ellipsis limitOfLine={2} {...styles.name}>
           {name}
         </Ellipsis>

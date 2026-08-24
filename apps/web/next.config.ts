@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
   // that still depend on request data (searchParams, and the slug segments
   // that have no generateStaticParams) read it below a Suspense boundary.
   cacheComponents: true,
+
+  /**
+   * The React Compiler memoizes components and hook results automatically.
+   *
+   * Kept on because the build cost measured small on this app (see
+   * docs/perf-after-phase6.md) and it removes the need for hand-written
+   * `useMemo`/`useCallback` - several of which this codebase had wrapped
+   * around work cheaper than the memo itself.
+   */
+  reactCompiler: true,
   /**
    * The Sanity project and dataset names, inlined into the client bundle.
    *
@@ -25,6 +35,31 @@ const nextConfig: NextConfig = {
   env: {
     SANITY_PROJECT_ID: process.env.SANITY_PROJECT_ID,
     SANITY_DATASET: process.env.SANITY_DATASET,
+  },
+
+  /**
+   * Sanity is the only host the site renders images from.
+   *
+   * `components/ui/image/Image.tsx` hands `next/image` a loader that points
+   * straight at Sanity's CDN, and a custom loader does not consult this list -
+   * so on the path the app actually uses, this is belt and braces. It matters
+   * for anything that reaches for `next/image` directly, where the built-in
+   * optimizer would otherwise refuse a `cdn.sanity.io` URL outright.
+   *
+   * `pathname` is scoped to the images route rather than left open: nothing
+   * should be able to point the optimizer at an arbitrary Sanity path.
+   */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "/images/**",
+      },
+    ],
+    // AVIF first, WebP second, original last - the same order the built-in
+    // optimizer uses, stated explicitly so it survives a Next default change.
+    formats: ["image/avif", "image/webp"],
   },
 };
 

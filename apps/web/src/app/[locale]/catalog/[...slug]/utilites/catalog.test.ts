@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  FilterTypes,
-  getSelectedSlug,
-  parseCatalogSlug,
-} from "./catalog";
+import { FilterTypes, getSelectedSlug, parseCatalogSlug } from "./catalog";
 
 /**
  * parseCatalogSlug decides whether a /katalog/... URL exists at all. Returning

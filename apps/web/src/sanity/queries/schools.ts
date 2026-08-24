@@ -100,6 +100,7 @@ export const schoolBySlugQuery = groq`{
       website{ ${linkFields} },
       "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
+      "primaryImageLqip": primaryImages[0].asset->metadata.lqip,
       "region": area->region->{
         "id": _id,
         name,

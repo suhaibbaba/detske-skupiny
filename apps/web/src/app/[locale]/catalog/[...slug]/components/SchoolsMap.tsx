@@ -1,5 +1,5 @@
 import { Box, BoxProps } from "@mui/material";
-import MapComponent from "@/components/ui/map/MapComponent";
+import MapComponent from "@/components/ui/map/LazyMap";
 import { MarkerData } from "@/sanity/types";
 
 interface Props {

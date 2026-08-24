@@ -1,4 +1,12 @@
-import React, { ReactNode, useCallback } from "react";
+"use client";
+
+/**
+ * Embla owns a ref to a scroll container and drives it with pointer events, so
+ * this is where the client boundary belongs. It used to inherit the directive
+ * from `SchoolsCarousel`, which meant every card that carousel rendered was
+ * client code too.
+ */
+import React, { ReactNode } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Box } from "@mui/material";
 import { EmblaOptionsType } from "embla-carousel";
@@ -20,13 +28,10 @@ export default function EmblaCarousel({
 }: EmblaCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
-  const scrollPrev = useCallback(() => {
-    emblaApi?.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    emblaApi?.scrollNext();
-  }, [emblaApi]);
+  // Plain functions: they are only ever passed to onClick, never to a
+  // dependency array, so their identity was memoized for nothing.
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
 
   return (
     <Box>

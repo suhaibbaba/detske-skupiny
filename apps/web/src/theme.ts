@@ -1,15 +1,11 @@
 "use client";
 
 import { createTheme } from "@mui/material/styles";
-import { Nunito } from "next/font/google";
+import { nunitoFontFamily } from "@/fonts/nunito";
 import { alpha, Theme } from "@mui/material";
 import { autoClamp } from "@/utilites/strings";
 import CheckedIcon from "@/components/icons/CheckedIcon";
 import { BREAKPOINTS } from "@/constants";
-
-const nunito = Nunito({
-  subsets: ["latin"],
-});
 
 export const baseTheme = createTheme({
   cssVariables: true,
@@ -94,7 +90,7 @@ export const createButtonStyle = ({
 
 const theme = createTheme(baseTheme, {
   typography: {
-    fontFamily: nunito.style.fontFamily,
+    fontFamily: nunitoFontFamily,
     body1: {
       color: "#6C7685",
     },
@@ -175,7 +171,7 @@ const theme = createTheme(baseTheme, {
           fontWeight: 500,
           fontSize: 16,
           lineHeight: "16px",
-          fontFamily: nunito.style.fontFamily,
+          fontFamily: nunitoFontFamily,
         },
         outlined: {
           color: baseTheme.palette.custom.ui1,
@@ -236,7 +232,7 @@ const theme = createTheme(baseTheme, {
           boxShadow: "none",
           "&:before": {
             display: "none",
-            fontFamily: nunito.style.fontFamily,
+            fontFamily: nunitoFontFamily,
           },
         },
       },
@@ -247,7 +243,7 @@ const theme = createTheme(baseTheme, {
           padding: "0 24px 24px 48px",
           color: "#6C7685",
           fontSize: "20px",
-          fontFamily: nunito.style.fontFamily,
+          fontFamily: nunitoFontFamily,
         },
       },
     },
@@ -263,7 +259,7 @@ const theme = createTheme(baseTheme, {
             fontSize: "20px",
             fontWeight: "600",
           },
-          fontFamily: nunito.style.fontFamily,
+          fontFamily: nunitoFontFamily,
           ".MuiAccordionSummary-expandIconWrapper": {
             flexShrink: 0,
           },
@@ -281,7 +277,7 @@ const theme = createTheme(baseTheme, {
           boxShadow:
             "0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1)",
           borderRadius: "16px",
-          fontFamily: nunito.style.fontFamily,
+          fontFamily: nunitoFontFamily,
         },
       },
     },
@@ -294,7 +290,7 @@ const theme = createTheme(baseTheme, {
       styleOverrides: {
         root: {
           backgroundColor: "#FBF8FE",
-          fontFamily: nunito.style.fontFamily,
+          fontFamily: nunitoFontFamily,
         },
       },
     },
@@ -374,7 +370,7 @@ const theme = createTheme(baseTheme, {
     },
     MuiTypography: {
       defaultProps: {
-        fontFamily: nunito.style.fontFamily,
+        fontFamily: nunitoFontFamily,
       },
       styleOverrides: {
         root: {

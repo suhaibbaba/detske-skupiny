@@ -177,7 +177,7 @@ const ALL_QUERIES: Record<string, string> = {
   schoolCardsQuery,
   schoolMarkersQuery,
   schoolOrderQuery,
-  schoolPageQuery: schoolPageQuery("count(*[_type == \"schools\"])"),
+  schoolPageQuery: schoolPageQuery('count(*[_type == "schools"])'),
   highPrioritySchoolsQuery,
   schoolBySlugQuery,
   schoolCardsByIdQuery,
