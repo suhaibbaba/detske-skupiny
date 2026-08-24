@@ -1,6 +1,6 @@
 import { Box, BoxProps } from "@mui/material";
 import MapComponent from "@/components/ui/map/LazyMap";
-import { MarkerData } from "@/sanity/types";
+import { hasPosition, type MarkerData } from "@/sanity/types";
 
 interface Props {
   markers?: MarkerData[];
@@ -26,15 +26,19 @@ const styles: SchoolsMapStyles = {
 };
 
 const SchoolsMap = ({ markers }: Props) => {
-  if (!markers || markers.length === 0) {
+  // A school whose address carries no map location has nothing to place, and
+  // centring on its missing coordinate is what used to throw.
+  const placed = markers?.filter(hasPosition) ?? [];
+
+  if (placed.length === 0) {
     return null;
   }
 
   return (
     <Box {...styles.mapWrapper}>
       <MapComponent
-        defaultCenter={markers[0].coordinate}
-        markers={markers}
+        defaultCenter={placed[0].coordinate}
+        markers={placed}
         minHeight={300}
       />
     </Box>

@@ -76,9 +76,9 @@ export function localizedPathsFor(
  */
 export function documentPaths(
   locale: string,
-  ownPath: string,
+  ownPath: string | null | undefined,
   translations: TranslationPath[] | null | undefined,
-  toRoute: (locale: string, path: string) => string,
+  toRoute: (locale: string, path: string | null | undefined) => string,
 ): LocalizedPaths {
   const paths: LocalizedPaths = { [locale]: toRoute(locale, ownPath) };
 

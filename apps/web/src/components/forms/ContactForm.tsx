@@ -155,9 +155,9 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
       setAgree(false);
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
-    } catch (err: any) {
+    } catch (err) {
       setStatus("error");
-      setErrorMsg(err?.message || "Failed to send");
+      setErrorMsg(err instanceof Error ? err.message : "Failed to send");
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
     }
@@ -168,7 +168,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   }
 
   const { title, description, privacyPolicy, sendMessageCta } = contactUsForm;
-  const link = parseLinkField(sendMessageCta.link, { locale });
+  const link = parseLinkField(sendMessageCta?.link, { locale });
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-xl">
@@ -227,7 +227,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
             <Textarea
               name="message"
               value={form.message}
-              onChange={onChange("message") as any}
+              onChange={onChange("message")}
               aria-label="message"
               minRows={5}
               maxRows={7}
@@ -311,7 +311,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
         <Grid {...styles.fullWidthGrid}>
           <Button
             type="submit"
-            variant={sendMessageCta.variant}
+            variant={sendMessageCta?.variant}
             fullWidth
             {...styles.cta}
             disabled={!isValid || status === "sending"}

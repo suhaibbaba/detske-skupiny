@@ -21,9 +21,9 @@ import Button from "@/components/ui/button";
 import { useLocale } from "next-intl";
 
 interface Props {
-  title?: string | SanityRichTextField;
-  description?: string | SanityRichTextField;
-  ctaList?: SanityCtaField[];
+  title?: string | SanityRichTextField | null;
+  description?: string | SanityRichTextField | null;
+  ctaList?: SanityCtaField[] | null;
   extendedStyles?: PageHeadingTypographyStyles;
 }
 

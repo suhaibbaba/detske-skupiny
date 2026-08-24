@@ -1,21 +1,17 @@
-import { MapCoordinate } from "@/sanity/types/geo";
+import type {
+  ContactInfo,
+  Geopoint,
+  PostalAddress,
+} from "@detske-skupiny/types";
 
-export interface PostalAddress {
-  street?: string;
-  city?: string;
-  postalCode?: string;
-  extra?: string;
-  mapLocation: MapCoordinate;
-}
+/**
+ * The address object, straight from the schema.
+ *
+ * The hand-written version declared `mapLocation` as required. It is optional
+ * in the Studio, and a school without one is exactly the case the map has to
+ * skip rather than place at (undefined, undefined).
+ */
+export type { ContactInfo, Geopoint, PostalAddress };
 
-export interface GeoPoint {
-  lat: number;
-  /**
-   * Longitude in degrees
-   */
-  lng: number;
-  /**
-   * Altitude in meters
-   */
-  alt?: number;
-}
+/** Kept as an alias: `ContactPerson` is what the components call it. */
+export type ContactPerson = ContactInfo;

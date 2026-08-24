@@ -200,7 +200,7 @@ const SchoolGridCard = ({ school }: Props) => {
           <Location
             sx={{ width: "16px", height: "20px", color: "secondary.dark" }}
           />
-          {area?.name || region.name}
+          {area?.name || region?.name}
         </Typography>
         <Ellipsis limitOfLine={4} {...styles.description}>
           {shortSummary}

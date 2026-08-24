@@ -21,7 +21,6 @@ import SchoolGallery, {
 } from "@/app/[locale]/groups/[group]/components/SchoolGallery";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import ContentSchool from "@/app/[locale]/groups/[group]/components/ContentSchool";
-import SchoolTimetable from "@/app/[locale]/groups/[group]/components/SchoolTimetable";
 import SchoolHeader from "@/app/[locale]/groups/[group]/components/SchoolHeader";
 import InfoCardGrid from "@/app/[locale]/groups/[group]/components/InfoCardGrid";
 import { formatMessage } from "@/utilites/strings";
@@ -165,17 +164,17 @@ const schoolPaths = (locale: string, school: School) =>
 /**
  * The description a school page shares, best available first.
  *
- * `metaDescription` is the field the query has always asked for, and is kept
- * first so an editor-written description wins the moment the schema gains one
- * (it does not have one today - see the recommendations in the PR). Otherwise
- * the short summary, which is written for exactly this, and finally the name
- * and the district, which every school has.
+ * The query used to ask for `metaDescription` first, "so an editor-written
+ * description wins the moment the schema gains one". The `schools` schema does
+ * not have that field, so the projection returned null on every school and the
+ * branch could never be taken - which the generated types made visible. It is
+ * the short summary, which is written for exactly this, and then the name and
+ * the district, which every school has.
  */
 function schoolDescription(school: School) {
   const area = school.area?.name ?? school.region?.name;
 
   return (
-    school.metaDescription?.trim() ||
     school.shortSummary?.trim() ||
     // Name and district: the pair reads correctly in both locales without a
     // dictionary key, which matters because a missing key would render its own
@@ -285,7 +284,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                 key={category.id}
                 label={category.name}
                 href={getLocalizedRoutes(locale).catalogs(
-                  school.region.countrySlug,
+                  school.region?.countrySlug,
                   `categories=${category.slug}`,
                 )}
                 variant="outlined"
@@ -296,16 +295,18 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
             <Chip
               component="a"
               clickable
-              label={school.region.name}
-              href={getLocalizedRoutes(locale).catalogs(school.region.fullSlug)}
+              label={school.region?.name}
+              href={getLocalizedRoutes(locale).catalogs(
+                school.region?.fullSlug,
+              )}
               variant="outlined"
               {...styles.chip}
             />
             <Chip
               component="a"
               clickable
-              label={school.area.name}
-              href={getLocalizedRoutes(locale).catalogs(school.area.fullSlug)}
+              label={school.area?.name}
+              href={getLocalizedRoutes(locale).catalogs(school.area?.fullSlug)}
               {...styles.chip}
               variant="outlined"
               sx={{ color: "custom.ui20", borderColor: "#B2AD88" }}
@@ -344,7 +345,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "transportationNearby",
                 icon: <Transportation />,
-                show: school.transportation && school.transportation.length > 0,
+                show: !!school.transportation?.length,
                 content: (
                   <Box>
                     {school.transportation?.map((item) => (
@@ -358,7 +359,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "contacts",
                 icon: <Phone />,
-                show: school.contacts && school.contacts.length > 0,
+                show: !!school.contacts?.length,
                 content: (
                   <Box>
                     {school.contacts?.map((item) => {
@@ -400,7 +401,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
               {
                 title: "socialsAndLinks",
                 icon: <Globe />,
-                show: school.links && school.links.length > 0,
+                show: !!school.links?.length,
                 content: (
                   <Box>
                     {school.links?.map((link) => (

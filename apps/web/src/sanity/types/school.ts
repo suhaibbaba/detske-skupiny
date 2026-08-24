@@ -1,97 +1,24 @@
-import {
-  Area,
-  ContactPerson,
-  GeoPoint,
-  PostalAddress,
-  Region,
-  SanityImageField,
-  SanityRichTextField,
-} from "@/sanity/types";
-import { SanityLinkField } from "@/components/ui/link/parser";
-import type { TranslationPath } from "@/sanity/queries/seo";
+import type {
+  SchoolBySlugQueryResult,
+  SchoolCardsQueryResult,
+} from "@detske-skupiny/types";
 
-export interface MiniSchool {
-  id: string;
-  name: string;
-  slug: string;
-  logo: SanityImageField;
-  region: Region;
-  primaryImage: SanityImageField;
-  shortSummary: string;
-  website?: {
-    url?: string;
-  };
-  tags?: SchoolTag[];
-  types?: SchoolType[];
-  area?: Area;
-}
+/**
+ * A school as a card grid or carousel renders it.
+ *
+ * `schoolCardFields` in lib/sanity/fragments.ts is the one projection behind
+ * every card on the site, so the card type is that query's row. Notably
+ * narrower than the hand-written type it replaces, which claimed `region` was
+ * the full `Region` document - the projection returns an id, a name and a slug.
+ */
+export type MiniSchool = SchoolCardsQueryResult[number];
 
-export interface TransportOption {
-  id: string;
-  type?: string;
-  name?: string;
-  mode?: string;
-  distance?: string;
-}
+/** The school detail page's document. */
+export type School = NonNullable<SchoolBySlugQueryResult["school"]>;
 
-export interface TimetableRow {
-  _key: string;
-  start?: string;
-  end?: string;
-  activity?: string;
-}
+export type SchoolCategory = NonNullable<MiniSchool["categories"]>[number];
+export type SchoolType = NonNullable<MiniSchool["types"]>[number];
+export type SchoolTag = NonNullable<MiniSchool["tags"]>[number];
 
-export type SchoolCategory = {
-  id: string;
-  name: string;
-  slug: string;
-  emoji: SanityImageField;
-};
-
-export type SchoolType = {
-  id: string;
-  name: string;
-  highPriority: boolean;
-  visibility: boolean;
-  backgroundColor: string;
-  icon?: SanityImageField;
-};
-
-export type SchoolTag = {
-  id: string;
-  name: string;
-  slug: string;
-  borderColor: string;
-};
-
-export interface School {
-  id: string;
-  logo: SanityImageField;
-  name: string;
-  slug: string;
-  capacity: number;
-  cin: string;
-  providerName: string;
-  primaryImage: SanityImageField | null;
-  /** Base64 thumbnail, painted while the first gallery image loads. */
-  primaryImageLqip?: string;
-  primaryImages: SanityImageField[];
-  region: Region;
-  area: Area;
-  address?: PostalAddress | null;
-  contacts?: ContactPerson[];
-  links?: (SanityLinkField & { id: string })[];
-  website?: SanityLinkField;
-  categories?: SchoolCategory[];
-  transportation?: TransportOption[];
-  tags?: SchoolTag[];
-  content?: SanityRichTextField;
-  gallery?: SanityImageField[];
-  notes?: string | null;
-  metaDescription?: string;
-  shortSummary?: string;
-  /** `_updatedAt`, used as the sitemap's `lastModified`. */
-  updatedAt?: string;
-  /** The other locale's version, from `translation.metadata`. */
-  translations?: TranslationPath[] | null;
-}
+/** One row of a school's `transportation[]`. */
+export type TransportOption = NonNullable<School["transportation"]>[number];

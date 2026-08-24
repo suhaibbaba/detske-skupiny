@@ -16,8 +16,10 @@ import { getLocale } from "next-intl/server";
 import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
-  item?: GroupPage["areas"][number] | GroupPage["schoolCategories"][number];
-  baseSlug?: string;
+  item?:
+    | NonNullable<GroupPage["areas"]>[number]
+    | NonNullable<GroupPage["schoolCategories"]>[number];
+  baseSlug?: string | null;
   hideNextArrow?: boolean;
 }
 

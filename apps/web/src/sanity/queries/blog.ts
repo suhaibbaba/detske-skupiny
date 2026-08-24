@@ -53,7 +53,6 @@ export async function fetchBlogPage(params: {
     pageHero?: PageHero;
     categories?: BlogCategory[];
     blogs?: Blog[];
-    writers?: Author[];
   }>(
     blogPageQuery,
     {

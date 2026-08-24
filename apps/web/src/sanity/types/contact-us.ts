@@ -1,25 +1,9 @@
-import {
-  SanityCtaField,
-  SanityImageField,
-  SanityRichTextField,
-} from "@/sanity/types/component";
+import type { ContactUsQueryResult } from "@detske-skupiny/types";
 
-export interface ContactPerson {
-  name?: string;
-  role?: string;
-  phone?: string;
-  email?: string;
-}
+type ContactUs = NonNullable<ContactUsQueryResult>;
 
-export interface ContactUsItem {
-  image: SanityImageField;
-  title: string;
-  description: SanityRichTextField;
-}
+/** One of the cards above the contact form. */
+export type ContactUsItem = NonNullable<ContactUs["items"]>[number];
 
-export interface ContactUsForm {
-  title: string;
-  description: string;
-  privacyPolicy: SanityRichTextField;
-  sendMessageCta: SanityCtaField;
-}
+/** The form's copy and its submit CTA. */
+export type ContactUsForm = NonNullable<ContactUs["contactForm"]>;

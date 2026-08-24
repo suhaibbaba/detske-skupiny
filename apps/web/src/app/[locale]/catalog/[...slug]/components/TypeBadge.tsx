@@ -27,7 +27,7 @@ interface Props {
 
 interface SchoolTypesBadgeStyles {
   container?: BoxProps;
-  badge: (backgroundColor: string) => ChipProps;
+  badge: (backgroundColor: string | null) => ChipProps;
 }
 
 const styles: SchoolTypesBadgeStyles = {

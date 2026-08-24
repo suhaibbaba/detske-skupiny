@@ -7,11 +7,11 @@ interface Props {
 }
 
 interface SchoolTagStyles {
-  chip?: (borderColor: string) => ChipProps;
+  chip?: (borderColor: string | null) => ChipProps;
 }
 
 const styles: SchoolTagStyles = {
-  chip: (borderColor: string) => ({
+  chip: (borderColor) => ({
     sx: {
       borderRadius: "24px",
       px: "8px",

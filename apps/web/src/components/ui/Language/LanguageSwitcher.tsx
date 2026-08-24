@@ -1,6 +1,9 @@
 "use client";
 
-import Select, { SelectProps } from "@mui/material/Select";
+import Select, {
+  type SelectChangeEvent,
+  type SelectProps,
+} from "@mui/material/Select";
 import MenuItem, { MenuItemProps } from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -10,7 +13,7 @@ const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
 const CS_DOMAIN = process.env.NEXT_PUBLIC_CS_DOMAIN ?? "localhost";
 
 interface LanguageSwitcherStyles {
-  select?: SelectProps;
+  select?: SelectProps<string>;
   menuItem?: MenuItemProps;
 }
 
@@ -85,7 +88,7 @@ const LanguageSwitcher = () => {
     cs: { domain: CS_DOMAIN, name: "Čeština (CZ)", flag: "🇨🇿" },
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: SelectChangeEvent<string>) => {
     const selectedLocale = e.target.value;
     const targetDomain = languages[selectedLocale].domain;
     const newUrl = buildUrl(targetDomain);

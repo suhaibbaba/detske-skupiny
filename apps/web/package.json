@@ -27,7 +27,6 @@
     "@portabletext/types": "^4.0.2",
     "@sanity/image-url": "^2.1.1",
     "@sanity/webhook": "^4.0.4",
-    "@vis.gl/react-google-maps": "^1.9.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
     "lodash.mergewith": "^4.6.2",
@@ -38,7 +37,6 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-infinite-scroll-hook": "^6.0.1",
-    "sanity-plugin-link-field": "1.7.0",
     "server-only": "^0.0.1",
     "yet-another-react-lightbox": "^3.32.2",
     "zod": "^4.4.3"

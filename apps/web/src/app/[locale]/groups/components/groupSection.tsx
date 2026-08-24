@@ -121,7 +121,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
             {...styles.viewAllButton}
             href={getLocalizedRoutes(locale).catalogs(slug)}
           >
-            {translate("viewAllSchoolsInRegion", { region: name })}
+            {translate("viewAllSchoolsInRegion", { region: name ?? "" })}
           </Button>
         </Box>
       </Container>

@@ -6,7 +6,7 @@
  * @returns formatted date string
  */
 export function formatDate(
-  iso?: string | Date,
+  iso?: string | Date | null,
   locale: string = "en-US",
 ): string {
   if (!iso) {

@@ -1,20 +1,28 @@
-import type { PortableTextBlock } from "@portabletext/types";
-import type { SanityImageSource } from "@sanity/image-url";
-import { SanityLinkField } from "@/components/ui/link/parser";
+import type {
+  BlogPageQueryResult,
+  RichText,
+  SanityImageAssetReference,
+} from "@detske-skupiny/types";
 
-export type SanityRichTextField = string | PortableTextBlock[];
+/**
+ * Portable Text as the schema defines it.
+ *
+ * The hand-written version was `string | PortableTextBlock[]`, which let a
+ * plain string in anywhere a rich text field was expected. No schema field is
+ * both.
+ */
+export type SanityRichTextField = RichText;
 
-export interface SanityCtaField {
-  _key: string;
-  link: SanityLinkField;
-  variant: "primary" | "secondary" | "ghost";
-  openInNewTab?: boolean;
-}
+/** An unprojected `image` field - `asset` still a reference. */
+export type SanityImageField = {
+  asset?: SanityImageAssetReference;
+  hotspot?: unknown;
+  crop?: unknown;
+  _type: "image";
+};
 
-export type SanityImageField = SanityImageSource;
+/** The `pageHero` object shared by blogPage, schoolPage, group and contactUs. */
+export type PageHero = NonNullable<BlogPageQueryResult["pageHero"]>;
 
-export interface PageHero {
-  title: string;
-  description: string;
-  ctas?: SanityCtaField[];
-}
+/** One CTA of a page hero, with its link resolved. */
+export type SanityCtaField = NonNullable<PageHero["ctas"]>[number];

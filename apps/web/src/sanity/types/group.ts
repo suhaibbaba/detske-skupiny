@@ -1,13 +1,11 @@
-import { SanityImageField } from "@/sanity/types/component";
-import { Area } from "@/sanity/types/geo";
-import { SchoolCategory } from "@/sanity/types/school";
+import type { GroupPageQueryResult } from "@detske-skupiny/types";
 
-export interface GroupPage {
-  id: string;
-  totalSchools: number;
-  name: string;
-  slug: string;
-  backgroundCover: SanityImageField;
-  areas: (Area & { schoolCount?: number })[];
-  schoolCategories: (SchoolCategory & { schoolCount?: number })[];
-}
+/**
+ * One row of the groups index: a region, or the country rendered as one more.
+ *
+ * The two are projected separately and rendered by the same component, so this
+ * is the union of both - `fetchGroupPage` appends the country to the regions.
+ */
+export type GroupPage =
+  | NonNullable<GroupPageQueryResult["regions"]>[number]
+  | NonNullable<GroupPageQueryResult["country"]>;

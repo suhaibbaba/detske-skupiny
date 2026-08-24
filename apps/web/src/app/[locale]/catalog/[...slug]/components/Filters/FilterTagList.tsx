@@ -22,7 +22,7 @@ interface Props {
   showDivider?: boolean;
   tags?: FiltersResponse["tags"];
   selectedTags?: string[];
-  toggleTag?: (slug: string) => void;
+  toggleTag?: (slug: string | null) => void;
   clear?: (key?: keyof Filters) => void;
 }
 
@@ -30,7 +30,7 @@ interface FilterListStyles {
   container?: BoxProps;
   sectionHeading?: TypographyProps;
   listContainer?: BoxProps;
-  chip?: (backgroundColor?: string) => ChipProps;
+  chip?: (backgroundColor?: string | null) => ChipProps;
   viewAllContainer?: BoxProps;
   viewAll?: LinkProps;
   divider?: DividerProps;
@@ -135,7 +135,7 @@ const FilterTagList: FC<Props> = ({
       <Typography {...styles.sectionHeading}>{translate("tags")}</Typography>
       <Box {...styles.listContainer}>
         {tags?.map((tag) => {
-          const checked = selectedTags?.includes(tag.slug);
+          const checked = selectedTags?.includes(tag.slug ?? "");
           return (
             <Chip
               key={tag.id}

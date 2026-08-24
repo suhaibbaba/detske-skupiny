@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { NextRequest } from "next/server";
 import { POST } from "./route";
 
 /**
@@ -20,13 +21,18 @@ const validBody = {
   consent: true,
 };
 
+/**
+ * The route's parameter is `NextRequest`, which is a `Request` plus Next's own
+ * `cookies`/`nextUrl` accessors. The handler reads only `json()` and
+ * `headers`, so a plain `Request` is enough - the cast says exactly that
+ * rather than erasing the type with `any`.
+ */
 const request = (body: unknown) =>
   new Request("http://localhost:3000/api/contact", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: typeof body === "string" ? body : JSON.stringify(body),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as any;
+  }) as unknown as NextRequest;
 
 const brevoCalls = (fetchMock: ReturnType<typeof vi.fn>) =>
   fetchMock.mock.calls.filter(([url]) => String(url).includes("brevo.com"));

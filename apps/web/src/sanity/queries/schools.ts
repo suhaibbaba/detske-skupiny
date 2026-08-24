@@ -93,7 +93,6 @@ export const schoolBySlugQuery = defineQuery(`{
       "id": _id,
       ${imageUrl("logo")},
       name,
-      metaDescription,
       shortSummary,
       "slug": slug.current,
       "updatedAt": _updatedAt,
@@ -112,7 +111,6 @@ export const schoolBySlugQuery = defineQuery(`{
       providerName,
       area->{ "id": _id, name, "fullSlug": ${areaPath} },
       address,
-      location,
       cin,
       contacts[],
       links[]{

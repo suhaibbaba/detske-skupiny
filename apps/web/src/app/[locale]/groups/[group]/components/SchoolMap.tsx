@@ -1,5 +1,5 @@
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
-import { School } from "@/sanity/types";
+import { hasPosition, type School } from "@/sanity/types";
 import useTranslate from "@/hooks/useTranslate";
 import MapComponent from "@/components/ui/map/LazyMap";
 import { parseAddress } from "@/utilites/location";
@@ -36,7 +36,8 @@ const styles: SchoolMapStyles = {
 const SchoolMap = ({ school }: Props) => {
   const translate = useTranslate();
   const marker = parseAddress(school);
-  if (!marker) {
+  // No address, or an address with no map location: there is nothing to draw.
+  if (!marker || !hasPosition(marker)) {
     return null;
   }
 

@@ -20,7 +20,7 @@ interface Props {
   showDivider?: boolean;
   categories?: FiltersResponse["categories"];
   selectedTypes?: string[];
-  toggleType?: (slug: string) => void;
+  toggleType?: (slug: string | null) => void;
   clear?: (key?: keyof Filters) => void;
 }
 
@@ -130,7 +130,7 @@ const FilterCategoriesList: FC<Props> = ({
       </Typography>
       <Box {...styles.listContainer}>
         {categories.map((category) => {
-          const checked = selectedTypes?.includes(category.slug);
+          const checked = selectedTypes?.includes(category.slug ?? "");
           return (
             <Box
               key={category.id}

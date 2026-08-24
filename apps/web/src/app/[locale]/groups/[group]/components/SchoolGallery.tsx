@@ -22,7 +22,7 @@ interface SchoolGalleryProps {
   gallery?: School["primaryImages"];
   logo?: School["logo"];
   /** Base64 thumbnail for the first image, which is this page's LCP element. */
-  mainImageLqip?: string;
+  mainImageLqip?: string | null;
   name?: School["name"];
   extendedStyles?: SchoolGalleryStyles;
 }

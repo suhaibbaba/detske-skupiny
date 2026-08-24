@@ -8,7 +8,7 @@ import {
   resolveOgImage,
 } from "@/lib/seo/images";
 import { getSettings } from "@/sanity/queries/settings";
-import type { SanityImageField } from "@/sanity/types";
+import type { SanityImageSource } from "@sanity/image-url";
 
 /**
  * One place that turns "what this page is" into a `Metadata` object.
@@ -67,17 +67,27 @@ export type PageSeoInput = {
   locale: string;
   /** The localized pathname per locale; `paths[locale]` is the canonical one. */
   paths: LocalizedPaths;
-  title: string;
-  description?: string;
+  /**
+   * Nullable throughout, because every one of these comes off a GROQ
+   * projection where an unset field is `null`. A null title falls back to the
+   * layout's `title.default` - the site name - which reads better than the
+   * `" | Site"` an empty string would produce.
+   */
+  title?: string | null;
+  description?: string | null;
   /**
    * Images to try for the share card, best first. Falls through to the site
    * default and then to public/og-default.png, so a page never has none.
+   *
+   * `SanityImageSource` rather than `SanityImageField`: the queries project
+   * images as `asset->url` strings, and @sanity/image-url takes a CDN URL as a
+   * source - see the note on `ogImageUrl`.
    */
-  images?: (SanityImageField | null | undefined)[];
+  images?: (SanityImageSource | null | undefined)[];
   /** "article" on a blog post; "website" everywhere else. */
   type?: "website" | "article";
-  publishedTime?: string;
-  modifiedTime?: string;
+  publishedTime?: string | null;
+  modifiedTime?: string | null;
 };
 
 /**
@@ -120,11 +130,11 @@ export async function buildPageMetadata({
   ).map(ogLocale);
 
   return {
-    title,
+    ...(title ? { title } : {}),
     ...(description ? { description } : {}),
     alternates,
     openGraph: {
-      title,
+      ...(title ? { title } : {}),
       ...(description ? { description } : {}),
       url,
       siteName,
@@ -138,13 +148,13 @@ export async function buildPageMetadata({
           url: image,
           width: OG_IMAGE_WIDTH,
           height: OG_IMAGE_HEIGHT,
-          alt: title,
+          alt: title ?? siteName,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      ...(title ? { title } : {}),
       ...(description ? { description } : {}),
       images: [image],
     },

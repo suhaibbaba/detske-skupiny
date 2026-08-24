@@ -38,9 +38,7 @@ describe("SchoolGridCard", () => {
   });
 
   it("falls back to the region when there is no area", () => {
-    renderWithIntl(
-      <SchoolGridCard school={{ ...school, area: undefined } as MiniSchool} />,
-    );
+    renderWithIntl(<SchoolGridCard school={{ ...school, area: null }} />);
     expect(screen.getByText("Praha")).toBeInTheDocument();
   });
 

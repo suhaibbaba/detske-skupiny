@@ -1,37 +1,20 @@
-import { SanityRichTextField } from "@/sanity/types";
-import type { TranslationPath } from "@/sanity/queries/seo";
+import type {
+  BlogBySlugQueryResult,
+  BlogPageQueryResult,
+  MiniBlogsQueryResult,
+} from "@detske-skupiny/types";
 
-export type Blog = {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  category?: BlogCategory;
-  content?: SanityRichTextField;
-  image?: string;
-  /** Base64 thumbnail, painted while the cover loads. */
-  imageLqip?: string;
-  readTime?: number;
-  publishedAt?: string;
-  /** `_updatedAt`, used as the article's `dateModified`. */
-  updatedAt?: string;
-  /** The other locale's version, from `translation.metadata`. */
-  translations?: TranslationPath[] | null;
-  categories?: BlogCategory[];
-  author?: Author;
-};
+/** An article, as the detail page reads it. */
+export type Blog = NonNullable<BlogBySlugQueryResult["blog"]>;
 
-export type MiniBlog = Omit<Blog, "categories" | "content">;
+/** An article reduced to a card: no `content`, no `categories`. */
+export type MiniBlog = NonNullable<MiniBlogsQueryResult["blogs"]>[number];
 
-export type BlogCategory = {
-  name: string;
-  slug: string;
-};
+/** A card as the article index renders it - `MiniBlog` plus its category. */
+export type BlogCard = NonNullable<BlogPageQueryResult["blogs"]>[number];
 
-export type Author = {
-  id: string;
-  name?: string;
-  image?: string;
-  bio?: string;
-  role?: string;
-};
+export type BlogCategory = NonNullable<
+  BlogPageQueryResult["categories"]
+>[number];
+
+export type Author = NonNullable<BlogCard["author"]>;

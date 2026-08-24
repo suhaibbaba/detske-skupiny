@@ -62,8 +62,13 @@ export type ImageProps = Omit<NextImageProps, "src" | "alt" | "loader"> & {
    * Defaulted to `""` rather than required: an image with no caption is
    * decorative, and an `<img>` with no `alt` at all is an accessibility
    * failure the crawler fails the build over.
+   *
+   * `null` is accepted because that is what an unset Sanity field projects to,
+   * and every call site passes one - `alt={school.name}` and its kin. It is
+   * flattened to `""` on the element, which is the same thing `undefined`
+   * already did.
    */
-  alt?: string;
+  alt?: string | null;
   sx?: SxProps<Theme>;
 };
 
@@ -98,7 +103,7 @@ const Image = ({
   return (
     <StyledNextImage
       src={resolved}
-      alt={alt}
+      alt={alt ?? ""}
       {...(isSanity ? { loader: sanityLoader } : {})}
       {...sizing}
       /*

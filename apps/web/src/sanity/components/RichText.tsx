@@ -33,7 +33,7 @@ function isEmptyContent(nodeChildren: React.ReactNode): boolean {
 
 interface RichTextProps extends Omit<TypographyProps, "children"> {
   /** Portable Text value from Sanity */
-  children?: SanityRichTextField;
+  children?: SanityRichTextField | null;
   /**
    * Tighten paragraph spacing so consecutive paragraphs feel closer to a <br/>.
    * Useful when authors hit Enter to mimic a line break.
@@ -54,9 +54,11 @@ function RichText({
     ...(typographyProps.sx || {}),
   };
 
-  const paragraphMargin = compactParagraphs
-    ? 0.5
-    : ((typographyProps as any)?.mb ?? 2);
+  // Was `(typographyProps as any)?.mb ?? 2`. `mb` is not a Typography prop -
+  // MUI system props are gone from it - and every caller passes margins inside
+  // `sx`, so that branch read `undefined` on every render and the fallback was
+  // the only value it ever produced. The cast was what hid that.
+  const paragraphMargin = compactParagraphs ? 0.5 : 2;
 
   const components: PortableTextComponents = {
     /* ===================== Block-level ===================== */

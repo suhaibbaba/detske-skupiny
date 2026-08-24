@@ -96,6 +96,9 @@ const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
         <Button
           onClick={() =>
             onSelect({
+              // The "all" pill is not a document; `id` is only ever compared
+              // against a real category's, which cannot be this.
+              id: "all",
               name: "All",
               slug: "all",
             })

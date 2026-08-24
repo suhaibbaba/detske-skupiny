@@ -1,11 +1,8 @@
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
-  CardMedia,
   Typography,
-  AvatarProps,
   BoxProps,
   ButtonProps,
   CardProps,
@@ -16,16 +13,31 @@ import React from "react";
 import Link from "@/components/ui/link";
 import { ellipses } from "@/utilites/strings";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { MiniBlog } from "@/types/blog";
-import { formatDate } from "@/utilites/date";
 import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocale } from "next-intl/server";
 import Image from "@/components/ui/image";
 
+/**
+ * What a card reads off an article.
+ *
+ * Stated as the fields rather than as one of the generated row types because
+ * two different queries feed this: the article index projects a `category`,
+ * the home page's carousel does not. Both satisfy this; neither has to grow a
+ * field it does not use.
+ */
+export interface BlogCardFields {
+  id: string;
+  title: string | null;
+  slug: string | null;
+  excerpt: string | null;
+  image: string | null;
+  category?: { name: string | null } | null;
+}
+
 interface Props {
-  blog: MiniBlog;
+  blog: BlogCardFields;
   extendedStyles?: BlogsCardStylesType;
 }
 
@@ -36,10 +48,6 @@ export interface BlogsCardStylesType {
   title?: TypographyOwnProps;
   description?: TypographyOwnProps;
   footer?: BoxProps;
-  authorBox?: BoxProps;
-  avatar?: AvatarProps;
-  authorName?: TypographyOwnProps;
-  meta?: TypographyOwnProps;
   readNowButton?: ButtonProps;
 }
 
@@ -103,35 +111,6 @@ const blogsCardStylesType: BlogsCardStylesType = {
       gap: "6px",
     },
   },
-  authorBox: {
-    sx: {
-      display: "flex",
-      alignItems: "center",
-    },
-  },
-  avatar: {
-    sx: {
-      width: 36,
-      height: 36,
-      mr: "12px",
-    },
-  },
-  authorName: {
-    sx: {
-      color: "custom.ui13",
-      textAlign: "left",
-      fontWeight: 500,
-      fontSize: "16px",
-    },
-  },
-  meta: {
-    sx: {
-      color: "custom.ui3",
-      textAlign: "left",
-      fontWeight: 400,
-      fontSize: "14px",
-    },
-  },
   readNowButton: {
     sx: {
       bgcolor: "var(--mui-palette-secondary-light)",
@@ -154,7 +133,7 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
   const translate = await getTranslateServer();
   const locale = await getLocale();
 
-  const { title, slug, excerpt, image, publishedAt, readTime, author } = blog;
+  const { title, slug, excerpt, image } = blog;
   const url = getLocalizedRoutes(locale).article(slug);
 
   return (
@@ -163,7 +142,7 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
         <Image
           src={image}
           alt={title}
-          title={title}
+          title={title ?? undefined}
           // The grid is 1 / 2 / 3 columns; the card never exceeds a third of a
           // wide viewport. Height is fixed in CSS, so the box is reserved
           // whether or not the file has arrived.
@@ -186,15 +165,6 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
         </Link>
         <Typography {...styles.description}>{excerpt}</Typography>
         <Box {...styles.footer}>
-          {/* <Box {...styles.authorBox}>
-            <Avatar src={author?.image} {...styles.avatar} />
-            <Box>
-              <Typography {...styles.authorName}>{author?.name}</Typography>
-              <Typography {...styles.meta}>
-                {formatDate(publishedAt)} · {readTime} {translate("minRead")}
-              </Typography>
-            </Box>
-          </Box> */}
           <Button {...styles.readNowButton} href={url} fullWidth>
             {translate("readNow")}
           </Button>

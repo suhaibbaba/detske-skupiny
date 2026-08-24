@@ -43,7 +43,12 @@ export function useSchoolFilters() {
   );
 
   const toggle = useCallback(
-    (key: "categories" | "tags", value: string) => {
+    (key: "categories" | "tags", value: string | null) => {
+      // A category or tag whose slug is unset cannot appear in a URL filter,
+      // so toggling it would only rewrite the query string with an empty
+      // entry. The slug is nullable because that is what GROQ projects.
+      if (!value) return;
+
       const next = new Set(filters[key]);
       if (next.has(value)) {
         next.delete(value);
@@ -85,8 +90,9 @@ export function useSchoolFilters() {
   return {
     filters,
     setName,
-    toggleType: (slug: string) => toggle("categories", slug),
-    toggleTag: (slug: string) => toggle("tags", slug),
+    // Slugs come from GROQ projections, where an unset field is `null`.
+    toggleType: (slug: string | null) => toggle("categories", slug),
+    toggleTag: (slug: string | null) => toggle("tags", slug),
     clear,
     hasActiveFilters,
   };

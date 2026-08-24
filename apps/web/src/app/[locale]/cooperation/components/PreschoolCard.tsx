@@ -191,7 +191,7 @@ const PreschoolCard = ({ school, locale }: Props) => {
           )}
         </Box>
         <CardContent {...styles.cardContent}>
-          <Typography {...styles.schoolTitle} title={school.name}>
+          <Typography {...styles.schoolTitle} title={school.name ?? undefined}>
             {school.name}
           </Typography>
         </CardContent>

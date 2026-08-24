@@ -106,7 +106,7 @@ describe("canonical and hreflang", () => {
 });
 
 describe("documentPaths", () => {
-  const toArticle = (locale: string, slug: string) =>
+  const toArticle = (locale: string, slug: string | null | undefined) =>
     locale === "cs" ? `/clanky/${slug}` : `/articles/${slug}`;
 
   it("always includes the document's own path", () => {
@@ -179,10 +179,11 @@ describe("school structured data", () => {
     const data = schoolJsonLd({
       ...base,
       address: {
+        _type: "postalAddress" as const,
         street: "Nerudova 1",
         city: "Praha",
         postalCode: "11800",
-        mapLocation: { lat: 50.088, lng: 14.4 },
+        mapLocation: { _type: "geopoint" as const, lat: 50.088, lng: 14.4 },
       },
       regionName: "Praha",
       telephone: "+420 123 456 789",
@@ -212,7 +213,7 @@ describe("school structured data", () => {
   it("omits geo entirely when the school has no map location", () => {
     const data = schoolJsonLd({
       ...base,
-      address: { street: "Nerudova 1", mapLocation: undefined as never },
+      address: { _type: "postalAddress" as const, street: "Nerudova 1" },
     });
 
     expect(data).not.toHaveProperty("geo");

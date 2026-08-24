@@ -4,16 +4,60 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import { MapCoordinate, MarkerData } from "@/sanity/types";
+import {
+  hasPosition,
+  type MapCoordinate,
+  type MarkerData,
+  type PositionedMarker,
+} from "@/sanity/types";
 import "@/components/ui/map/syles.css";
 import PopupContent from "@/components/ui/map/PopupContent";
+
+/**
+ * One GeoJSON point handed to the MapTiler source.
+ *
+ * Was `any[]`. The array is built here and read straight back by
+ * `source.setData`, so the shape is fully known - and `clusterCenter` below
+ * needs it to read a cluster's position back out of a rendered feature.
+ */
+type MarkerFeature = {
+  type: "Feature";
+  geometry: { type: "Point"; coordinates: [number, number] };
+  properties: {
+    id: string;
+    name: string | null;
+    count: number;
+    overlapping?: boolean;
+  };
+};
+
+/**
+ * The position of a rendered cluster.
+ *
+ * `queryRenderedFeatures` types `geometry` as the whole GeoJSON geometry
+ * union, and only a Point carries a `[lng, lat]` pair. The clusters layer only
+ * ever renders points, so anything else falls back to the map's current
+ * centre rather than easing to a coordinate read off the wrong shape.
+ */
+const clusterCenter = (feature: {
+  geometry: { type: string; coordinates?: unknown };
+}): [number, number] | undefined => {
+  const { geometry } = feature;
+  if (geometry.type !== "Point" || !Array.isArray(geometry.coordinates)) {
+    return undefined;
+  }
+  const [lng, lat] = geometry.coordinates;
+  return typeof lng === "number" && typeof lat === "number"
+    ? [lng, lat]
+    : undefined;
+};
 
 export interface MapProps {
   selectedRegionId?: string;
   defaultCenter?: MapCoordinate;
   markers?: MarkerData[];
   defaultZoom?: number;
-  onMarkerClick?: (marker: MarkerData) => void;
+  onMarkerClick?: (marker: PositionedMarker) => void;
   minHeight?: number;
 }
 
@@ -27,12 +71,14 @@ const MapComponent: React.FC<MapProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maptilersdk.Map | null>(null);
-  const [filteredMarkers, setFilteredMarkers] = useState<MarkerData[]>([]);
-  const markersMapRef = useRef<Map<string, MarkerData>>(new Map());
+  const [filteredMarkers, setFilteredMarkers] = useState<PositionedMarker[]>(
+    [],
+  );
+  const markersMapRef = useRef<Map<string, PositionedMarker>>(new Map());
 
   // State for popup management
   const [activePopup, setActivePopup] = useState<{
-    markerData: MarkerData;
+    markerData: PositionedMarker;
     container: HTMLDivElement;
   } | null>(null);
 
@@ -40,12 +86,15 @@ const MapComponent: React.FC<MapProps> = ({
   const popupContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Filter markers based on regionId
+  //
+  // `hasPosition` drops schools whose address carries no map location. They
+  // were previously kept and then read for `coordinate.lng`, which throws.
   useEffect(() => {
     const filtered = selectedRegionId
       ? markers.filter((marker) => marker.selectedRegionId === selectedRegionId)
       : markers;
 
-    setFilteredMarkers(filtered);
+    setFilteredMarkers(filtered.filter(hasPosition));
   }, [markers, selectedRegionId]);
 
   // Function to close current popup
@@ -58,7 +107,7 @@ const MapComponent: React.FC<MapProps> = ({
 
   // Function to show popup for a marker
   const showPopupForMarker = useCallback(
-    (markerData: MarkerData) => {
+    (markerData: PositionedMarker) => {
       if (!popupRef.current || !popupContainerRef.current || !map.current)
         return;
 
@@ -202,7 +251,7 @@ const MapComponent: React.FC<MapProps> = ({
           if (!map.current) return;
 
           map.current.easeTo({
-            center: (features[0].geometry as any).coordinates,
+            center: clusterCenter(features[0]),
             zoom: zoom,
           });
         } catch (err) {
@@ -277,17 +326,15 @@ const MapComponent: React.FC<MapProps> = ({
       markersMapRef.current.clear();
 
       // Group markers by coordinates to handle overlapping
-      const coordMap = new Map<string, MarkerData[]>();
-      filteredMarkers
-        .filter((m) => m.coordinate)
-        .forEach((m) => {
-          const key = `${m.coordinate.lng.toFixed(6)},${m.coordinate.lat.toFixed(6)}`;
-          const existing = coordMap.get(key) || [];
-          coordMap.set(key, [...existing, m]);
-        });
+      const coordMap = new Map<string, PositionedMarker[]>();
+      filteredMarkers.forEach((m) => {
+        const key = `${m.coordinate.lng.toFixed(6)},${m.coordinate.lat.toFixed(6)}`;
+        const existing = coordMap.get(key) || [];
+        coordMap.set(key, [...existing, m]);
+      });
 
       // Convert markers to GeoJSON features with offset for overlapping markers
-      const features: any[] = [];
+      const features: MarkerFeature[] = [];
 
       coordMap.forEach((markersAtLocation, coordKey) => {
         if (markersAtLocation.length === 1) {

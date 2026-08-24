@@ -19,7 +19,7 @@ export const parseAddress = (school?: School): MarkerData | undefined => {
   return {
     id: `marker_${school.id}`,
     name,
-    coordinate: address.mapLocation,
+    coordinate: address.mapLocation ?? null,
     fullAddress,
     slug: school.slug,
   };
