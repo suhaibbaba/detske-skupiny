@@ -1,7 +1,6 @@
 import type { SxProps, Theme } from "@mui/material/styles";
 import { Box, Typography, Container, Grid, Stack } from "@mui/material";
 import { fetchFooterPage } from "@/lib/sanity/footer";
-
 import { parseLinkField } from "@/components/ui/link/parser";
 import Link from "@/components/ui/link/Link";
 import EmailIcon from "@/components/icons/Email";

@@ -90,5 +90,33 @@ page shell paints without waiting on the list query. The boundary survived the
 folder restructure - `app/[locale]/catalog/[...slug]/page.tsx` still wraps
 `SchoolListAsync` alone.
 
-Its fallback changed from a bare `CircularProgress` to a `CardGridSkeleton`
-that matches the grid's real geometry; see the skeleton work in the same phase.
+Its fallback changed from a bare `CircularProgress` to `CatalogListSkeleton` -
+the map box, the results row and `CardGridSkeleton`, in `SchoolList`'s own
+layout - so the grid is reserved rather than appearing out of nothing.
+
+## Verification
+
+| Check | Result |
+| --- | --- |
+| `npm run typecheck` | pass, 0 errors |
+| `npm run lint` | pass, 0 errors, 3 warnings (all pre-existing `react-hooks` ones in `LanguageSwitcher` and `MapComponent`, demoted in the eslint config with a TODO that predates this branch) |
+| `npm run test` | 289 passing, 18 files |
+| `npm run typegen` + `git diff --exit-code` | clean - the CI step this phase added would pass |
+| `npm run build` | compiles and typechecks, then stops at `Configuration must contain projectId` |
+| `npm run test:e2e` | dev server returns 500 on every route, same cause |
+| `npm run test:crawl` | not attempted, same cause |
+
+The e2e failure is the same wall as the build. With
+`PLAYWRIGHT_CHROMIUM_PATH` pointed at this image's Chromium, Playwright itself
+runs fine - the browser opens, the specs execute - and every assertion that
+needs a page fails on a 500:
+
+```
+[WebServer] ⨯ Error: Configuration must contain `projectId`
+[WebServer]     at module evaluation (src/lib/sanity/client.ts:13:35)
+[WebServer]  GET / 500
+```
+
+The e2e and crawl suites, and the new CLS case in `catalog.spec.ts`, are
+unexercised on this branch and need a run against a real dataset before it
+merges.
