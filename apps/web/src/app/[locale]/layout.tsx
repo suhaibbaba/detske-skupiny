@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@/theme";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import SkipLink, { MAIN_CONTENT_ID } from "@/components/layout/SkipLink";
 import { nunitoClassName } from "@/fonts/nunito";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getMessages, setRequestLocale } from "next-intl/server";
@@ -104,6 +105,13 @@ export default async function RootLayout({
                 <DefaultImageProvider>
                   <Box>
                     {/*
+                     * First in the DOM, so first in the tab order. It is
+                     * invisible until focused; see components/layout/SkipLink.
+                     */}
+                    <Suspense fallback={null}>
+                      <SkipLink />
+                    </Suspense>
+                    {/*
                      * Header and Footer each read Sanity through the cached
                      * data layer. Suspending them separately means neither
                      * waits on the other, and the page shell is emitted before
@@ -112,7 +120,40 @@ export default async function RootLayout({
                     <Suspense fallback={null}>
                       <Header locale={locale} />
                     </Suspense>
-                    {children}
+                    {/*
+                     * The main landmark, which the site did not have.
+                     *
+                     * Every route rendered its content into a bare `<Box>`, so
+                     * there was nothing for a screen reader's "jump to main"
+                     * to find, nothing for the skip link to target, and axe's
+                     * landmark rules had no main region to check content
+                     * against. It lives here rather than in each page because
+                     * exactly one per document is the requirement, and a
+                     * single shell is the only way to guarantee that.
+                     *
+                     * `tabIndex={-1}` makes it a valid focus target: without
+                     * it, following the skip link moves the viewport but
+                     * leaves focus on the link, so the next Tab goes back into
+                     * the header the user just skipped.
+                     */}
+                    <Box
+                      component="main"
+                      id={MAIN_CONTENT_ID}
+                      tabIndex={-1}
+                      /*
+                       * The one deliberate exception to the site-wide focus
+                       * ring. `main` is a scroll target, not a control, and a
+                       * 3px outline drawn around the entire page content after
+                       * following the skip link tells the user nothing they do
+                       * not already know. Focus still moves here - which is the
+                       * part that matters, because it is what makes the next
+                       * Tab continue into the content instead of back into the
+                       * header.
+                       */
+                      sx={{ "&:focus-visible": { outline: "none" } }}
+                    >
+                      {children}
+                    </Box>
                     <Suspense fallback={null}>
                       <Footer locale={locale} />
                     </Suspense>

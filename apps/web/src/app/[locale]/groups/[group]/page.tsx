@@ -62,7 +62,6 @@ const styles = {
     color: "custom.textHeading",
     mb: "20px",
     mt: "80px",
-    textTransform: "capitalize",
     fontWeight: 600,
     fontSize: "24px",
   },
@@ -169,6 +168,8 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
   if (!groupSlug) {
     return redirect(getLocalizedRoutes(locale).home);
   }
+
+  const translate = await getTranslateServer();
 
   const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
@@ -280,7 +281,11 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                       </Typography>
                       <Typography>{school.address?.postalCode}</Typography>
                     </Box>
-                    <IconButton color="primary" href="#map">
+                    <IconButton
+                      color="primary"
+                      href="#map"
+                      aria-label={translate("map")}
+                    >
                       <MapIcon />
                     </IconButton>
                   </Box>

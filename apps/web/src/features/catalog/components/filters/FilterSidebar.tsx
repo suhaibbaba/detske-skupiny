@@ -38,7 +38,6 @@ const styles = {
   },
   heading: {
     color: "custom.textHeading",
-    textTransform: "capitalize",
     fontWeight: 900,
     fontSize: "20px",
   },

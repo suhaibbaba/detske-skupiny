@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Box, Drawer, IconButton } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
 import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
+import useTranslate from "@/hooks/useTranslate";
 
 const styles = {
   menuButton: {
@@ -44,6 +45,7 @@ const styles = {
  * a click on the panel's padding, as before.
  */
 const HeaderDrawer = ({ children }: { children: React.ReactNode }) => {
+  const translate = useTranslate();
   const [open, setOpen] = useState(false);
 
   const closeIfNavigating = (event: React.MouseEvent<HTMLElement>) => {
@@ -54,7 +56,18 @@ const HeaderDrawer = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <IconButton sx={styles.menuButton} onClick={() => setOpen(true)}>
+      {/*
+       * The name is the only thing a screen reader has to go on: the button's
+       * whole content is an SVG, so without it this announced as "button" and
+       * nothing else. axe reports that as a serious `button-name` violation,
+       * which the gate now fails on.
+       */}
+      <IconButton
+        sx={styles.menuButton}
+        onClick={() => setOpen(true)}
+        aria-label={translate("openMenu")}
+        aria-expanded={open}
+      >
         <HeaderMenuIcon sx={styles.menuIcon} />
       </IconButton>
       <Drawer

@@ -56,6 +56,55 @@ export const components: ThemeOptions["components"] = {
         minHeight: "0",
         letterSpacing: 0,
       },
+
+      /**
+       * One focus ring, everywhere, for keyboard users only.
+       *
+       * `:focus-visible` rather than `:focus` is what makes this safe to apply
+       * this broadly: the browser only matches it when focus arrived from the
+       * keyboard, so a clicked button does not sprout an outline.
+       *
+       * It is set here rather than per component because the failure mode is a
+       * component that quietly opts out - the textarea did exactly that with
+       * `&:focus-visible { outline: 0 }` and replaced it with a 1px border
+       * colour change, which is not a visible focus indicator. A single rule at
+       * the baseline means a new component is accessible by default and
+       * suppressing the ring has to be deliberate.
+       *
+       * `primary.dark` gives 7.84:1 against white and 6.64:1 against the
+       * darkest surface it lands on, comfortably past the 3:1 that WCAG 1.4.11
+       * asks of a focus indicator. 3px with a 2px offset so the ring reads on
+       * the 24px-radius buttons this design uses, where a hairline outline
+       * disappears into the curve.
+       */
+      ":focus-visible": {
+        outline: `3px solid ${baseTheme.palette.primary.dark}`,
+        outlineOffset: 2,
+      },
+
+      /**
+       * Motion is opt-out at the root, not per animation.
+       *
+       * The skeleton wave already handled this itself (see `MuiSkeleton`
+       * below), but the site has transitions in a dozen `sx` blocks - the nav
+       * underline that grows on hover, the filter borders, the card lifts -
+       * and each one would have had to remember. This is the standard blanket
+       * rule: it keeps the end state of every animation and transition and
+       * throws away the travel, so nothing disappears, it just arrives at once.
+       *
+       * `scroll-behavior` is in here for the same reason: the catalog restores
+       * scroll position on a back navigation, and a smooth scroll to a
+       * restored offset is exactly the kind of movement this preference is
+       * about.
+       */
+      "@media (prefers-reduced-motion: reduce)": {
+        "*, *::before, *::after": {
+          animationDuration: "0.01ms !important",
+          animationIterationCount: "1 !important",
+          transitionDuration: "0.01ms !important",
+          scrollBehavior: "auto !important",
+        },
+      },
     },
   },
   MuiButton: {
@@ -68,7 +117,6 @@ export const components: ThemeOptions["components"] = {
           "0px 4px 6px 0px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.1)",
         borderRadius: "24px",
         padding: "14px 20px",
-        textTransform: "capitalize",
         fontWeight: 500,
         fontSize: 16,
         lineHeight: "16px",

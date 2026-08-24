@@ -35,10 +35,16 @@ const styles = {
     color: "#323C49",
     lineHeight: "14px",
   },
+  /**
+   * `custom.textBody`, not `custom.inputBorder`. The trail is text at 14px, so
+   * it needs 4.5:1, and it was borrowing the colour meant for input outlines -
+   * which is held to 3:1 and sat at 3.09 against the lilac page wash these
+   * breadcrumbs render on.
+   */
   text: {
     textDecoration: "none",
     fontSize: "14px",
-    color: "custom.inputBorder",
+    color: "custom.textBody",
     lineHeight: "14px",
   },
 } satisfies Record<string, SxProps<Theme>>;

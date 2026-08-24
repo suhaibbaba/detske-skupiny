@@ -22,6 +22,8 @@ interface PageIssue {
     | "console"
     | "pageerror"
     | "h1"
+    | "main"
+    | "skip-link"
     | "img-alt"
     | "lang"
     | "title"
@@ -146,6 +148,56 @@ test.describe("full-site crawl", () => {
         const h1Count = await page.locator("h1").count();
         if (h1Count !== 1) {
           issues.push({ type: "h1", detail: `${h1Count} h1 elements` });
+        }
+
+        /*
+         * Exactly one main landmark.
+         *
+         * Zero is what the site had until this phase - every route rendered
+         * into a bare div - and it is the state that leaves a screen reader
+         * with no "jump to content" and the skip link with nothing to target.
+         * Two is the other failure: a page that adds its own `<main>` inside
+         * the layout's makes both ambiguous, and axe flags it. Both are worth
+         * catching on every page rather than on the three the axe spec visits.
+         */
+        const mainCount = await page.locator("main").count();
+        if (mainCount !== 1) {
+          issues.push({
+            type: "main",
+            detail: `${mainCount} main landmarks, expected exactly 1`,
+          });
+        }
+
+        /*
+         * A skip link, and it must be the first thing in the tab order.
+         *
+         * Checking that it exists is not enough: a skip link that comes after
+         * the header is a skip link that skips nothing. `:focus` is what makes
+         * it visible, so this tabs once from the top of the document and
+         * expects to land on it.
+         */
+        const skipLink = page.locator('a[href="#main-content"]').first();
+        if ((await skipLink.count()) === 0) {
+          issues.push({
+            type: "skip-link",
+            detail: "no link to #main-content",
+          });
+        } else {
+          await page.evaluate(() => {
+            const active = document.activeElement as HTMLElement | null;
+            active?.blur();
+          });
+          await page.keyboard.press("Tab");
+
+          const firstStop = await page.evaluate(() =>
+            document.activeElement?.getAttribute("href"),
+          );
+          if (firstStop !== "#main-content") {
+            issues.push({
+              type: "skip-link",
+              detail: `first tab stop is "${firstStop}", expected the skip link`,
+            });
+          }
         }
 
         const imagesWithoutAlt = await page.$$eval("img", (images) =>

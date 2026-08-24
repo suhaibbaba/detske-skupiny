@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, IconButton, Typography, ThemeProvider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { MarkerData } from "@/types";
@@ -8,6 +8,7 @@ import { getLocalizedRoutes } from "@/routes";
 import Link from "@/components/ui/link";
 import theme from "@/theme";
 import { useLocale } from "next-intl";
+import useTranslate from "@/hooks/useTranslate";
 import type { SxProps, Theme } from "@mui/material/styles";
 
 interface PopupContentProps {
@@ -44,6 +45,11 @@ const styles = {
       boxShadow: "none",
       color: "error.dark",
     },
+    /*
+     * Resets the fill and the shadow, deliberately not the outline: the
+     * `:focus-visible` ring from theme/components.ts is the only thing marking
+     * this button, which is the first thing focused when the popup opens.
+     */
     "&:focus": {
       bgcolor: "transparent",
       border: "none",
@@ -67,15 +73,33 @@ const styles = {
 
 const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
   const locale = useLocale();
+  const translate = useTranslate();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  /**
+   * Move focus into the popup when it opens.
+   *
+   * Clicking a marker opens a panel somewhere else in the DOM entirely - it is
+   * portalled into MapTiler's own container - so without this, focus stays on
+   * the map canvas and a keyboard user has no route to the school's link or to
+   * the close button. Focusing the close button first means Escape, Tab and
+   * Enter all do something sensible from the moment it opens.
+   */
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, [markerData.id]);
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={styles.container} data-test-selector="PopupContent">
         <IconButton
+          ref={closeButtonRef}
           onClick={onClose}
           sx={styles.closeButton}
           size="small"
           disableRipple
-          aria-label="Close popup"
+          // Was the English literal "Close popup" on both domains.
+          aria-label={translate("closeMapPopup")}
         >
           <CloseIcon fontSize="small" />
         </IconButton>

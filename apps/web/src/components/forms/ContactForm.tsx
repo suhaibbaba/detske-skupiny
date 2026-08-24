@@ -10,9 +10,10 @@ import {
   TextField,
   Typography,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import Textarea from "@/components/ui/textarea/Textarea";
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/button";
 import { ContactUsForm } from "@/types";
 import useTranslate from "@/hooks/useTranslate";
@@ -70,7 +71,24 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
     "idle",
   );
-  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  /**
+   * Where focus goes once the form has been submitted.
+   *
+   * Submitting leaves focus on a button that has just become disabled, so a
+   * screen reader user got no landing place and, depending on the reader, no
+   * announcement either - the outcome of the thing they just did was a message
+   * that appeared silently at the other end of the form. Moving focus to it
+   * makes the result the next thing they hear, and puts them at the top of the
+   * form if they want to send another.
+   */
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (status === "ok" || status === "error") {
+      resultRef.current?.focus();
+    }
+  }, [status]);
 
   // Both were `useMemo`. Neither feeds a dependency array, and a regex test
   // over one short string costs less than the comparison that would skip it -
@@ -96,7 +114,6 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
     if (!isValid || status === "sending") return;
 
     setStatus("sending");
-    setErrorMsg("");
 
     const payload: ContactPayload = {
       name: form.name.trim(),
@@ -125,8 +142,12 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
     } catch (err) {
+      // The message from the API is deliberately not rendered: the user sees
+      // the translated `contactFormFailedMessageSent`, and a raw upstream
+      // error would be untranslated and occasionally revealing. It was
+      // captured into state that nothing ever read.
+      console.error("Contact form submission failed:", err);
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Failed to send");
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
     }
@@ -147,16 +168,38 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
         </Typography>
         <Typography sx={styles.description}>{description}</Typography>
 
-        {status === "ok" && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {translate("contactFormSuccessMessageSent")}
-          </Alert>
-        )}
-        {status === "error" && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {translate("contactFormFailedMessageSent")}
-          </Alert>
-        )}
+        {/*
+         * One live region, always mounted.
+         *
+         * The two alerts used to mount and unmount with the status, and a
+         * live region that does not exist when the page loads is not
+         * reliably watched: several screen readers only announce changes
+         * inside a region that was already in the DOM. Keeping the container
+         * and swapping its contents is what makes the announcement happen.
+         *
+         * `aria-live="polite"` rather than `assertive` for both, because
+         * focus moves here anyway - see `resultRef` - so the message is read
+         * either way, and `assertive` would interrupt whatever the user is
+         * in the middle of hearing.
+         */}
+        <Box
+          ref={resultRef}
+          tabIndex={-1}
+          role="status"
+          aria-live="polite"
+          sx={{ "&:focus-visible": { outline: "none" } }}
+        >
+          {status === "ok" && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {translate("contactFormSuccessMessageSent")}
+            </Alert>
+          )}
+          {status === "error" && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {translate("contactFormFailedMessageSent")}
+            </Alert>
+          )}
+        </Box>
 
         <Grid container rowSpacing="24px" columnSpacing="32px">
           <Grid size={HALF_WIDTH}>
@@ -287,6 +330,18 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
             sx={styles.cta}
             disabled={!isValid || status === "sending"}
             aria-busy={status === "sending"}
+            /*
+             * The spinner is `startIcon` rather than a child so the label
+             * stays put: swapping the label for a spinner makes the button
+             * change width mid-submit, and `aria-hidden` on it keeps the
+             * button's accessible name to its text, which `aria-busy` has
+             * already qualified.
+             */
+            startIcon={
+              status === "sending" ? (
+                <CircularProgress size={16} color="inherit" aria-hidden />
+              ) : undefined
+            }
           >
             {status === "sending" ? `${translate("sending")}...` : link.text}
           </Button>

@@ -220,6 +220,50 @@ test.describe("catalog canonical", () => {
     expect(csAlternate).toBe(await canonical(page));
     expect(xDefault).toBe(csAlternate);
   });
+
+  /**
+   * The English alternate, when the dataset has one.
+   *
+   * The test above only ever asserted the Czech alternate and x-default, both
+   * of which are the page's own path - so it passed for a long time while the
+   * English link was never emitted at all. `translationPaths` projected
+   * `"locale": _key`, and under document-internationalization v6 `_key` is a
+   * random string with the language id in `language` instead, so the lookup by
+   * locale never matched and every counterpart was dropped.
+   *
+   * Written as "if it is there, it must be right" rather than "it must be
+   * there", because a dataset with no English translations is a legitimate
+   * state and this spec runs against whatever the environment has.
+   */
+  test("any English alternate is absolute, on the English origin, and distinct", async ({
+    page,
+  }) => {
+    await page.goto(PATHS.home);
+    const href = await firstCatalogHref(page);
+    test.skip(!href, "no catalog links on the home page in this dataset");
+
+    await page.goto(href!.split("?")[0]);
+    await page.waitForLoadState("networkidle");
+
+    const enAlternate = await page
+      .locator('link[rel="alternate"][hreflang="en"]')
+      .first()
+      .getAttribute("href")
+      .catch(() => null);
+
+    test.skip(!enAlternate, "no English counterpart in this dataset");
+
+    const csAlternate = await page
+      .locator('link[rel="alternate"][hreflang="cs"]')
+      .first()
+      .getAttribute("href");
+
+    expect(enAlternate).toMatch(/^https?:\/\//);
+    expect(new URL(enAlternate!).hostname).toBe(
+      process.env.NEXT_PUBLIC_EN_DOMAIN,
+    );
+    expect(enAlternate).not.toBe(csAlternate);
+  });
 });
 
 test.describe("robots and sitemap", () => {

@@ -94,7 +94,6 @@ const styles = {
     width: "36px",
     height: "36px",
   },
-  sectionHeading: { textTransform: "capitalize" },
   paragraph: {},
 } satisfies Record<string, SxProps<Theme>>;
 

@@ -184,11 +184,16 @@ export const pageHeroFields = `
  *
  * Was duplicated verbatim in page.ts (mapCollection markers) and
  * school-list.ts (catalog markers).
+ *
+ * The district segment reads `address.extra`. It read `address.extraDistrict`,
+ * which the `postalAddress` schema has never had a field called - so the part
+ * of an address that says "Praha 6" was dropped from every map popup and every
+ * card on the site, silently, because a missing field in GROQ is just null.
  */
 export const fullAddressField = `
   "fullAddress":
     select(defined(address.street) => address.street, "") +
-    select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") +
+    select(defined(address.extra) => ", " + address.extra, "") +
     select(defined(address.city) => ", " + address.city, "") +
     select(defined(address.postalCode) => ", " + address.postalCode, "") +
     select(defined(address.country) => ", " + address.country, "")
@@ -316,12 +321,26 @@ export const catalogPathBySelfType = `select(
  * The array includes this document's own language too. Callers key by
  * `locale`, so the self-entry is simply the entry for the locale they are
  * already on, and pairing stays correct whichever direction it is read from.
+ *
+ * `coalesce(language, _key)` is where the language id actually lives, and this
+ * projected `_key` alone. Under @sanity/document-internationalization v6 the
+ * plugin writes each array member as
+ *
+ *     {[LANGUAGE_FIELD_NAME]: language, _key: randomKey(), _type: ..., value}
+ *
+ * - the id is in `language` and `_key` is a random string. So `locale` never
+ * matched "cs" or "en", `alternatesFor` found nothing under either key, and
+ * every document-backed page - every school, every article, every catalog
+ * level - shipped with its hreflang alternates silently dropped. The `_key`
+ * fallback is kept because older plugin versions did key by language id, and
+ * it is the form the plugin's own migration guide prescribes for a dataset
+ * that has been through the upgrade.
  */
 export const translationPaths = (pathExpression: string) => `"translations": *[
     _type == "translation.metadata" &&
     references(^._id)
   ][0].translations[]{
-    "locale": _key,
+    "locale": coalesce(language, _key),
     "path": value->{ "resolved": ${pathExpression} }.resolved
   }`;
 
