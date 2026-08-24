@@ -102,12 +102,14 @@ const styles: PageStyles = {
     },
   },
   sectionHeading: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 600,
-    textTransform: "capitalize",
-    mt: "80px",
-    mb: "20px",
+    sx: {
+      color: "custom.ui13",
+      mb: "20px",
+      mt: "80px",
+      textTransform: "capitalize",
+      fontWeight: 600,
+      fontSize: "24px",
+    },
   },
   list: {
     disablePadding: true,

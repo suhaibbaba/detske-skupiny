@@ -43,14 +43,18 @@ const styles: WriterCardStyles = {
     },
   },
   name: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 500,
+    sx: {
+      color: "custom.ui13",
+      fontWeight: 500,
+      fontSize: "24px",
+    },
   },
   role: {
-    fontSize: "16px",
-    fontWeight: 500,
-    mt: "4px",
+    sx: {
+      mt: "4px",
+      fontWeight: 500,
+      fontSize: "16px",
+    },
   },
 };
 

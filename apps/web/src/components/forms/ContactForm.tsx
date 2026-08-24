@@ -56,10 +56,10 @@ const styles: ContactUsStyles = {
   },
   title: {
     variant: "h3",
-    mb: "12px",
+    sx: { mb: "12px" },
   },
   description: {
-    mb: "24px",
+    sx: { mb: "24px" },
   },
   fullWidthGrid: {
     size: 12,
@@ -250,13 +250,17 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
                 label={
                   <Box>
                     {privacyPolicy?.length ? (
-                      <RichText fontSize="12px" compactParagraphs>
+                      <RichText sx={{ fontSize: "12px" }} compactParagraphs>
                         {privacyPolicy}
                       </RichText>
                     ) : (
                       // TODO(sanity): add dictionary key `contactFormConsentLabel`
                       // (used only when the `privacyPolicy` rich text is empty).
-                      <Typography fontSize="12px">
+                      <Typography
+                        sx={{
+                          fontSize: "12px",
+                        }}
+                      >
                         {translate("contactFormConsentLabel")}
                       </Typography>
                     )}
@@ -266,8 +270,10 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
                       href={PRIVACY_POLICY_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      fontSize="12px"
                       onClick={(e) => e.stopPropagation()}
+                      sx={{
+                        fontSize: "12px",
+                      }}
                     >
                       {translate("contactFormPrivacyPolicyLinkLabel")}
                     </MuiLink>

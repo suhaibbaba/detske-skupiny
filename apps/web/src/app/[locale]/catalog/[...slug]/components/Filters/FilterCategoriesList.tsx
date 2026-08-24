@@ -36,11 +36,13 @@ interface FilterListStyles {
 
 const styles: FilterListStyles = {
   sectionHeading: {
-    fontSize: "18px",
-    fontWeight: 900,
-    mb: "16px",
-    color: "custom.ui13",
-    textTransform: "capitalize",
+    sx: {
+      color: "custom.ui13",
+      textTransform: "capitalize",
+      mb: "16px",
+      fontWeight: 900,
+      fontSize: "18px",
+    },
   },
   listContainer: {
     sx: {

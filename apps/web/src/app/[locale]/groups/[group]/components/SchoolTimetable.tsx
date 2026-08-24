@@ -17,11 +17,13 @@ interface SchoolTimetableStyles {
 }
 const styles: SchoolTimetableStyles = {
   title: {
-    color: "custom.ui13",
-    fontSize: "24px",
-    fontWeight: 600,
-    mt: "80px",
-    mb: "20px",
+    sx: {
+      color: "custom.ui13",
+      mb: "20px",
+      mt: "80px",
+      fontWeight: 600,
+      fontSize: "24px",
+    },
   },
 };
 

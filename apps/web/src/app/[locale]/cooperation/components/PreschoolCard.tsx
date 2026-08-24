@@ -149,7 +149,12 @@ const PreschoolCard = ({ school, locale }: Props) => {
   return (
     <Card {...styles.container} data-test-selector="PreschoolCard">
       <CardActionArea href={getLocalizedRoutes(locale).group(school.slug)}>
-        <Box p="10px" position="relative">
+        <Box
+          sx={{
+            p: "10px",
+            position: "relative",
+          }}
+        >
           {!school.primaryImage ? (
             <Box {...styles.defaultCardMediaWrapper}>
               <Image

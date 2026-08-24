@@ -12,8 +12,8 @@ interface SchoolsMapStyles {
 
 const styles: SchoolsMapStyles = {
   mapWrapper: {
-    bgcolor: "common.white",
     sx: {
+      bgcolor: "common.white",
       position: "relative",
       width: "100%",
       maxHeight: "400px",

@@ -21,8 +21,8 @@ interface BlogTabsStyles {
 
 const styles: BlogTabsStyles = {
   container: {
-    bgcolor: "custom.ui5",
     sx: {
+      bgcolor: "custom.ui5",
       width: "100%",
       py: "16px",
       px: "24px",
@@ -35,11 +35,13 @@ const styles: BlogTabsStyles = {
     },
   },
   stack: {
-    justifyContent: "center",
-    width: "100%",
+    sx: {
+      flexWrap: "wrap",
+      gap: "12px",
+      width: "100%",
+      justifyContent: "center",
+    },
     direction: "row",
-    gap: "12px",
-    flexWrap: "wrap",
   },
   button: {
     variant: "outlined",

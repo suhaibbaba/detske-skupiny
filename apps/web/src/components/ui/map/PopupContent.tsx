@@ -32,9 +32,11 @@ interface PopupStyles {
 
 const styles: PopupStyles = {
   container: {
-    overflow: "hidden",
-    maxWidth: 300,
-    textAlign: "left",
+    sx: {
+      textAlign: "left",
+      maxWidth: 300,
+      overflow: "hidden",
+    },
   },
   closeButton: {
     size: "small",
@@ -111,7 +113,12 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
         )}
 
         {markerData.fullAddress && (
-          <Typography color="text.secondary" {...styles.address}>
+          <Typography
+            {...styles.address}
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {markerData.fullAddress}
           </Typography>
         )}

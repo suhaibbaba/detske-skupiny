@@ -192,9 +192,13 @@ function RichText({
       strong: ({ children }) => (
         <Typography
           component="span"
-          fontWeight={900}
           variant="inherit"
-          sx={textSx}
+          sx={[
+            {
+              fontWeight: 900,
+            },
+            ...(Array.isArray(textSx) ? textSx : [textSx]),
+          ]}
         >
           {children}
         </Typography>
@@ -202,9 +206,13 @@ function RichText({
       em: ({ children }) => (
         <Typography
           component="span"
-          fontStyle="italic"
           variant="inherit"
-          sx={textSx}
+          sx={[
+            {
+              fontStyle: "italic",
+            },
+            ...(Array.isArray(textSx) ? textSx : [textSx]),
+          ]}
         >
           {children}
         </Typography>

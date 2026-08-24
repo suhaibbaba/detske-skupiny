@@ -33,8 +33,8 @@ interface HeroSectionStyles {
 const styles: HeroSectionStyles = {
   pageLayout: {
     section: {
-      bgcolor: "secondary.main",
       sx: {
+        bgcolor: "secondary.main",
         pt: "60px",
         pb: {
           xs: "75px",

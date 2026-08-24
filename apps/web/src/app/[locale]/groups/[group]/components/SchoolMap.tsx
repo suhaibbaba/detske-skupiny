@@ -15,12 +15,14 @@ interface SchoolMapStyles {
 
 const styles: SchoolMapStyles = {
   title: {
-    mt: "80px",
-    mb: "20px",
+    sx: {
+      mb: "20px",
+      mt: "80px",
+    },
   },
   mapWrapper: {
-    bgcolor: "common.white",
     sx: {
+      bgcolor: "common.white",
       width: "100%",
       maxHeight: "426px",
       height: "426px",
