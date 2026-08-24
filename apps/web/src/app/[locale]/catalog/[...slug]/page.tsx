@@ -12,16 +12,22 @@ import {
   getSelectedSlug,
   parseCatalogSlug,
 } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
-import { fetchBlogBySlug, fetchFilters } from "@/sanity/queries";
+import { fetchFilters } from "@/sanity/queries";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import {
-  fetchSchoolByFilter,
+  fetchSchoolList,
+  fetchSchoolMarkers,
   fetchSchoolPage,
 } from "@/sanity/queries/school-list";
-import { toArray } from "@/sanity/utilites/helper";
 import { Suspense } from "react";
-import SchoolListClient from "@/app/[locale]/catalog/[...slug]/components/SchoolListClient";
-import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
+import SchoolList from "@/app/[locale]/catalog/[...slug]/components/SchoolList";
+import { CatalogTransitionProvider } from "@/app/[locale]/catalog/[...slug]/components/CatalogTransition";
+import {
+  PAGE_SIZE,
+  loadCatalogSearchParams,
+  parseCatalogFilters,
+  type LoadMoreInput,
+} from "@/app/[locale]/catalog/[...slug]/searchParams";
 import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -30,8 +36,10 @@ import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
 
-type Props = PageProps<{ slug: string[] }>;
-const PAGE_SIZE = 9;
+type Props = PageProps<
+  { slug: string[] },
+  Record<string, string | string[] | undefined>
+>;
 
 interface GroupsPageStyles {
   pageLayout?: PageLayoutStyles;
@@ -102,25 +110,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Reads both dynamic inputs on this route - the catalog slug from `params` and
- * the filter state from `searchParams` - so it lives below the Suspense
- * boundary in `Page`.
+ * Owns every piece of catalog data.
+ *
+ * The filters arrive as a query string, are validated here, and drive the
+ * queries. Nothing downstream fetches: the list is a presentational Client
+ * Component, so a filter change produces exactly one server render and no
+ * follow-up request from the browser.
+ *
+ * `params` and `searchParams` are both dynamic reads, which is why this sits
+ * below the Suspense boundary in `Page`.
  */
 const CatalogContent = async ({ params, searchParams }: Props) => {
   const { slug, locale } = await params;
   setRequestLocale(locale);
-  const {
-    categories: categoriesQuery,
-    tags: tagsQuery,
-    name: searchName,
-  } = (await searchParams) as {
-    categories?: string[];
-    tags?: string[];
-    name?: string;
-  };
 
-  const categories = toArray(categoriesQuery);
-  const tags = toArray(tagsQuery);
+  // Parsed with the same nuqs parsers the controls write with, then validated
+  // and normalised - a hand-edited query string reaches GROQ otherwise.
+  const raw = loadCatalogSearchParams((await searchParams) ?? {});
+  const { categories, tags, name, page } = parseCatalogFilters(raw);
 
   const catalog = parseCatalogSlug(slug);
 
@@ -129,6 +136,13 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
   }
 
   const selectedSlug = getSelectedSlug(catalog);
+  const scope = {
+    country: catalog.country!,
+    region: catalog.region,
+    area: catalog.area,
+    subarea: catalog.subarea,
+    locale,
+  };
 
   const [filterContent, { pageHero, totalSchools }] = await Promise.all([
     fetchFilters(catalog, locale),
@@ -139,21 +153,24 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
     }),
   ]);
 
-  const schoolsDataPromise = fetchSchoolByFilter({
-    country: catalog.country,
-    region: catalog.region,
-    area: catalog.area,
-    subarea: catalog.subarea,
+  // A deep link to ?page=N renders pages 1..N in one query, so a reload or a
+  // shared URL restores the whole list rather than a lone page N with nothing
+  // above it. That is why the range starts at 0.
+  const listPromise = fetchSchoolList({
+    ...scope,
     categories,
     tags,
-    search: searchName,
+    search: name || undefined,
     start: 0,
-    end: PAGE_SIZE,
-    locale,
+    end: page * PAGE_SIZE,
   });
 
+  // Markers do not depend on the list filters (see fetchSchoolMarkers), so
+  // this entry is shared by every filter combination in this geo scope.
+  const markersPromise = fetchSchoolMarkers(scope);
+
   const filterProps = { catalog, selectedSlug, filterContent };
-  const initialFilters = { catalog, categories, tags, searchName, locale };
+
   return (
     <Box {...styles.pageContainer}>
       <PageLayout
@@ -167,64 +184,71 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
           ctaList={pageHero?.ctas}
         />
       </PageLayout>
-      <Container {...styles.container}>
-        <Box sx={{ display: { xs: "none", md: "block" } }}>
-          <FilterSidebar
-            catalog={catalog}
-            selectedSlug={selectedSlug}
-            filterContent={filterContent}
-          />
-        </Box>
-        <Suspense
-          fallback={
-            <Box {...styles.loadingBox}>
-              <CircularProgress />
-            </Box>
-          }
-        >
-          <SchoolListAsync
-            schoolsDataPromise={schoolsDataPromise}
-            totalSchools={totalSchools}
-            initialFilters={initialFilters}
-            pageSize={PAGE_SIZE}
-            filterProps={filterProps}
-          />
-        </Suspense>
-      </Container>
+      <CatalogTransitionProvider>
+        <Container {...styles.container}>
+          <Box sx={{ display: { xs: "none", md: "block" } }}>
+            <FilterSidebar
+              catalog={catalog}
+              selectedSlug={selectedSlug}
+              filterContent={filterContent}
+            />
+          </Box>
+          {/* The hero and the filters stream immediately; only the list waits. */}
+          <Suspense
+            fallback={
+              <Box {...styles.loadingBox}>
+                <CircularProgress />
+              </Box>
+            }
+          >
+            <SchoolListAsync
+              listPromise={listPromise}
+              markersPromise={markersPromise}
+              totalSchools={totalSchools}
+              scope={scope}
+              filters={{ categories, tags, name }}
+              page={page}
+              filterProps={filterProps}
+            />
+          </Suspense>
+        </Container>
+      </CatalogTransitionProvider>
     </Box>
   );
 };
 
-// New component to unwrap the promise
 const SchoolListAsync = async ({
-  schoolsDataPromise,
+  listPromise,
+  markersPromise,
   totalSchools,
-  initialFilters,
-  pageSize,
+  scope,
+  filters,
+  page,
   filterProps,
 }: {
-  schoolsDataPromise: ReturnType<typeof fetchSchoolByFilter>;
+  listPromise: ReturnType<typeof fetchSchoolList>;
+  markersPromise: ReturnType<typeof fetchSchoolMarkers>;
   totalSchools: number;
-  pageSize: number;
-  initialFilters: {
-    categories: string[];
-    tags: string[];
-    searchName?: string;
-    catalog: CatalogParams;
-    locale: string;
-  };
+  scope: Omit<LoadMoreInput, "page" | "categories" | "tags" | "name">;
+  filters: { categories: string[]; tags: string[]; name: string };
+  page: number;
   filterProps: FilterSidebarProps;
 }) => {
-  const schoolsDataView = await schoolsDataPromise;
+  const [list, markers] = await Promise.all([listPromise, markersPromise]);
+  const schools = list.schools ?? [];
 
   return (
-    <SchoolListClient
-      initialSchools={schoolsDataView.schools ?? []}
-      initialMarkers={schoolsDataView.markers ?? []}
-      initialTotalSelected={schoolsDataView.totalSelectedSchools}
+    <SchoolList
+      // Remounts when the filters change, which drops any pages the action
+      // appended - they belong to the previous result set.
+      key={JSON.stringify(filters)}
+      schools={schools}
+      markers={markers ?? []}
+      totalSelectedSchools={list.totalSelectedSchools}
       totalSchools={totalSchools}
-      initialFilters={initialFilters}
-      pageSize={pageSize}
+      loadMoreScope={{ ...scope, ...filters }}
+      initialPage={page}
+      hasMore={schools.length < list.totalSelectedSchools}
       filterProps={filterProps}
     />
   );
