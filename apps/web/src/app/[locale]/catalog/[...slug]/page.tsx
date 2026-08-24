@@ -248,7 +248,9 @@ const SchoolListAsync = async ({
       totalSchools={totalSchools}
       loadMoreScope={{ ...scope, ...filters }}
       initialPage={page}
-      hasMore={schools.length < list.totalSelectedSchools}
+      // Compared against the range rendered, not the cards returned: see the
+      // same reasoning in the load-more action.
+      hasMore={page * PAGE_SIZE < list.totalSelectedSchools}
       filterProps={filterProps}
     />
   );

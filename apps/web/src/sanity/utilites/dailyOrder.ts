@@ -61,10 +61,16 @@ export function stableHash(input: string): number {
  * the id, so the result is a total order even in the (unlikely) case of a
  * 32-bit collision - without that, two colliding schools could swap places
  * between two renders of the same page and break paging.
+ *
+ * `seed` is required rather than defaulting to today. Under Cache Components a
+ * bare `new Date()` aborts a prerender, so the clock may only be read inside a
+ * cached scope - which is what `lib/sanity/dailySeed.ts` is for. Making the
+ * argument mandatory means a new caller cannot reintroduce that by leaving it
+ * out.
  */
 export function orderByDailyShuffle<T extends DailyOrderable>(
   items: readonly T[],
-  seed: string = dailySeed(),
+  seed: string,
 ): T[] {
   const rank = new Map(
     items.map((item) => [item.id, stableHash(`${item.id}:${seed}`)]),

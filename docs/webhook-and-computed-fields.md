@@ -124,10 +124,21 @@ things before the publish is executed:
 | `isHighPriority` | the list ordering reads it; GROQ cannot order by a dereferenced field |
 | `address.mapLocation` | the result of an external geocoding call (MapTiler), only made when latitude or longitude is missing |
 
+The daily rotation of the school list is **not** a stored field any more; it is
+computed at read time from a seed cached for a day (`lib/sanity/dailySeed.ts`
+in the web app). Nothing in the studio writes or reads it.
+
 The patch is awaited before `publish.execute()`, so a published school never
-carries stale values. If anything fails — a bad reference, a geocoder outage —
-the error is shown to the editor as a toast and **the publish does not happen**.
-There is no `setTimeout` anywhere in the studio.
+carries stale values. If resolving them fails — a bad reference, a rejected
+patch — the error is shown to the editor as a toast and **nothing is
+published**.
+
+Geocoding is the deliberate exception. It calls a third party, so a MapTiler
+outage, a rate limit or an expired key would otherwise make every school
+without coordinates unpublishable, including edits that never touched the
+address. A geocoding failure publishes the school anyway and raises a warning
+toast saying the map pin is missing. There is no `setTimeout` anywhere in the
+studio.
 
 ### Manual test on staging
 
@@ -149,8 +160,11 @@ Point the studio at the staging dataset (`SANITY_STUDIO_DATASET=staging`) and:
      geocoder only runs when one of them is missing.
 2. **Errors reach the editor.** Temporarily unset
    `SANITY_STUDIO_API_MAPTILER_API_KEY` and publish a school with no
-   coordinates. A red toast should appear and the document should stay
-   unpublished — not publish silently.
+   coordinates. The school **should** publish, with an orange warning toast
+   saying it went out without map coordinates — not fail, and not publish
+   silently. Then break the area reference instead (point it at a deleted
+   document): that failure is fatal, so a red toast should appear and the
+   document should stay unpublished.
 3. **The action is restricted to schools.** Open a region, area, subarea or
    blog post. The Publish button must be the stock one, with no extra
    "Update school…" actions in the menu.

@@ -15,6 +15,7 @@ import {
 } from "@/lib/sanity/fragments";
 import { removeDiacritics } from "@/utilites/strings";
 import { orderByDailyShuffle } from "@/sanity/utilites/dailyOrder";
+import { getDailySeed } from "@/lib/sanity/dailySeed";
 
 /**
  * The headline "N schools" figure for the current scope.
@@ -154,20 +155,23 @@ function filterParams(params: SchoolFilterQueryParams) {
 /**
  * One page of the filtered list, plus the total the filters select.
  *
- * The daily shuffle is applied here rather than inside `sanityFetch`: reading
- * the current date inside a `"use cache"` body is not allowed, and would in
- * any case freeze the order at whatever day the entry was written. Out here it
- * is recomputed per request, so the rotation happens even though the two
- * queries below are served from cache until a publish drops them.
+ * The shuffle is applied here rather than inside `sanityFetch`, which would
+ * freeze one order into the query's cache entry. The seed comes from
+ * `getDailySeed`, which is cached with `cacheLife("days")` - so the order is
+ * identical for every request in a day, including the load-more Server Action
+ * paging through this same list hours later.
  */
 export async function fetchSchoolList(params: SchoolFilterQueryParams) {
-  const ordered = orderByDailyShuffle(
-    await sanityFetch<{ id: string; isHighPriority?: boolean }[]>(
+  const [selected, seed] = await Promise.all([
+    sanityFetch<{ id: string; isHighPriority?: boolean }[]>(
       schoolOrderQuery,
       filterParams(params),
       ["schools"],
     ),
-  );
+    getDailySeed(),
+  ]);
+
+  const ordered = orderByDailyShuffle(selected, seed);
 
   const start = params.start ?? 0;
   const end = params.end ?? 10000;

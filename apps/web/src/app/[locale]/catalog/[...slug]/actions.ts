@@ -52,6 +52,10 @@ export async function loadMoreSchools(
   return {
     schools: schools ?? [],
     totalSelectedSchools,
-    hasMore: start + (schools?.length ?? 0) < totalSelectedSchools,
+    // Derived from the range asked for, not from how many cards came back.
+    // The list is ordered and sliced before the cards are fetched, so a
+    // document deleted between the two reads returns a short page - and
+    // inferring "no more" from that would strand the rest of the list.
+    hasMore: start + PAGE_SIZE < totalSelectedSchools,
   };
 }

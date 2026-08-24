@@ -44,6 +44,15 @@ type SchoolDraft = {
   types?: TypeRef[];
 };
 
+type ComputeResult = {
+  fields: ComputedFields;
+  /**
+   * Set when geocoding was attempted and failed. The publish still goes ahead
+   * without a map pin; the editor is told rather than left guessing.
+   */
+  geocodingError?: string;
+};
+
 type ComputedFields = {
   nameNormalized: string;
   countrySlug?: string;
@@ -84,7 +93,7 @@ function needsGeocoding(address?: Address) {
 export async function computeSchoolFields(
   client: SanityClient,
   draft: SchoolDraft | null,
-): Promise<ComputedFields> {
+): Promise<ComputeResult> {
   const fields: ComputedFields = {
     nameNormalized: removeDiacritics(draft?.name || ""),
   };
@@ -110,7 +119,15 @@ export async function computeSchoolFields(
       related?.types?.some((type) => type.highPriority) || false;
   }
 
-  if (needsGeocoding(draft?.address)) {
+  if (!needsGeocoding(draft?.address)) {
+    return { fields };
+  }
+
+  // Geocoding is the one step allowed to fail without stopping the publish.
+  // MapTiler is a third party, and an editor fixing a typo in a description
+  // should not be blocked because someone else's service is down or a key
+  // expired. The publish proceeds and the toast says the pin is missing.
+  try {
     const coordinates = await getGeoLocation(draft?.address);
 
     if (coordinates) {
@@ -120,19 +137,28 @@ export async function computeSchoolFields(
         lng: coordinates.lng,
       };
     }
-  }
 
-  return fields;
+    return { fields };
+  } catch (error) {
+    return {
+      fields,
+      geocodingError:
+        error instanceof Error ? error.message : "Geocoding failed",
+    };
+  }
 }
 
 /**
  * The publish action for schools.
  *
  * The patch is awaited before `publish.execute()`, so the published document
- * always carries the computed fields. If anything fails - a bad reference, a
- * geocoder outage - the error is shown to the editor and the publish does not
- * happen, rather than a document being published with fields that silently did
+ * always carries the computed fields. If resolving them fails - a bad
+ * reference, a rejected patch - the error is shown to the editor and nothing
+ * is published, rather than a document going out with fields that silently did
  * not update.
+ *
+ * Geocoding is the deliberate exception: it calls a third party, so a failure
+ * there publishes the school anyway and warns that the map pin is missing.
  */
 const PublishSchoolAction: DocumentActionComponent = (props) => {
   const { publish } = useDocumentOperation(props.id, props.type);
@@ -154,11 +180,22 @@ const PublishSchoolAction: DocumentActionComponent = (props) => {
       setIsPublishing(true);
 
       try {
-        const fields = await computeSchoolFields(client, draft);
+        const { fields, geocodingError } = await computeSchoolFields(
+          client,
+          draft,
+        );
 
         await client.patch(draftId).set(fields).commit();
 
         publish.execute();
+
+        if (geocodingError) {
+          toast.push({
+            status: "warning",
+            title: "Published without map coordinates",
+            description: `Could not geocode this address: ${geocodingError}. Fix the address or set the location by hand, then publish again.`,
+          });
+        }
       } catch (error) {
         toast.push({
           status: "error",

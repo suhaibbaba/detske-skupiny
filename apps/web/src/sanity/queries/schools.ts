@@ -14,6 +14,7 @@ import {
   tagFields,
 } from "@/lib/sanity/fragments";
 import { orderByDailyShuffle } from "@/sanity/utilites/dailyOrder";
+import { getDailySeed } from "@/lib/sanity/dailySeed";
 
 /**
  * The candidates for the home and cooperation carousels.
@@ -41,25 +42,29 @@ export const schoolCardsByIdQuery = groq`*[_type == "schools" && _id in $ids]{
  * A stable daily selection of high-priority schools.
  *
  * Replaces `order(sortOrder asc)[0...$numberOfSchools]`, which read a random
- * number a nightly script wrote onto every school document. The shuffle runs
- * outside `sanityFetch` so it is not frozen into a cache entry - see
- * sanity/utilites/dailyOrder.ts.
+ * number a nightly script wrote onto every school document.
  *
- * The carousels sit on pages that are otherwise fully cached, so in practice
- * the visible selection changes when the page is regenerated (a publish, or a
- * new deploy) rather than at midnight sharp. That is the same trade the rest
- * of the site makes by caching with `cacheLife("max")`; if the rotation ever
- * needs to be exactly daily, this is the one query to give `cacheLife("days")`.
+ * These carousels are prerendered - they sit above any Suspense boundary on
+ * the home and cooperation pages - so the seed has to come from `getDailySeed`
+ * rather than the clock. Reading the clock directly here would abort the
+ * prerender under Cache Components; going through the cached seed both makes
+ * it legal and makes the page regenerate once a day, which is what actually
+ * rotates the selection.
  */
 export async function fetchMiniSchools(params: {
   numberOfSchools: number;
   locale: string;
 }) {
-  const candidates = await sanityFetch<
-    { id: string; isHighPriority?: boolean }[]
-  >(highPrioritySchoolsQuery, { locale: params.locale }, ["schools"]);
+  const [candidates, seed] = await Promise.all([
+    sanityFetch<{ id: string; isHighPriority?: boolean }[]>(
+      highPrioritySchoolsQuery,
+      { locale: params.locale },
+      ["schools"],
+    ),
+    getDailySeed(),
+  ]);
 
-  const ids = orderByDailyShuffle(candidates)
+  const ids = orderByDailyShuffle(candidates, seed)
     .slice(0, params.numberOfSchools)
     .map((school) => school.id);
 
