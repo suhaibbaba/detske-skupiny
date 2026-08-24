@@ -1,12 +1,22 @@
 import { groq } from "next-sanity";
 import { Author, Blog, BlogCategory, MiniBlog } from "@/types/blog";
 import { PageHero } from "@/sanity/types";
-import { languageQuery } from "@/sanity/queries/index";
-import { clientFetch } from "@/sanity/utilites/fetch";
+import { languageQuery } from "@/sanity/queries/filters";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { imageUrl, pageHeroFields } from "@/lib/sanity/fragments";
 
-export async function fetchBlogPage(params: { categorySelected?: string }) {
-  const query = groq`{
-    "pageHero": *[_type == "blogPage" && ${languageQuery}][0].pageHero,
+const blogCardFields = groq`
+  "id": _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  ${imageUrl("image")},
+  readTime,
+  publishedAt
+`;
+
+export const blogPageQuery = groq`{
+    "pageHero": *[_type == "blogPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
     "categories": *[_type == "blogCategories" && ${languageQuery}] {
       "id": _id,
       name,
@@ -16,18 +26,12 @@ export async function fetchBlogPage(params: { categorySelected?: string }) {
       _type == "blogs" &&
       ${languageQuery} &&
       (
-        !defined($categorySelected) || 
+        !defined($categorySelected) ||
         $categorySelected == "" ||
         category->slug.current == $categorySelected
       )
     ] | order(publishedAt desc){
-      "id": _id,
-      title,
-      "slug": slug.current,
-      excerpt,
-      "image": image.asset->url,
-      readTime,
-      publishedAt,
+      ${blogCardFields},
       category->{
         "id": _id,
         name,
@@ -35,40 +39,45 @@ export async function fetchBlogPage(params: { categorySelected?: string }) {
       author->{
         "id": _id,
         name,
-        "image": avatar.asset->url,
+        ${imageUrl("avatar", "image")},
         bio
       }
     }
   }`;
 
-  return clientFetch<{
+export async function fetchBlogPage(params: {
+  categorySelected?: string;
+  locale: string;
+}) {
+  return sanityFetch<{
     pageHero?: PageHero;
     categories?: BlogCategory[];
     blogs?: Blog[];
     writers?: Author[];
-  }>(query, { ...params });
+  }>(
+    blogPageQuery,
+    { categorySelected: params.categorySelected ?? null, locale: params.locale },
+    ["blogs", "page:blogPage"],
+  );
 }
 
-export async function fetchMiniBlogs(params: { numberOfBlogs: number }) {
-  const query = groq`{
+export const miniBlogsQuery = groq`{
     "blogs": *[_type == "blogs" && ${languageQuery}][0...$numberOfBlogs] | order(publishedAt desc){
-      "id": _id,
-      title,
-      "slug": slug.current,
-      excerpt,
-      "image": image.asset->url,
-      readTime,
-      publishedAt,
+      ${blogCardFields},
       author->{
         "id": _id,
         name,
-        "image": avatar.asset->url,
+        ${imageUrl("avatar", "image")},
         "slug": slug.current,
       }
     },
   }`;
 
-  return clientFetch<{
-    blogs?: MiniBlog[];
-  }>(query, { ...params });
+export async function fetchMiniBlogs(params: {
+  numberOfBlogs: number;
+  locale: string;
+}) {
+  return sanityFetch<{ blogs?: MiniBlog[] }>(miniBlogsQuery, { ...params }, [
+    "blogs",
+  ]);
 }

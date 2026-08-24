@@ -8,6 +8,7 @@ import ContactForm from "@/components/forms/ContactForm";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
 
 interface ContactUsStyles {
   pageLayout?: PageLayoutStyles;
@@ -64,9 +65,13 @@ const styles: ContactUsStyles = {
   },
 };
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const translate = await getTranslateServer();
-  const { pageHero } = await fetchContactUs();
+  const { pageHero } = await fetchContactUs(locale);
 
   return {
     title: pageHero?.title || translate("contact-us"),
@@ -76,11 +81,12 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 const Page = async ({ params }: PageProps) => {
   const { locale } = await params;
+  setRequestLocale(locale);
   const {
     pageHero,
     items: contactUsItem,
     contactForm,
-  } = await fetchContactUs();
+  } = await fetchContactUs(locale);
 
   return (
     <PageLayout

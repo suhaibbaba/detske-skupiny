@@ -24,6 +24,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import clsx from "clsx";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -147,8 +149,8 @@ export async function generateMetadata({
 }: PageProps<{ slug: string }>): Promise<Metadata> {
   const translate = await getTranslateServer();
 
-  const { slug } = await params;
-  const { blog } = await fetchBlogBySlug({ slug });
+  const { slug, locale } = await params;
+  const { blog } = await fetchBlogBySlug({ slug, locale });
 
   if (!blog) {
     return {
@@ -162,9 +164,17 @@ export async function generateMetadata({
   };
 }
 
-const Page = async ({ params }: PageProps<{ slug: string }>) => {
+/**
+ * `params` carries the article slug, which is not known at build time, so
+ * awaiting it is a dynamic read. It happens in here, below the Suspense
+ * boundary in `Page`, leaving the route shell prerenderable.
+ */
+const ArticleContent = async ({
+  params,
+}: PageProps<{ slug: string }>) => {
   const { slug, locale } = await params;
-  const { blog } = await fetchBlogBySlug({ slug });
+  setRequestLocale(locale);
+  const { blog } = await fetchBlogBySlug({ slug, locale });
 
   if (!blog) {
     notFound();
@@ -218,5 +228,11 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
     </Box>
   );
 };
+
+const Page = ({ params }: PageProps<{ slug: string }>) => (
+  <Suspense fallback={null}>
+    <ArticleContent params={params} />
+  </Suspense>
+);
 
 export default Page;

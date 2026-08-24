@@ -46,8 +46,8 @@ jobs:
 
       - name: Crawl
         env:
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
           NEXT_PUBLIC_MAPTILER_API_KEY: ${{ secrets.MAPTILER_API_KEY }}
           NEXT_PUBLIC_CZ_DOMAIN: localhost
           NEXT_PUBLIC_EN_DOMAIN: en.localhost

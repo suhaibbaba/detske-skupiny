@@ -1,23 +1,24 @@
 import { groq } from "next-sanity";
-import { languageQuery } from "@/sanity/queries/index";
+import { languageQuery } from "@/sanity/queries/filters";
 import { Header } from "@/types/header";
-import { clientFetch, sanityFetch } from "@/sanity/utilites/fetch";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { ctaFields, imageUrl, linkField } from "@/lib/sanity/fragments";
 
-export async function fetchHeaderPage() {
-  const query = groq`{
+export const headerQuery = groq`{
     "header": *[_type == "header" && ${languageQuery}][0]{
-      "logo": logo.asset->url,
-      "logoInverse": logoInverse.asset->url,
+      ${imageUrl("logo")},
+      ${imageUrl("logoInverse")},
       menuItems[]{
         _type,
         "id": _key,
-        link,
+        ${linkField},
       },
-      cta,
+      cta{ ${ctaFields} },
     }
 }`;
 
-  return sanityFetch<{
-    header?: Header;
-  }>(query);
+export async function fetchHeaderPage(locale: string) {
+  return sanityFetch<{ header?: Header }>(headerQuery, { locale }, [
+    "settings",
+  ]);
 }

@@ -1,37 +1,20 @@
 import { groq } from "next-sanity";
-import { excludeDraft, languageQuery } from "@/sanity/queries/index";
+import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
 import { PageSections } from "@/sanity/types";
-import { sanityFetch } from "@/sanity/utilites/fetch";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { markerFields, sectionLinkFields } from "@/lib/sanity/fragments";
 
-export async function fetchPageByType(type: string) {
-  const query = groq`*[_type == $type && ${languageQuery}][0]{ 
+export const pageByTypeQuery = groq`*[_type == $type && ${languageQuery}][0]{
       title,
       sections[]{
         ...,
+        ${sectionLinkFields},
         _type == "mapCollection" => {
           ...,
+          ${sectionLinkFields},
           "markers": *[_type == "schools" && ${excludeDraft} && ${languageQuery}]{
-            "id": _id,
-            "coordinate": address.mapLocation,
-            name,
-            "fullAddress": select(
-                defined(address.street) => address.street,
-                ""
-              ) + select(
-                defined(address.extraDistrict) => ", " + address.extraDistrict,
-                ""
-              ) + select(
-                defined(address.city) => ", " + address.city,
-                ""
-              ) + select(
-                defined(address.postalCode) => ", " + address.postalCode,
-                ""
-              ) + select(
-                defined(address.country) => ", " + address.country,
-                ""
-              ),
+            ${markerFields},
             "selectedRegionId": area->region->_id,
-            "slug": slug.current,
           },
           "regions": regions[]->{
             "id": _id,
@@ -42,7 +25,14 @@ export async function fetchPageByType(type: string) {
     }
   `;
 
-  return sanityFetch<PageSections>(query, {
-    type,
-  });
+/**
+ * Tagged "schools" as well as the page itself: the mapCollection section
+ * embeds every school as a marker, so publishing a school changes this
+ * response even though no page document was touched.
+ */
+export async function fetchPageByType(type: string, locale: string) {
+  return sanityFetch<PageSections>(pageByTypeQuery, { type, locale }, [
+    `page:${type}`,
+    "schools",
+  ]);
 }

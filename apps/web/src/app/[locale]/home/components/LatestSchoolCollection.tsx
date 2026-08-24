@@ -16,6 +16,8 @@ interface Props {
     title: string;
     description: string;
   };
+  /** Supplied by Zone, which spreads the page's route params onto sections. */
+  locale: string;
 }
 
 interface LatestKinderGroupsSectionStyles {
@@ -70,9 +72,10 @@ const styles: LatestKinderGroupsSectionStyles = {
   },
 };
 
-const LatestSchoolCollection = async ({ fields }: Props) => {
+const LatestSchoolCollection = async ({ fields, locale }: Props) => {
   const { schools } = await fetchMiniSchools({
     numberOfSchools: 4,
+    locale,
   });
 
   return (

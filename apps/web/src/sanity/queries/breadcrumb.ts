@@ -1,26 +1,31 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
+import { sanityFetch } from "@/lib/sanity/fetch";
 import {
   BreadcrumbItem,
   BreadcrumbParams,
   SchoolBreadcrumbParams,
 } from "@/sanity/types";
 
-export async function fetchBreadcrumbList(params: BreadcrumbParams) {
-  const query = groq`*[slug.current in $slugs]{
+export const breadcrumbListQuery = groq`*[slug.current in $slugs]{
       _type,
       "slug": slug.current,
       "name": coalesce(name, title, ""),
       language,
     }`;
 
-  return await client.fetch<BreadcrumbItem[]>(query, params);
+/**
+ * Matches on slug across every document type, so it is invalidated by any of
+ * the content tags rather than one of them.
+ */
+export async function fetchBreadcrumbList(params: BreadcrumbParams) {
+  return sanityFetch<BreadcrumbItem[]>(breadcrumbListQuery, { ...params }, [
+    "schools",
+    "geo",
+    "blogs",
+  ]);
 }
 
-export async function fetchSchoolBreadcrumb(
-  params: SchoolBreadcrumbParams,
-): Promise<{ name: string; slug: string }[]> {
-  const query = groq`*[_type == "schools" && slug.current == $slug && defined(area)][0]{
+export const schoolBreadcrumbQuery = groq`*[_type == "schools" && slug.current == $slug && defined(area)][0]{
       _type,
       "breadcrumb": [
         {
@@ -40,8 +45,14 @@ export async function fetchSchoolBreadcrumb(
           "slug": slug.current,
         }
       ]
-    } // null`;
+    }`;
 
-  const result = await client.fetch(query, params);
+export async function fetchSchoolBreadcrumb(
+  params: SchoolBreadcrumbParams,
+): Promise<{ name: string; slug: string }[]> {
+  const result = await sanityFetch<{
+    breadcrumb?: { name: string; slug: string }[];
+  } | null>(schoolBreadcrumbQuery, { ...params }, ["schools", "geo"]);
+
   return result?.breadcrumb || [];
 }

@@ -4,7 +4,6 @@ import { Alert, Box, BoxProps, CircularProgress } from "@mui/material";
 import SchoolGridCard from "@/app/[locale]/catalog/[...slug]/components/SchoolGridCard";
 import useTranslate from "@/hooks/useTranslate";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { fetchSchoolByFilter } from "@/sanity/queries/school-list";
 import { FC, useCallback, useEffect, useState, useRef } from "react";
 import { CatalogParams } from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
 import SchoolsCount from "@/app/[locale]/catalog/[...slug]/components/SchoolCount";
@@ -23,8 +22,38 @@ interface Props {
     tags: string[];
     searchName?: string;
     catalog: CatalogParams;
+    locale: string;
   };
   filterProps: FilterSidebarProps;
+}
+
+type SchoolsPage = {
+  totalSelectedSchools: number;
+  markers?: MarkerData[];
+  schools?: MiniSchool[];
+};
+
+/**
+ * Asks the server for a page of schools.
+ *
+ * This used to be a Sanity query issued from the browser. The data layer is
+ * server-only now, so the request goes to our own route and the dataset never
+ * leaves the server.
+ */
+async function fetchSchoolsPage(
+  body: Record<string, unknown>,
+): Promise<SchoolsPage> {
+  const response = await fetch("/api/schools", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`/api/schools responded ${response.status}`);
+  }
+
+  return response.json();
 }
 
 interface SchoolListStyles {
@@ -78,6 +107,7 @@ const SchoolListClient: FC<Props> = ({
     categories,
     tags,
     searchName,
+    locale,
   } = initialFilters;
   const translate = useTranslate();
 
@@ -119,7 +149,7 @@ const SchoolListClient: FC<Props> = ({
     setPage(1);
 
     try {
-      const result = await fetchSchoolByFilter({
+      const result = await fetchSchoolsPage({
         country,
         region,
         area,
@@ -129,6 +159,7 @@ const SchoolListClient: FC<Props> = ({
         search: searchName,
         start: 0,
         end: pageSize,
+        locale,
       });
 
       setMarkers(result.markers || []);
@@ -148,7 +179,7 @@ const SchoolListClient: FC<Props> = ({
     setLoadingMore(true);
 
     try {
-      const result = await fetchSchoolByFilter({
+      const result = await fetchSchoolsPage({
         country,
         region,
         area,
@@ -158,6 +189,7 @@ const SchoolListClient: FC<Props> = ({
         search: searchName,
         start: page * pageSize,
         end: (page + 1) * pageSize,
+        locale,
       });
 
       const newSchools = result.schools ?? [];
@@ -182,6 +214,7 @@ const SchoolListClient: FC<Props> = ({
     searchName,
     pageSize,
     loadingMore,
+    locale,
   ]);
 
   const [sentryRef] = useInfiniteScroll({

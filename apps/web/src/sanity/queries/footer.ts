@@ -1,11 +1,10 @@
 import { groq } from "next-sanity";
-import { languageQuery } from "@/sanity/queries/index";
-import { Header } from "@/types/header";
-import { clientFetch, sanityFetch } from "@/sanity/utilites/fetch";
+import { languageQuery } from "@/sanity/queries/filters";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { linkField } from "@/lib/sanity/fragments";
 import { Footer } from "@/types/footer";
 
-export async function fetchFooterPage() {
-  const query = groq`
+export const footerQuery = groq`
   {
     "footer": *[_type == "footer" && ${languageQuery}][0] {
       _id,
@@ -18,7 +17,7 @@ export async function fetchFooterPage() {
             text
           },
           _type == "linkItem" => {
-            link,
+            ${linkField},
           }
         }
       },
@@ -27,7 +26,8 @@ export async function fetchFooterPage() {
   }
 `;
 
-  return sanityFetch<{
-    footer?: Footer;
-  }>(query);
+export async function fetchFooterPage(locale: string) {
+  return sanityFetch<{ footer?: Footer }>(footerQuery, { locale }, [
+    "settings",
+  ]);
 }

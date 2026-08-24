@@ -11,7 +11,8 @@ interface Props {
     subtitle: string;
     cta: SanityCtaField;
   };
-  locale?: string;
+  /** Supplied by Zone, which spreads the page's route params onto sections. */
+  locale: string;
 }
 
 interface ListOfSchoolsStyles {
@@ -39,6 +40,7 @@ const styles: ListOfSchoolsStyles = {
 const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
   const { schools } = await fetchMiniSchools({
     numberOfSchools: 20,
+    locale,
   });
 
   return (

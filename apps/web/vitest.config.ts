@@ -20,8 +20,8 @@ const alias = {
 };
 
 const TEST_ENV = {
-  NEXT_PUBLIC_SANITY_PROJECT_ID: "testproj",
-  NEXT_PUBLIC_SANITY_DATASET: "test",
+  SANITY_PROJECT_ID: "testproj",
+  SANITY_DATASET: "test",
   NEXT_PUBLIC_EN_DOMAIN: "en.school.local",
   NEXT_PUBLIC_CZ_DOMAIN: "cs.school.local",
 };

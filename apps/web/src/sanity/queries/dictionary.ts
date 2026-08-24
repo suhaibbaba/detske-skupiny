@@ -1,8 +1,12 @@
 import { groq } from "next-sanity";
-import { client } from "@/sanity/client";
 import { cache } from "react";
-import { getLocale } from "next-intl/server";
+import { sanityFetch } from "@/lib/sanity/fetch";
 
+/**
+ * The locale is interpolated rather than passed as `$locale` because it names
+ * a field to read (`entries[].cs`), and GROQ params cannot stand in for a
+ * field path. `locales` in i18n/routing is the only source of the values.
+ */
 export const messagesQuery = (locale: string) => groq`
   *[_type == "dictionaries"][0]{
     "common": entries[]{
@@ -15,12 +19,11 @@ export const messagesQuery = (locale: string) => groq`
 type Row = { k: string; v: string };
 type Wire = { common: Row[] };
 
-/** Actually fetch from Sanity (once) */
 async function fetchDictionary(locale: string) {
-  const data = await client.fetch<Wire>(
+  const data = await sanityFetch<Wire>(
     messagesQuery(locale),
     {},
-    { next: { revalidate: 300 } }, // revalidate every 5 minutes
+    ["dictionary"],
   );
 
   const common: Record<string, string> = {};
@@ -30,7 +33,10 @@ async function fetchDictionary(locale: string) {
   return { common };
 }
 
-/** Cached per-locale dictionary (does NOT re-fetch on every call) */
+/**
+ * React `cache` still earns its place on top of the Data Cache: it collapses
+ * the several calls a single render makes into one.
+ */
 export const getDictionary = cache(async (locale: string) => {
   return fetchDictionary(locale);
 });

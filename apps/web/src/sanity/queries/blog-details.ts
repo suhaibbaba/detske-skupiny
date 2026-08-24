@@ -1,16 +1,16 @@
 import { groq } from "next-sanity";
 import { Blog } from "@/types/blog";
-import { languageQuery } from "@/sanity/queries/index";
-import { clientFetch } from "@/sanity/utilites/fetch";
+import { languageQuery } from "@/sanity/queries/filters";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { imageUrl } from "@/lib/sanity/fragments";
 
-export async function fetchBlogBySlug(params: { slug: string }) {
-  const query = groq`{
+export const blogBySlugQuery = groq`{
     "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
       "id": _id,
       title,
       excerpt,
       "slug": slug.current,
-      "image": image.asset->url,
+      ${imageUrl("image")},
       readTime,
       publishedAt,
       content,
@@ -21,13 +21,15 @@ export async function fetchBlogBySlug(params: { slug: string }) {
       author->{
         "id": _id,
         name,
-        "image": avatar.asset->url,
+        ${imageUrl("avatar", "image")},
         bio
       }
     },
   }`;
 
-  return clientFetch<{
-    blog: Blog;
-  }>(query, { ...params });
+export async function fetchBlogBySlug(params: {
+  slug: string;
+  locale: string;
+}) {
+  return sanityFetch<{ blog: Blog }>(blogBySlugQuery, { ...params }, ["blogs"]);
 }

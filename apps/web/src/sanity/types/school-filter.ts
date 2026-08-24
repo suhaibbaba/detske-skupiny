@@ -1,6 +1,7 @@
 export type SchoolPageQueryParams = {
   country: string;
   region?: string;
+  locale: string;
 };
 
 export type SchoolFilterQueryParams = {
@@ -13,4 +14,5 @@ export type SchoolFilterQueryParams = {
   search?: string;
   start: number;
   end: number;
+  locale: string;
 };

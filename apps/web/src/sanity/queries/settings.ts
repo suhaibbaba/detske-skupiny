@@ -1,21 +1,20 @@
-import { unstable_cache } from "next/cache";
+import { groq } from "next-sanity";
 import { cache } from "react";
 import { Settings } from "@/sanity/types";
-import { client } from "@/sanity/client";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { imageUrl } from "@/lib/sanity/fragments";
 
-export const settingsQuery = `*[_type == "settings"][0] {
+export const settingsQuery = groq`*[_type == "settings"][0] {
   ...,
-  "defaultImage": defaultImage.asset->url,
+  ${imageUrl("defaultImage")},
 }`;
 
-const getSettingsFromSanity = unstable_cache(
-  async (): Promise<Settings> => {
-    return await client.fetch(settingsQuery);
-  },
-  ["site-settings"], // Cache key
-);
-
-// React cache: Deduplicates requests during a single render pass
+/**
+ * Settings are not language-scoped, so this query takes no $locale.
+ *
+ * `unstable_cache` used to wrap this; the "use cache" body of sanityFetch
+ * replaces it, and the "settings" tag replaces the fixed cache key.
+ */
 export const getSettings = cache(async (): Promise<Settings> => {
-  return getSettingsFromSanity();
+  return sanityFetch<Settings>(settingsQuery, {}, ["settings"]);
 });

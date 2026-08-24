@@ -28,6 +28,7 @@ import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = PageProps<{ slug: string[] }>;
 const PAGE_SIZE = 9;
@@ -77,8 +78,9 @@ const styles: GroupsPageStyles = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params;
+  setRequestLocale(locale);
   const translate = await getTranslateServer();
-  const { slug } = await params;
 
   const lastSegment = slug[slug.length - 1];
   if (!lastSegment) {
@@ -99,8 +101,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const Page = async ({ params, searchParams }: Props) => {
+/**
+ * Reads both dynamic inputs on this route - the catalog slug from `params` and
+ * the filter state from `searchParams` - so it lives below the Suspense
+ * boundary in `Page`.
+ */
+const CatalogContent = async ({ params, searchParams }: Props) => {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const {
     categories: categoriesQuery,
     tags: tagsQuery,
@@ -123,10 +131,11 @@ const Page = async ({ params, searchParams }: Props) => {
   const selectedSlug = getSelectedSlug(catalog);
 
   const [filterContent, { pageHero, totalSchools }] = await Promise.all([
-    fetchFilters(catalog),
+    fetchFilters(catalog, locale),
     fetchSchoolPage({
       country: catalog.country!,
       region: catalog.region,
+      locale,
     }),
   ]);
 
@@ -140,10 +149,11 @@ const Page = async ({ params, searchParams }: Props) => {
     search: searchName,
     start: 0,
     end: PAGE_SIZE,
+    locale,
   });
 
   const filterProps = { catalog, selectedSlug, filterContent };
-  const initialFilters = { catalog, categories, tags, searchName };
+  const initialFilters = { catalog, categories, tags, searchName, locale };
   return (
     <Box {...styles.pageContainer}>
       <PageLayout
@@ -201,6 +211,7 @@ const SchoolListAsync = async ({
     tags: string[];
     searchName?: string;
     catalog: CatalogParams;
+    locale: string;
   };
   filterProps: FilterSidebarProps;
 }) => {
@@ -218,5 +229,11 @@ const SchoolListAsync = async ({
     />
   );
 };
+
+const Page = (props: Props) => (
+  <Suspense fallback={null}>
+    <CatalogContent {...props} />
+  </Suspense>
+);
 
 export default Page;

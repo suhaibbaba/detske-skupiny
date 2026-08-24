@@ -1,5 +1,4 @@
-export const languageQuery = `(language == $locale || !defined(language))`;
-export const excludeDraft = `!(_id in path("drafts.**"))`;
+export * from "@/sanity/queries/filters";
 
 export * from "@/sanity/queries/page";
 export * from "@/sanity/queries/schools";
