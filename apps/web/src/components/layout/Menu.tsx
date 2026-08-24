@@ -1,5 +1,3 @@
-"use client";
-
 import { Box } from "@mui/material";
 import { MenuItem } from "@/types/header";
 import Link from "@/components/ui/link";
@@ -8,7 +6,6 @@ import type { SxProps, Theme } from "@mui/material/styles";
 interface Props {
   menuItems?: MenuItem[] | null;
   hideOnMobile?: boolean;
-  onItemClick?: () => void;
 }
 
 const styles = {
@@ -57,7 +54,15 @@ const styles = {
   },
 } satisfies Record<string, SxProps<Theme>>;
 
-const Menu = ({ menuItems, hideOnMobile, onItemClick }: Props) => {
+/**
+ * The header navigation - a list of links, and nothing else.
+ *
+ * It used to carry `"use client"` for an `onItemClick` callback that existed
+ * only so a menu item could close the mobile drawer. `HeaderDrawer` closes
+ * itself on a delegated click now, so this renders on the server on every
+ * route.
+ */
+const Menu = ({ menuItems, hideOnMobile }: Props) => {
   if (!menuItems || !menuItems.length) {
     return null;
   }
@@ -81,7 +86,6 @@ const Menu = ({ menuItems, hideOnMobile, onItemClick }: Props) => {
           link={item.link}
           sx={styles.item}
           className="drawer-item"
-          onClick={onItemClick}
         />
       ))}
     </Box>

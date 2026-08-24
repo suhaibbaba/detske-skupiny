@@ -1,15 +1,10 @@
-"use client";
-
 import { Box } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { School } from "@/types";
 import { urlImageFor } from "@/lib/sanity/imageUrl";
-import Lightbox from "yet-another-react-lightbox";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import "yet-another-react-lightbox/styles.css";
-import useTranslate from "@/hooks/useTranslate";
-import Image, { type ImageProps } from "@/components/ui/image";
+import GalleryLightbox from "@/components/rich-text/GalleryLightbox";
+import Image from "@/components/ui/image";
 
 const breakpoints = [3840, 1920, 1080, 640, 384, 256, 128];
 
@@ -68,6 +63,14 @@ const styles = {
   },
 } satisfies Record<string, SxProps<Theme>>;
 
+/**
+ * The school page's image grid.
+ *
+ * A Server Component: it renders `<Image>` tiles, including this page's LCP
+ * element, and the only interaction is "open the lightbox on the image I
+ * clicked" - which `GalleryLightbox` handles by reading `data-gallery-index`
+ * off the click, so no tile needs a handler of its own.
+ */
 const SchoolGallery: FC<SchoolGalleryProps> = ({
   gallery,
   logo,
@@ -75,16 +78,6 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
   mainImageLqip,
   sx,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const openImage = (index: number) => {
-    setSelectedIndex(index);
-    setOpen((prevState) => !prevState);
-  };
-
-  const closeImage = () => setOpen(false);
-
   if (!gallery || gallery.length === 0) {
     return null;
   }
@@ -105,7 +98,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
   }));
 
   return (
-    <>
+    <GalleryLightbox slides={gallerySlides}>
       <Box
         sx={[styles.container, ...(Array.isArray(sx) ? sx : [sx])]}
         data-test-selector="SchoolGallery"
@@ -113,7 +106,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
         <Box sx={styles.imageContainer}>
           {/* Left main */}
           {main && (
-            <Box sx={styles.imageBox} onClick={() => openImage(0)}>
+            <Box sx={styles.imageBox} data-gallery-index={0}>
               {/*
                * The first gallery image is the school page's LCP element, so
                * it is fetched eagerly. The four thumbnails beside it stay
@@ -152,11 +145,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
             }}
           >
             {rights.map((img, idx) => (
-              <Box
-                key={idx}
-                sx={styles.imageBox}
-                onClick={() => openImage(idx + 1)}
-              >
+              <Box key={idx} sx={styles.imageBox} data-gallery-index={idx + 1}>
                 <Image
                   src={img}
                   alt={name}
@@ -168,33 +157,7 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
           </Box>
         </Box>
       </Box>
-      <Lightbox
-        plugins={[Zoom]}
-        open={open}
-        close={closeImage}
-        index={selectedIndex}
-        slides={gallerySlides}
-        controller={{
-          closeOnPullDown: true,
-          closeOnBackdropClick: true,
-        }}
-        carousel={{
-          preload: 0,
-        }}
-        animation={{ zoom: 500 }}
-        zoom={{
-          maxZoomPixelRatio: 1,
-          zoomInMultiplier: 2,
-          doubleTapDelay: 300,
-          doubleClickDelay: 300,
-          doubleClickMaxStops: 2,
-          keyboardMoveDistance: 50,
-          wheelZoomDistanceFactor: 100,
-          pinchZoomDistanceFactor: 100,
-          scrollToZoom: false,
-        }}
-      />
-    </>
+    </GalleryLightbox>
   );
 };
 
