@@ -119,15 +119,15 @@ describe("contactSchema - header injection", () => {
   });
 
   it("rejects a bare newline in the name", () => {
-    expect(
-      contactSchema.safeParse({ ...valid, name: "Jana\nX" }).success,
-    ).toBe(false);
+    expect(contactSchema.safeParse({ ...valid, name: "Jana\nX" }).success).toBe(
+      false,
+    );
   });
 
   it("rejects a bare carriage return in the name", () => {
-    expect(
-      contactSchema.safeParse({ ...valid, name: "Jana\rX" }).success,
-    ).toBe(false);
+    expect(contactSchema.safeParse({ ...valid, name: "Jana\rX" }).success).toBe(
+      false,
+    );
   });
 
   it("rejects CRLF in the email", () => {

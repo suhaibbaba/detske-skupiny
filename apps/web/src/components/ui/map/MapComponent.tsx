@@ -78,7 +78,7 @@ const MapComponent: React.FC<MapProps> = ({
       // Call callback
       onMarkerClick?.(markerData);
     },
-    [onMarkerClick]
+    [onMarkerClick],
   );
 
   // Initialize map
@@ -93,7 +93,7 @@ const MapComponent: React.FC<MapProps> = ({
 
     if (!maptilersdk.config.apiKey) {
       console.error(
-        "MapTiler API key is missing. Please set NEXT_PUBLIC_MAPTILER_API_KEY in your .env file"
+        "MapTiler API key is missing. Please set NEXT_PUBLIC_MAPTILER_API_KEY in your .env file",
       );
       return;
     }
@@ -194,7 +194,7 @@ const MapComponent: React.FC<MapProps> = ({
         });
         const clusterId = features[0].properties.cluster_id;
         const source = map.current.getSource(
-          "markers"
+          "markers",
         ) as maptilersdk.GeoJSONSource;
 
         try {
@@ -264,7 +264,7 @@ const MapComponent: React.FC<MapProps> = ({
     // Wait for the map to be loaded before updating markers
     const updateMarkers = () => {
       const source = map.current?.getSource(
-        "markers"
+        "markers",
       ) as maptilersdk.GeoJSONSource;
       if (!source) {
         console.log("Source not ready yet");
@@ -368,7 +368,7 @@ const MapComponent: React.FC<MapProps> = ({
             markerData={activePopup.markerData}
             onClose={closeCurrentPopup}
           />,
-          activePopup.container
+          activePopup.container,
         )}
     </>
   );

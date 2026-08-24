@@ -22,6 +22,7 @@ import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import { useTranslate } from "@/hooks/useTranslate";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   fields: {
@@ -57,7 +58,7 @@ interface PricingStyles {
   featureItem?: ListItemProps;
   featureIcon?: BoxProps;
   button?: ButtonProps;
-  mostPopular?: BoxProps;
+  mostPopular?: ImageProps;
   interval?: TypographyOwnProps;
 }
 
@@ -199,10 +200,10 @@ const OurPricing: FC<Props> = ({ fields, locale }) => {
             return (
               <Paper key={plan.name} {...styles.card}>
                 {plan.isMostPopular && (
-                  <Box
-                    src={urlImageFor(fields.mostPopularImage)}
-                    component="img"
+                  <Image
+                    src={fields.mostPopularImage}
                     alt=""
+                    sizes="120px"
                     {...styles.mostPopular}
                   />
                 )}

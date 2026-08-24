@@ -29,9 +29,9 @@ describe("parseLinkField - external", () => {
   });
 
   it("defaults the target to _self", () => {
-    expect(parseLinkField({ type: "external", url: "https://a.test" }).target).toBe(
-      "_self",
-    );
+    expect(
+      parseLinkField({ type: "external", url: "https://a.test" }).target,
+    ).toBe("_self");
   });
 
   it("does not mark a malformed url valid", () => {
@@ -135,9 +135,9 @@ describe("parseLinkField - mailto and tel", () => {
   });
 
   it("reads the address out of an existing mailto href", () => {
-    expect(
-      parseLinkField({ type: "email", href: "mailto:a@b.cz" }).url,
-    ).toBe("mailto:a@b.cz");
+    expect(parseLinkField({ type: "email", href: "mailto:a@b.cz" }).url).toBe(
+      "mailto:a@b.cz",
+    );
   });
 
   it("rejects a malformed address", () => {
@@ -239,7 +239,10 @@ describe("parseMultipleLinkFields", () => {
   });
 
   it("keeps empty links in place rather than dropping them", () => {
-    const links = parseMultipleLinkFields([null, { type: "email", email: "a@b.cz" }]);
+    const links = parseMultipleLinkFields([
+      null,
+      { type: "email", email: "a@b.cz" },
+    ]);
     expect(links).toHaveLength(2);
     expect(links[0].type).toBe("empty");
   });

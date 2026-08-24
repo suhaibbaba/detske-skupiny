@@ -59,9 +59,7 @@ describe("getLocalizedRoutes", () => {
       expect(routes.cooperation).toBe("/cooperation");
       expect(routes.article()).toBe("/articles");
       expect(routes.article("my-post")).toBe("/articles/my-post");
-      expect(routes.catalogs("czech-republic")).toBe(
-        "/catalog/czech-republic",
-      );
+      expect(routes.catalogs("czech-republic")).toBe("/catalog/czech-republic");
     });
   });
 

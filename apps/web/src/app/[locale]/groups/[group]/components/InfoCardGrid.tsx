@@ -1,10 +1,16 @@
-"use client";
-
+/**
+ * Deliberately not a Client Component.
+ *
+ * Its only reason to be one was the translation hook, and this is rendered
+ * straight from the school detail page - a Server Component - so it can take
+ * the server translator instead. That moves the whole info-card grid, and the
+ * items inside it, off the hydration path.
+ */
 import { Box, BoxProps } from "@mui/material";
 import InfoCardItem, {
   InfoCardItemProps,
 } from "@/app/[locale]/groups/[group]/components/InfoCardItem";
-import { useTranslate } from "@/hooks/useTranslate";
+import { getTranslateServer } from "@/hooks/useTranslate";
 
 interface InfoCardGridProps {
   items: InfoCardItemProps[];
@@ -24,8 +30,8 @@ const styles: InfoCardGridStyles = {
   },
 };
 
-const InfoCardGrid = ({ items }: InfoCardGridProps) => {
-  const translate = useTranslate();
+const InfoCardGrid = async ({ items }: InfoCardGridProps) => {
+  const translate = await getTranslateServer();
 
   return (
     <Box {...styles.container}>

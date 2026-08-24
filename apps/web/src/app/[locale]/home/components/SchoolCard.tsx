@@ -15,7 +15,7 @@ import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import SchoolTypesBadge from "@/app/[locale]/catalog/[...slug]/components/TypeBadge";
-import Image from "@/components/ui/image/Image";
+import Image, { type ImageProps } from "@/components/ui/image";
 import { getLocale } from "next-intl/server";
 import Link from "@/components/ui/link/Link";
 
@@ -26,7 +26,7 @@ interface Props {
 interface KinderGroupCardStyles {
   container?: BoxProps;
   imageWrapper?: BoxProps;
-  image?: BoxProps;
+  image?: ImageProps;
   infoContainer?: BoxProps;
   tagWrapper?: BoxProps;
   title?: TypographyProps;
@@ -35,7 +35,7 @@ interface KinderGroupCardStyles {
   area?: TypographyProps;
   locationIcon?: SvgIconProps;
   defaultImageWrapper?: BoxProps;
-  defaultImage?: BoxProps;
+  defaultImage?: ImageProps;
 }
 
 const styles: KinderGroupCardStyles = {
@@ -205,10 +205,13 @@ const SchoolCard = async ({ school }: Props) => {
             src={school.primaryImage}
             alt={school.name}
             {...styles.image}
+            // The carousel shows one card at a time on a phone and two on a
+            // wide screen, inside a 628px-max card.
+            sizes="(max-width: 900px) 100vw, 628px"
           />
         ) : (
           <Box {...styles.defaultImageWrapper}>
-            <Image {...styles.defaultImage} alt={school.name} />
+            <Image {...styles.defaultImage} alt={school.name} sizes="120px" />
           </Box>
         )}
         {school.area?.name && (

@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { SanityImageField } from "@/sanity/types";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface FeatureItem {
   icon: SanityImageField;
@@ -30,7 +31,7 @@ interface PremiumSchoolsFeatureSectionStyles {
   subheading?: TypographyProps;
   grid?: BoxProps;
   item?: BoxProps;
-  icon?: BoxProps;
+  icon?: ImageProps;
   itemTitle?: TypographyProps;
   itemDescription?: TypographyProps;
 }
@@ -85,7 +86,6 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
     },
   },
   icon: {
-    component: "img",
     sx: {
       width: "58px",
       height: "58px",
@@ -147,11 +147,11 @@ const FeaturesGrid = ({ fields }: Props) => {
                   alignSelf,
                 }}
               >
-                <Box
-                  component="img"
+                <Image
                   {...styles.icon}
-                  src={urlImageFor(feature.icon)}
+                  src={feature.icon}
                   alt={feature.title}
+                  sizes="64px"
                 />
                 <Typography {...styles.itemTitle}>{feature.title}</Typography>
                 <Typography {...styles.itemDescription}>

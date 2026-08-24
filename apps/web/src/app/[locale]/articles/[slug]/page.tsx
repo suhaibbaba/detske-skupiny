@@ -20,7 +20,7 @@ import React from "react";
 import { formatDate } from "@/utilites/date";
 import RichText from "@/sanity/components/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
-import Image from "@/components/ui/image/Image";
+import Image, { type ImageProps } from "@/components/ui/image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import clsx from "clsx";
@@ -38,7 +38,7 @@ interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
   container?: BoxProps;
   featureItem?: ListItemProps;
-  image?: BoxProps;
+  image?: ImageProps;
   detailsHintBox?: BoxProps;
   authorMeta?: BoxProps;
   authorText?: TypographyProps;
@@ -249,8 +249,21 @@ const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
       <Container>
         <Box {...styles.detailsHintBox} data-test-selector="details-hint">
           <Box>
-            <Image src={blog.image} {...styles.image} alt={blog.title} />
-            {/*<Box component="img" src={blog.image} {...styles.image} />*/}
+            {/*
+             * The article's cover is the largest thing above the fold on this
+             * route, so it is the LCP candidate and is fetched eagerly rather
+             * than lazily. The content column is capped at 920px.
+             */}
+            <Image
+              src={blog.image}
+              {...styles.image}
+              alt={blog.title}
+              priority
+              sizes="(max-width: 920px) 100vw, 920px"
+              {...(blog.imageLqip
+                ? { placeholder: "blur" as const, blurDataURL: blog.imageLqip }
+                : {})}
+            />
             <Box {...styles.authorMeta}>
               {formatMessage(
                 `{0}{1}${articleMeta}`,

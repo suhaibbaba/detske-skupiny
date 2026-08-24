@@ -10,6 +10,7 @@ import { SanityRichTextField } from "@/sanity/types";
 import Table from "@/components/shared/Table";
 import SchoolGallery from "@/app/[locale]/groups/[group]/components/SchoolGallery";
 import GridBlock from "@/components/shared/GridBlock";
+import Image from "@/components/ui/image";
 
 /**
  * Utility: detect if a block renderer received only whitespace/empty content.
@@ -250,11 +251,12 @@ function RichText({
       // Inline/standalone images in rich text
       image: ({ value }) => {
         return (
-          <Box
-            component="img"
-            src={urlImageFor(value.asset)}
+          <Image
+            src={value.asset}
             alt={value?.alt || ""}
-            loading="lazy"
+            // Rich-text images are always inside the article body, below the
+            // fold; the default lazy loading is what we want.
+            sizes="(max-width: 920px) 100vw, 920px"
             sx={{
               maxWidth: value.maxWidth || "100%",
               maxHeight: value.maxHeight || "initial",

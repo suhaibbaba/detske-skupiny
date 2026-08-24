@@ -1,6 +1,11 @@
-"use client";
-
-import React, { FC, useState } from "react";
+/**
+ * Deliberately not a Client Component - see the note in ui/button/Button.tsx.
+ *
+ * This renders the heading block of almost every route, so the directive was
+ * pulling it (and everything it imports) into the client bundle of pages that
+ * have nothing interactive in their hero at all.
+ */
+import React, { FC } from "react";
 import {
   Box,
   BoxProps,
@@ -72,9 +77,9 @@ const PageHeadingTypography: FC<Props> = ({
   extendedStyles,
 }) => {
   const locale = useLocale();
-  const [styles] = useState(() =>
-    mergeMuiProps(pageHeadingTypographyStyles, extendedStyles)
-  );
+  // Was a `useState` lazy initialiser, which computes once and then ignores
+  // any later `extendedStyles` - the same latent bug as in Link.tsx.
+  const styles = mergeMuiProps(pageHeadingTypographyStyles, extendedStyles);
 
   return (
     <Box {...styles.container}>

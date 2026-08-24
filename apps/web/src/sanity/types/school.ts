@@ -73,6 +73,8 @@ export interface School {
   cin: string;
   providerName: string;
   primaryImage: SanityImageField | null;
+  /** Base64 thumbnail, painted while the first gallery image loads. */
+  primaryImageLqip?: string;
   primaryImages: SanityImageField[];
   region: Region;
   area: Area;

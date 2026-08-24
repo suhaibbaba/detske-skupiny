@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { MapCoordinate, MarkerData, Region } from "@/sanity/types";
 import Button from "@/components/ui/button";
-import MapComponent from "@/components/ui/map/MapComponent";
+import MapComponent from "@/components/ui/map/LazyMap";
 import useTranslate from "@/hooks/useTranslate";
 import { useState } from "react";
 

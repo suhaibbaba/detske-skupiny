@@ -5,7 +5,6 @@ import { Box, BoxProps, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
 import BlogCard from "@/app/[locale]/articles/components/BlogCard";
-import WritersSection from "@/app/[locale]/articles/components/WritersSection";
 import Alert from "@/components/ui/alert";
 import clsx from "clsx";
 import { getTranslateServer } from "@/hooks/useTranslate";

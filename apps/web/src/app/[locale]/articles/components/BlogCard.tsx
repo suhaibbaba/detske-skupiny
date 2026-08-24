@@ -22,6 +22,7 @@ import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocale } from "next-intl/server";
+import Image from "@/components/ui/image";
 
 interface Props {
   blog: MiniBlog;
@@ -160,13 +161,19 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
   return (
     <Card {...styles.card}>
       <Link href={url}>
-        <CardMedia
-          component="img"
-          image={image}
+        <Image
+          src={image}
           alt={title}
           title={title}
-          height="224px"
+          // The grid is 1 / 2 / 3 columns; the card never exceeds a third of a
+          // wide viewport. Height is fixed in CSS, so the box is reserved
+          // whether or not the file has arrived.
+          sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
           sx={{
+            width: "100%",
+            height: "224px",
+            objectFit: "cover",
+            display: "block",
             borderRadius: "8px",
           }}
         />

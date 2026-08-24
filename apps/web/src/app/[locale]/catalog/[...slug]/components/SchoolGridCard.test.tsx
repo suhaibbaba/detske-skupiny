@@ -60,10 +60,7 @@ describe("SchoolGridCard", () => {
 
     expect(links.length).toBeGreaterThan(0);
     for (const link of links) {
-      expect(link).toHaveAttribute(
-        "href",
-        "/skupiny/detska-skupina-dablice",
-      );
+      expect(link).toHaveAttribute("href", "/skupiny/detska-skupina-dablice");
     }
   });
 

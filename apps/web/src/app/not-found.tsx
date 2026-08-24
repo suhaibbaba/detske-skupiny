@@ -1,11 +1,8 @@
 import { Box, Button, Typography, Paper } from "@mui/material";
-import Link from "next/link";
-import { Nunito } from "next/font/google";
+import { nunitoClassName } from "@/fonts/nunito";
 import { getLocale } from "next-intl/server";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import type { Metadata } from "next";
-
-const nunito = Nunito({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
   const translate = await getTranslateServer();
@@ -25,7 +22,7 @@ export default async function NotFound() {
 
   return (
     <html lang={locale}>
-      <body className={nunito.className}>
+      <body className={nunitoClassName}>
         <Box
           sx={{
             height: "100svh",
@@ -70,8 +67,22 @@ export default async function NotFound() {
               {translate("pageNotFoundTitle")}
             </Typography>
 
+            {/*
+             * A plain `href` rather than `component={Link}`.
+             *
+             * `component={Link}` passes a function to a Client Component,
+             * which React refuses to serialise - and because Next renders the
+             * not-found boundary as part of the route shell, that threw on
+             * every request, which is why this page answered 500 instead of
+             * 404.
+             *
+             * The app's own `<Button>` is not an option here either: this
+             * file renders its own `<html>` outside the locale layout, so
+             * there is no next-intl provider for its `useLocale` to find. A
+             * full navigation back to the home page is the right behaviour
+             * for a global 404 anyway.
+             */}
             <Button
-              component={Link}
               href="/"
               variant="contained"
               size="large"

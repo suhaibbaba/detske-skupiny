@@ -94,11 +94,14 @@ const SchoolList: FC<Props> = ({
   // Written shallowly: the action has already returned the data, so telling
   // the server would only make it render a page the browser is holding. On a
   // reload or a shared link the server reads it and renders pages 1..N.
-  const [, setPage] = useQueryState("page", catalogParsers.page.withOptions({
-    shallow: true,
-    history: "push",
-    scroll: false,
-  }));
+  const [, setPage] = useQueryState(
+    "page",
+    catalogParsers.page.withOptions({
+      shallow: true,
+      history: "push",
+      scroll: false,
+    }),
+  );
 
   const schools = appended.length
     ? [...serverSchools, ...appended]

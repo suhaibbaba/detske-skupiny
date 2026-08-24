@@ -14,6 +14,7 @@ import { FiltersResponse } from "@/sanity/queries";
 import useTranslate from "@/hooks/useTranslate";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { Filters } from "@/hooks/useSchoolFilters";
+import Image from "@/components/ui/image";
 
 interface Props {
   showDivider?: boolean;
@@ -145,7 +146,7 @@ const FilterCategoriesList: FC<Props> = ({
               }}
             >
               {category.emoji && (
-                <Box src={urlImageFor(category.emoji)} component="img" alt="" />
+                <Image src={category.emoji} alt="" sizes="24px" />
               )}
               {category.name}
             </Box>

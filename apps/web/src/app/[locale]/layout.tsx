@@ -4,7 +4,7 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "@/theme";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-import { Nunito } from "next/font/google";
+import { nunitoClassName } from "@/fonts/nunito";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
@@ -59,8 +59,6 @@ export async function generateMetadata({
   };
 }
 
-const nunito = Nunito({ subsets: ["latin"] });
-
 export default async function RootLayout({
   children,
   params,
@@ -78,7 +76,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={nunito.className}>
+      <body className={nunitoClassName}>
         <AppRouterCacheProvider>
           <NuqsAdapter>
             <IntlErrorHandlingProvider locale={locale} messages={messages}>

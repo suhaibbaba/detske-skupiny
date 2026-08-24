@@ -34,7 +34,11 @@ export function useSchoolFilters() {
   });
 
   const filters: Filters = useMemo(
-    () => ({ categories: state.categories, tags: state.tags, name: state.name }),
+    () => ({
+      categories: state.categories,
+      tags: state.tags,
+      name: state.name,
+    }),
     [state.categories, state.tags, state.name],
   );
 
@@ -67,7 +71,9 @@ export function useSchoolFilters() {
       }
 
       void setState(
-        key === "name" ? { name: null, page: null } : { [key]: null, page: null },
+        key === "name"
+          ? { name: null, page: null }
+          : { [key]: null, page: null },
       );
     },
     [setState],

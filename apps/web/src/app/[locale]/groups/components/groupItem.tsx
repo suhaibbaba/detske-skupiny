@@ -13,6 +13,7 @@ import { GroupPage } from "@/sanity/types";
 import Link from "@/components/ui/link";
 import { getLocalizedRoutes } from "@/routes";
 import { getLocale } from "next-intl/server";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   item?: GroupPage["areas"][number] | GroupPage["schoolCategories"][number];
@@ -22,7 +23,7 @@ interface Props {
 
 interface GroupItemStyles {
   container?: ButtonProps;
-  emoji?: BoxProps;
+  emoji?: ImageProps;
   stack?: StackProps;
   schoolCountBox?: BoxProps;
   schoolCountText?: TypographyProps;
@@ -121,7 +122,7 @@ const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
       <ButtonBase {...styles.container}>
         <Stack {...styles.stack}>
           {"emoji" in item && item.emoji && (
-            <Box component="img" src={item.emoji} alt="" {...styles.emoji} />
+            <Image src={item.emoji} alt="" sizes="24px" {...styles.emoji} />
           )}
           <Typography {...styles.title}>{item.name}</Typography>
           <Box

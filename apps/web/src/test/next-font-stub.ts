@@ -1,7 +1,8 @@
 /**
- * next/font/google is a compiler macro - outside the Next build it is not a
- * real module, so the theme's `Nunito(...)` call fails. This stub returns the
- * same shape the macro produces at build time.
+ * next/font is a compiler macro - outside the Next build it is not a real
+ * module, so calling `Nunito(...)` or `localFont(...)` at import time fails.
+ * This stub returns the same shape the macro produces at build time, and is
+ * aliased for both `next/font/google` and `next/font/local` in vitest.config.
  */
 const font = () => ({
   className: "test-font",
@@ -11,9 +12,16 @@ const font = () => ({
 
 export const Nunito = font;
 
-// Any other family the app adds later resolves through the same stub.
-const fontProxy = new Proxy({} as Record<string, typeof font>, {
-  get: () => font,
+/** `next/font/local` is called as the module's default export. */
+export const localFont = font;
+
+/**
+ * The default export has to be callable (that is how `next/font/local` is
+ * used) and also indexable by family name (that is how `next/font/google`
+ * would be, if anything imported it as a namespace).
+ */
+const fontProxy = new Proxy(font, {
+  get: (target, prop) => (prop in target ? (target as never)[prop] : font),
 });
 
 export default fontProxy;

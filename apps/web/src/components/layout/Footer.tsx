@@ -18,12 +18,13 @@ import EmailIcon from "@/components/icons/Email";
 import PhoneIcon from "@/components/icons/Phone";
 import { FooterContent } from "@/types/footer";
 import LanguageSwitcher from "@/components/ui/Language/LanguageSwitcher";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface FooterStyles {
   container?: BoxProps;
   copyrightContainer?: BoxProps;
   logoContainer?: BoxProps;
-  logo?: BoxProps;
+  logo?: ImageProps;
   columnTitle?: TypographyOwnProps;
   columnText?: TypographyOwnProps;
   copyright?: TypographyOwnProps;
@@ -211,7 +212,7 @@ const Footer = async ({ locale }: { locale: string }) => {
               )}
               <Stack gap="12px">
                 {column.content?.map((item, itemIndex: number) =>
-                  renderContentItem(item, itemIndex)
+                  renderContentItem(item, itemIndex),
                 )}
               </Stack>
             </Grid>
@@ -220,10 +221,10 @@ const Footer = async ({ locale }: { locale: string }) => {
         <Box {...styles.copyrightContainer}>
           {footer.logo && (
             <Box {...styles.logoContainer}>
-              <Box
-                component="img"
-                src={urlImageFor(footer.logo)}
+              <Image
+                src={footer.logo}
                 alt="Logo"
+                sizes="120px"
                 {...styles.logo}
               />
             </Box>
@@ -232,7 +233,7 @@ const Footer = async ({ locale }: { locale: string }) => {
             <Typography {...styles.copyright}>
               {footer.copyright.replace(
                 "{0}",
-                new Date().getFullYear().toString()
+                new Date().getFullYear().toString(),
               )}
             </Typography>
           )}

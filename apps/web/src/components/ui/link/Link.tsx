@@ -1,16 +1,23 @@
 "use client";
 
+/**
+ * A Client Component for the same reason as Button.tsx: `component={NextLink}`
+ * is a function prop, which cannot cross the server/client boundary.
+ *
+ * The `useState(() => mergeMuiProps(...))` it used to open with is gone
+ * though, and that was not just unnecessary: a lazy initialiser runs once, so
+ * a later `sx` was silently ignored.
+ */
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
 import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
 
 interface LinkProps
-  extends Omit<MuiLinkProps, "href">,
-    Omit<NextLinkProps, "href"> {
+  extends Omit<MuiLinkProps, "href">, Omit<NextLinkProps, "href"> {
   href?: string;
   link?: SanityLinkProps;
   children?: React.ReactNode;
@@ -25,7 +32,7 @@ const linkStyles: MuiLinkProps = {
 };
 
 const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
-  const [styles] = useState(() => mergeMuiProps(linkStyles, { sx }));
+  const styles = mergeMuiProps(linkStyles, { sx });
   const locale = useLocale();
 
   if (!link && !otherProps.href) {

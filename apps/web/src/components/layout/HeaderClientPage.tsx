@@ -25,6 +25,7 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
 import { useLocale } from "next-intl";
 import LanguageSwitcher from "../ui/Language/LanguageSwitcher";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   header?: Header;
@@ -34,7 +35,7 @@ interface HeaderStyles {
   root: BoxProps;
   appBar: AppBarProps;
   toolbar: ToolbarProps;
-  logo: BoxProps;
+  logo: ImageProps;
   drawerLogoContainer: BoxProps;
   menuButton: IconButtonProps;
   menuIcon: SvgIconProps;
@@ -144,7 +145,20 @@ const HeaderClientPage = ({ header }: Props) => {
         <AppBar position="static" {...styles.appBar}>
           <Toolbar {...styles.toolbar}>
             <Link href={getLocalizedRoutes(locale).home}>
-              <Box component="img" src={header.logo} alt="Logo" {...styles.logo} />
+              {/*
+               * The header logo is the first image on every page, so it is
+               * fetched eagerly rather than lazily - it is always in view.
+               */}
+              <Image
+                src={header.logo}
+                alt="Logo"
+                priority
+                // Pinned to 120px by the CSS above. Without `sizes`,
+                // `next/image` sizes the srcset from the asset's intrinsic
+                // width instead and offers a 3840px file for a 120px slot.
+                sizes="120px"
+                {...styles.logo}
+              />
             </Link>
             <IconButton
               {...styles.menuButton}
@@ -168,10 +182,10 @@ const HeaderClientPage = ({ header }: Props) => {
                 }}
               >
                 <Box {...styles.drawerLogoContainer}>
-                  <Box
-                    component="img"
+                  <Image
                     src={header.logoInverse}
                     alt="Logo"
+                    sizes="120px"
                     {...styles.logo}
                   />
                 </Box>

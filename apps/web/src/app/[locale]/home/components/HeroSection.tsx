@@ -11,6 +11,7 @@ import {
   SanityRichTextField,
 } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import Image from "@/components/ui/image";
 
 interface Props {
   fields: {
@@ -115,7 +116,19 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
           extendedStyles={styles.pageHeadingStyles}
         />
         <Box {...styles.imageWrapper}>
-          <Box component="img" src={urlImageFor(fields.image)} alt="" />
+          {/*
+           * The hero image is the home page's LCP element. `priority` drops
+           * the lazy attribute and adds a preload, so it starts downloading
+           * with the HTML rather than after the layout settles - and the
+           * width/height `<Image>` derives from the asset means it no longer
+           * reserves zero space and then shoves the page down on arrival.
+           */}
+          <Image
+            src={fields.image}
+            alt=""
+            priority
+            sizes="(max-width: 900px) 100vw, 404px"
+          />
         </Box>
       </Box>
     </PageLayout>

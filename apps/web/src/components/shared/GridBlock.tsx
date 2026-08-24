@@ -4,6 +4,7 @@ import { Grid } from "@mui/material";
 import * as React from "react";
 import { SanityImageField, SanityRichTextField } from "@/sanity/types";
 import RichText from "@/sanity/components/RichText";
+import Image from "@/components/ui/image";
 
 export interface GridItemBase {
   _key: string;
@@ -86,9 +87,9 @@ const GridBlock = ({ value }: Props) => {
             height: "100%",
           }}
         >
-          <Box
-            component="img"
-            src={urlImageFor(item.image)}
+          <Image
+            src={item.image}
+            sizes="(max-width: 900px) 100vw, 50vw"
             alt={item.image.alt || ""}
             sx={{
               width:

@@ -10,6 +10,7 @@ import {
 import { SanityImageField } from "@/sanity/types";
 import { FC } from "react";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import Image from "@/components/ui/image";
 
 interface Props {
   fields: {
@@ -120,7 +121,7 @@ const SectionWorthIt: FC<Props> = ({ fields }) => {
           {fields.features?.map((item) => (
             <Paper key={item._key} {...styles.featureCard}>
               <Box {...styles.iconWrapper}>
-                <Box component="img" src={urlImageFor(item.icon)} alt={item.title} />
+                <Image src={item.icon} alt={item.title} sizes="64px" />
               </Box>
 
               <Typography {...styles.cardTitle}>{item.title}</Typography>

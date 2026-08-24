@@ -20,11 +20,9 @@ type Row = { k: string; v: string };
 type Wire = { common: Row[] };
 
 async function fetchDictionary(locale: string) {
-  const data = await sanityFetch<Wire>(
-    messagesQuery(locale),
-    {},
-    ["dictionary"],
-  );
+  const data = await sanityFetch<Wire>(messagesQuery(locale), {}, [
+    "dictionary",
+  ]);
 
   const common: Record<string, string> = {};
   for (const r of data?.common ?? []) {

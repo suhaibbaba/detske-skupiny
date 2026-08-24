@@ -1,7 +1,7 @@
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { School } from "@/sanity/types";
 import useTranslate from "@/hooks/useTranslate";
-import MapComponent from "@/components/ui/map/MapComponent";
+import MapComponent from "@/components/ui/map/LazyMap";
 import { parseAddress } from "@/utilites/location";
 
 interface Props {

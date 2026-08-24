@@ -47,9 +47,13 @@ describe("Button", () => {
 
   it("falls back to the cleaned url when a link has no text", () => {
     renderWithIntl(
-      <Button link={{ type: "external", url: "https://example.test" } as never} />,
+      <Button
+        link={{ type: "external", url: "https://example.test" } as never}
+      />,
     );
-    expect(screen.getByRole("link", { name: "example.test" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "example.test" }),
+    ).toBeInTheDocument();
   });
 
   it("is clickable", async () => {

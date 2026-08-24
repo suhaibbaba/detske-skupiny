@@ -9,6 +9,8 @@ export type Blog = {
   category?: BlogCategory;
   content?: SanityRichTextField;
   image?: string;
+  /** Base64 thumbnail, painted while the cover loads. */
+  imageLqip?: string;
   readTime?: number;
   publishedAt?: string;
   /** `_updatedAt`, used as the article's `dateModified`. */

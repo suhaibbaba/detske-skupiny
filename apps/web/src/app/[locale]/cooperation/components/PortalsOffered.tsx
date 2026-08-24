@@ -19,6 +19,7 @@ import { SanityCtaField, SanityImageField } from "@/sanity/types";
 import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
+import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {
   fields: {
@@ -46,7 +47,7 @@ interface PortalsOfferedStyles {
   listItemText?: ListItemTextProps;
   button?: ButtonProps;
   imageWrapper?: BoxProps;
-  image?: BoxProps;
+  image?: ImageProps;
 }
 
 const styles: PortalsOfferedStyles = {
@@ -176,11 +177,11 @@ const PortalsOffered = ({ fields, locale }: Props) => {
             )}
           </Box>
           <Box {...styles.imageWrapper}>
-            <Box
+            <Image
               {...styles.image}
-              component="img"
-              src={urlImageFor(fields.image)}
+              src={fields.image}
               alt={fields.heading}
+              sizes="(max-width: 900px) 100vw, 50vw"
             />
           </Box>
         </Box>
