@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import createBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -65,4 +66,31 @@ const nextConfig: NextConfig = {
 
 // Pass the path to your i18n request config
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
-export default withNextIntl(nextConfig);
+
+/**
+ * `ANALYZE=true npm run build -w apps/web` writes a treemap of the client
+ * bundle to `.next/analyze/`.
+ *
+ * Off by every other run: the plugin only wraps the config when the variable
+ * is set, so a normal build is byte-for-byte what it was.
+ *
+ * One caveat, and it decides which command to reach for. `next build` uses
+ * Turbopack, and @next/bundle-analyzer is a **webpack** plugin - under
+ * Turbopack it prints a warning and produces nothing. So there are two ways to
+ * read this bundle, and they answer different questions:
+ *
+ *   ANALYZE=true npm run build -w apps/web -- --webpack
+ *       The webpack build, analysed by webpack-bundle-analyzer. Module sizes
+ *       are real, chunk boundaries are webpack's - not what ships.
+ *
+ *   npx next experimental-analyze -o
+ *       Turbopack's own analyzer, over the bundle the app actually ships.
+ *       This is the one whose numbers belong in a report.
+ *
+ * See docs/perf/mui-v9-before.md for the figures each produced.
+ */
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
+export default withBundleAnalyzer(withNextIntl(nextConfig));
