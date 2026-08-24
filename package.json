@@ -5,6 +5,9 @@
     "apps/*",
     "packages/*"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev:web": "npm run dev -w apps/web",
     "dev:studio": "npm run dev -w apps/studio",
@@ -16,19 +19,9 @@
     "test:crawl": "playwright test --project=crawl",
     "test:all": "npm run test && npm run test:e2e && npm run test:crawl"
   },
-  "overrides": {
-    "@mui/core-downloads-tracker": "7.1.0",
-    "@mui/icons-material": "7.1.0",
-    "@mui/material": "7.1.0",
-    "@mui/material-nextjs": "7.3.3",
-    "@mui/private-theming": "7.1.0",
-    "@mui/styled-engine": "7.1.0",
-    "@mui/system": "7.1.0",
-    "@mui/types": "7.4.2",
-    "@mui/utils": "7.1.0"
-  },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.62.1"
+    "@playwright/test": "^1.62.1",
+    "dotenv": "^17.4.2"
   }
 }

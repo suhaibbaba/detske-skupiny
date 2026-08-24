@@ -1,5 +1,6 @@
 import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
-import { DocumentTextIcon, HomeIcon } from "@sanity/icons";
+import { DocumentTextIcon } from "@sanity/icons/DocumentText";
+import { HomeIcon } from "@sanity/icons/Home";
 
 export function createSchoolSection(S: StructureBuilder): ListItemBuilder {
   return S.listItem()

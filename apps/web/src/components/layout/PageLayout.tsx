@@ -3,15 +3,26 @@ import Breadcrumbs from "@/components/ui/breadcrumb";
 import React, { FC, Fragment } from "react";
 import { mergeMuiProps } from "@/utilites/mergeMuiProps";
 
-interface Props {
+interface BaseProps {
   children: React.ReactNode;
   /**
    * It means the content has max-width 100%
    */
   contentFullWidth?: boolean;
-  showBreadcrumb?: boolean;
   extendedStyles?: PageLayoutStyles;
 }
+
+/**
+ * The breadcrumbs render on the server and the App Router gives server
+ * components no pathname, so the page has to hand it over. Modelled as a union
+ * rather than an optional prop so that a layout showing breadcrumbs cannot
+ * compile without one - forgetting it would silently drop the trail.
+ */
+type Props = BaseProps &
+  (
+    | { showBreadcrumb?: true; pathname: string }
+    | { showBreadcrumb: false; pathname?: never }
+  );
 
 export interface PageLayoutStyles {
   section?: BoxProps;
@@ -30,9 +41,13 @@ const PageLayout: FC<Props> = ({
   children,
   contentFullWidth = false,
   showBreadcrumb = true,
+  pathname,
   extendedStyles,
 }) => {
   const styles = mergeMuiProps(pageLayoutStyles, extendedStyles);
+  const breadcrumbs = showBreadcrumb && pathname !== undefined && (
+    <Breadcrumbs pathname={pathname} />
+  );
 
   return (
     <Box component="section" {...styles.section}>
@@ -43,12 +58,12 @@ const PageLayout: FC<Props> = ({
       >
         {contentFullWidth ? (
           <Fragment>
-            <Container>{showBreadcrumb && <Breadcrumbs />}</Container>
+            <Container>{breadcrumbs}</Container>
             {children}
           </Fragment>
         ) : (
           <>
-            {showBreadcrumb && <Breadcrumbs />}
+            {breadcrumbs}
             {children}
           </>
         )}

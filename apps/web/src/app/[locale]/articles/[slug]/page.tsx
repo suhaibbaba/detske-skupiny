@@ -23,6 +23,7 @@ import Image from "@/components/ui/image/Image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import clsx from "clsx";
+import { getLocalizedRoutes } from "@/routes";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -184,7 +185,11 @@ const Page = async ({ params }: PageProps<{ slug: string }>) => {
   return (
     <Box {...styles.container} className={clsx(!blog?.title && "pt-20")}>
       {blog?.title && (
-        <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+        <PageLayout
+          contentFullWidth={false}
+          extendedStyles={styles.pageLayout}
+          pathname={getLocalizedRoutes(locale).article(slug)}
+        >
           <PageHeadingTypography title={blog?.title} />
         </PageLayout>
       )}

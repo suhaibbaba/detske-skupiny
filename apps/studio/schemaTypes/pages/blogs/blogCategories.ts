@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { ComponentIcon } from "@sanity/icons";
+import { ComponentIcon } from "@sanity/icons/Component";
 
 export default defineType({
   name: "blogCategories",

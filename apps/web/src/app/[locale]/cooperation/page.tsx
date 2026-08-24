@@ -6,6 +6,7 @@ import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocalizedRoutes } from "@/routes";
 
 interface CooperationStyles {
   pageLayout?: PageLayoutStyles;
@@ -44,7 +45,11 @@ const Page = async ({ params }: PageProps) => {
   const data = await fetchPageByType("preschool");
 
   return (
-    <PageLayout extendedStyles={styles.pageLayout} contentFullWidth>
+    <PageLayout
+      extendedStyles={styles.pageLayout}
+      contentFullWidth
+      pathname={getLocalizedRoutes(queryParams.locale).cooperation}
+    >
       <Box {...styles.container}>
         <Zone sections={data?.sections} types="all" {...queryParams} />
       </Box>

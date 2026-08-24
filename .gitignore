@@ -58,3 +58,8 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+
+# Next.js 16 regenerates these on every `next dev`; they are tooling output,
+# not source. Remove these lines if you would rather commit them.
+apps/web/AGENTS.md
+apps/web/CLAUDE.md

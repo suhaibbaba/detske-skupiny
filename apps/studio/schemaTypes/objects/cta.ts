@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { preview } from "vite";
 
 export default defineType({
   name: "cta",

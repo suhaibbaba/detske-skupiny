@@ -20,27 +20,29 @@
   ],
   "dependencies": {
     "@detske-skupiny/config": "*",
-    "@sanity/color-input": "^4.0.6",
-    "@sanity/document-internationalization": "^4.0.0",
-    "@sanity/google-maps-input": "^4.2.0",
-    "@sanity/orderable-document-list": "^1.4.0",
-    "@sanity/vision": "^4.14.2",
+    "@sanity/color-input": "^6.1.4",
+    "@sanity/document-internationalization": "^6.2.33",
+    "@sanity/google-maps-input": "^6.1.13",
+    "@sanity/icons": "^5.2.1",
+    "@sanity/orderable-document-list": "2.0.20",
+    "@sanity/ui": "^3.5.3",
+    "@sanity/vision": "^5.31.2",
     "@types/lodash.kebabcase": "^4.1.9",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "lodash.kebabcase": "^4.1.1",
-    "react": "^19.1",
-    "react-dom": "^19.1",
-    "sanity": "^4.14.2",
-    "sanity-plugin-link-field": "^1.4.1",
-    "styled-components": "^6.1.18"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "5.31.2",
+    "sanity-plugin-link-field": "1.7.0",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^5.0.2",
-    "@types/react": "^19.1",
-    "eslint": "^9.28",
+    "@sanity/eslint-config-studio": "^6.0.0",
+    "@types/react": "^19.2.18",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.6.2",
-    "typescript": "^5.8",
-    "vite": "^7.3.6"
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2"
   }
 }

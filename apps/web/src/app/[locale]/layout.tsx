@@ -7,7 +7,7 @@ import { Nunito } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getLocale, getMessages } from "next-intl/server";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import Script from "next/script";

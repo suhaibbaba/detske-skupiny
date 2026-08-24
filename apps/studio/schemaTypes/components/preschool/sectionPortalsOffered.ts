@@ -1,5 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { StarIcon } from "@sanity/icons";
+import { StarIcon } from "@sanity/icons/Star";
 import { appendLanguageSubtitle } from "@/utility";
 
 export default defineType({

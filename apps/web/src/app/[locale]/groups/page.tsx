@@ -7,6 +7,7 @@ import GroupSection from "@/app/[locale]/groups/components/groupSection";
 import React from "react";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import { getLocalizedRoutes } from "@/routes";
 
 interface GroupsStyles {
   container?: BoxProps;
@@ -34,11 +35,16 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 const Page = async ({ params }: PageProps) => {
+  const { locale } = await params;
   const { content, groups } = await fetchGroupPage();
 
   return (
     <Box component="section" {...styles.container}>
-      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+      <PageLayout
+        contentFullWidth={false}
+        extendedStyles={styles.pageLayout}
+        pathname={getLocalizedRoutes(locale).group()}
+      >
         <PageHeadingTypography
           title={content?.title}
           description={content?.description}

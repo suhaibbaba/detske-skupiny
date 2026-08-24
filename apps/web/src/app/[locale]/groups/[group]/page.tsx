@@ -186,7 +186,11 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
 
   return (
     <Box {...styles.pageContainer}>
-      <PageLayout contentFullWidth={false} extendedStyles={styles.pageLayout}>
+      <PageLayout
+        contentFullWidth={false}
+        extendedStyles={styles.pageLayout}
+        pathname={getLocalizedRoutes(locale).group(groupSlug)}
+      >
         <PageHeadingTypography title={school?.name} />
       </PageLayout>
       <Container {...styles.container}>

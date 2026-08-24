@@ -1,5 +1,5 @@
 import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
-import { EarthGlobeIcon } from "@sanity/icons";
+import { EarthGlobeIcon } from "@sanity/icons/EarthGlobe";
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import type { StructureResolverContext } from "sanity/structure";
 

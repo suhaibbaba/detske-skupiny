@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { EarthGlobeIcon } from "@sanity/icons";
+import { EarthGlobeIcon } from "@sanity/icons/EarthGlobe";
 import {
   orderRankField,
   orderRankOrdering,

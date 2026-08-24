@@ -1,5 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { CheckmarkIcon } from "@sanity/icons";
+import { CheckmarkIcon } from "@sanity/icons/Checkmark";
 import ChecklistPreview from "@/schemaTypes/objects/richTextComponent/checklistPreview";
 
 export default defineType({

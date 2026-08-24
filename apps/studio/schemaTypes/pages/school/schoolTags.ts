@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { TagsIcon } from "@sanity/icons";
+import { TagsIcon } from "@sanity/icons/Tags";
 
 export default defineType({
   name: "schoolTags",

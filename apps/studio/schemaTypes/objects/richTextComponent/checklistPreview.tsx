@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Flex, Text, Grid } from "@sanity/ui";
-import { CheckmarkIcon } from "@sanity/icons";
+import { CheckmarkIcon } from "@sanity/icons/Checkmark";
 
 type Props = {
   items?: Array<{ text?: string }>;

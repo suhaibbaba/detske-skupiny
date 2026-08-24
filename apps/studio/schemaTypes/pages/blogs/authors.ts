@@ -1,7 +1,7 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
 import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { EditIcon } from "@sanity/icons";
+import { EditIcon } from "@sanity/icons/Edit";
 
 export default defineType({
   name: "authors",
