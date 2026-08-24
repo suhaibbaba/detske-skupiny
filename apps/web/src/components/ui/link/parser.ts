@@ -2,36 +2,50 @@
  * Sanity LinkField Parser - TypeScript Method Functions
  * Collection of functions to parse and validate Sanity CMS link field structures
  */
-import { defaultLocale } from "@/i18n/routing";
+import type { HeaderQueryResult } from "@detske-skupiny/types";
+import { defaultLocale } from "@/lib/i18n/routing";
 import { getLocalizedRoutes } from "@/routes";
 
-// Types and Interfaces
+/**
+ * What the parser can be told to do.
+ *
+ * `allowExternal`, `allowEmail`, `allowPhone`, `allowFile` and `defaultTarget`
+ * used to be here too. No caller and no test ever passed one, so every guard
+ * they gated was a branch that could not be taken and `defaultTarget` was a
+ * constant spelled as a knob. The two that survive are the two something
+ * actually sets: `allowInternal` in parser.test.ts and `requireText` in the
+ * same file, plus `locale`, which every call site passes.
+ */
 interface ParserOptions {
-  allowExternal?: boolean;
   allowInternal?: boolean;
-  allowEmail?: boolean;
-  allowPhone?: boolean;
-  allowFile?: boolean;
   requireText?: boolean;
-  defaultTarget?: string;
   locale?: string;
 }
 
-interface SanityReference {
-  _ref: string;
-  _type?: string;
-}
+/**
+ * A resolved `internalLink` - the union of every document `linkFields` can
+ * dereference, generated from the Studio schema.
+ *
+ * Taken off a query result rather than written out: the projection in
+ * lib/sanity/fragments.ts decides this shape, and reading it back from the
+ * generated types is what makes a new linkable document type show up here as a
+ * compile error in the switch below rather than as a silent fall-through to
+ * the home page.
+ */
+type SanityInternalLink = NonNullable<
+  NonNullable<
+    NonNullable<NonNullable<HeaderQueryResult["header"]>["cta"]>["link"]
+  >["internalLink"]
+>;
 
-interface SanityAsset {
-  _ref?: string;
-  _id?: string;
-  url?: string;
-}
-
-interface SanityFile {
-  asset: SanityAsset;
-}
-
+/**
+ * The parts of a link field this parser reads.
+ *
+ * Deliberately the fields rather than the whole generated `link` object: a
+ * generated link satisfies this structurally, and so does the bare
+ * `{ type: "external", url }` literal the tests hand it, which the full object
+ * type would reject for missing `_type` and `internalLink`.
+ */
 interface SanityLinkField {
   type?: string;
   href?: string;
@@ -41,15 +55,11 @@ interface SanityLinkField {
   blank?: boolean;
   email?: string;
   phone?: string;
-  internalLink?: {
-    _type: string;
-    slug: string;
-    [key: string]: any;
-  };
+  internalLink?: SanityInternalLink | null;
 }
 
 type LinkType =
-  "external" | "internal" | "email" | "phone" | "file" | "empty" | "unknown";
+  "external" | "internal" | "email" | "phone" | "empty" | "unknown";
 
 interface ParsedLink {
   type: LinkType;
@@ -62,15 +72,25 @@ interface ParsedLink {
 }
 
 const defaultOptions: Required<ParserOptions> = {
-  allowExternal: true,
   allowInternal: true,
-  allowEmail: true,
-  allowPhone: true,
-  allowFile: true,
   requireText: false,
-  defaultTarget: "_self",
   locale: defaultLocale,
 };
+
+/**
+ * `internalLink.slug` as a path segment.
+ *
+ * The projection is `select(defined(slug.current) => slug.current, slug)`, so
+ * for every document type that has a slug field - which is every one the
+ * studio offers as a link target - this is already a string. The generated
+ * union admits Sanity's `{_type: "slug", current}` object for the types where
+ * GROQ cannot prove otherwise, and that branch is unwrapped here rather than
+ * asserted away.
+ */
+function slugText(slug: SanityInternalLink["slug"]): string {
+  if (typeof slug === "string") return slug;
+  return slug?.current ?? "";
+}
 
 /**
  * Parse a Sanity link field object
@@ -82,7 +102,7 @@ function parseLinkField(
   const config: Required<ParserOptions> = { ...defaultOptions, ...options };
 
   if (!linkField || typeof linkField !== "object") {
-    return createEmptyLink(config);
+    return createEmptyLink();
   }
 
   const result = {
@@ -90,7 +110,7 @@ function parseLinkField(
     url: " ",
     text:
       linkField.text ||
-      linkField.internalLink?.text ||
+      internalLinkText(linkField.internalLink) ||
       linkField.internalLink?.title ||
       "",
     title: linkField.text || linkField.internalLink?.title || "",
@@ -102,16 +122,16 @@ function parseLinkField(
   try {
     switch (result.type) {
       case "external":
-        result.url = parseExternalLink(linkField, config);
+        result.url = parseExternalLink(linkField);
         break;
       case "internal":
         result.url = parseInternalLink(linkField, config);
         break;
       case "email":
-        result.url = parseEmailLink(linkField, config);
+        result.url = parseEmailLink(linkField);
         break;
       case "phone":
-        result.url = parsePhoneLink(linkField, config);
+        result.url = parsePhoneLink(linkField);
         break;
       default:
       // result.errors.push("Unknown link type");
@@ -123,6 +143,17 @@ function parseLinkField(
   }
 
   return result;
+}
+
+/**
+ * The label a geography document carries.
+ *
+ * Only `countries`, `regions`, `areas` and `subareas` project a `text` field -
+ * see the per-type overrides in `internalLinkFields` - so the union has it on
+ * those four members and nowhere else.
+ */
+function internalLinkText(link: SanityInternalLink | null | undefined): string {
+  return link && "text" in link ? (link.text ?? "") : "";
 }
 
 /**
@@ -149,14 +180,7 @@ function detectLinkType(linkField: SanityLinkField): LinkType {
 /**
  * Parse external URL links
  */
-function parseExternalLink(
-  linkField: SanityLinkField,
-  config: Required<ParserOptions>,
-): string {
-  if (!config.allowExternal) {
-    throw new Error("External links are not allowed");
-  }
-
+function parseExternalLink(linkField: SanityLinkField): string {
   let url = linkField.url || linkField.href || "";
 
   // Add protocol if missing
@@ -173,65 +197,51 @@ function parseExternalLink(
 
 /**
  * Parse internal reference links
+ *
+ * Switched on the target document itself rather than on a copied-out `_type`,
+ * so each branch below narrows the union and reads only the fields that
+ * document actually projects.
  */
 function parseInternalLink(
   linkField: SanityLinkField,
   config: Required<ParserOptions>,
 ): string {
-  if (!config.allowInternal || !linkField.internalLink) {
+  const target = linkField.internalLink;
+
+  if (!config.allowInternal || !target) {
     throw new Error("Internal links are not allowed");
   }
 
-  const type =
-    linkField.internalLink?._type === "reference"
-      ? linkField.internalLink?._ref
-      : linkField.internalLink?._type;
+  const routes = getLocalizedRoutes(config.locale);
 
-  switch (type) {
+  switch (target._type) {
     case "countries":
     case "regions":
     case "areas":
     case "subareas":
-      return getLocalizedRoutes(config.locale).catalogs(
-        linkField.internalLink.slug,
-      );
+      return routes.catalogs(slugText(target.slug));
     case "blogs":
-      return getLocalizedRoutes(config.locale).article(
-        linkField.internalLink.slug,
-      );
-    case "contactUs":
-      return getLocalizedRoutes(config.locale).contactUs;
-    case "group":
-      return getLocalizedRoutes(config.locale).groups;
-    case "home":
-      return getLocalizedRoutes(config.locale).home;
-    case "preschoolPage":
-    case "preschool":
-      return getLocalizedRoutes(config.locale).cooperation;
-    case "schools":
-      return getLocalizedRoutes(config.locale).group(
-        linkField.internalLink.slug,
-      );
     case "blogPage":
-      return getLocalizedRoutes(config.locale).article(
-        linkField.internalLink.slug,
-      );
+      return routes.article(slugText(target.slug));
+    case "contactUs":
+      return routes.contactUs;
+    case "group":
+      return routes.groups;
+    case "home":
+      return routes.home;
+    case "preschool":
+      return routes.cooperation;
+    case "schools":
+      return routes.group(slugText(target.slug));
     default:
-      return getLocalizedRoutes(config.locale).home;
+      return routes.home;
   }
 }
 
 /**
  * Parse email links
  */
-function parseEmailLink(
-  linkField: SanityLinkField,
-  config: Required<ParserOptions>,
-): string {
-  if (!config.allowEmail) {
-    throw new Error("Email links are not allowed");
-  }
-
+function parseEmailLink(linkField: SanityLinkField): string {
   const email = linkField.email || linkField.href?.replace("mailto:", "") || "";
 
   if (!isValidEmail(email)) {
@@ -244,14 +254,7 @@ function parseEmailLink(
 /**
  * Parse phone links
  */
-function parsePhoneLink(
-  linkField: SanityLinkField,
-  config: Required<ParserOptions>,
-): string {
-  if (!config.allowPhone) {
-    throw new Error("Phone links are not allowed");
-  }
-
+function parsePhoneLink(linkField: SanityLinkField): string {
   let phone = linkField.phone || linkField.href?.replace("tel:", "") || "";
 
   // Clean phone number
@@ -307,13 +310,13 @@ function isValidEmail(email: string): boolean {
 /**
  * Create empty link structure
  */
-function createEmptyLink(config: Required<ParserOptions>): ParsedLink {
+function createEmptyLink(): ParsedLink {
   return {
     type: "empty",
     url: " ",
     text: "",
     title: "",
-    target: config.defaultTarget,
+    target: "_self",
     valid: false,
     errors: ["No link data provided"],
   };
@@ -349,9 +352,7 @@ function cleanUrl(url: string): string {
 // Export all functions and types
 export type {
   ParserOptions,
-  SanityReference,
-  SanityAsset,
-  SanityFile,
+  SanityInternalLink,
   SanityLinkField,
   LinkType,
   ParsedLink,

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { encodeSignatureHeader, SIGNATURE_HEADER_NAME } from "@sanity/webhook";
-import { CATCH_ALL_TAG, tagsForType } from "@/app/api/revalidate/tags";
+import { CATCH_ALL_TAG, tagsForType } from "@/lib/sanity/tags";
 
 /**
  * `next/cache` is not importable outside a Next request, and the point of the

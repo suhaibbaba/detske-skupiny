@@ -9,10 +9,12 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typegen": "sanity typegen generate"
   },
   "dependencies": {
     "@detske-skupiny/config": "*",
+    "@detske-skupiny/types": "*",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -25,10 +27,8 @@
     "@portabletext/types": "^4.0.2",
     "@sanity/image-url": "^2.1.1",
     "@sanity/webhook": "^4.0.4",
-    "@vis.gl/react-google-maps": "^1.9.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
-    "lodash.mergewith": "^4.6.2",
     "next": "16.3.2",
     "next-intl": "^4.13.7",
     "next-sanity": "^13.3.3",
@@ -36,16 +36,15 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-infinite-scroll-hook": "^6.0.1",
-    "sanity-plugin-link-field": "1.7.0",
     "server-only": "^0.0.1",
     "yet-another-react-lightbox": "^3.32.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.3.2",
+    "@sanity/cli": "^6.7.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
-    "@types/lodash.mergewith": "^4.6.9",
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",

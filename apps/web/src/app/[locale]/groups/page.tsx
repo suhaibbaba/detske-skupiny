@@ -1,9 +1,10 @@
-import { fetchGroupPage } from "@/sanity/queries";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { fetchGroupPage } from "@/features/catalog/queries";
 import { PageProps } from "@/types";
-import { Box, BoxProps } from "@mui/material";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import GroupSection from "@/app/[locale]/groups/components/groupSection";
+import { Box } from "@mui/material";
+import PageLayout from "@/components/layout/PageLayout";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import GroupSection from "@/features/catalog/components/GroupSection";
 import React from "react";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
@@ -12,23 +13,12 @@ import { setRequestLocale } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { staticRoutePaths } from "@/lib/seo/routes";
 
-interface GroupsStyles {
-  container?: BoxProps;
-  pageLayout?: PageLayoutStyles;
-}
-
-const styles: GroupsStyles = {
-  container: {
-    sx: {},
-  },
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui3)",
-      },
-    },
-  },
-};
+const styles = {
+  container: {},
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageCreamToLilac,
+  }),
+} satisfies Record<string, SxProps<Theme>>;
 
 export async function generateMetadata({
   params,
@@ -57,10 +47,10 @@ const Page = async ({ params }: PageProps) => {
   const { content, groups } = await fetchGroupPage(locale);
 
   return (
-    <Box component="section" {...styles.container}>
+    <Box component="section" sx={styles.container}>
       <PageLayout
         contentFullWidth={false}
-        extendedStyles={styles.pageLayout}
+        sx={styles.pageLayout}
         pathname={getLocalizedRoutes(locale).group()}
       >
         <PageHeadingTypography

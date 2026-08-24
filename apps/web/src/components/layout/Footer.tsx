@@ -1,149 +1,109 @@
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  Stack,
-  BoxProps,
-  TypographyOwnProps,
-  StackProps,
-  LinkProps,
-  SvgIconProps,
-} from "@mui/material";
-import { fetchFooterPage } from "@/sanity/queries/footer";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Typography, Container, Grid, Stack } from "@mui/material";
+import { fetchFooterPage } from "@/lib/sanity/footer";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Link from "@/components/ui/link/Link";
 import EmailIcon from "@/components/icons/Email";
 import PhoneIcon from "@/components/icons/Phone";
 import { FooterContent } from "@/types/footer";
-import LanguageSwitcher from "@/components/ui/Language/LanguageSwitcher";
+import LanguageSwitcher from "@/components/ui/language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
+import CopyrightYear from "@/components/layout/CopyrightYear";
 
-interface FooterStyles {
-  container?: BoxProps;
-  copyrightContainer?: BoxProps;
-  logoContainer?: BoxProps;
-  logo?: ImageProps;
-  columnTitle?: TypographyOwnProps;
-  columnText?: TypographyOwnProps;
-  copyright?: TypographyOwnProps;
-  link?: LinkProps;
-  iconLink?: SvgIconProps;
-  languageSwitcherContainer?: BoxProps;
-}
+/** The placeholder Sanity authors write into the copyright line. */
+const YEAR_PLACEHOLDER = "{0}";
 
-const styles: FooterStyles = {
+const styles = {
   container: {
-    sx: {
-      backgroundColor: "primary.dark",
-      pt: "64px",
-      pb: "32px",
-    },
+    backgroundColor: "primary.dark",
+    pt: "64px",
+    pb: "32px",
   },
   copyrightContainer: {
-    sx: {
-      borderTop: 1,
-      borderColor: "primary.light",
-      pt: "24px",
-      mt: "48px",
-      gap: "20px",
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "repeat(2, 1fr)",
-        md: "repeat(3, 1fr)",
-      },
-      justifyContent: {
-        xs: "flex-start",
-        sm: "space-between",
-      },
+    borderTop: 1,
+    borderColor: "primary.light",
+    pt: "24px",
+    mt: "48px",
+    gap: "20px",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "repeat(2, 1fr)",
+      md: "repeat(3, 1fr)",
+    },
+    justifyContent: {
+      xs: "flex-start",
+      sm: "space-between",
     },
   },
   logoContainer: {
-    sx: {
-      position: "relative",
-      display: "flex",
-      justifyContent: "flex-start",
-      width: 120,
-      height: 30,
-    },
+    position: "relative",
+    display: "flex",
+    justifyContent: "flex-start",
+    width: 120,
+    height: 30,
   },
   logo: {
-    sx: {
-      width: "auto",
-      height: "auto",
-      maxWidth: "100%",
-      maxHeight: "100%",
-    },
+    width: "auto",
+    height: "auto",
+    maxWidth: "100%",
+    maxHeight: "100%",
   },
   columnTitle: {
-    sx: {
-      fontSize: "14px",
-      fontWeight: 600,
-      color: "white",
-      textTransform: "uppercase",
-      mb: "16px",
-    },
+    fontSize: "14px",
+    fontWeight: 600,
+    color: "white",
+    textTransform: "uppercase",
+    mb: "16px",
   },
   columnText: {
-    sx: {
-      fontSize: "16px",
-      fontWeight: 400,
-      color: "white",
-      mb: "4px",
-      whiteSpace: "pre-line",
-    },
+    fontSize: "16px",
+    fontWeight: 400,
+    color: "white",
+    mb: "4px",
+    whiteSpace: "pre-line",
   },
   copyright: {
-    sx: {
-      fontSize: "16px",
-      fontWeight: 400,
-      color: "white",
-      mb: "4px",
-      whiteSpace: "pre-line",
-      textAlign: {
-        xs: "left",
-        sm: "right",
-        md: "center",
-      },
+    fontSize: "16px",
+    fontWeight: 400,
+    color: "white",
+    mb: "4px",
+    whiteSpace: "pre-line",
+    textAlign: {
+      xs: "left",
+      sm: "right",
+      md: "center",
     },
   },
   link: {
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-start",
-      gap: "8px",
-      fontSize: "16px",
-      fontWeight: 400,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: "8px",
+    fontSize: "16px",
+    fontWeight: 400,
+    color: "white",
+    mb: "0",
+    whiteSpace: "pre-line",
+    alignSelf: "baseline",
+    "&&:hover": {
       color: "white",
-      mb: "0",
-      whiteSpace: "pre-line",
-      alignSelf: "baseline",
-      "&&:hover": {
-        color: "white",
-        opacity: 0.6,
-      },
+      opacity: 0.6,
     },
   },
   iconLink: {
-    sx: {
-      color: "var(--mui-palette-secondary-light)",
-      width: "15px",
-      height: "15px",
-    },
+    color: "var(--mui-palette-secondary-light)",
+    width: "15px",
+    height: "15px",
   },
   languageSwitcherContainer: {
-    sx: {
-      display: "flex",
-      justifyContent: {
-        sm: "flex-start",
-        md: "flex-end",
-      },
+    display: "flex",
+    justifyContent: {
+      sm: "flex-start",
+      md: "flex-end",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const Footer = async ({ locale }: { locale: string }) => {
   const { footer } = await fetchFooterPage(locale);
@@ -156,7 +116,7 @@ const Footer = async ({ locale }: { locale: string }) => {
     switch (item._type) {
       case "textItem":
         return (
-          <Typography key={index} {...styles.columnText}>
+          <Typography key={index} sx={styles.columnText}>
             {item.text}
           </Typography>
         );
@@ -175,10 +135,10 @@ const Footer = async ({ locale }: { locale: string }) => {
                 key={index}
                 href={link.url}
                 target={link.target}
-                {...styles.link}
+                sx={styles.link}
               >
-                {link.type === "email" && <EmailIcon {...styles.iconLink} />}
-                {link.type === "phone" && <PhoneIcon {...styles.iconLink} />}
+                {link.type === "email" && <EmailIcon sx={styles.iconLink} />}
+                {link.type === "phone" && <PhoneIcon sx={styles.iconLink} />}
                 {displayUrl}
               </Link>
             );
@@ -188,7 +148,7 @@ const Footer = async ({ locale }: { locale: string }) => {
             <Link
               key={index}
               href={link.url}
-              {...styles.link}
+              sx={styles.link}
               target={link.target}
             >
               {link.text}
@@ -202,13 +162,13 @@ const Footer = async ({ locale }: { locale: string }) => {
   };
 
   return (
-    <Box component="footer" {...styles.container}>
+    <Box component="footer" sx={styles.container}>
       <Container>
         <Grid container spacing={4}>
           {footer.columns?.map((column, idx) => (
             <Grid key={column.title || idx} size={{ xs: 12, sm: 6, md: 4 }}>
               {column.title && (
-                <Typography {...styles.columnTitle}>{column.title}</Typography>
+                <Typography sx={styles.columnTitle}>{column.title}</Typography>
               )}
               <Stack
                 sx={{
@@ -222,27 +182,35 @@ const Footer = async ({ locale }: { locale: string }) => {
             </Grid>
           ))}
         </Grid>
-        <Box {...styles.copyrightContainer}>
+        <Box sx={styles.copyrightContainer}>
           {footer.logo && (
-            <Box {...styles.logoContainer}>
+            <Box sx={styles.logoContainer}>
               <Image
                 src={footer.logo}
                 alt="Logo"
                 sizes="120px"
-                {...styles.logo}
+                sx={styles.logo}
               />
             </Box>
           )}
           {footer.copyright && (
-            <Typography {...styles.copyright}>
-              {footer.copyright.replace(
-                "{0}",
-                new Date().getFullYear().toString(),
-              )}
+            <Typography sx={styles.copyright}>
+              {/*
+               * `{0}` is spliced, not replaced. Reading the clock here would
+               * bake a year into the cached render of this server component;
+               * CopyrightYear is a client leaf that reads it per visitor.
+               */}
+              {footer.copyright
+                .split(YEAR_PLACEHOLDER)
+                .flatMap((part, index) =>
+                  index === 0
+                    ? [part]
+                    : [<CopyrightYear key={`year-${index}`} />, part],
+                )}
             </Typography>
           )}
 
-          <Box {...styles.languageSwitcherContainer}>
+          <Box sx={styles.languageSwitcherContainer}>
             <LanguageSwitcher />
           </Box>
         </Box>

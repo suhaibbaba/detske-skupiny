@@ -1,5 +1,5 @@
 import createMiddleware from "next-intl/middleware";
-import { routing } from "@/i18n/routing";
+import { routing } from "@/lib/i18n/routing";
 import { NextRequest } from "next/server";
 
 // Next 16 renames the `middleware` convention to `proxy`. The file runs on the

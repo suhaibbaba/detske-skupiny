@@ -2,13 +2,10 @@ import * as React from "react";
 import { Breadcrumbs as MuiBreadcrumbs, Typography } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { getLocale } from "next-intl/server";
-import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
+import { fetchBreadcrumbList } from "@/lib/sanity/breadcrumb";
 import Link from "@/components/ui/link";
 import { getTranslateServer } from "@/hooks/useTranslate";
-import {
-  BreadcrumbItem,
-  BreadcrumbsStyles,
-} from "@/components/ui/breadcrumb/types";
+import { BreadcrumbItem } from "@/components/ui/breadcrumb/types";
 import {
   buildSchoolBreadcrumbs,
   buildStandardBreadcrumbs,
@@ -17,6 +14,7 @@ import {
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonLd";
 import { absoluteUrl } from "@/lib/seo/site";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   /**
@@ -30,24 +28,20 @@ interface Props {
   addSpace?: boolean;
 }
 
-const styles: BreadcrumbsStyles = {
+const styles = {
   link: {
-    sx: {
-      textDecoration: "none",
-      fontSize: "14px",
-      color: "#323C49",
-      lineHeight: "14px",
-    },
+    textDecoration: "none",
+    fontSize: "14px",
+    color: "#323C49",
+    lineHeight: "14px",
   },
   text: {
-    sx: {
-      textDecoration: "none",
-      fontSize: "14px",
-      color: "var(--mui-palette-custom-ui2)",
-      lineHeight: "14px",
-    },
+    textDecoration: "none",
+    fontSize: "14px",
+    color: "custom.inputBorder",
+    lineHeight: "14px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
   const locale = await getLocale();
@@ -66,7 +60,14 @@ const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
   if (slugs.length > 0) {
     try {
       const pages = await fetchBreadcrumbList({ slugs });
-      const pageMap = new Map(pages.map((page) => [page.slug, page]));
+      // `slug` is `slug.current` and the query matches on it, so every row has
+      // one; the filter is what convinces the compiler of that, and it keeps
+      // the map keyed by string rather than by `string | null`.
+      const pageMap = new Map(
+        pages.flatMap((page) =>
+          page.slug ? [[page.slug, page] as const] : [],
+        ),
+      );
 
       const lastSegment = pathSegments[pathSegments.length - 1];
       const isSchoolType = pageMap.get(lastSegment)?._type === "schools";
@@ -120,11 +121,11 @@ const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
         sx={{ mb: addSpace ? "40px" : 0, ol: { rowGap: "8px" } }}
       >
         {breadcrumbs.slice(0, -1).map((item) => (
-          <Link key={item.href} href={item.href} {...styles.link}>
+          <Link key={item.href} href={item.href} sx={styles.link}>
             {item.label}
           </Link>
         ))}
-        <Typography {...styles.text}>{last.label}</Typography>
+        <Typography sx={styles.text}>{last.label}</Typography>
       </MuiBreadcrumbs>
     </React.Fragment>
   );

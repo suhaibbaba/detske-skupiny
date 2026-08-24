@@ -1,4 +1,4 @@
-import type { PostalAddress } from "@/sanity/types";
+import type { PostalAddress } from "@/types";
 
 /**
  * The structured data the site publishes, as plain objects.
@@ -65,13 +65,13 @@ export const organization = (name: string, url: string): JsonLdObject =>
   compact({ "@type": "Organization", name, url });
 
 export type SchoolJsonLdInput = {
-  name: string;
+  name: string | null;
   url: string;
-  description?: string;
-  image?: string;
+  description?: string | null;
+  image?: string | null;
   address?: PostalAddress | null;
   /** The region the school sits in, used as `addressRegion`. */
-  regionName?: string;
+  regionName?: string | null;
   telephone?: string;
   email?: string;
   /** The school's own website, if it has one. */
@@ -131,12 +131,12 @@ export function schoolJsonLd({
 }
 
 export type ArticleJsonLdInput = {
-  headline: string;
+  headline: string | null;
   url: string;
-  description?: string;
-  image?: string;
-  datePublished?: string;
-  dateModified?: string;
+  description?: string | null;
+  image?: string | null;
+  datePublished?: string | null;
+  dateModified?: string | null;
   siteName: string;
   siteUrl: string;
 };

@@ -1,5 +1,5 @@
-import { getSettings } from "@/sanity/queries/settings";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { getSettings } from "@/lib/sanity/settings";
+import { urlImageFor } from "@/lib/sanity/imageUrl";
 import { DefaultImageClientProvider } from "./DefaultImageClientProvider";
 
 export async function DefaultImageProvider({
@@ -7,8 +7,10 @@ export async function DefaultImageProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { defaultImage } = await getSettings();
-  const defaultImageUrl = urlImageFor(defaultImage);
+  // `settingsQuery` is `*[_type == "settings"][0]`, so a dataset with no
+  // settings document returns null rather than an object with empty fields.
+  const settings = await getSettings();
+  const defaultImageUrl = urlImageFor(settings?.defaultImage);
 
   return (
     <DefaultImageClientProvider defaultImageUrl={defaultImageUrl}>

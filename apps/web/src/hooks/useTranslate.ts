@@ -1,6 +1,6 @@
 import { useTranslations as useIntlTranslations } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
-import { camelToDisplayText } from "@/utilites/strings";
+import { camelToDisplayText } from "@/utils/strings";
 
 export function useTranslate() {
   // Pass empty string or undefined to use root namespace

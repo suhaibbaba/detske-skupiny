@@ -1,19 +1,37 @@
-import { groq } from "next-sanity";
-import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
+import { excludeDraft, languageQuery } from "@/lib/sanity/filters";
 
 /**
  * Shared GROQ projections.
  *
  * These are the projections that used to be copy-pasted across
- * src/sanity/queries/*. Keeping one copy matters most for `linkFields`: link
+ * each feature's query module. Keeping one copy matters most for `linkFields`: link
  * resolution now happens inside GROQ, so any place that returns a `link`
  * object has to project it through this fragment or the link will arrive at
  * the browser as an unresolved reference.
+ *
+ * Nothing here carries the `groq` tag, and that is deliberate. These are
+ * fragments - halves of a projection, a bare filter, a count - not queries, and
+ * Sanity TypeGen parses every tagged template it finds as a complete GROQ
+ * query. Tagged, each one below reports a syntax error on every run and buries
+ * the failures that actually matter. Untagged they are still resolved when a
+ * query interpolates them, which is the only place they are ever evaluated.
+ * The `groq` tag is reserved for `defineQuery` call sites in the query modules.
  */
 
-/** `"alias": field.asset->url` - the shape every image projection used. */
-export const imageUrl = (field: string, alias = field) =>
-  groq`"${alias}": ${field}.asset->url`;
+/**
+ * `"field": field.asset->url` - the shape every image projection used.
+ *
+ * `imageUrl` and `imageUrlAs` are two functions rather than one with a
+ * defaulted `alias` because Sanity TypeGen evaluates these fragments
+ * statically: it binds a parameter from the call site and gives up on one that
+ * exists only as a default ("Could not find binding for node \"alias\""), which
+ * silently drops every query the fragment appears in from the generated types.
+ */
+export const imageUrl = (field: string) => `"${field}": ${field}.asset->url`;
+
+/** `imageUrl` where the projected key differs from the field it reads. */
+export const imageUrlAs = (field: string, alias: string) =>
+  `"${alias}": ${field}.asset->url`;
 
 /**
  * The same URL, plus the base64 thumbnail Sanity generates for every asset.
@@ -25,13 +43,13 @@ export const imageUrl = (field: string, alias = field) =>
  * the school detail and article queries rather than by every image projection.
  *
  * Dimensions are deliberately NOT projected here: they are already encoded in
- * the asset id, and `imageDimensions` in sanity/sections/sanityImageUrl.ts
+ * the asset id, and `imageDimensions` in lib/sanity/imageUrl.ts
  * reads them from there. Adding them would change the shape every consumer
  * receives for a number the URL already carries.
  */
-export const imageUrlWithLqip = (field: string, alias = field) => groq`
-  "${alias}": ${field}.asset->url,
-  "${alias}Lqip": ${field}.asset->metadata.lqip
+export const imageUrlWithLqip = (field: string) => `
+  "${field}": ${field}.asset->url,
+  "${field}Lqip": ${field}.asset->metadata.lqip
 `;
 
 /**
@@ -51,14 +69,14 @@ export const imageUrlWithLqip = (field: string, alias = field) => groq`
  * Each fragment is written for a projection of that document type - use
  * `regionPath` inside `*[_type == "regions"]{...}`, and so on.
  */
-export const regionPath = groq`"/" + country->slug.current + "/" + slug.current`;
+export const regionPath = `"/" + country->slug.current + "/" + slug.current`;
 
-export const areaPath = groq`"/"
+export const areaPath = `"/"
   + region->country->slug.current + "/"
   + region->slug.current + "/"
   + slug.current`;
 
-export const subareaPath = groq`"/"
+export const subareaPath = `"/"
   + area->region->country->slug.current + "/"
   + area->region->slug.current + "/"
   + area->slug.current + "/"
@@ -76,28 +94,28 @@ export const subareaPath = groq`"/"
  * `^` is the document being projected, so each of these belongs directly in a
  * projection of its own type.
  */
-export const schoolCountForCountry = groq`count(*[
+export const schoolCountForCountry = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
   area->region->country->slug.current == ^.slug.current
 ])`;
 
-export const schoolCountForRegion = groq`count(*[
+export const schoolCountForRegion = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
   area->region._ref == ^._id
 ])`;
 
-export const schoolCountForArea = groq`count(*[
+export const schoolCountForArea = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
   area._ref == ^._id
 ])`;
 
-export const schoolCountForSubarea = groq`count(*[
+export const schoolCountForSubarea = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
@@ -107,7 +125,7 @@ export const schoolCountForSubarea = groq`count(*[
 /**
  * A `link` object with its `internalLink` reference already dereferenced.
  *
- * This replaces src/sanity/utilites/expandLinks.ts, which walked every fetched
+ * This replaces the old expandLinks helper, which walked every fetched
  * payload, collected `link.internalLink` refs and resolved them in a second
  * round-trip. The projection below is a faithful port of the query that helper
  * ran, so the shape `parseLinkField` receives is unchanged: `_type` picks the
@@ -117,7 +135,7 @@ export const schoolCountForSubarea = groq`count(*[
  * `/country/region/area` chain (or `slug.current` for a country), not the bare
  * `slug` - see `regionPath` and friends below.
  */
-export const internalLinkFields = groq`
+export const internalLinkFields = `
   _id,
   _type,
   "slug": select(defined(slug.current) => slug.current, slug),
@@ -141,30 +159,24 @@ export const internalLinkFields = groq`
   }
 `;
 
-export const linkFields = groq`
+export const linkFields = `
   ...,
   internalLink->{ ${internalLinkFields} }
 `;
 
 /** A `link` field, resolved. */
-export const linkField = groq`link{ ${linkFields} }`;
+export const linkField = `link{ ${linkFields} }`;
 
 /** A `cta` object: everything it has, with its link resolved. */
-export const ctaFields = groq`
+export const ctaFields = `
   ...,
   ${linkField}
 `;
 
 /** The `pageHero` object shared by blogPage, schoolPage, group and contactUs. */
-export const pageHeroFields = groq`
+export const pageHeroFields = `
   ...,
   ctas[]{ ${ctaFields} }
-`;
-
-/** Title and description fields used to build route metadata. */
-export const metaFields = groq`
-  title,
-  metaDescription
 `;
 
 /**
@@ -173,7 +185,7 @@ export const metaFields = groq`
  * Was duplicated verbatim in page.ts (mapCollection markers) and
  * school-list.ts (catalog markers).
  */
-export const fullAddressField = groq`
+export const fullAddressField = `
   "fullAddress":
     select(defined(address.street) => address.street, "") +
     select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") +
@@ -183,7 +195,7 @@ export const fullAddressField = groq`
 `;
 
 /** A school reduced to what a map marker needs. */
-export const markerFields = groq`
+export const markerFields = `
   "id": _id,
   "coordinate": address.mapLocation,
   name,
@@ -191,14 +203,14 @@ export const markerFields = groq`
   "slug": slug.current
 `;
 
-export const tagFields = groq`
+export const tagFields = `
   "id": _id,
   name,
   "slug": slug.current,
   "borderColor": borderColor.hex
 `;
 
-export const schoolTypeFields = groq`
+export const schoolTypeFields = `
   "id": _id,
   name,
   highPriority,
@@ -207,7 +219,7 @@ export const schoolTypeFields = groq`
   "backgroundColor": backgroundColor.hex
 `;
 
-export const schoolCategoryFields = groq`
+export const schoolCategoryFields = `
   "id": _id,
   name,
   "slug": slug.current,
@@ -226,7 +238,7 @@ export const schoolCategoryFields = groq`
  *
  * `website` is a link field, so it goes through `linkFields` like any other.
  */
-export const schoolCardFields = groq`
+export const schoolCardFields = `
   "id": _id,
   name,
   "slug": slug.current,
@@ -259,7 +271,7 @@ export const schoolCardFields = groq`
  * Add to this list when a new section type gains a CTA (see
  * apps/studio/schemaTypes/components).
  */
-export const sectionLinkFields = groq`
+export const sectionLinkFields = `
   ctas[]{ ${ctaFields} },
   cta{ ${ctaFields} },
   plans[]{
@@ -280,7 +292,7 @@ export const sectionLinkFields = groq`
  * per-type fragments return for them, so every value this produces is a
  * path. `getLocalizedRoutes(...).catalogs` strips it again when it joins.
  */
-export const catalogPathBySelfType = groq`select(
+export const catalogPathBySelfType = `select(
   _type == "countries" => "/" + slug.current,
   _type == "regions" => ${regionPath},
   _type == "areas" => ${areaPath},
@@ -305,9 +317,7 @@ export const catalogPathBySelfType = groq`select(
  * `locale`, so the self-entry is simply the entry for the locale they are
  * already on, and pairing stays correct whichever direction it is read from.
  */
-export const translationPaths = (
-  pathExpression: string,
-) => groq`"translations": *[
+export const translationPaths = (pathExpression: string) => `"translations": *[
     _type == "translation.metadata" &&
     references(^._id)
   ][0].translations[]{
@@ -316,7 +326,17 @@ export const translationPaths = (
   }`;
 
 /** `translationPaths` for any document whose path is just its slug. */
-export const translationSlugs = translationPaths(groq`slug.current`);
+export const translationSlugs = translationPaths(`slug.current`);
 
-/** `translationPaths` for the geography documents behind catalog pages. */
-export const translationCatalogPaths = translationPaths(catalogPathBySelfType);
+/**
+ * `translationPaths` for the geography documents behind catalog pages.
+ *
+ * The argument is wrapped as `` `${catalogPathBySelfType}` `` rather than
+ * passed as the identifier. TypeGen resolves call arguments statically and
+ * only understands literals - a bare identifier gives "Could not find binding
+ * for node", and every query built from the result is quietly dropped from the
+ * generated types. The GROQ produced is byte-identical either way.
+ */
+export const translationCatalogPaths = translationPaths(
+  `${catalogPathBySelfType}`,
+);

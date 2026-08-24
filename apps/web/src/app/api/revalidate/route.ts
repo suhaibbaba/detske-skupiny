@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { isValidSignature, SIGNATURE_HEADER_NAME } from "@sanity/webhook";
-import { CATCH_ALL_TAG, tagsForType } from "@/app/api/revalidate/tags";
+import { CATCH_ALL_TAG, tagsForType } from "@/lib/sanity/tags";
 
 /**
  * Drops cached Sanity responses when a document is published.

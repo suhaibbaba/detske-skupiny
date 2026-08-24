@@ -1,24 +1,15 @@
-import { fetchBlogBySlug } from "@/sanity/queries";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { fetchBlogBySlug } from "@/features/blog/queries";
 import type { Blog } from "@/types/blog";
 import { PageProps } from "@/types";
-import {
-  Box,
-  Container,
-  Typography,
-  BoxProps,
-  Avatar,
-  ListItemProps,
-  TypographyProps,
-  ListProps,
-  AvatarProps,
-} from "@mui/material";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
-import { formatMessage } from "@/utilites/strings";
+import { Box, Container, Typography } from "@mui/material";
+import PageLayout from "@/components/layout/PageLayout";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import BlogCategories from "@/features/blog/components/BlogCategories";
+import { formatMessage } from "@/utils/strings";
 import React from "react";
-import { formatDate } from "@/utilites/date";
-import RichText from "@/sanity/components/RichText";
+import { formatDate } from "@/utils/date";
+import RichText from "@/components/rich-text/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import Image, { type ImageProps } from "@/components/ui/image";
 import { Metadata } from "next";
@@ -34,124 +25,78 @@ import { documentPaths } from "@/lib/seo/routes";
 import { absoluteUrl } from "@/lib/seo/site";
 import { resolveOgImage } from "@/lib/seo/images";
 
-interface BlogDetailStyles {
-  pageLayout?: PageLayoutStyles;
-  container?: BoxProps;
-  featureItem?: ListItemProps;
-  image?: ImageProps;
-  detailsHintBox?: BoxProps;
-  authorMeta?: BoxProps;
-  authorText?: TypographyProps;
-  sectionBox?: BoxProps;
-  list?: ListProps;
-  authorBox?: BoxProps;
-  bioBox?: BoxProps;
-  avatar?: AvatarProps;
-  sectionHeading?: TypographyProps;
-  paragraph?: TypographyProps;
-}
-
-const styles: BlogDetailStyles = {
+const styles = {
   container: {
-    sx: {
-      pb: "116px",
-      "&.pt-20": {
-        pt: "20px",
-      },
+    pb: "116px",
+    "&.pt-20": {
+      pt: "20px",
     },
   },
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui2)",
-        pb: "100px",
-        mb: "100px",
-      },
-    },
-  },
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageBlushToCream,
+    pb: "100px",
+    mb: "100px",
+  }),
   detailsHintBox: {
-    sx: {
-      mx: "auto",
-      maxWidth: "920px",
-      display: "flex",
-      flexDirection: "column",
-      gap: "80px",
-    },
+    mx: "auto",
+    maxWidth: "920px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "80px",
   },
   image: {
-    sx: {
-      width: "100%",
-      maxHeight: "450px",
-      objectFit: "cover",
-    },
+    width: "100%",
+    maxHeight: "450px",
+    objectFit: "cover",
   },
   authorMeta: {
-    sx: {
-      display: "flex",
-      flexWrap: "wrap",
-      alignItems: "center",
-      gap: "12px",
-      mt: "24px",
-    },
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "12px",
+    mt: "24px",
   },
   authorText: {
-    component: "span",
-    sx: {
-      color: "custom.ui13",
-      fontWeight: 500,
-      fontSize: "18px",
-    },
+    color: "custom.textHeading",
+    fontWeight: 500,
+    fontSize: "18px",
   },
   sectionBox: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "20px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
   },
   list: {
-    disablePadding: true,
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "1fr 1fr",
-      },
-      gap: "12px",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "1fr 1fr",
     },
+    gap: "12px",
   },
   bioBox: {
-    sx: {
-      p: "24px",
-      display: "flex",
-      flexDirection: "column",
-      bgcolor: "custom.ui15",
-      gap: "8px",
-      borderRadius: "12px",
-      border: `1px solid var(--mui-palette-custom-ui14)`,
-    },
+    p: "24px",
+    display: "flex",
+    flexDirection: "column",
+    bgcolor: "custom.surfaceSand",
+    gap: "8px",
+    borderRadius: "12px",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "custom.borderLilac",
   },
   authorBox: {
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-    },
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   },
   avatar: {
-    sx: {
-      width: "36px",
-      height: "36px",
-    },
+    width: "36px",
+    height: "36px",
   },
-  sectionHeading: {
-    variant: "h3",
-    sx: { textTransform: "capitalize" },
-  },
-  paragraph: {
-    variant: "body1",
-  },
-};
+  sectionHeading: { textTransform: "capitalize" },
+  paragraph: {},
+} satisfies Record<string, SxProps<Theme>>;
 
 /**
  * The article's own paths, keyed by locale.
@@ -226,7 +171,7 @@ const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
   const paths = articlePaths(locale, blog);
 
   return (
-    <Box {...styles.container} className={clsx(!blog?.title && "pt-20")}>
+    <Box sx={styles.container} className={clsx(!blog?.title && "pt-20")}>
       <JsonLd
         data={articleJsonLd({
           headline: blog.title,
@@ -242,14 +187,14 @@ const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
       {blog?.title && (
         <PageLayout
           contentFullWidth={false}
-          extendedStyles={styles.pageLayout}
+          sx={styles.pageLayout}
           pathname={getLocalizedRoutes(locale).article(slug)}
         >
           <PageHeadingTypography title={blog?.title} />
         </PageLayout>
       )}
       <Container>
-        <Box {...styles.detailsHintBox} data-test-selector="details-hint">
+        <Box sx={styles.detailsHintBox} data-test-selector="details-hint">
           <Box>
             {/*
              * The article's cover is the largest thing above the fold on this
@@ -258,7 +203,7 @@ const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
              */}
             <Image
               src={blog.image}
-              {...styles.image}
+              sx={styles.image}
               alt={blog.title}
               priority
               sizes="(max-width: 920px) 100vw, 920px"
@@ -266,11 +211,13 @@ const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
                 ? { placeholder: "blur" as const, blurDataURL: blog.imageLqip }
                 : {})}
             />
-            <Box {...styles.authorMeta}>
+            <Box sx={styles.authorMeta}>
               {formatMessage(
                 `{0}{1}${articleMeta}`,
                 authorName ? (
-                  <Typography {...styles.authorText}>{authorName}</Typography>
+                  <Typography sx={styles.authorText} component="span">
+                    {authorName}
+                  </Typography>
                 ) : (
                   ""
                 ),

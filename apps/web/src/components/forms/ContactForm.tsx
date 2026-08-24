@@ -2,7 +2,6 @@
 
 import {
   Box,
-  BoxProps,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -11,84 +10,54 @@ import {
   TextField,
   Typography,
   Alert,
-  GridBaseProps,
-  TypographyOwnProps,
-  ButtonProps,
 } from "@mui/material";
 import Textarea from "@/components/ui/textarea/Textarea";
 import { FC, useState } from "react";
 import Button from "@/components/ui/button";
-import { ContactUsForm } from "@/sanity/types";
+import { ContactUsForm } from "@/types";
 import useTranslate from "@/hooks/useTranslate";
-import RichText from "@/sanity/components/RichText";
+import RichText from "@/components/rich-text/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
 import TurnstileWidget from "@/components/forms/TurnstileWidget";
-import type { ContactPayload } from "@/app/api/contact/schema";
+import type { ContactPayload } from "@/lib/contact/schema";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   contactUsForm?: ContactUsForm;
-}
-
-interface ContactUsStyles {
-  container?: BoxProps;
-  title?: TypographyOwnProps;
-  description?: TypographyOwnProps;
-  fullWidthGrid?: GridBaseProps;
-  halfWidthGrid?: GridBaseProps;
-  cta?: ButtonProps;
-  honeypot?: BoxProps;
 }
 
 const PRIVACY_POLICY_URL = "/ochrana-osobnich-udaju.pdf";
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-const styles: ContactUsStyles = {
+/** The two Grid column spans this form uses. */
+const FULL_WIDTH = 12;
+const HALF_WIDTH = { xs: 12, sm: 6 };
+
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      bgcolor: "common.white",
-      p: "32px",
-      borderRadius: "16px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    bgcolor: "common.white",
+    p: "32px",
+    borderRadius: "16px",
   },
-  title: {
-    variant: "h3",
-    sx: { mb: "12px" },
-  },
-  description: {
-    sx: { mb: "24px" },
-  },
-  fullWidthGrid: {
-    size: 12,
-  },
-  halfWidthGrid: {
-    size: {
-      xs: 12,
-      sm: 6,
-    },
-  },
-  cta: {
-    sx: {
-      mt: "24px",
-    },
-  },
+  title: { mb: "12px" },
+  description: { mb: "24px" },
+  cta: { mt: "24px" },
   // Visually hidden, but still reachable for bots that parse the DOM.
   // Deliberately not `display: none` - naive bots skip those.
   honeypot: {
-    sx: {
-      position: "absolute",
-      left: "-9999px",
-      top: "auto",
-      width: "1px",
-      height: "1px",
-      overflow: "hidden",
-      opacity: 0,
-    },
+    position: "absolute",
+    left: "-9999px",
+    top: "auto",
+    width: "1px",
+    height: "1px",
+    overflow: "hidden",
+    opacity: 0,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const ContactForm: FC<Props> = ({ contactUsForm }) => {
   const translate = useTranslate();
@@ -155,9 +124,9 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
       setAgree(false);
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
-    } catch (err: any) {
+    } catch (err) {
       setStatus("error");
-      setErrorMsg(err?.message || "Failed to send");
+      setErrorMsg(err instanceof Error ? err.message : "Failed to send");
       setTurnstileToken("");
       setTurnstileResetKey((key) => key + 1);
     }
@@ -168,13 +137,15 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
   }
 
   const { title, description, privacyPolicy, sendMessageCta } = contactUsForm;
-  const link = parseLinkField(sendMessageCta.link, { locale });
+  const link = parseLinkField(sendMessageCta?.link, { locale });
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-xl">
-      <Box {...styles.container}>
-        <Typography {...styles.title}>{title}</Typography>
-        <Typography {...styles.description}>{description}</Typography>
+      <Box sx={styles.container}>
+        <Typography variant="h3" sx={styles.title}>
+          {title}
+        </Typography>
+        <Typography sx={styles.description}>{description}</Typography>
 
         {status === "ok" && (
           <Alert severity="success" sx={{ mb: 2 }}>
@@ -188,7 +159,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
         )}
 
         <Grid container rowSpacing="24px" columnSpacing="32px">
-          <Grid {...styles.halfWidthGrid}>
+          <Grid size={HALF_WIDTH}>
             <TextField
               name="name"
               value={form.name}
@@ -202,7 +173,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               slotProps={{ htmlInput: { maxLength: 100 } }}
             />
           </Grid>
-          <Grid {...styles.halfWidthGrid}>
+          <Grid size={HALF_WIDTH}>
             <TextField
               name="email"
               type="email"
@@ -223,11 +194,11 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               slotProps={{ htmlInput: { maxLength: 200 } }}
             />
           </Grid>
-          <Grid {...styles.fullWidthGrid}>
+          <Grid size={FULL_WIDTH}>
             <Textarea
               name="message"
               value={form.message}
-              onChange={onChange("message") as any}
+              onChange={onChange("message")}
               aria-label="message"
               minRows={5}
               maxRows={7}
@@ -236,7 +207,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
               maxLength={2000}
             />
           </Grid>
-          <Grid {...styles.fullWidthGrid}>
+          <Grid size={FULL_WIDTH}>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -296,7 +267,7 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
           tabIndex={-1}
           aria-hidden="true"
           autoComplete="off"
-          {...styles.honeypot}
+          sx={styles.honeypot}
         />
 
         {TURNSTILE_SITE_KEY && (
@@ -308,12 +279,12 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
           />
         )}
 
-        <Grid {...styles.fullWidthGrid}>
+        <Grid size={FULL_WIDTH}>
           <Button
             type="submit"
-            variant={sendMessageCta.variant}
+            variant={sendMessageCta?.variant}
             fullWidth
-            {...styles.cta}
+            sx={styles.cta}
             disabled={!isValid || status === "sending"}
             aria-busy={status === "sending"}
           >

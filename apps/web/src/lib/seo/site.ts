@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { defaultLocale, locales, routing } from "@/i18n/routing";
+import { defaultLocale, locales, routing } from "@/lib/i18n/routing";
 
 /**
  * Where each locale lives, and how to turn a path into an absolute URL.

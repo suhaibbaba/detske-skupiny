@@ -7,10 +7,10 @@ import Header from "@/components/layout/Header";
 import { nunitoClassName } from "@/fonts/nunito";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
+import IntlErrorHandlingProvider from "@/lib/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
-import { locales } from "@/i18n/routing";
+import { locales } from "@/lib/i18n/routing";
 import { PageProps } from "@/types";
 import { ogLocale, siteContext } from "@/lib/seo/metadata";
 import Script from "next/script";
@@ -76,6 +76,25 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        {/*
+         * The two hosts every page reaches for, warmed before anything asks.
+         *
+         * Every image on the site is a `cdn.sanity.io` URL - `<Image>` points
+         * `next/image` straight at it rather than at Next's optimizer - so the
+         * TLS handshake for that origin is on the critical path of the first
+         * paint on every route. `preconnect` does DNS, TCP and TLS up front;
+         * `dns-prefetch` is the fallback for browsers that ignore it.
+         *
+         * MapTiler only matters on the routes that draw a map, and there it is
+         * reached late, after the SDK chunk loads. It gets `dns-prefetch`
+         * alone: a preconnect held open on a route with no map is a wasted
+         * socket, and browsers cap how many they will keep.
+         */}
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://api.maptiler.com" />
+      </head>
       <body className={nunitoClassName}>
         <AppRouterCacheProvider>
           <NuqsAdapter>

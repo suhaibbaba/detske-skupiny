@@ -2,7 +2,7 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { client } from "@/lib/sanity/client";
-import { CATCH_ALL_TAG } from "@/app/api/revalidate/tags";
+import { CATCH_ALL_TAG } from "@/lib/sanity/tags";
 
 /**
  * Every read of Sanity content goes through here.
@@ -19,7 +19,7 @@ import { CATCH_ALL_TAG } from "@/app/api/revalidate/tags";
  *
  * Every entry also carries `CATCH_ALL_TAG`. A document type the webhook has no
  * mapping for drops that one tag, so an unrecognised publish over-invalidates
- * instead of doing nothing - see app/api/revalidate/tags.ts.
+ * instead of doing nothing - see lib/sanity/tags.ts.
  *
  * `params` and `tags` are part of the cache key, so callers must pass a stable
  * `$locale` rather than reading the locale in here: a dynamic read inside a

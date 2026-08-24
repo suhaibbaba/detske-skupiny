@@ -267,4 +267,77 @@ test.describe("catalog", () => {
     await openCatalog(page);
     expectNoProblems(problems);
   });
+
+  /**
+   * The list streams behind a Suspense boundary, and its fallback is a grid of
+   * placeholder cards rather than a spinner. Two things have to hold: the
+   * fallback is what renders in that boundary, and the grid it draws occupies
+   * the box the real grid will - otherwise the skeleton is just a differently
+   * shaped layout shift.
+   *
+   * The fallback is measured with JavaScript disabled. React streams the
+   * fallback into the initial HTML and swaps it in with an inline script, so
+   * with scripting off the fallback is what stays on screen; with it on, the
+   * swap can beat the first assertion. Blocking the query instead is not an
+   * option - it is a server-side read, not a request the browser makes.
+   *
+   * The vertical check is conditional on the loaded page rendering a map.
+   * `SchoolsMap` returns nothing when no school in scope has coordinates, and
+   * whether that is the case cannot be known before the query the fallback is
+   * waiting on resolves. The horizontal and width checks are unconditional:
+   * they are what prove the placeholder grid has the real grid's columns.
+   */
+  test("the list fallback reserves the grid it is replaced by", async ({
+    browser,
+  }) => {
+    const noScript = await browser.newContext({ javaScriptEnabled: false });
+    const page = await noScript.newPage();
+
+    const href = await (async () => {
+      await page.goto(PATHS.home);
+      return firstCatalogHref(page);
+    })();
+
+    if (!href) {
+      await noScript.close();
+      test.skip(true, "no catalog links on the home page in this dataset");
+      return;
+    }
+
+    await page.goto(href);
+
+    const skeleton = page.locator("[data-test-selector='CardGridSkeleton']");
+    await expect(skeleton).toBeAttached();
+    const placeholder = await skeleton.boundingBox();
+    await noScript.close();
+
+    expect(placeholder, "the skeleton grid must have a box").not.toBeNull();
+
+    // The same route with the list resolved.
+    const loaded = await browser.newPage();
+    await loaded.goto(href);
+    await loaded.waitForLoadState("networkidle");
+
+    const grid = loaded.locator("[data-test-selector='SchoolGrid']");
+    await expect(grid).toBeVisible();
+    const real = await grid.boundingBox();
+    const hasMap =
+      (await loaded.locator("[data-test-selector='SchoolsMap']").count()) > 0;
+    await loaded.close();
+
+    expect(real, "the loaded grid must have a box").not.toBeNull();
+
+    // Same columns, same left edge: the placeholder is the grid, not a
+    // rectangle of roughly the right size.
+    expect(Math.abs(real!.x - placeholder!.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(real!.width - placeholder!.width)).toBeLessThanOrEqual(1);
+
+    if (hasMap) {
+      // Nothing above the grid changed height, so the grid did not move.
+      expect(
+        Math.abs(real!.y - placeholder!.y),
+        "the grid moved when the list replaced its placeholder",
+      ).toBeLessThanOrEqual(2);
+    }
+  });
 });

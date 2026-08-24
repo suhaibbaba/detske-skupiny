@@ -1,7 +1,8 @@
-import { fetchSchoolBreadcrumb } from "@/sanity/queries/breadcrumb";
+import { fetchSchoolBreadcrumb } from "@/lib/sanity/breadcrumb";
 import { BreadcrumbItem } from "@/components/ui/breadcrumb/types";
+import type { BreadcrumbDocument } from "@/types";
 import { BASE_EXCLUDED_FOLDERS } from "@/components/ui/breadcrumb/constants";
-import { pathnames } from "@/i18n/routing";
+import { pathnames } from "@/lib/i18n/routing";
 import { getFolderLabel } from "@/components/ui/breadcrumb/utils";
 import { getLocalizedRoutes } from "@/routes";
 
@@ -43,16 +44,25 @@ const EXCLUDED_NAVIGATION_SEGMENTS = [
  */
 export const EXCLUDED_SEGMENTS = [...new Set(EXCLUDED_NAVIGATION_SEGMENTS)];
 
+/**
+ * The documents a breadcrumb trail was built from, keyed by slug.
+ *
+ * Was `Map<string, any>`. The value is the generated union of every document
+ * `breadcrumbListQuery` can match, so `_type` narrows and `name` is known to be
+ * a string rather than assumed to be one.
+ */
+export type SlugPageMap = ReadonlyMap<string, BreadcrumbDocument>;
+
 export const buildSchoolBreadcrumbs = async (
   pathSegments: string[],
-  pageMap: Map<string, any>,
+  pageMap: SlugPageMap,
   locale: string,
 ): Promise<BreadcrumbItem[]> => {
   const lastSegment = pathSegments[pathSegments.length - 1];
   const lastPageData = pageMap.get(lastSegment);
 
   const schoolBreadcrumbs = await fetchSchoolBreadcrumb({
-    slug: lastPageData?.slug,
+    slug: lastPageData?.slug ?? undefined,
   });
 
   const firstSegment = pathSegments[0];
@@ -65,8 +75,8 @@ export const buildSchoolBreadcrumbs = async (
 
   schoolBreadcrumbs.forEach((item) => {
     breadcrumbs.push({
-      label: item.name,
-      href: getLocalizedRoutes(locale).catalogs(item.slug),
+      label: item.name ?? "",
+      href: getLocalizedRoutes(locale).catalogs(item.slug ?? undefined),
     });
   });
 
@@ -75,7 +85,7 @@ export const buildSchoolBreadcrumbs = async (
 
 export const buildStandardBreadcrumbs = (
   pathSegments: string[],
-  pageMap: Map<string, any>,
+  pageMap: SlugPageMap,
   locale: string,
 ): BreadcrumbItem[] => {
   const breadcrumbs: BreadcrumbItem[] = [];

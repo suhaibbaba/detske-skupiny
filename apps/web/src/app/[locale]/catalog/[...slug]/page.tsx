@@ -1,34 +1,26 @@
-import {
-  Box,
-  BoxProps,
-  CircularProgress,
-  Container,
-  ContainerProps,
-} from "@mui/material";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import FilterSidebar from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, CircularProgress, Container } from "@mui/material";
+import PageLayout from "@/components/layout/PageLayout";
+import FilterSidebar from "@/features/catalog/components/filters/FilterSidebar";
 import { PageProps } from "@/types";
-import {
-  getSelectedSlug,
-  parseCatalogSlug,
-} from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
-import { fetchFilters } from "@/sanity/queries";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import { getSelectedSlug, parseCatalogSlug } from "@/features/catalog/utils";
+import { fetchFilters } from "@/features/catalog/queries";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import {
   fetchSchoolList,
   fetchSchoolMarkers,
   fetchSchoolPage,
-} from "@/sanity/queries/school-list";
+} from "@/features/catalog/queries";
 import { Suspense } from "react";
-import SchoolList from "@/app/[locale]/catalog/[...slug]/components/SchoolList";
-import { CatalogTransitionProvider } from "@/app/[locale]/catalog/[...slug]/components/CatalogTransition";
+import SchoolList from "@/features/catalog/components/SchoolList";
+import { CatalogTransitionProvider } from "@/features/catalog/components/CatalogTransition";
 import {
   PAGE_SIZE,
   loadCatalogSearchParams,
   parseCatalogFilters,
   type LoadMoreInput,
-} from "@/app/[locale]/catalog/[...slug]/searchParams";
-import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+} from "@/features/catalog/searchParams";
+import { Props as FilterSidebarProps } from "@/features/catalog/components/filters/FilterSidebar";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
@@ -36,56 +28,34 @@ import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { documentPaths } from "@/lib/seo/routes";
-import { fetchCatalogNode } from "@/sanity/queries/seo";
+import { fetchCatalogNode } from "@/lib/sanity/seo";
+import CatalogListSkeleton from "@/features/catalog/components/CatalogListSkeleton";
 
 type Props = PageProps<
   { slug: string[] },
   Record<string, string | string[] | undefined>
 >;
 
-interface GroupsPageStyles {
-  pageLayout?: PageLayoutStyles;
-  pageContainer?: BoxProps;
-  container?: ContainerProps;
-  loadingBox?: BoxProps;
-}
-
-const styles: GroupsPageStyles = {
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui3)",
-      },
-    },
-  },
+const styles = {
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageCreamToLilac,
+  }),
   pageContainer: {
-    sx: {
-      pb: {
-        xs: "100px",
-        sm: "164px",
-      },
+    pb: {
+      xs: "100px",
+      sm: "164px",
     },
   },
   container: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        md: "300px 1fr",
-      },
-      columnGap: "60px",
-      mt: { xs: "40px", md: "80px" },
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      md: "300px 1fr",
     },
+    columnGap: "60px",
+    mt: { xs: "40px", md: "80px" },
   },
-  loadingBox: {
-    sx: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      py: 4,
-    },
-  },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 /**
  * The catalog's metadata, with one canonical per location.
@@ -210,10 +180,10 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
   const filterProps = { catalog, selectedSlug, filterContent };
 
   return (
-    <Box {...styles.pageContainer}>
+    <Box sx={styles.pageContainer}>
       <PageLayout
         contentFullWidth={false}
-        extendedStyles={styles.pageLayout}
+        sx={styles.pageLayout}
         pathname={getLocalizedRoutes(locale).catalogs(slug.join("/"))}
       >
         <PageHeadingTypography
@@ -223,7 +193,7 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
         />
       </PageLayout>
       <CatalogTransitionProvider>
-        <Container {...styles.container}>
+        <Container sx={styles.container}>
           <Box sx={{ display: { xs: "none", md: "block" } }}>
             <FilterSidebar
               catalog={catalog}
@@ -231,14 +201,14 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
               filterContent={filterContent}
             />
           </Box>
-          {/* The hero and the filters stream immediately; only the list waits. */}
-          <Suspense
-            fallback={
-              <Box {...styles.loadingBox}>
-                <CircularProgress />
-              </Box>
-            }
-          >
+          {/*
+           * The hero and the filters stream immediately; only the list waits.
+           *
+           * The fallback is the grid's own shape rather than a centred
+           * spinner, which reserved none of the height the cards were about
+           * to take.
+           */}
+          <Suspense fallback={<CatalogListSkeleton />}>
             <SchoolListAsync
               listPromise={listPromise}
               markersPromise={markersPromise}

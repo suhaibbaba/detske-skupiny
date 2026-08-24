@@ -17,19 +17,19 @@ import {
 } from "@mui/material";
 import React, { FC } from "react";
 import { useLocale } from "next-intl";
-import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
-import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
-import { localizeHref } from "@/i18n/routing";
+import {
+  cleanUrl,
+  parseLinkField,
+  type SanityLinkField,
+} from "@/components/ui/link/parser";
+import { localizeHref } from "@/lib/i18n/routing";
 
 interface ButtonProps extends Omit<MuiButtonProps, "href"> {
   href?: string;
-  link?: SanityLinkProps;
+  link?: SanityLinkField | null;
   children?: React.ReactNode;
   scroll?: boolean;
 }
-
-const buttonStyles: MuiButtonProps = {};
 
 const Button: FC<ButtonProps> = ({
   children,
@@ -40,7 +40,6 @@ const Button: FC<ButtonProps> = ({
   ...otherProps
 }) => {
   const locale = useLocale();
-  const styles = mergeMuiProps(buttonStyles, { sx });
 
   if (link) {
     const passedProps = parseLinkField(link, { locale });
@@ -48,7 +47,7 @@ const Button: FC<ButtonProps> = ({
     return (
       <MuiButton
         component={NextLink}
-        {...styles}
+        sx={sx}
         {...otherProps}
         href={passedProps.url}
         scroll={scroll}
@@ -65,7 +64,7 @@ const Button: FC<ButtonProps> = ({
     return (
       <MuiButton
         component={NextLink}
-        {...styles}
+        sx={sx}
         {...otherProps}
         href={localizedHref}
         scroll={scroll}
@@ -77,7 +76,7 @@ const Button: FC<ButtonProps> = ({
   }
 
   return (
-    <MuiButton {...styles} {...otherProps} onClick={onClick}>
+    <MuiButton sx={sx} {...otherProps} onClick={onClick}>
       {children}
     </MuiButton>
   );

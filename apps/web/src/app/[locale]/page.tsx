@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import { fetchPageByType } from "@/sanity/queries";
-import Zone from "@/sanity/components/Zone";
+import { fetchPageByType } from "@/lib/sanity/page";
+import Zone from "@/sections/Zone";
 import { PageProps } from "@/types";
 import { setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
@@ -10,7 +10,7 @@ import { webSiteJsonLd } from "@/lib/seo/jsonLd";
 import { buildPageMetadata, siteContext } from "@/lib/seo/metadata";
 import { staticRoutePaths } from "@/lib/seo/routes";
 import { absoluteUrl } from "@/lib/seo/site";
-import { fetchSearchCountrySlug } from "@/sanity/queries/seo";
+import { fetchSearchCountrySlug } from "@/lib/sanity/seo";
 import { getLocalizedRoutes } from "@/routes";
 
 export async function generateMetadata({

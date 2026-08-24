@@ -10,29 +10,43 @@
  */
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import React, { FC } from "react";
-import { mergeMuiProps } from "@/utilites/mergeMuiProps";
-import { type LinkProps as SanityLinkProps } from "sanity-plugin-link-field/component";
-import { cleanUrl, parseLinkField } from "@/components/ui/link/parser";
+import {
+  cleanUrl,
+  parseLinkField,
+  type SanityLinkField,
+} from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
 
 interface LinkProps
   extends Omit<MuiLinkProps, "href">, Omit<NextLinkProps, "href"> {
   href?: string;
-  link?: SanityLinkProps;
+  link?: SanityLinkField | null;
   children?: React.ReactNode;
   scroll?: boolean;
 }
 
-const linkStyles: MuiLinkProps = {
-  sx: {
-    textDecoration: "none",
-    display: "block",
-  },
+/**
+ * The two rules every link on the site starts from.
+ *
+ * Composed through MUI's own `sx` array rather than through a lodash deep
+ * merge: later entries win, which is exactly what the merge was emulating - at
+ * runtime, on every render. `styled(MuiLink)` would be the other option and is
+ * what Textarea and Image use, but it drops the polymorphic `component` prop
+ * from the types, and this component's whole job is handing MUI `NextLink`.
+ */
+const baseSx: SxProps<Theme> = {
+  textDecoration: "none",
+  display: "block",
 };
 
+const withBase = (sx: SxProps<Theme> | undefined): SxProps<Theme> => [
+  baseSx,
+  ...(Array.isArray(sx) ? sx : [sx]),
+];
+
 const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
-  const styles = mergeMuiProps(linkStyles, { sx });
   const locale = useLocale();
 
   if (!link && !otherProps.href) {
@@ -49,7 +63,7 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
     return (
       <MuiLink
         component={NextLink}
-        {...styles}
+        sx={withBase(sx)}
         {...otherProps}
         href={passedProps.url}
         target={passedProps.target || "_self"}
@@ -62,7 +76,7 @@ const Link: FC<LinkProps> = ({ children, sx, link, ...otherProps }) => {
   return (
     <MuiLink
       component={NextLink}
-      {...styles}
+      sx={withBase(sx)}
       {...otherProps}
       target={otherProps.target || "_self"}
     >
