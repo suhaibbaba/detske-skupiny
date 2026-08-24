@@ -1,10 +1,11 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
 import { PageSections } from "@/sanity/types";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { markerFields, sectionLinkFields } from "@/lib/sanity/fragments";
 
-export const pageByTypeQuery = groq`*[_type == $type && ${languageQuery}][0]{
+export const pageByTypeQuery =
+  defineQuery(`*[_type == $type && ${languageQuery}][0]{
       title,
       sections[]{
         ...,
@@ -23,7 +24,7 @@ export const pageByTypeQuery = groq`*[_type == $type && ${languageQuery}][0]{
         },
       },
     }
-  `;
+  `);
 
 /**
  * Tagged "schools" as well as the page itself: the mapCollection section

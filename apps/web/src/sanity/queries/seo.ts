@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
 import {
@@ -55,13 +55,20 @@ export type CatalogSitemapEntry = SitemapEntry & {
  * The filter is applied to the projection rather than inside `*[...]` because
  * that is where the count fragments are written to run - see the note on `^`
  * in lib/sanity/fragments.ts.
+ *
+ * Every call below wraps its fragment arguments as `` `${fragment}` `` rather
+ * than passing the identifier. Sanity TypeGen resolves a call's arguments
+ * statically and only understands literals: a bare identifier gives "Could not
+ * find binding", and the query it feeds is dropped from the generated types
+ * without failing the run. Wrapping makes the argument a template literal,
+ * which TypeGen does resolve. The GROQ produced is byte-identical.
  */
 const catalogLevel = (
   type: string,
   level: string,
   path: string,
   count: string,
-) => groq`*[
+) => `*[
     _type == "${type}" &&
     ${languageQuery} &&
     ${excludeDraft} &&
@@ -74,7 +81,7 @@ const catalogLevel = (
     ${translationCatalogPaths}
   }[schoolCount > 0]`;
 
-export const sitemapQuery = groq`{
+export const sitemapQuery = defineQuery(`{
     "schools": *[
       _type == "schools" &&
       ${languageQuery} &&
@@ -98,11 +105,11 @@ export const sitemapQuery = groq`{
     },
 
     "catalog":
-      ${catalogLevel("countries", "country", groq`"/" + slug.current`, schoolCountForCountry)}
-      + ${catalogLevel("regions", "region", regionPath, schoolCountForRegion)}
-      + ${catalogLevel("areas", "area", areaPath, schoolCountForArea)}
-      + ${catalogLevel("subareas", "subarea", subareaPath, schoolCountForSubarea)}
-  }`;
+      ${catalogLevel("countries", "country", `"/" + slug.current`, `${schoolCountForCountry}`)}
+      + ${catalogLevel("regions", "region", `${regionPath}`, `${schoolCountForRegion}`)}
+      + ${catalogLevel("areas", "area", `${areaPath}`, `${schoolCountForArea}`)}
+      + ${catalogLevel("subareas", "subarea", `${subareaPath}`, `${schoolCountForSubarea}`)}
+  }`);
 
 export type SitemapContent = {
   schools: SitemapEntry[];
@@ -127,12 +134,12 @@ export async function fetchSitemapContent(locale: string) {
  * makes that template concrete; a dataset with no country returns null and the
  * home page then omits the action rather than publishing one that 404s.
  */
-export const searchCountrySlugQuery = groq`*[
+export const searchCountrySlugQuery = defineQuery(`*[
     _type == "countries" &&
     ${languageQuery} &&
     ${excludeDraft} &&
     defined(slug.current)
-  ] | order(orderRank)[0].slug.current`;
+  ] | order(orderRank)[0].slug.current`);
 
 export async function fetchSearchCountrySlug(locale: string) {
   return sanityFetch<string | null>(searchCountrySlugQuery, { locale }, [
@@ -156,7 +163,7 @@ const CATALOG_TYPE_BY_LEVEL: Record<string, string> = {
  * segments the URL had, which is the same thing the page itself uses to decide
  * which query to run.
  */
-export const catalogNodeQuery = groq`*[
+export const catalogNodeQuery = defineQuery(`*[
     _type == $type &&
     slug.current == $slug &&
     ${languageQuery} &&
@@ -166,7 +173,7 @@ export const catalogNodeQuery = groq`*[
     "path": ${catalogPathBySelfType},
     "updatedAt": _updatedAt,
     ${translationCatalogPaths}
-  }`;
+  }`);
 
 export type CatalogNode = {
   name?: string;

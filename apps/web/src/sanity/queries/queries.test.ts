@@ -12,7 +12,8 @@ import {
   schoolCardsQuery,
   schoolMarkersQuery,
   schoolOrderQuery,
-  schoolPageQuery,
+  schoolPageCountryQuery,
+  schoolPageRegionQuery,
 } from "@/sanity/queries/school-list";
 import {
   highPrioritySchoolsQuery,
@@ -177,7 +178,8 @@ const ALL_QUERIES: Record<string, string> = {
   schoolCardsQuery,
   schoolMarkersQuery,
   schoolOrderQuery,
-  schoolPageQuery: schoolPageQuery('count(*[_type == "schools"])'),
+  schoolPageCountryQuery,
+  schoolPageRegionQuery,
   highPrioritySchoolsQuery,
   schoolBySlugQuery,
   schoolCardsByIdQuery,

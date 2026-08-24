@@ -5,7 +5,7 @@ import createBundleAnalyzer from "@next/bundle-analyzer";
 const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: [`*.school.local`],
-  transpilePackages: ["@detske-skupiny/config"],
+  transpilePackages: ["@detske-skupiny/config", "@detske-skupiny/types"],
   // Every Sanity read now goes through a "use cache" function, and the routes
   // that still depend on request data (searchParams, and the slug segments
   // that have no generateStaticParams) read it below a Suspense boundary.

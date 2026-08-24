@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import {
   MarkerData,
   MiniSchool,
@@ -25,14 +25,14 @@ import { getDailySeed } from "@/lib/sanity/dailySeed";
  * one aggregate at the database rather than a field the studio had to
  * maintain.
  */
-const countryTotalQuery = groq`count(*[
+const countryTotalQuery = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
   area->region->country->slug.current == $country
 ])`;
 
-const regionTotalQuery = groq`count(*[
+const regionTotalQuery = `count(*[
   _type == "schools" &&
   ${excludeDraft} &&
   ${languageQuery} &&
@@ -40,17 +40,37 @@ const regionTotalQuery = groq`count(*[
   area->region->country->slug.current == $country
 ])`;
 
-export const schoolPageQuery = (totalQuery: string) => groq`{
-    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
-    "totalSchools": coalesce(${totalQuery}, 0),
-  }`;
+const schoolPageProjection = `
+    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },`;
+
+/**
+ * The page header, with the total counted for the scope the URL names.
+ *
+ * These are two named queries rather than one built from a `totalQuery`
+ * argument. Both spellings produce the same GROQ; only this one is a value
+ * TypeGen can see, and a query assembled inside a function call is a query it
+ * silently omits from the generated types. The two projections are otherwise
+ * identical, so `SchoolPageCountryQueryResult` and its region twin are the
+ * same shape.
+ */
+export const schoolPageCountryQuery = defineQuery(`{
+    ${schoolPageProjection}
+    "totalSchools": coalesce(${countryTotalQuery}, 0),
+  }`);
+
+export const schoolPageRegionQuery = defineQuery(`{
+    ${schoolPageProjection}
+    "totalSchools": coalesce(${regionTotalQuery}, 0),
+  }`);
 
 export async function fetchSchoolPage(params: SchoolPageQueryParams) {
-  const totalQuery =
-    params.country && params.region ? regionTotalQuery : countryTotalQuery;
+  const query =
+    params.country && params.region
+      ? schoolPageRegionQuery
+      : schoolPageCountryQuery;
 
   return sanityFetch<{ pageHero: PageHero; totalSchools: number }>(
-    schoolPageQuery(totalQuery),
+    query,
     {
       country: params.country ?? null,
       region: params.region ?? null,
@@ -60,7 +80,7 @@ export async function fetchSchoolPage(params: SchoolPageQueryParams) {
   );
 }
 
-const baseFilter = groq`
+const baseFilter = `
     _type == "schools" &&
     ${languageQuery} &&
     ${excludeDraft} &&
@@ -69,9 +89,11 @@ const baseFilter = groq`
     (!defined($area) || area->slug.current == $area) &&
     (!defined($subarea) || subarea->slug.current == $subarea)`;
 
-const extendedFilter =
-  baseFilter +
-  groq`&& (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
+// One template literal rather than `baseFilter + "..."`: TypeGen evaluates
+// these statically and rejects a concatenation ("Unsupported expression type:
+// BinaryExpression"), which drops every query built from it.
+const extendedFilter = `${baseFilter}
+    && (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&
     (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) &&
     (!defined($search) || lower(nameNormalized) match "*" + lower($search) + "*")
   `;
@@ -89,9 +111,9 @@ const extendedFilter =
  * marker set no longer changes when a filter does, so one cache entry per geo
  * scope serves every combination of filters.
  */
-export const schoolMarkersQuery = groq`*[${baseFilter}]{
+export const schoolMarkersQuery = defineQuery(`*[${baseFilter}]{
     ${markerFields}
-  }`;
+  }`);
 
 export type SchoolMarkersParams = {
   country: string;
@@ -129,15 +151,16 @@ export async function fetchSchoolMarkers(params: SchoolMarkersParams) {
  * page of the same filter set, and the card query below only ever touches one
  * page worth of documents.
  */
-export const schoolOrderQuery = groq`*[${extendedFilter}]{
+export const schoolOrderQuery = defineQuery(`*[${extendedFilter}]{
     "id": _id,
     isHighPriority
-  }`;
+  }`);
 
 /** The card fields for one page of schools, fetched by id. */
-export const schoolCardsQuery = groq`*[_type == "schools" && _id in $ids]{
+export const schoolCardsQuery =
+  defineQuery(`*[_type == "schools" && _id in $ids]{
     ${schoolCardFields}
-  }`;
+  }`);
 
 function filterParams(params: SchoolFilterQueryParams) {
   return {

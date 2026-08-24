@@ -9,10 +9,12 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typegen": "sanity typegen generate"
   },
   "dependencies": {
     "@detske-skupiny/config": "*",
+    "@detske-skupiny/types": "*",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.3.2",
+    "@sanity/cli": "^6.7.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@types/lodash.mergewith": "^4.6.9",

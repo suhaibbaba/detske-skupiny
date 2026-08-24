@@ -1,4 +1,3 @@
-import { groq } from "next-sanity";
 import { cache } from "react";
 import { sanityFetch } from "@/lib/sanity/fetch";
 
@@ -7,7 +6,7 @@ import { sanityFetch } from "@/lib/sanity/fetch";
  * a field to read (`entries[].cs`), and GROQ params cannot stand in for a
  * field path. `locales` in i18n/routing is the only source of the values.
  */
-export const messagesQuery = (locale: string) => groq`
+export const messagesQuery = (locale: string) => `
   *[_type == "dictionaries"][0]{
     "common": entries[]{
       "k": keyword,

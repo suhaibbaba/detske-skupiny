@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import {
   BreadcrumbItem,
@@ -6,12 +6,12 @@ import {
   SchoolBreadcrumbParams,
 } from "@/sanity/types";
 
-export const breadcrumbListQuery = groq`*[slug.current in $slugs]{
+export const breadcrumbListQuery = defineQuery(`*[slug.current in $slugs]{
       _type,
       "slug": slug.current,
       "name": coalesce(name, title, ""),
       language,
-    }`;
+    }`);
 
 /**
  * Matches on slug across every document type, so it is invalidated by any of
@@ -25,7 +25,8 @@ export async function fetchBreadcrumbList(params: BreadcrumbParams) {
   ]);
 }
 
-export const schoolBreadcrumbQuery = groq`*[_type == "schools" && slug.current == $slug && defined(area)][0]{
+export const schoolBreadcrumbQuery =
+  defineQuery(`*[_type == "schools" && slug.current == $slug && defined(area)][0]{
       _type,
       "breadcrumb": [
         {
@@ -47,7 +48,7 @@ export const schoolBreadcrumbQuery = groq`*[_type == "schools" && slug.current =
           "slug": slug.current,
         }
       ]
-    }`;
+    }`);
 
 export async function fetchSchoolBreadcrumb(
   params: SchoolBreadcrumbParams,

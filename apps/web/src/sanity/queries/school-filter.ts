@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import {
   areaPath,
@@ -33,14 +33,14 @@ export type FiltersResponse = {
 };
 
 /** Tags (counts respect "all") */
-export const tagsQuery = groq`
+export const tagsQuery = `
     "tags": *[_type == "schoolTags"]{
       ${tagFields},
     } | order(name asc)
 `;
 
 /** Types / categories (counts respect "all") */
-export const categoriesQuery = groq`
+export const categoriesQuery = `
     "categories": *[
     _type == "schoolCategories" &&
     (!defined(language) || language == $locale)
@@ -53,7 +53,7 @@ export const categoriesQuery = groq`
 `;
 
 // 1. Country level
-export const countryQuery = groq`
+export const countryQuery = defineQuery(`
 {
   "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{
       "id": _id,
@@ -93,10 +93,10 @@ export const countryQuery = groq`
     ${categoriesQuery}
     ${tagsQuery}
 }
-`;
+`);
 
 // 2. Region level
-export const regionQuery = groq`
+export const regionQuery = defineQuery(`
 {
   "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{
       "id": _id,
@@ -141,7 +141,7 @@ export const regionQuery = groq`
     ${categoriesQuery}
     ${tagsQuery}
 }
-`;
+`);
 
 export async function fetchFilters(
   catalog: CatalogParams,

@@ -1,4 +1,4 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { MiniSchool, PageHero, School } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";
@@ -25,19 +25,20 @@ import { getDailySeed } from "@/lib/sanity/dailySeed";
  * whole set to choose from. The projection is an id and a flag, so the size of
  * that set costs almost nothing.
  */
-export const highPrioritySchoolsQuery = groq`*[
+export const highPrioritySchoolsQuery = defineQuery(`*[
     _type == "schools" &&
     ${languageQuery} &&
     (true in types[]->highPriority)
   ]{
     "id": _id,
     isHighPriority
-  }`;
+  }`);
 
 /** The card fields for the schools the shuffle picked. */
-export const schoolCardsByIdQuery = groq`*[_type == "schools" && _id in $ids]{
+export const schoolCardsByIdQuery =
+  defineQuery(`*[_type == "schools" && _id in $ids]{
     ${schoolCardFields}
-  }`;
+  }`);
 
 /**
  * A stable daily selection of high-priority schools.
@@ -86,7 +87,7 @@ export async function fetchMiniSchools(params: {
   };
 }
 
-export const schoolBySlugQuery = groq`{
+export const schoolBySlugQuery = defineQuery(`{
     "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
     "school": *[_type == "schools" && ${languageQuery} &&  slug.current == $slug][0]{
       "id": _id,
@@ -132,7 +133,7 @@ export const schoolBySlugQuery = groq`{
       content,
       tags[]->{ ${tagFields} },
     }
-  }`;
+  }`);
 
 export async function fetchSchoolBySlug(params: {
   slug: string;

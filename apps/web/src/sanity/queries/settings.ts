@@ -1,13 +1,13 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { cache } from "react";
 import { Settings } from "@/sanity/types";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { imageUrl } from "@/lib/sanity/fragments";
 
-export const settingsQuery = groq`*[_type == "settings"][0] {
+export const settingsQuery = defineQuery(`*[_type == "settings"][0] {
   ...,
   ${imageUrl("defaultImage")},
-}`;
+}`);
 
 /**
  * Settings are not language-scoped, so this query takes no $locale.

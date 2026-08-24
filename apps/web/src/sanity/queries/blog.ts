@@ -1,11 +1,11 @@
-import { groq } from "next-sanity";
+import { defineQuery } from "next-sanity";
 import { Author, Blog, BlogCategory, MiniBlog } from "@/types/blog";
 import { PageHero } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { imageUrl, pageHeroFields } from "@/lib/sanity/fragments";
+import { imageUrl, imageUrlAs, pageHeroFields } from "@/lib/sanity/fragments";
 
-const blogCardFields = groq`
+const blogCardFields = `
   "id": _id,
   title,
   "slug": slug.current,
@@ -15,7 +15,7 @@ const blogCardFields = groq`
   publishedAt
 `;
 
-export const blogPageQuery = groq`{
+export const blogPageQuery = defineQuery(`{
     "pageHero": *[_type == "blogPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
     "categories": *[_type == "blogCategories" && ${languageQuery}] {
       "id": _id,
@@ -39,11 +39,11 @@ export const blogPageQuery = groq`{
       author->{
         "id": _id,
         name,
-        ${imageUrl("avatar", "image")},
+        ${imageUrlAs("avatar", "image")},
         bio
       }
     }
-  }`;
+  }`);
 
 export async function fetchBlogPage(params: {
   categorySelected?: string;
@@ -64,17 +64,17 @@ export async function fetchBlogPage(params: {
   );
 }
 
-export const miniBlogsQuery = groq`{
+export const miniBlogsQuery = defineQuery(`{
     "blogs": *[_type == "blogs" && ${languageQuery}][0...$numberOfBlogs] | order(publishedAt desc){
       ${blogCardFields},
       author->{
         "id": _id,
         name,
-        ${imageUrl("avatar", "image")},
+        ${imageUrlAs("avatar", "image")},
         "slug": slug.current,
       }
     },
-  }`;
+  }`);
 
 export async function fetchMiniBlogs(params: {
   numberOfBlogs: number;
