@@ -1,9 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import Lightbox, { type SlideImage } from "yet-another-react-lightbox";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import "yet-another-react-lightbox/styles.css";
+import dynamic from "next/dynamic";
+import type { SlideImage } from "yet-another-react-lightbox";
+
+/**
+ * The lightbox itself is fetched when someone opens one, not before.
+ *
+ * `ssr: false` because a closed lightbox emits no markup and the module is
+ * only ever reached from a click. Mounting it only once `openAt` is set is
+ * what keeps the import lazy - a statically rendered `<Lightbox open={false}>`
+ * would pull the chunk in on hydration anyway.
+ */
+const LightboxDialog = dynamic(
+  () => import("@/components/rich-text/GalleryLightboxDialog"),
+  { ssr: false },
+);
 
 interface Props {
   /** The gallery grid, rendered on the server and passed straight through. */
@@ -39,32 +51,13 @@ const GalleryLightbox = ({ children, slides }: Props) => {
   return (
     <>
       <div onClick={openFromClick}>{children}</div>
-      <Lightbox
-        plugins={[Zoom]}
-        open={openAt !== null}
-        close={() => setOpenAt(null)}
-        index={openAt ?? 0}
-        slides={slides}
-        controller={{
-          closeOnPullDown: true,
-          closeOnBackdropClick: true,
-        }}
-        carousel={{
-          preload: 0,
-        }}
-        animation={{ zoom: 500 }}
-        zoom={{
-          maxZoomPixelRatio: 1,
-          zoomInMultiplier: 2,
-          doubleTapDelay: 300,
-          doubleClickDelay: 300,
-          doubleClickMaxStops: 2,
-          keyboardMoveDistance: 50,
-          wheelZoomDistanceFactor: 100,
-          pinchZoomDistanceFactor: 100,
-          scrollToZoom: false,
-        }}
-      />
+      {openAt !== null && (
+        <LightboxDialog
+          slides={slides}
+          index={openAt}
+          onClose={() => setOpenAt(null)}
+        />
+      )}
     </>
   );
 };

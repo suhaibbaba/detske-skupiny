@@ -15,27 +15,27 @@ interface Props {
 
 const styles = {
   section: {
-      bgcolor: "custom.surfaceLilac",
-      pt: { xs: "100px", md: "120px" },
-      pb: "100px",
-      textAlign: "center",
-    },
+    bgcolor: "custom.surfaceLilac",
+    pt: { xs: "100px", md: "120px" },
+    pb: "100px",
+    textAlign: "center",
+  },
   container: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   heading: { mb: "12px" },
   description: { mb: "68px" },
   blogsWrapper: {
-      display: "flex",
-      flexDirection: {
-        xs: "column",
-        sm: "row",
-      },
-      justifyContent: "center",
-      gap: "50px",
+    display: "flex",
+    flexDirection: {
+      xs: "column",
+      sm: "row",
     },
+    justifyContent: "center",
+    gap: "50px",
+  },
 } satisfies Record<string, SxProps<Theme>>;
 
 const BlogSection = async ({ fields, locale }: Props) => {
@@ -49,7 +49,9 @@ const BlogSection = async ({ fields, locale }: Props) => {
     <Box sx={styles.section} className={sharedClassNames.blog}>
       <Container sx={styles.container}>
         <Box>
-          <Typography sx={styles.heading} variant="h1">{fields.title}</Typography>
+          <Typography sx={styles.heading} variant="h1">
+            {fields.title}
+          </Typography>
           <Typography sx={styles.description}>{fields.description}</Typography>
         </Box>
         <Box sx={styles.blogsWrapper}>

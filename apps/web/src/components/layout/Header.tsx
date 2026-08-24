@@ -1,9 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Container,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
 import NextLink from "next/link";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
