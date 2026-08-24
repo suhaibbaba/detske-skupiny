@@ -41,9 +41,11 @@ const styles: GroupSectionStyles = {
   }),
   stack: {
     direction: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "20px",
+    sx: {
+      gap: "20px",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
   },
   sectionTitle: {
     variant: "h3",
@@ -84,7 +86,12 @@ const GroupSection: FC<Props> = async ({ group }) => {
       <Container>
         <Stack {...styles.stack}>
           <Box>
-            <Typography variant="h2" textAlign="left">
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: "left",
+              }}
+            >
               {name}
             </Typography>
           </Box>

@@ -54,17 +54,19 @@ const styles: KinderGroupCardStyles = {
     },
   },
   imageWrapper: {
-    position: "relative",
-    width: {
-      xs: "100%",
-      lg: "260px",
+    sx: {
+      maxHeight: "277px",
+      flexShrink: 0,
+      height: {
+        xs: "227px",
+        lg: "auto",
+      },
+      width: {
+        xs: "100%",
+        lg: "260px",
+      },
+      position: "relative",
     },
-    height: {
-      xs: "227px",
-      lg: "auto",
-    },
-    flexShrink: 0,
-    maxHeight: "277px",
   },
   image: {
     sx: {
@@ -162,8 +164,8 @@ const styles: KinderGroupCardStyles = {
     },
   },
   description: {
-    textAlign: "left",
     sx: {
+      textAlign: "left",
       flexGrow: 1,
     },
   },

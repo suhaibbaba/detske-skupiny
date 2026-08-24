@@ -76,16 +76,20 @@ const styles: PricingStyles = {
     },
   },
   headingBox: {
-    textAlign: "center",
-    mb: "80px",
+    sx: {
+      mb: "80px",
+      textAlign: "center",
+    },
   },
   title: {
     variant: "h1",
-    mb: "24px",
+    sx: { mb: "24px" },
   },
   subtitle: {
-    maxWidth: "852px",
-    mx: "auto",
+    sx: {
+      mx: "auto",
+      maxWidth: "852px",
+    },
   },
   cardsWrapper: {
     sx: {
@@ -120,21 +124,27 @@ const styles: PricingStyles = {
     },
   },
   planLabel: {
-    color: "custom.ui8",
-    fontSize: "25px",
-    fontWeight: 900,
-    mb: "12px",
+    sx: {
+      color: "custom.ui8",
+      mb: "12px",
+      fontWeight: 900,
+      fontSize: "25px",
+    },
   },
   planDescription: {
-    color: "text.secondary",
-    textAlign: "center",
-    mb: "24px",
+    sx: {
+      color: "text.secondary",
+      mb: "24px",
+      textAlign: "center",
+    },
   },
   price: {
-    fontSize: "44px",
-    fontWeight: 900,
-    color: "custom.ui10",
-    lineHeight: 1,
+    sx: {
+      color: "custom.ui10",
+      lineHeight: 1,
+      fontWeight: 900,
+      fontSize: "44px",
+    },
   },
   featureList: {
     sx: {

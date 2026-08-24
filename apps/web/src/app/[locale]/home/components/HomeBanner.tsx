@@ -52,8 +52,8 @@ const styles: HomeBannerStyles = {
   },
   title: {
     variant: "h1",
-    fontSize: "36px",
     sx: {
+      fontSize: "36px",
       mb: "16px",
     },
   },

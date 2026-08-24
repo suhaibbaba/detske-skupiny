@@ -93,8 +93,8 @@ const styles: PremiumSchoolsFeatureSectionStyles = {
     },
   },
   itemTitle: {
-    color: "custom.ui13",
     sx: {
+      color: "custom.ui13",
       fontSize: "16px",
       fontWeight: 900,
       mb: "12px",

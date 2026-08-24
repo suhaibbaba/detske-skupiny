@@ -48,10 +48,10 @@ const styles: BlogSectionStyles = {
   },
   heading: {
     variant: "h1",
-    mb: "12px",
+    sx: { mb: "12px" },
   },
   description: {
-    mb: "68px",
+    sx: { mb: "68px" },
   },
   blogsWrapper: {
     sx: {

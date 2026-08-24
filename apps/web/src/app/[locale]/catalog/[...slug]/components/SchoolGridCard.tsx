@@ -108,10 +108,10 @@ const styles: KinderGroupCardStyles = {
     },
   },
   name: {
-    fontSize: "18px",
-    fontWeight: 900,
-    color: "custom.ui13",
     sx: {
+      color: "custom.ui13",
+      fontWeight: 900,
+      fontSize: "18px",
       minHeight: "54px",
     },
   },

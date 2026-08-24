@@ -128,7 +128,9 @@ const GridBlock = ({ value }: Props) => {
       <Grid
         container
         spacing={gap}
-        alignItems={value.verticalAlign || "flex-start"}
+        sx={{
+          alignItems: value.verticalAlign || "flex-start",
+        }}
       >
         {value.items?.map((item, index) => (
           <Grid

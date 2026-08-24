@@ -28,8 +28,10 @@ interface TableStyles {
 
 const styles: TableStyles = {
   title: {
-    mt: "80px",
-    mb: "20px",
+    sx: {
+      mb: "20px",
+      mt: "80px",
+    },
   },
 };
 

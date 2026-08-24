@@ -210,7 +210,11 @@ const Footer = async ({ locale }: { locale: string }) => {
               {column.title && (
                 <Typography {...styles.columnTitle}>{column.title}</Typography>
               )}
-              <Stack gap="12px">
+              <Stack
+                sx={{
+                  gap: "12px",
+                }}
+              >
                 {column.content?.map((item, itemIndex: number) =>
                   renderContentItem(item, itemIndex),
                 )}

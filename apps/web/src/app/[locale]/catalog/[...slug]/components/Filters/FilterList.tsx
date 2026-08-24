@@ -56,11 +56,13 @@ interface FilterListStyles {
 
 const styles: FilterListStyles = {
   heading: {
-    fontSize: "18px",
-    fontWeight: 900,
-    mb: "8px",
-    color: "custom.ui13",
-    textTransform: "capitalize",
+    sx: {
+      color: "custom.ui13",
+      textTransform: "capitalize",
+      mb: "8px",
+      fontWeight: 900,
+      fontSize: "18px",
+    },
   },
   listContainer: {
     sx: {
@@ -105,7 +107,7 @@ const styles: FilterListStyles = {
     },
   },
   itemText: {
-    color: "custom.ui20",
+    sx: { color: "custom.ui20" },
   },
   itemCount: {
     sx: {

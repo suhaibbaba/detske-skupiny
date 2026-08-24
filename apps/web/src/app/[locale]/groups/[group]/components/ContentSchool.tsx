@@ -28,9 +28,11 @@ const styles: AboutSchoolStyles = {
     variant: "h3",
   },
   tagsContainer: {
-    display: "flex",
-    gap: "16px",
-    mt: "20px",
+    sx: {
+      mt: "20px",
+      gap: "16px",
+      display: "flex",
+    },
   },
 };
 

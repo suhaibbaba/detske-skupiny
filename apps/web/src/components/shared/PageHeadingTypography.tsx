@@ -48,17 +48,19 @@ const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
   title: {
     variant: "h1",
     align: "center",
-    mb: 0,
+    sx: { mb: 0 },
   },
   description: {
     align: "center",
-    maxWidth: "854px",
+    sx: { maxWidth: "854px" },
   },
   ctaWrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "12px",
-    mt: "20px",
+    sx: {
+      mt: "20px",
+      gap: "12px",
+      flexWrap: "wrap",
+      display: "flex",
+    },
   },
   cta: {
     variant: "contained",

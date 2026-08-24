@@ -50,19 +50,23 @@ const styles: WhyJoinUsStyles = {
     },
   },
   headingBox: {
-    textAlign: "center",
-    mb: {
-      xs: "50px",
-      sm: "100px",
+    sx: {
+      mb: {
+        xs: "50px",
+        sm: "100px",
+      },
+      textAlign: "center",
     },
   },
   title: {
     variant: "h1",
-    mb: "24px",
+    sx: { mb: "24px" },
   },
   description: {
-    maxWidth: "852px",
-    mx: "auto",
+    sx: {
+      mx: "auto",
+      maxWidth: "852px",
+    },
   },
   featuresWrapper: {
     sx: {
@@ -87,8 +91,8 @@ const styles: WhyJoinUsStyles = {
     },
   },
   iconWrapper: {
-    bgcolor: "secondary.main",
     sx: {
+      bgcolor: "secondary.main",
       width: "88px",
       height: "88px",
       borderRadius: "50%",
@@ -100,8 +104,10 @@ const styles: WhyJoinUsStyles = {
   },
   cardTitle: {
     variant: "h3",
-    fontSize: "20px",
-    fontWeight: 900,
+    sx: {
+      fontWeight: 900,
+      fontSize: "20px",
+    },
     align: "center",
   },
   cardDescription: {

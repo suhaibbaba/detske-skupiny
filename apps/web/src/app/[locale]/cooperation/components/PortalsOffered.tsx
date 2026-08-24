@@ -83,10 +83,10 @@ const styles: PortalsOfferedStyles = {
   },
   heading: {
     variant: "h1",
-    mb: "12px",
+    sx: { mb: "12px" },
   },
   description: {
-    mb: "12px",
+    sx: { mb: "12px" },
   },
   list: {
     disablePadding: true,

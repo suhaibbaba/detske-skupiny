@@ -54,9 +54,9 @@ const styles: FaqSectionStyles = {
   },
   heading: {
     variant: "h1",
-    fontSize: "40px",
-    textAlign: "center",
     sx: {
+      textAlign: "center",
+      fontSize: "40px",
       mx: "auto",
       mb: { xs: "40px", md: "80px" },
       position: "relative",

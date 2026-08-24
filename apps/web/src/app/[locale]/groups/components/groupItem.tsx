@@ -56,10 +56,10 @@ const styles: GroupItemStyles = {
     },
   },
   stack: {
-    alignItems: "center",
     direction: "row",
-    gap: "12px",
     sx: {
+      gap: "12px",
+      alignItems: "center",
       display: "flex",
       width: "100%",
     },
@@ -127,7 +127,9 @@ const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
           <Typography {...styles.title}>{item.name}</Typography>
           <Box
             {...styles.schoolCountBox}
-            ml={hideNextArrow ? "auto" : "initial"}
+            sx={{
+              ml: hideNextArrow ? "auto" : "initial",
+            }}
           >
             <Typography {...styles.schoolCountText}>
               {item.schoolCount}

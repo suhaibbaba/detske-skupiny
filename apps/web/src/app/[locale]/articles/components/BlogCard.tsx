@@ -92,7 +92,7 @@ const blogsCardStylesType: BlogsCardStylesType = {
     },
   },
   description: {
-    textAlign: "left",
+    sx: { textAlign: "left" },
   },
   footer: {
     sx: {
@@ -117,17 +117,16 @@ const blogsCardStylesType: BlogsCardStylesType = {
     },
   },
   authorName: {
-    color: "custom.ui13",
-    textAlign: "left",
     sx: {
+      color: "custom.ui13",
       textAlign: "left",
       fontWeight: 500,
       fontSize: "16px",
     },
   },
   meta: {
-    color: "custom.ui3",
     sx: {
+      color: "custom.ui3",
       textAlign: "left",
       fontWeight: 400,
       fontSize: "14px",

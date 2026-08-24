@@ -53,8 +53,8 @@ interface BlogDetailStyles {
 
 const styles: BlogDetailStyles = {
   container: {
-    pb: "116px",
     sx: {
+      pb: "116px",
       "&.pt-20": {
         pt: "20px",
       },
@@ -70,9 +70,9 @@ const styles: BlogDetailStyles = {
     },
   },
   detailsHintBox: {
-    maxWidth: "920px",
-    mx: "auto",
     sx: {
+      mx: "auto",
+      maxWidth: "920px",
       display: "flex",
       flexDirection: "column",
       gap: "80px",
@@ -96,9 +96,11 @@ const styles: BlogDetailStyles = {
   },
   authorText: {
     component: "span",
-    fontSize: "18px",
-    color: "custom.ui13",
-    fontWeight: 500,
+    sx: {
+      color: "custom.ui13",
+      fontWeight: 500,
+      fontSize: "18px",
+    },
   },
   sectionBox: {
     sx: {
@@ -119,8 +121,8 @@ const styles: BlogDetailStyles = {
     },
   },
   bioBox: {
-    p: "24px",
     sx: {
+      p: "24px",
       display: "flex",
       flexDirection: "column",
       bgcolor: "custom.ui15",
@@ -144,7 +146,7 @@ const styles: BlogDetailStyles = {
   },
   sectionHeading: {
     variant: "h3",
-    textTransform: "capitalize",
+    sx: { textTransform: "capitalize" },
   },
   paragraph: {
     variant: "body1",
