@@ -18,12 +18,18 @@ export default defineType({
       name: "name",
       title: "Country Name",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      description: "As it should read in the catalog's breadcrumb.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "Every level of the geography tree needs a name.",
+        ),
     }),
     defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
+      description:
+        "The first segment of every catalog URL beneath this country. Changing it moves every region, area and subarea under it.",
       options: {
         source: "name",
         slugify: (input: string) => kebabCase(input.trim()),

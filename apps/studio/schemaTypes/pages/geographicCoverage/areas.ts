@@ -36,7 +36,12 @@ export default defineType({
       title: "Region",
       type: "reference",
       to: [{ type: "regions" }],
-      validation: (Rule) => Rule.required(),
+      description:
+        "The region this area sits in. Schools inherit their region from here, which is what the catalog's region filter reads.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "An area with no region has no URL, and every school in it loses its region too.",
+        ),
     }),
     defineField({
       name: "countrySlug",

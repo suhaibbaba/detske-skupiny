@@ -36,7 +36,12 @@ export default defineType({
       title: "Area",
       type: "reference",
       to: [{ type: "areas" }],
-      validation: (Rule) => Rule.required(),
+      description:
+        "The area this subarea sits in. The whole chain above it - area, region, country - is composed from this one reference.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "A subarea with no area has no URL: the catalog builds its path from the chain above it.",
+        ),
     }),
     {
       name: "countrySlug",

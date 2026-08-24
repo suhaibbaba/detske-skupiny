@@ -37,7 +37,12 @@ export default defineType({
       title: "Country",
       type: "reference",
       to: [{ type: "countries" }],
-      validation: (Rule) => Rule.required(),
+      description:
+        "The country this region sits in. It is half of the region's URL and how the catalog finds it, so a region without one is unreachable.",
+      validation: (Rule) =>
+        Rule.required().error(
+          "A region with no country has no place in the catalog tree and no URL to be served at.",
+        ),
     }),
     defineField({
       name: "backgroundCover",
