@@ -2,7 +2,15 @@ import { groq } from "next-sanity";
 import { GroupPage, PageHero } from "@/sanity/types";
 import { languageQuery } from "@/sanity/queries/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { imageUrl, pageHeroFields } from "@/lib/sanity/fragments";
+import {
+  areaPath,
+  imageUrl,
+  pageHeroFields,
+  regionPath,
+  schoolCountForArea,
+  schoolCountForCountry,
+  schoolCountForRegion,
+} from "@/lib/sanity/fragments";
 
 /**
  * Per-category school counts, resolved by GROQ rather than in JavaScript.
@@ -56,16 +64,16 @@ export const groupPageQuery = groq`{
 
     "regions": *[_type == "regions" && ${languageQuery}]{
       "id": _id,
-      "totalSchools": schoolCount,
+      "totalSchools": ${schoolCountForRegion},
       name,
-      "slug": fullSlug,
+      "slug": ${regionPath},
       ${imageUrl("backgroundCover")},
       "regionRef": _id,
       "areas": *[_type == "areas" && ${languageQuery} && region._ref == ^._id]{
         "id": _id,
         name,
-        "slug": fullSlug,
-        schoolCount,
+        "slug": ${areaPath},
+        "schoolCount": ${schoolCountForArea},
         "regionRef": region._ref
       },
       ${categoryCountsForRegion}
@@ -76,12 +84,12 @@ export const groupPageQuery = groq`{
       name,
       "slug": slug.current,
       ${imageUrl("backgroundCover")},
-      "totalSchools": schoolCount,
+      "totalSchools": ${schoolCountForCountry},
       "areas": *[_type == "regions" && ${languageQuery}]{
         "id": _id,
         name,
-        "slug": fullSlug,
-        schoolCount
+        "slug": ${regionPath},
+        "schoolCount": ${schoolCountForRegion}
       },
       ${categoryCountsForCountry}
     }

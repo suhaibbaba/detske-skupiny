@@ -9,13 +9,7 @@ import { linkField } from "sanity-plugin-link-field";
 import { documentInternationalization } from "@sanity/document-internationalization";
 import { googleMapsInput } from "@sanity/google-maps-input";
 import { MULTIPLE_PAGES_TYPES, SINGLETON_TYPES, structure } from "@/structure";
-import { autoPopulateSubAreaPlugin } from "@/plugins/autoPopulateSubareaFields";
-import { autoPopulateAreaPlugin } from "@/plugins/autoPopulateAreaFields";
-import { autoPopulateSchoolCountPlugin } from "@/plugins/autoPopulateSchoolCountFields";
-import { autoPopulateSchoolPlugin } from "@/plugins/autoPopulateSchoolFields";
-import { autoPopulateFieldsJobPlugin } from "@/plugins/autoPopulateFieldsJob";
-import { autoPopulateRegionPlugin } from "@/plugins/autoPopulateRegionFields";
-import { autoPopulateSchoolSortOrderPlugin } from "@/plugins/autoPopulateSchoolOrderFields";
+import { computedFieldsPlugin } from "@/plugins/computedFields";
 
 export default defineConfig({
   name: "default",
@@ -61,13 +55,9 @@ export default defineConfig({
       supportedLanguages: [...LOCALES],
       schemaTypes: [...SINGLETON_TYPES, ...MULTIPLE_PAGES_TYPES],
     }),
-    autoPopulateSubAreaPlugin(),
-    autoPopulateRegionPlugin(),
-    autoPopulateAreaPlugin(),
-    autoPopulateSchoolPlugin(),
-    autoPopulateSchoolCountPlugin(),
-    autoPopulateFieldsJobPlugin(),
-    autoPopulateSchoolSortOrderPlugin(),
+    // The only plugin that writes computed fields, and only on `schools`.
+    // Everything else geography-related is derived by GROQ in the web app.
+    computedFieldsPlugin(),
   ],
 
   schema: {

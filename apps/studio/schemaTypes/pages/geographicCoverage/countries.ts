@@ -37,14 +37,6 @@ export default defineType({
       type: "image",
       options: { hotspot: true },
     }),
-    defineField({
-      name: "schoolCount",
-      type: "number",
-      title: "School Count (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated",
-    }),
     orderRankField({
       type: "countries",
     }),

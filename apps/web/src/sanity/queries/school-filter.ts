@@ -1,6 +1,15 @@
 import { groq } from "next-sanity";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { imageUrl, tagFields } from "@/lib/sanity/fragments";
+import {
+  areaPath,
+  imageUrl,
+  schoolCountForArea,
+  schoolCountForCountry,
+  schoolCountForRegion,
+  schoolCountForSubarea,
+  subareaPath,
+  tagFields,
+} from "@/lib/sanity/fragments";
 import {
   CatalogParams,
   FilterTypes,
@@ -60,7 +69,7 @@ export const countryQuery = groq`
       "id": _id,
       "name": name,
       "slug": slug.current,
-      "count": schoolCount,
+      "count": ${schoolCountForCountry},
     }
   ] + *[_type == "regions" && country->slug.current == $country && (!defined(language) || language == $locale)] | order(orderRank) {
       "id": _id,
@@ -68,15 +77,18 @@ export const countryQuery = groq`
       "slug": "/"
         + country->slug.current + "/"
         + slug.current,
-      "count": schoolCount,
+      "count": ${schoolCountForRegion},
     },
   "areas": [],
-  "subareas": *[_type == "subareas" && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank, schoolCount desc) {
+  "subareas": *[
+      _type == "subareas" &&
+      area->region->country->slug.current == $country &&
+      (!defined(language) || language == $locale)
+    ] | order(orderRank) {
       "id": _id,
       name,
-      "slug": fullSlug,
-      "count": schoolCount,
-
+      "slug": ${subareaPath},
+      "count": ${schoolCountForSubarea},
     },
     ${categoriesQuery}
     ${tagsQuery}
@@ -102,24 +114,29 @@ export const regionQuery = groq`
       "id": _id,
       "name": name,
       "slug": "/" + country->slug.current + "/" + slug.current,
-      "count": schoolCount,
+      "count": ${schoolCountForRegion},
     }
   ] + *[
       _type == "areas" &&
-      regionSlug == $region &&
-      countrySlug == $country &&
+      region->slug.current == $region &&
+      region->country->slug.current == $country &&
       (!defined(language) || language == $locale)
     ] | order(orderRank) {
       "id": _id,
       name,
-      "slug": fullSlug,
-      "count": schoolCount,
+      "slug": ${areaPath},
+      "count": ${schoolCountForArea},
     },
-  "subareas": *[_type == "subareas" && regionSlug == $region && countrySlug == $country && (!defined(language) || language == $locale)] | order(orderRank, schoolCount desc) {
+  "subareas": *[
+      _type == "subareas" &&
+      area->region->slug.current == $region &&
+      area->region->country->slug.current == $country &&
+      (!defined(language) || language == $locale)
+    ] | order(orderRank) {
       "id": _id,
       name,
-      "slug": fullSlug,
-      "count": schoolCount,
+      "slug": ${subareaPath},
+      "count": ${schoolCountForSubarea},
     },
     ${categoriesQuery}
     ${tagsQuery}

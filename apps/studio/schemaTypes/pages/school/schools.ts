@@ -375,14 +375,6 @@ export default defineType({
       hidden: true,
       description: "Auto-populated from area->region",
     }),
-    defineField({
-      name: "sortOrder",
-      type: "number",
-      title: "Sort Order (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated and Re-generate by schedule plugin",
-    }),
     injectLanguage(),
   ],
   preview: {

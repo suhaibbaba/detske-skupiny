@@ -100,7 +100,7 @@ Three layers, all runnable locally with npm scripts.
 
 | layer | command | what it covers | needs Sanity? |
 | --- | --- | --- | --- |
-| Unit (Vitest) | `npm run test` | pure functions, the contact schema and route, component smoke tests | no |
+| Unit (Vitest) | `npm run test` | pure functions, the contact and revalidate routes, every GROQ query, component smoke tests | no |
 | E2E (Playwright) | `npm run test:e2e` | one spec per route, against a real dev server | yes |
 | Crawl (Playwright) | `npm run test:crawl` | every reachable page, breadth-first | yes |
 
@@ -118,6 +118,13 @@ Tests live next to the code they cover as `*.test.ts` / `*.test.tsx`. Vitest run
 two projects: pure functions in `node`, anything that renders in `jsdom`. No
 network, no Sanity, no env setup - `vitest.config.ts` injects dummy values for
 the few modules that build a Sanity client at import time.
+
+`src/sanity/queries/queries.test.ts` is the exception worth knowing about: it
+parses every exported GROQ query with `groq-js` and evaluates the migrated ones
+against a small synthetic dataset. The queries are assembled from shared
+fragments, and a fragment that expands to something ungrammatical produces a
+query that fails only when Sanity is asked to run it - which neither a build nor
+any other unit test would notice.
 
 ## E2E tests
 

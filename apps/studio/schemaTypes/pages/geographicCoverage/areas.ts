@@ -39,14 +39,6 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "schoolCount",
-      type: "number",
-      title: "School Count (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated",
-    }),
-    defineField({
       name: "countrySlug",
       type: "string",
       title: "Country Slug (Auto)",
@@ -61,14 +53,6 @@ export default defineType({
       readOnly: true,
       hidden: true,
       description: "Auto-populated from area->region->country",
-    }),
-    defineField({
-      name: "fullSlug",
-      type: "string",
-      title: "Full Slug (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated full path",
     }),
     orderRankField({
       type: "areas",

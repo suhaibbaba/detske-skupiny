@@ -10,8 +10,6 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "random-sort-order": "node schedules/randomizeSortOrder.mjs",
-    "update-school-count": "node schedules/updateSchoolCount.mjs",
     "migrate:locale": "node scripts/migrate-locale-cz-to-cs.mjs",
     "typecheck": "tsc --noEmit"
   },
