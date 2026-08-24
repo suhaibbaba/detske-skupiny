@@ -1,6 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { BulbOutlineIcon } from "@sanity/icons/BulbOutline";
-import { appendLanguageSubtitle } from "@/utility";
+import { countLabel, subtitle } from "@/utility";
 
 export default defineType({
   name: "sectionWorthIt",
@@ -62,15 +62,15 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "heading", features: "features", language: "language" },
-    prepare({ title, features, language }) {
-      const count = (features || []).length;
+    select: { title: "heading", features: "features" },
+    prepare({ title, features }) {
       return {
-        title: title || "Worth It Section",
-        subtitle: appendLanguageSubtitle(
-          language,
-          `${count ?? 0} feature${count === 1 ? "" : "s"}`,
+        title: title || "What makes it worth it",
+        subtitle: subtitle(
+          "What makes it worth it",
+          countLabel(features, "feature"),
         ),
+        media: BulbOutlineIcon,
       };
     },
   },

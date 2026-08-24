@@ -1,6 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage, upperCase } from "@/utility";
+import { localizedSubtitle, injectLanguage, upperCase } from "@/utility";
 import { ThListIcon } from "@sanity/icons/ThList";
 import { InfoOutlineIcon } from "@sanity/icons/InfoOutline";
 import { DocumentTextIcon } from "@sanity/icons/DocumentText";
@@ -385,21 +385,33 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * A row in the catalog list.
+   *
+   * Two schools with the same name in different towns are common, so the
+   * subtitle is where they are: "Praha 6 · Praha", the area followed by the
+   * region it sits in. `area.region.name` reaches two references deep, which
+   * the preview system resolves by following each reference in turn - and
+   * because areas and regions are few and shared, the rows of a long list
+   * subscribe to the same handful of documents rather than one each.
+   *
+   * "No area yet" rather than a blank: a school with no area is missing from
+   * every catalog page on the site, and the list is where that should be
+   * visible.
+   */
   preview: {
     select: {
       title: "name",
-      subtitle: "area.name",
+      area: "area.name",
+      region: "area.region.name",
       media: "logo",
       language: "language",
     },
-    prepare({ title, subtitle, media, language }) {
+    prepare({ title, area, region, media, language }) {
       return {
-        title: title || "Untitled School",
-        subtitle: appendLanguageSubtitle(
-          language,
-          subtitle ? `📍 ${subtitle} Area` : `No area selected`,
-        ),
-        media: media,
+        title: title || "Untitled school",
+        subtitle: localizedSubtitle(language, area ?? "No area yet", region),
+        media: media || ThListIcon,
       };
     },
   },

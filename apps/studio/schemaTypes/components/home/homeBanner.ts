@@ -1,10 +1,11 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { BillIcon } from "@sanity/icons/Bill";
 
 export default defineType({
   name: "homeBanner",
   title: "Banner",
   type: "object",
+  icon: BillIcon,
   fields: [
     defineField({
       name: "title",
@@ -31,10 +32,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", language: "language" },
-    prepare: ({ title, language }) => ({
-      title,
-      subtitle: appendLanguageSubtitle(language),
+    select: { title: "title" },
+    prepare: ({ title }) => ({
+      title: title || "Banner",
+      media: BillIcon,
+      subtitle: "Banner",
     }),
   },
 });

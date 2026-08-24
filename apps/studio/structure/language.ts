@@ -1,22 +1,13 @@
-import { LOCALES } from "@detske-skupiny/config/locales";
+import { BASE_LANGUAGE } from "@/utility/language";
 
 /**
- * The language every document is authored in first.
+ * The GROQ half of the language story.
  *
- * `LOCALES` is ordered base-first - `cs` then `en` - and the same order feeds
- * `documentInternationalization`'s `supportedLanguages`, where the first entry
- * is the one the plugin treats as the source a translation is made *from*. The
- * web app says the same thing in its own words (`defaultLocale = "cs"` in
- * lib/i18n/routing.ts); this reads it off the shared config rather than
- * repeating the string, so a project that switches base language switches it
- * once.
+ * `BASE_LANGUAGE` and the badge live in utility/language.ts because the schema
+ * previews need them too; what is here is only what the sidebar asks the
+ * dataset. Re-exported so a section imports one module rather than two.
  */
-export const BASE_LANGUAGE = LOCALES[0].id;
-
-/** The languages a base document gets translated *into*. Currently just `en`. */
-export const TRANSLATION_LANGUAGES = LOCALES.slice(1).map(
-  (locale) => locale.id,
-);
+export { BASE_LANGUAGE, TRANSLATION_LANGUAGES } from "@/utility/language";
 
 /**
  * "This document belongs to the base language."

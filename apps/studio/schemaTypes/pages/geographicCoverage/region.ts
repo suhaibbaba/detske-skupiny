@@ -1,7 +1,7 @@
 // /schemaTypes/documents/region.ts
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { localizedSubtitle, injectLanguage } from "@/utility";
 import WorldLocation from "@/icons/WorldLocation";
 import {
   orderRankField,
@@ -58,12 +58,24 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * The subtitle is the level above: which country this region belongs to. In
+   * the drill-down that is the pane you came from, but a region also shows up
+   * in reference pickers and search results, where it is the only thing that
+   * tells two similarly named regions apart.
+   */
   preview: {
-    select: { title: "name", language: "language" },
-    prepare({ title, language }) {
+    select: {
+      title: "name",
+      country: "country.name",
+      media: "backgroundCover",
+      language: "language",
+    },
+    prepare({ title, country, media, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
+        title: title || "Unnamed region",
+        subtitle: localizedSubtitle(language, country ?? "No country"),
+        media: media || WorldLocation,
       };
     },
   },

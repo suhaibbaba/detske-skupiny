@@ -1,9 +1,10 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { EnvelopeIcon } from "@sanity/icons/Envelope";
 
 export default defineType({
   name: "contactUsForm",
   type: "object",
+  icon: EnvelopeIcon,
   title: "Contact Us Form",
   fields: [
     defineField({
@@ -32,11 +33,12 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", language: "language" },
-    prepare({ title, language }) {
+    select: { title: "title" },
+    prepare({ title }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
+        title: title || "Contact form",
+        media: EnvelopeIcon,
+        subtitle: "Contact form",
       };
     },
   },

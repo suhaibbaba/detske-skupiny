@@ -1,9 +1,10 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { HelpCircleIcon } from "@sanity/icons/HelpCircle";
 
 export default defineType({
   name: "faqItem",
   type: "object",
+  icon: HelpCircleIcon,
   title: "FAQ Item",
   fields: [
     defineField({
@@ -27,10 +28,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "question", language: "language" },
-    prepare: ({ title, language }) => ({
-      title,
-      subtitle: appendLanguageSubtitle(language),
+    select: { title: "question", answer: "answer" },
+    prepare: ({ title, answer }) => ({
+      title: title || "No question",
+      media: HelpCircleIcon,
+      subtitle: answer,
     }),
   },
 });

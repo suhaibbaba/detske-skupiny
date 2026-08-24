@@ -1,10 +1,12 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
+import { EnvelopeIcon } from "@sanity/icons/Envelope";
 
 export default defineType({
   name: "contactUs",
   title: "Contact Us",
   type: "document",
+  icon: EnvelopeIcon,
   fields: [
     defineField({
       name: "pageHero",
@@ -32,7 +34,8 @@ export default defineType({
     prepare({ language }) {
       return {
         title: "Contact Us Page",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: EnvelopeIcon,
       };
     },
   },

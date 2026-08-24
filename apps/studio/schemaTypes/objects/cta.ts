@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { LaunchIcon } from "@sanity/icons/Launch";
 
 export default defineType({
   name: "cta",
@@ -41,6 +42,11 @@ export default defineType({
 
       return {
         title: text || main || "Link",
+        // The destination under the label: two CTAs read identically
+        // otherwise, and pointing one of them at the wrong page is exactly the
+        // mistake a preview should catch.
+        subtitle: text && main ? main : undefined,
+        media: LaunchIcon,
       };
     },
   },

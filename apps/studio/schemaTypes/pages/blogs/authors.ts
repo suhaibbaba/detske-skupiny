@@ -1,13 +1,13 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
-import { EditIcon } from "@sanity/icons/Edit";
+import { localizedSubtitle, injectLanguage } from "@/utility";
+import { UserIcon } from "@sanity/icons/User";
 
 export default defineType({
   name: "authors",
   title: "Authors",
   type: "document",
-  icon: EditIcon,
+  icon: UserIcon,
   fields: [
     defineField({
       name: "name",
@@ -43,12 +43,24 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * The avatar is the fastest way to recognise an author, and it was not shown
+   * anywhere: the preview selected the name and nothing else, so a list of
+   * authors was a column of text with a column of identical placeholder icons
+   * beside it.
+   */
   preview: {
-    select: { title: "name", language: "language" },
-    prepare({ title, language }) {
+    select: {
+      title: "name",
+      media: "avatar",
+      role: "role",
+      language: "language",
+    },
+    prepare({ title, media, role, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
+        title: title || "Unnamed author",
+        subtitle: localizedSubtitle(language, role),
+        media: media || UserIcon,
       };
     },
   },

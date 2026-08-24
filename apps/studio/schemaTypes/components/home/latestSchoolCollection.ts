@@ -1,10 +1,11 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { ThListIcon } from "@sanity/icons/ThList";
 
 export default defineType({
   name: "latestSchoolCollection",
   title: "Latest School Collection",
   type: "object",
+  icon: ThListIcon,
   fields: [
     defineField({
       name: "title",
@@ -26,10 +27,11 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", language: "language" },
-    prepare: ({ title, language }) => ({
-      title,
-      subtitle: appendLanguageSubtitle(language),
+    select: { title: "title" },
+    prepare: ({ title }) => ({
+      title: title || "Latest schools",
+      media: ThListIcon,
+      subtitle: "Latest schools",
     }),
   },
 });

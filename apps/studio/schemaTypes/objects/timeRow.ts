@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { ClockIcon } from "@sanity/icons/Clock";
 
 export default defineType({
   name: "timeRow",
@@ -23,5 +24,15 @@ export default defineType({
       validation: (r) => r.required(),
     }),
   ],
-  preview: { select: { title: "activity", subtitle: "start" } },
+  /** The whole span, not just the start: a row is "06:30-08:30". */
+  preview: {
+    select: { title: "activity", start: "start", end: "end" },
+    prepare({ title, start, end }) {
+      return {
+        title: title || "No activity",
+        subtitle: start && end ? `${start}-${end}` : (start ?? end),
+        media: ClockIcon,
+      };
+    },
+  },
 });

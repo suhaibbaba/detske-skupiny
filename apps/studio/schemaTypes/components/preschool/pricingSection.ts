@@ -1,5 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { TagIcon } from "@sanity/icons/Tag";
+import { countLabel, subtitle } from "@/utility";
 
 export default defineType({
   name: "pricingSection",
@@ -85,4 +86,19 @@ export default defineType({
       ],
     }),
   ],
+  /**
+   * The plan count is what tells two pricing sections apart, and there was no
+   * preview here at all - the section rendered as "Pricing Section" with an
+   * empty line under it, whatever was in it.
+   */
+  preview: {
+    select: { title: "title", plans: "plans", media: "mostPopularImage" },
+    prepare({ title, plans, media }) {
+      return {
+        title: title || "Pricing",
+        subtitle: subtitle("Pricing", countLabel(plans, "plan")),
+        media: media || TagIcon,
+      };
+    },
+  },
 });

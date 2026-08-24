@@ -1,9 +1,11 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { countLabel, subtitle } from "@/utility";
+import { HelpCircleIcon } from "@sanity/icons/HelpCircle";
 
 export default defineType({
   name: "faq",
   type: "object",
+  icon: HelpCircleIcon,
   title: "FAQ",
   fields: [
     defineField({
@@ -21,12 +23,12 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", items: "items", language: "language" },
-    prepare({ title, items, language }) {
-      const count = items?.length || 0;
+    select: { title: "title", items: "items" },
+    prepare({ title, items }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language, `${count ?? 0} item(s)`),
+        title: title || "FAQ",
+        media: HelpCircleIcon,
+        subtitle: subtitle("FAQ", countLabel(items, "question")),
       };
     },
   },

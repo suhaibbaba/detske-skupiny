@@ -1,10 +1,12 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
+import { ThLargeIcon } from "@sanity/icons/ThLarge";
 
 export default defineType({
   name: "group",
   title: "Group Page",
   type: "document",
+  icon: ThLargeIcon,
   fields: [
     defineField({
       name: "pageHero",
@@ -17,7 +19,8 @@ export default defineType({
     prepare({ language }) {
       return {
         title: "Group Page",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: ThLargeIcon,
       };
     },
   },

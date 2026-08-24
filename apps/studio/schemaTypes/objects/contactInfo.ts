@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
-import { phoneValidator } from "@/utility";
+import { phoneValidator, subtitle } from "@/utility";
+import { UserIcon } from "@sanity/icons/User";
 
 export default defineType({
   name: "contactInfo",
@@ -24,5 +25,16 @@ export default defineType({
       description: "Include a valid email address",
     }),
   ],
-  preview: { select: { title: "name", subtitle: "role" } },
+  preview: {
+    select: { title: "name", role: "role", phone: "phone", email: "email" },
+    prepare({ title, role, phone, email }) {
+      return {
+        title: title || "Unnamed contact",
+        // A contact with neither a phone nor an email is a row the site
+        // renders as a name and nothing else.
+        subtitle: subtitle(role, phone ?? email ?? "No phone or email"),
+        media: UserIcon,
+      };
+    },
+  },
 });

@@ -23,4 +23,15 @@ export default defineType({
       type: "cta",
     }),
   ],
+  /** Had no preview: the section's own heading is what identifies it. */
+  preview: {
+    select: { title: "title", subtitle: "subtitle" },
+    prepare({ title, subtitle }) {
+      return {
+        title: title || "School list",
+        subtitle: subtitle || "School list",
+        media: TagIcon,
+      };
+    },
+  },
 });

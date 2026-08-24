@@ -1,10 +1,12 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { languageName, injectLanguage } from "@/utility";
+import { ControlsIcon } from "@sanity/icons/Controls";
 
 export default defineType({
   name: "settings",
   description: "Site Settings",
   type: "document",
+  icon: ControlsIcon,
   fields: [
     defineField({
       name: "siteTitle",
@@ -43,7 +45,8 @@ export default defineType({
     prepare({ language }) {
       return {
         title: "Site Settings",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: ControlsIcon,
       };
     },
   },

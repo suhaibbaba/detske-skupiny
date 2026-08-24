@@ -1,4 +1,6 @@
 import { defineType, defineField } from "sanity";
+import { subtitle } from "@/utility";
+import { PinIcon } from "@sanity/icons/Pin";
 
 export default defineType({
   name: "transportItem",
@@ -23,5 +25,14 @@ export default defineType({
       options: { list: ["Bus", "Metro", "Tram", "Train"], layout: "radio" },
     }),
   ],
-  preview: { select: { title: "name", subtitle: "distance" } },
+  preview: {
+    select: { title: "name", distance: "distance", mode: "mode" },
+    prepare({ title, distance, mode }) {
+      return {
+        title: title || "Unnamed stop",
+        subtitle: subtitle(mode, distance),
+        media: PinIcon,
+      };
+    },
+  },
 });

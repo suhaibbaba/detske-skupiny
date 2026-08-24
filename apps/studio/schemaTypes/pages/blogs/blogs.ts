@@ -1,6 +1,6 @@
 import { defineType, defineField } from "sanity";
 import kebabCase from "lodash.kebabcase";
-import { appendLanguageSubtitle, injectLanguage } from "@/utility";
+import { formatDate, injectLanguage, localizedSubtitle } from "@/utility";
 import { ThListIcon } from "@sanity/icons/ThList";
 
 export default defineType({
@@ -72,21 +72,34 @@ export default defineType({
     }),
     injectLanguage(),
   ],
+  /**
+   * A row in the post list.
+   *
+   * `media` selects `image`. It used to select `coverImage`, a field this type
+   * has never had, so every post in every list showed the fallback icon and
+   * the cover image the editor uploaded was visible nowhere but the document
+   * itself.
+   *
+   * The subtitle is who and when, which is what tells two posts apart in a
+   * list ordered by date.
+   */
   preview: {
     select: {
       title: "title",
-      media: "coverImage",
+      media: "image",
       author: "author.name",
+      publishedAt: "publishedAt",
       language: "language",
     },
-    prepare({ title, media, author, language }) {
+    prepare({ title, media, author, publishedAt, language }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(
+        title: title || "Untitled post",
+        subtitle: localizedSubtitle(
           language,
-          author ? `By ${author}` : "No author",
+          author ?? "No author",
+          formatDate(publishedAt),
         ),
-        media,
+        media: media || ThListIcon,
       };
     },
   },

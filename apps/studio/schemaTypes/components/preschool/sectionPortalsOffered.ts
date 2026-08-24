@@ -1,6 +1,6 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { StarIcon } from "@sanity/icons/Star";
-import { appendLanguageSubtitle } from "@/utility";
+import { countLabel, subtitle } from "@/utility";
 
 export default defineType({
   name: "sectionPortalsOffered",
@@ -58,15 +58,12 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "heading", portals: "portals", language: "language" },
-    prepare({ title, portals, language }) {
-      const count = (portals || []).length;
+    select: { title: "heading", portals: "portals" },
+    prepare({ title, portals }) {
       return {
-        title: title || "Portals Offered Section",
-        subtitle: appendLanguageSubtitle(
-          language,
-          `${count ?? 0} portal${count === 1 ? "" : "s"}`,
-        ),
+        title: title || "Portals offered",
+        subtitle: subtitle("Portals offered", countLabel(portals, "portal")),
+        media: StarIcon,
       };
     },
   },

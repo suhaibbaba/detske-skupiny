@@ -1,9 +1,11 @@
 import { defineType, defineField } from "sanity";
-import { appendLanguageSubtitle } from "@/utility";
+import { toPlainText } from "@/utility";
+import { InfoOutlineIcon } from "@sanity/icons/InfoOutline";
 
 export default defineType({
   name: "contactUsItem",
   type: "object",
+  icon: InfoOutlineIcon,
   title: "Contact Us Item",
   fields: [
     defineField({
@@ -26,12 +28,12 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", image: "image", language: "language" },
-    prepare({ title, image, language }) {
+    select: { title: "title", description: "description", image: "image" },
+    prepare({ title, description, image }) {
       return {
-        title,
-        subtitle: appendLanguageSubtitle(language),
-        media: image,
+        title: title || "Contact item",
+        subtitle: toPlainText(description),
+        media: image || InfoOutlineIcon,
       };
     },
   },

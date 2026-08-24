@@ -70,6 +70,7 @@ export default defineType({
       return {
         title: heading || "Table",
         subtitle: `${headers?.length || 0} columns × ${rows?.length || 0} rows`,
+        media: ThLargeIcon,
       };
     },
   },

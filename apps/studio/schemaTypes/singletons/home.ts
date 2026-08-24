@@ -1,15 +1,13 @@
 import { defineField, defineType } from "sanity";
-import {
-  appendLanguageSubtitle,
-  createSections,
-  injectLanguage,
-} from "@/utility";
+import { languageName, createSections, injectLanguage } from "@/utility";
 import { widgetsName } from "@/schemaTypes/components/home";
+import { HomeIcon } from "@sanity/icons/Home";
 
 export default defineType({
   name: "home",
   title: "Home Page",
   type: "document",
+  icon: HomeIcon,
   fields: [
     defineField({
       name: "title",
@@ -25,7 +23,8 @@ export default defineType({
     prepare({ title, language }) {
       return {
         title: title || "Home Page",
-        subtitle: appendLanguageSubtitle(language),
+        subtitle: languageName(language),
+        media: HomeIcon,
       };
     },
   },
