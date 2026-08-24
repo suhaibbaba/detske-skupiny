@@ -29,7 +29,8 @@ import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
 import { getLocalizedRoutes } from "@/routes";
 import SchoolMap from "@/app/[locale]/groups/[group]/components/SchoolMap";
-import { getLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 import Globe from "@/components/icons/GlobeIcon";
 import Phone from "@/components/icons/PhoneIcon";
 import Transportation from "@/components/icons/TransportationIcon";
@@ -149,11 +150,13 @@ const styles: PageStyles = {
 export async function generateMetadata({
   params,
 }: PageProps<{ group: string }>): Promise<Metadata> {
-  const { group: groupSlug } = await params;
+  const { group: groupSlug, locale } = await params;
+  setRequestLocale(locale);
   const translate = await getTranslateServer();
 
   const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
+    locale,
   });
 
   if (!school) {
@@ -168,9 +171,13 @@ export async function generateMetadata({
   };
 }
 
-const Page = async ({ params }: PageProps<{ group: string }>) => {
-  const { group: groupSlug } = await params;
-  const locale = await getLocale();
+/**
+ * Awaits `params` for the school slug, which is dynamic, so it sits below the
+ * Suspense boundary in `Page`.
+ */
+const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
+  const { group: groupSlug, locale } = await params;
+  setRequestLocale(locale);
 
   if (!groupSlug) {
     return redirect(getLocalizedRoutes(locale).home);
@@ -178,6 +185,7 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
 
   const { school } = await fetchSchoolBySlug({
     slug: groupSlug,
+    locale,
   });
 
   if (!school) {
@@ -364,5 +372,11 @@ const Page = async ({ params }: PageProps<{ group: string }>) => {
     </Box>
   );
 };
+
+const Page = ({ params }: PageProps<{ group: string }>) => (
+  <Suspense fallback={null}>
+    <SchoolContent params={params} />
+  </Suspense>
+);
 
 export default Page;

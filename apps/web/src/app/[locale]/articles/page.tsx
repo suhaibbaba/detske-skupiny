@@ -10,6 +10,8 @@ import Alert from "@/components/ui/alert";
 import clsx from "clsx";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 import { Metadata } from "next";
 
 interface BlogsStyles {
@@ -55,14 +57,18 @@ const styles: BlogsStyles = {
 };
 
 export async function generateMetadata({
+  params,
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const { category: categorySelected } = (await searchParams) as {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const { category: categorySelected } = ((await searchParams) ?? {}) as {
     category?: string;
   };
 
   const { pageHero } = await fetchBlogPage({
     categorySelected: categorySelected || "",
+    locale,
   });
 
   const translate = await getTranslateServer();
@@ -73,14 +79,25 @@ export async function generateMetadata({
   };
 }
 
-const BlogsPage = async ({ params, searchParams }: PageProps) => {
+/**
+ * Split from the page so that reading `searchParams` - the one dynamic input
+ * on this route - happens inside the Suspense boundary below. Everything
+ * above it prerenders.
+ */
+const BlogsContent = async ({
+  locale,
+  searchParams,
+}: {
+  locale: string;
+  searchParams: PageProps["searchParams"];
+}) => {
   const translate = await getTranslateServer();
-  const { locale } = await params;
-  const { category: categorySelected } = (await searchParams) as {
+  const { category: categorySelected } = ((await searchParams) ?? {}) as {
     category?: string;
   };
   const { blogs, pageHero, categories } = await fetchBlogPage({
     categorySelected: categorySelected || "",
+    locale,
   });
 
   return (
@@ -118,6 +135,17 @@ const BlogsPage = async ({ params, searchParams }: PageProps) => {
         </Box>
       </Container>
     </Box>
+  );
+};
+
+const BlogsPage = async ({ params, searchParams }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  return (
+    <Suspense fallback={null}>
+      <BlogsContent locale={locale} searchParams={searchParams} />
+    </Suspense>
   );
 };
 

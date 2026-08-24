@@ -7,6 +7,7 @@ import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
 
 interface CooperationStyles {
   pageLayout?: PageLayoutStyles;
@@ -42,7 +43,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 const Page = async ({ params }: PageProps) => {
   const queryParams = await params;
-  const data = await fetchPageByType("preschool");
+  setRequestLocale(queryParams.locale);
+  const data = await fetchPageByType("preschool", queryParams.locale);
 
   return (
     <PageLayout

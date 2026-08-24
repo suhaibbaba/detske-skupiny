@@ -8,6 +8,7 @@ import React from "react";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
+import { setRequestLocale } from "next-intl/server";
 
 interface GroupsStyles {
   container?: BoxProps;
@@ -36,7 +37,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 const Page = async ({ params }: PageProps) => {
   const { locale } = await params;
-  const { content, groups } = await fetchGroupPage();
+  setRequestLocale(locale);
+  const { content, groups } = await fetchGroupPage(locale);
 
   return (
     <Box component="section" {...styles.container}>

@@ -1,59 +1,43 @@
 import { groq } from "next-sanity";
 import { MiniSchool, PageHero, School } from "@/sanity/types";
-import { languageQuery } from "@/sanity/queries/index";
-import { clientFetch } from "@/sanity/utilites/fetch";
+import { languageQuery } from "@/sanity/queries/filters";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import {
+  imageUrl,
+  internalLinkFields,
+  linkFields,
+  pageHeroFields,
+  schoolCardFields,
+  schoolCategoryFields,
+  tagFields,
+} from "@/lib/sanity/fragments";
 
-export async function fetchMiniSchools(params: { numberOfSchools: number }) {
-  const query = groq`{
+export const miniSchoolsQuery = groq`{
     "schools": *[_type == "schools" && ${languageQuery} && (true in types[]->highPriority)] | order(sortOrder asc)[0...$numberOfSchools] {
-      "id": _id,
-      name,
-      "slug": slug.current,
-      shortSummary,
-      website,
-      "primaryImage": select(
-        defined(primaryImages[0]) => primaryImages[0].asset->url,
-        null
-      ),
-      area->{ "id": _id, name},
-      "region": area->region->{ "id": _id, name},
-      tags[]->{
-        "id": _id,
-        name,
-        "slug": slug.current,
-        "borderColor": borderColor.hex,
-      },
-      types[]->{
-        "id": _id,
-        name,
-        highPriority,
-        "icon": icon.asset->url,
-        "backgroundColor": backgroundColor.hex,
-      },
-      categories[]->{
-        "id": _id,
-        name,
-        "slug": slug.current,
-        "emoji": emoji.asset->url,
-      },
+      ${schoolCardFields}
     },
   }`;
 
-  return clientFetch<{
-    schools: MiniSchool[];
-  }>(query, { ...params });
+export async function fetchMiniSchools(params: {
+  numberOfSchools: number;
+  locale: string;
+}) {
+  return sanityFetch<{ schools: MiniSchool[] }>(
+    miniSchoolsQuery,
+    { ...params },
+    ["schools"],
+  );
 }
 
-export async function fetchSchoolBySlug(params: { slug: string }) {
-  const query = groq`{
-    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero,
+export const schoolBySlugQuery = groq`{
+    "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
     "school": *[_type == "schools" && ${languageQuery} &&  slug.current == $slug][0]{
       "id": _id,
-      "logo": logo.asset->url,
+      ${imageUrl("logo")},
       name,
       metaDescription,
       "slug": slug.current,
-      website,
+      website{ ${linkFields} },
       "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),
       "region": area->region->{ "id": _id, name, countrySlug, fullSlug },
@@ -67,34 +51,30 @@ export async function fetchSchoolBySlug(params: { slug: string }) {
       links[]{
         "id": _key,
         ...link,
+        "internalLink": link.internalLink->{ ${internalLinkFields} },
       },
       types[]->{
         "id": _id,
         name,
         "slug": slug.current
       },
-      categories[]->{
-        "id": _id,
-        name,
-        "slug": slug.current,
-        "emoji": emoji.asset->url,
-      },
+      categories[]->{ ${schoolCategoryFields} },
       transportation[]{
         "id": _key,
         ...
       },
       content,
-      tags[]->{
-        "id": _id,
-        name,
-        "slug": slug.current,
-        "borderColor": borderColor.hex,
-      },
+      tags[]->{ ${tagFields} },
     }
   }`;
 
-  return clientFetch<{
-    pageHero: PageHero;
-    school: School;
-  }>(query, { ...params });
+export async function fetchSchoolBySlug(params: {
+  slug: string;
+  locale: string;
+}) {
+  return sanityFetch<{ pageHero: PageHero; school: School }>(
+    schoolBySlugQuery,
+    { ...params },
+    ["schools", "page:schoolPage"],
+  );
 }

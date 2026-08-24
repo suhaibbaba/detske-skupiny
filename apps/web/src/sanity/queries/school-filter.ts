@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
-import { clientFetch } from "@/sanity/utilites/fetch";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { imageUrl, tagFields } from "@/lib/sanity/fragments";
 import {
   CatalogParams,
   FilterTypes,
@@ -25,10 +26,7 @@ export type FiltersResponse = {
 /** Tags (counts respect "all") */
 export const tagsQuery = groq`
     "tags": *[_type == "schoolTags"]{
-      "id": _id,
-      name,
-      "slug": slug.current,
-      "borderColor": borderColor.hex,
+      ${tagFields},
     } | order(name asc)
 `;
 
@@ -41,7 +39,7 @@ export const categoriesQuery = groq`
       "id": _id,
       name,
       "slug": slug.current,
-      "emoji": emoji.asset->url,
+      ${imageUrl("emoji")},
     } | order(name asc),
 `;
 
@@ -67,8 +65,8 @@ export const countryQuery = groq`
   ] + *[_type == "regions" && country->slug.current == $country && (!defined(language) || language == $locale)] | order(orderRank) {
       "id": _id,
       name,
-      "slug": "/" 
-        + country->slug.current + "/" 
+      "slug": "/"
+        + country->slug.current + "/"
         + slug.current,
       "count": schoolCount,
     },
@@ -130,24 +128,30 @@ export const regionQuery = groq`
 
 export async function fetchFilters(
   catalog: CatalogParams,
+  locale: string,
 ): Promise<FiltersResponse> {
   switch (catalog.level) {
     case FilterTypes.country: {
-      return clientFetch(countryQuery, {
-        country: catalog.country,
-        region: null,
-        area: null,
-      }) as Promise<FiltersResponse>;
+      return sanityFetch<FiltersResponse>(
+        countryQuery,
+        { country: catalog.country, region: null, area: null, locale },
+        ["schools", "geo"],
+      );
     }
     case FilterTypes.area:
     case FilterTypes.region:
     case FilterTypes.subarea:
-      return clientFetch(regionQuery, {
-        country: catalog.country,
-        region: catalog.region,
-        area: catalog.area,
-        subarea: catalog.subarea,
-      }) as Promise<FiltersResponse>;
+      return sanityFetch<FiltersResponse>(
+        regionQuery,
+        {
+          country: catalog.country,
+          region: catalog.region,
+          area: catalog.area,
+          subarea: catalog.subarea,
+          locale,
+        },
+        ["schools", "geo"],
+      );
     default:
       return {
         country: null,

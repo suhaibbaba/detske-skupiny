@@ -144,8 +144,8 @@ const styles: FooterStyles = {
   },
 };
 
-const Footer = async () => {
-  const { footer } = await fetchFooterPage();
+const Footer = async ({ locale }: { locale: string }) => {
+  const { footer } = await fetchFooterPage(locale);
 
   if (!footer) {
     return null;

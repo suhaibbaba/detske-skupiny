@@ -11,9 +11,9 @@ on:
 # time, and `next build` fails outright without them ("Configuration must
 # contain `projectId`"), so both jobs below need these:
 #
-#   SANITY_PROJECT_ID   - Sanity project id (NEXT_PUBLIC_SANITY_PROJECT_ID)
+#   SANITY_PROJECT_ID   - Sanity project id (SANITY_PROJECT_ID)
 #   SANITY_DATASET      - dataset to read, e.g. "staging" or "production"
-#                         (NEXT_PUBLIC_SANITY_DATASET)
+#                         (SANITY_DATASET)
 #
 # Optional - the e2e run works without them, with reduced coverage:
 #   MAPTILER_API_KEY    - NEXT_PUBLIC_MAPTILER_API_KEY; without it the map
@@ -56,8 +56,8 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
           NEXT_PUBLIC_MAPTILER_API_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: npm run build
 
@@ -85,8 +85,8 @@ jobs:
 
       - name: Run e2e specs
         env:
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
           NEXT_PUBLIC_MAPTILER_API_KEY: ${{ secrets.MAPTILER_API_KEY }}
           # next-intl routes by domain; these make localhost resolve to "cs".
           NEXT_PUBLIC_CZ_DOMAIN: localhost

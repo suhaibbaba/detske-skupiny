@@ -17,6 +17,8 @@ interface Props {
     title: string;
     description: string;
   };
+  /** Supplied by Zone, which spreads the page's route params onto sections. */
+  locale: string;
 }
 
 interface BlogSectionStyles {
@@ -64,8 +66,8 @@ const styles: BlogSectionStyles = {
   },
 };
 
-const BlogSection = async ({ fields }: Props) => {
-  const { blogs } = await fetchMiniBlogs({ numberOfBlogs: 2 });
+const BlogSection = async ({ fields, locale }: Props) => {
+  const { blogs } = await fetchMiniBlogs({ numberOfBlogs: 2, locale });
 
   if (!blogs) {
     return null;

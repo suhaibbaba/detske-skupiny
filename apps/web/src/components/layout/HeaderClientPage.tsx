@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   AppBarProps,
@@ -129,12 +129,6 @@ const styles: HeaderStyles = {
 const HeaderClientPage = ({ header }: Props) => {
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.currentLocale = locale;
-    }
-  }, [locale]);
 
   const handleCloseDrawer = () => {
     setMenuOpen(false);

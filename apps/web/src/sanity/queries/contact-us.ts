@@ -1,18 +1,22 @@
 import { groq } from "next-sanity";
 import { ContactUsForm, ContactUsItem, PageHero } from "@/sanity/types";
-import { languageQuery } from "@/sanity/queries/index";
-import { clientFetch } from "@/sanity/utilites/fetch";
+import { languageQuery } from "@/sanity/queries/filters";
+import { sanityFetch } from "@/lib/sanity/fetch";
+import { ctaFields, pageHeroFields } from "@/lib/sanity/fragments";
 
-export async function fetchContactUs() {
-  const query = groq`*[_type == "contactUs" && ${languageQuery}][0]{ 
-      pageHero,
+export const contactUsQuery = groq`*[_type == "contactUs" && ${languageQuery}][0]{
+      pageHero{ ${pageHeroFields} },
       items,
-      contactForm,
+      contactForm{
+        ...,
+        sendMessageCta{ ${ctaFields} },
+      },
     }`;
 
-  return clientFetch<{
+export async function fetchContactUs(locale: string) {
+  return sanityFetch<{
     pageHero: PageHero;
     items: ContactUsItem[];
     contactForm: ContactUsForm;
-  }>(query);
+  }>(contactUsQuery, { locale }, ["page:contactUs"]);
 }

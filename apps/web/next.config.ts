@@ -5,16 +5,27 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: [`*.school.local`],
   transpilePackages: ["@detske-skupiny/config"],
-  // TODO: enable Cache Components. Turning this on fails the build on every
-  // content route - all eight of them:
-  //   /[locale], /[locale]/articles, /[locale]/articles/[slug],
-  //   /[locale]/catalog/[...slug], /[locale]/contact-us, /[locale]/cooperation,
-  //   /[locale]/groups, /[locale]/groups/[group]
-  // Each one reads Sanity outside a <Suspense> boundary (the pages themselves,
-  // plus the shared next-intl dictionary fetch in [locale]/layout.tsx), so
-  // adopting it means deciding what is cached and what streams - a data-layer
-  // change, not an upgrade fix.
-  cacheComponents: false,
+  // Every Sanity read now goes through a "use cache" function, and the routes
+  // that still depend on request data (searchParams, and the slug segments
+  // that have no generateStaticParams) read it below a Suspense boundary.
+  cacheComponents: true,
+  /**
+   * The Sanity project and dataset names, inlined into the client bundle.
+   *
+   * Only src/sanity/sections/sanityImageUrl.ts reads them there, and only to
+   * format `https://cdn.sanity.io/images/<project>/<dataset>/...` - no request
+   * is made from the browser with them, and both names are already visible in
+   * the text of every image URL the page renders.
+   *
+   * The data client (lib/sanity/client.ts) is `server-only` and reads the same
+   * variables on the server. Doing the exposure here rather than through a
+   * NEXT_PUBLIC_ prefix keeps it to one reviewable line instead of a naming
+   * convention that is easy to extend by accident.
+   */
+  env: {
+    SANITY_PROJECT_ID: process.env.SANITY_PROJECT_ID,
+    SANITY_DATASET: process.env.SANITY_DATASET,
+  },
 };
 
 // Pass the path to your i18n request config
