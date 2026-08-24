@@ -8,7 +8,12 @@ import { colorInput } from "@sanity/color-input";
 import { linkField } from "sanity-plugin-link-field";
 import { documentInternationalization } from "@sanity/document-internationalization";
 import { googleMapsInput } from "@sanity/google-maps-input";
-import { MULTIPLE_PAGES_TYPES, SINGLETON_TYPES, structure } from "@/structure";
+import {
+  MULTIPLE_PAGES_TYPES,
+  PAGE_CONFIG_TYPES,
+  SINGLETON_TYPES,
+  structure,
+} from "@/structure";
 import { computedFieldsPlugin } from "@/plugins/computedFields";
 import {
   initialValueTemplates,
@@ -120,11 +125,16 @@ export default defineConfig({
      */
     templates: (prev) => [...prev, ...initialValueTemplates],
   },
-  // Restrict actions on singleton documents (home, settings, header, footer, …)
   document: {
-    // Remove Delete/Duplicate (and optionally Unpublish) for singletons
+    /**
+     * There is exactly one of each of these per language, and the site reads
+     * each with `*[_type == "..."][0]`. A duplicate therefore does not add a
+     * page - it makes which page the site serves arbitrary - and a delete
+     * takes a route down. Both actions are removed; every other type keeps
+     * them.
+     */
     actions: (prev, { schemaType }) =>
-      SINGLETON_TYPES.includes(schemaType)
+      [...SINGLETON_TYPES, ...PAGE_CONFIG_TYPES].includes(schemaType)
         ? prev.filter(
             (a) =>
               !["delete", "duplicate" /*, 'unpublish'*/].includes(
@@ -136,13 +146,13 @@ export default defineConfig({
     /**
      * What the global "New document" button offers.
      *
-     * Two removals. Singletons are one-per-language pages reached from the
-     * sidebar, so a second copy made from this menu would be a document the
-     * site never reads. And the stock `schools` / `blogs` templates are
-     * dropped in favour of the base-language ones beside them, which set
-     * `language` (and a post's date) on creation - keeping both would offer
-     * two identically named "School" entries, one of which quietly produces a
-     * school in no language at all.
+     * Two removals. The one-per-language pages are reached from the sidebar,
+     * so a second copy made from this menu would be a document the site never
+     * reads. And the stock `schools` / `blogs` templates are dropped in favour
+     * of the base-language ones beside them, which set `language` (and a
+     * post's date) on creation - keeping both would offer two identically
+     * named "School" entries, one of which quietly produces a school in no
+     * language at all.
      *
      * The parameterised geography templates never reach this list: Sanity
      * excludes any template declaring `parameters` from menus that cannot
@@ -152,8 +162,11 @@ export default defineConfig({
     newDocumentOptions: (prev) =>
       prev.filter(
         (template) =>
-          !SINGLETON_TYPES.includes(template.templateId || "") &&
-          !REPLACED_DEFAULT_TEMPLATES.includes(template.templateId || ""),
+          ![
+            ...SINGLETON_TYPES,
+            ...PAGE_CONFIG_TYPES,
+            ...REPLACED_DEFAULT_TEMPLATES,
+          ].includes(template.templateId || ""),
       ),
   },
 });

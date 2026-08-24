@@ -70,6 +70,31 @@ export const MULTIPLE_PAGES = extractSchemas(pagesModules);
 export const SINGLETON_TYPES = SINGLETONS.map((s) => s.schemaType);
 export const MULTIPLE_PAGES_TYPES = MULTIPLE_PAGES.map((s) => s.schemaType);
 
+/**
+ * The page-configuration documents: one per language, like the singletons, but
+ * living under schemaTypes/pages because that is where their siblings are.
+ *
+ * `SINGLETON_TYPES` is discovered from a folder and is also what the
+ * internationalization and link plugins are handed, so these cannot simply be
+ * added to it - they are already in `MULTIPLE_PAGES_TYPES`, and a type listed
+ * twice is registered twice. This list exists for the one thing they do share
+ * with the singletons: nobody should be able to make a second one. The site
+ * reads each with `*[_type == "blogPage"][0]`, so a duplicate does not add a
+ * page, it makes which page you get arbitrary.
+ */
+export const PAGE_CONFIG_TYPES = ["schoolPage", "blogPage", "dictionaries"];
+
+/**
+ * The pairing document `@sanity/document-internationalization` writes.
+ *
+ * It is a real document type in the schema, so it turns up in
+ * `documentTypeListItems()` - and it was appearing at the bottom of the
+ * sidebar as "Translation.metadata", a list of machine-written join records
+ * that an editor can only damage by opening. What it holds is presented in
+ * Translations, in terms of the documents it pairs.
+ */
+const TRANSLATION_METADATA_TYPE = "translation.metadata";
+
 /** Everything the six sections below account for. */
 const PLACED_TYPES = [
   ...CONTENT_TYPES,
@@ -78,6 +103,7 @@ const PLACED_TYPES = [
   ...BLOG_TYPES,
   ...TRANSLATION_TYPES,
   ...SITE_TYPES,
+  TRANSLATION_METADATA_TYPE,
 ];
 
 /**
@@ -100,6 +126,9 @@ const PLACED_TYPES = [
  * placed by name above, so in a healthy repo it renders nothing; if it renders
  * something, a schema was added without being given a home, and this is what
  * keeps it reachable until it gets one.
+ *
+ * `page` is the one type placed but not visible at this level: it sits inside
+ * Content as "Standalone pages", which is the honest description of it.
  */
 export const structure: StructureResolver = (S, context) =>
   S.list()

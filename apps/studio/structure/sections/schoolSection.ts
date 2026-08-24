@@ -30,11 +30,7 @@ export function createSchoolSection(S: StructureBuilder): ListItemBuilder {
             .id("schoolPageInSection")
             .title("Catalog page")
             .icon(DocumentTextIcon)
-            .child(
-              S.documentTypeList("schoolPage")
-                .title("Catalog page")
-                .schemaType("schoolPage"),
-            ),
+            .child(S.documentTypeList("schoolPage").title("Catalog page")),
           S.divider(),
 
           baseLanguageList({

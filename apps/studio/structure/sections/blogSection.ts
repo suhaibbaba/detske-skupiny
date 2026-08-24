@@ -33,11 +33,7 @@ export function createBlogSection(S: StructureBuilder): ListItemBuilder {
             .id("blogPageInSection")
             .title("Blog page")
             .icon(DocumentTextIcon)
-            .child(
-              S.documentTypeList("blogPage")
-                .title("Blog page")
-                .schemaType("blogPage"),
-            ),
+            .child(S.documentTypeList("blogPage").title("Blog page")),
           S.divider(),
 
           baseLanguageList({
