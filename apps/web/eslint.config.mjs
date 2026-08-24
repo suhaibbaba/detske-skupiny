@@ -11,14 +11,15 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-expressions": "off",
 
-      // TODO: eslint-config-next 16 ships eslint-plugin-react-hooks 7, which
-      // added these two rules at "error". They fire only on components that
-      // predate the upgrade (SchoolListClient, LanguageSwitcher, MapComponent,
-      // useSchoolFilters) and every fix is a behavioural change to an effect,
-      // not an upgrade fix - so they are warnings for now and tracked
-      // separately rather than silently rewritten during a dependency bump.
+      // TODO: eslint-plugin-react-hooks 7 (via eslint-config-next 16) added
+      // this at "error". The two components still tripping it - LanguageSwitcher
+      // and MapComponent - both derive state in an effect, and the fix is a
+      // behavioural change rather than a mechanical one.
+      //
+      // "react-hooks/immutability" used to be demoted here too. Its only
+      // offender was SchoolListClient, which this branch deleted, so the rule
+      // is back at its default "error".
       "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/immutability": "warn",
     },
   },
   {

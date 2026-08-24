@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
+import { useQueryStates } from "nuqs";
+import { catalogParsers } from "@/app/[locale]/catalog/[...slug]/searchParams";
+import { useCatalogTransition } from "@/app/[locale]/catalog/[...slug]/components/CatalogTransition";
 
 export type Filters = {
   categories: string[];
@@ -9,129 +11,74 @@ export type Filters = {
   name: string;
 };
 
-interface UseFiltersOptions {
-  onChange?: (filters: Filters) => void; // callback to trigger fetching
-  debounceMs?: number;
-}
+/**
+ * Reads and writes the catalog filters, which live in the URL and nowhere else.
+ *
+ * Every setter navigates (`shallow: false`), so the server re-renders the page
+ * with the new filters and returns the new list. There is no client-side
+ * refetch to keep in step with it - this hook used to call `router.replace`
+ * *and* hand the same filters to a fetch in SchoolListClient, which meant two
+ * requests for one click.
+ *
+ * Any filter change also clears `page`: the reset is part of the same URL
+ * update, so paging state cannot survive into a different result set.
+ */
+export function useSchoolFilters() {
+  const { startTransition } = useCatalogTransition();
 
-export function useSchoolFilters({
-  onChange,
-  debounceMs = 400,
-}: UseFiltersOptions = {}) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Parse filters from URL
-  const categories = useMemo(
-    () => searchParams.getAll("categories"),
-    [searchParams],
-  );
-  const tags = useMemo(() => searchParams.getAll("tags"), [searchParams]);
-  const nameFromUrl = useMemo(
-    () => searchParams.get("name") ?? "",
-    [searchParams],
-  );
-
-  // Local state for typing
-  const [localName, setLocalName] = useState(nameFromUrl);
-
-  // Keep localName in sync if URL changes externally
-  useEffect(() => {
-    setLocalName(nameFromUrl);
-  }, [nameFromUrl]);
+  const [state, setState] = useQueryStates(catalogParsers, {
+    shallow: false,
+    history: "push",
+    scroll: false,
+    startTransition,
+  });
 
   const filters: Filters = useMemo(
-    () => ({ categories, tags, name: nameFromUrl }),
-    [categories, tags, nameFromUrl],
+    () => ({ categories: state.categories, tags: state.tags, name: state.name }),
+    [state.categories, state.tags, state.name],
   );
 
-  // Update query params in the URL
-  const updateQuery = useCallback(
-    (next: Partial<Filters>) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (next.categories !== undefined) {
-        params.delete("categories");
-        next.categories.forEach((t) => params.append("categories", t));
-      }
-
-      if (next.tags !== undefined) {
-        params.delete("tags");
-        next.tags.forEach((t) => params.append("tags", t));
-      }
-
-      if (next.name !== undefined) {
-        params.delete("name");
-        if (next.name) params.set("name", next.name);
-      }
-
-      router.replace(`?${params.toString()}`, { scroll: false });
-
-      if (onChange) {
-        onChange({
-          categories: next.categories ?? categories,
-          tags: next.tags ?? tags,
-          name: next.name ?? nameFromUrl,
-        });
-      }
-    },
-    [router, searchParams, categories, tags, nameFromUrl, onChange],
-  );
-
-  // Helpers for categories/tags
   const toggle = useCallback(
     (key: "categories" | "tags", value: string) => {
-      const list = new Set(filters[key]);
-      list.has(value) ? list.delete(value) : list.add(value);
-      updateQuery({ [key]: [...list] });
+      const next = new Set(filters[key]);
+      if (next.has(value)) {
+        next.delete(value);
+      } else {
+        next.add(value);
+      }
+
+      void setState({ [key]: [...next], page: null });
     },
-    [filters, updateQuery],
+    [filters, setState],
   );
 
-  // Commit localName → URL
-  const commitName = useCallback(() => {
-    if (localName !== nameFromUrl) {
-      updateQuery({ name: localName });
-    }
-  }, [localName, updateQuery]);
-
-  // Debounce commit on typing
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (localName !== nameFromUrl) {
-        commitName();
-      }
-    }, debounceMs);
-
-    return () => clearTimeout(handler);
-  }, [localName, commitName, debounceMs, nameFromUrl]);
+  const setName = useCallback(
+    (name: string) => {
+      void setState({ name: name || null, page: null });
+    },
+    [setState],
+  );
 
   const clear = useCallback(
     (key?: keyof Filters) => {
       if (!key) {
-        updateQuery({ categories: [], tags: [], name: "" });
-      } else if (key === "name") {
-        updateQuery({ name: "" });
-      } else {
-        updateQuery({ [key]: [] });
+        void setState({ categories: null, tags: null, name: null, page: null });
+        return;
       }
+
+      void setState(
+        key === "name" ? { name: null, page: null } : { [key]: null, page: null },
+      );
     },
-    [updateQuery],
+    [setState],
   );
 
-  const hasActiveFilters = useMemo(
-    () =>
-      filters.categories.length > 0 ||
-      filters.tags.length > 0 ||
-      !!filters.name,
-    [filters],
-  );
+  const hasActiveFilters =
+    filters.categories.length > 0 || filters.tags.length > 0 || !!filters.name;
 
   return {
     filters,
-    localName,
-    setLocalName,
-    commitName, // call on Enter or Blur
+    setName,
     toggleType: (slug: string) => toggle("categories", slug),
     toggleTag: (slug: string) => toggle("tags", slug),
     clear,

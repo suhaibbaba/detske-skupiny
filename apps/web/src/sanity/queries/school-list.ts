@@ -54,23 +54,59 @@ const extendedFilter =
     (!defined($search) || lower(nameNormalized) match "*" + lower($search) + "*")
   `;
 
-export const schoolByFilterQuery = groq`{
-    "totalSelectedSchools": count(*[${extendedFilter}]),
-    "markers": *[${baseFilter}]{
-      ${markerFields}
+/**
+ * Map markers for the current geographic scope.
+ *
+ * Deliberately filtered by `baseFilter` only - country/region/area/subarea -
+ * and NOT by categories, tags or the search term. That is what the combined
+ * query did before this was split, so the map has always shown every school in
+ * the area regardless of which list filters are active, and that behaviour is
+ * preserved here.
+ *
+ * Splitting it out of the list query is what makes that worth doing: the
+ * marker set no longer changes when a filter does, so one cache entry per geo
+ * scope serves every combination of filters.
+ */
+export const schoolMarkersQuery = groq`*[${baseFilter}]{
+    ${markerFields}
+  }`;
+
+export type SchoolMarkersParams = {
+  country: string;
+  region?: string;
+  area?: string;
+  subarea?: string;
+  locale: string;
+};
+
+export async function fetchSchoolMarkers(params: SchoolMarkersParams) {
+  return sanityFetch<MarkerData[]>(
+    schoolMarkersQuery,
+    {
+      country: params.country ?? null,
+      region: params.region ?? null,
+      area: params.area ?? null,
+      subarea: params.subarea ?? null,
+      locale: params.locale,
     },
+    ["schools"],
+  );
+}
+
+/** One page of the filtered list, plus the total the filters select. */
+export const schoolListQuery = groq`{
+    "totalSelectedSchools": count(*[${extendedFilter}]),
     "schools": *[${extendedFilter}] | order(isHighPriority desc, sortOrder asc) [$start...$end]  {
       ${schoolCardFields}
     },
   }`;
 
-export async function fetchSchoolByFilter(params: SchoolFilterQueryParams) {
+export async function fetchSchoolList(params: SchoolFilterQueryParams) {
   return sanityFetch<{
     totalSelectedSchools: number;
-    markers?: MarkerData[];
     schools: MiniSchool[];
   }>(
-    schoolByFilterQuery,
+    schoolListQuery,
     {
       country: params.country ?? null,
       region: params.region ?? null,
