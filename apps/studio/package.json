@@ -19,6 +19,7 @@
   ],
   "dependencies": {
     "@detske-skupiny/config": "*",
+    "@detske-skupiny/types": "*",
     "@sanity/color-input": "^6.1.4",
     "@sanity/document-internationalization": "^6.2.33",
     "@sanity/google-maps-input": "^6.1.13",

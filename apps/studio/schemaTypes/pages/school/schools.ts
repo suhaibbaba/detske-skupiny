@@ -113,8 +113,16 @@ export default defineType({
             language,
           };
 
+          // Pinned, not read from the environment. This was
+          // `import.meta.env.SANITY_STUDIO_API_VERSION || ""`, and an empty
+          // string is not a valid API version - the client rejects it, so on
+          // any studio without that variable set the uniqueness check threw
+          // instead of answering, and the editor saw a validation error on a
+          // slug that was perfectly fine. The query is a `count()` whose
+          // behaviour does not vary by API version, so a constant is the
+          // honest form: nothing about it is deployment-specific.
           const result = await getClient({
-            apiVersion: import.meta.env.SANITY_STUDIO_API_VERSION || "",
+            apiVersion: "2026-01-01",
           }).fetch(query, params);
 
           return result <= 1; // true = unique, false = duplicate

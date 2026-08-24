@@ -9,7 +9,7 @@ import { useToast } from "@sanity/ui";
 import { useState } from "react";
 import { removeDiacritics } from "@/utility";
 import { getGeoLocation } from "@/utility/geoLocation";
-import { Address } from "@/types/school";
+import type { PostalAddress } from "@detske-skupiny/types";
 
 /**
  * The one place the studio writes a computed field.
@@ -40,7 +40,7 @@ type SchoolDraft = {
   _id: string;
   name?: string;
   area?: TypeRef;
-  address?: Address;
+  address?: PostalAddress;
   types?: TypeRef[];
 };
 
@@ -86,7 +86,7 @@ type RelatedResult = {
 };
 
 /** True when the geocoder should run: either coordinate missing counts. */
-function needsGeocoding(address?: Address) {
+function needsGeocoding(address?: PostalAddress) {
   return !address?.mapLocation?.lat || !address?.mapLocation?.lng;
 }
 

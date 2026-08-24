@@ -1,4 +1,4 @@
-import { Address } from "@/types/school";
+import type { PostalAddress } from "@detske-skupiny/types";
 
 /**
  * Geocodes a postal address to a coordinate via MapTiler.
@@ -11,7 +11,7 @@ import { Address } from "@/types/school";
  * a school with an unrecognised address should still publish, just without a
  * map pin. A network or HTTP failure does throw, and the caller surfaces it.
  */
-export const getGeoLocation = async (address?: Address) => {
+export const getGeoLocation = async (address?: PostalAddress) => {
   if (!address) {
     return;
   }
