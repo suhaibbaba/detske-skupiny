@@ -1,0 +1,191 @@
+import {
+  definePlugin,
+  DocumentActionComponent,
+  SanityClient,
+  useClient,
+  useDocumentOperation,
+} from "sanity";
+import { useToast } from "@sanity/ui";
+import { useState } from "react";
+import { removeDiacritics } from "@/utility";
+import { getGeoLocation } from "@/utility/geoLocation";
+import { Address } from "@/types/school";
+
+/**
+ * The one place the studio writes a computed field.
+ *
+ * It replaces seven plugins and two cron scripts that denormalised counts,
+ * paths and a random sort order across every geography document. Those all
+ * existed to make GROQ cheaper; the web app now derives the same values with
+ * `count()` subqueries and composed projections, so the only fields still
+ * worth storing are the ones a query genuinely cannot compute:
+ *
+ *   nameNormalized - GROQ has no diacritics-stripping function, and search
+ *                    matches against it
+ *   countrySlug    - filtering by a dereferenced path (`area->region->...`) on
+ *   regionSlug       every school in the dataset is far slower than an equality
+ *                    check on a stored string
+ *   isHighPriority - the list ordering reads it, and ordering by a dereferenced
+ *                    field is not something GROQ can index
+ *   address.mapLocation - the result of an external geocoding call
+ *
+ * All four are written on publish, for `schools` only, before the publish is
+ * executed - so a published school never carries stale values, and drafts are
+ * never patched by anything the editor did not do.
+ */
+
+type TypeRef = { _ref: string };
+
+type SchoolDraft = {
+  _id: string;
+  name?: string;
+  area?: TypeRef;
+  address?: Address;
+  types?: TypeRef[];
+};
+
+type ComputedFields = {
+  nameNormalized: string;
+  countrySlug?: string;
+  regionSlug?: string;
+  isHighPriority?: boolean;
+  "address.mapLocation"?: {
+    _type: "geopoint";
+    lat: number;
+    lng: number;
+  };
+};
+
+/**
+ * Everything the computed fields need from other documents, in one query.
+ *
+ * `$areaRef` and `$typeRefs` come from the in-memory draft rather than being
+ * re-read here: the draft the editor is looking at is the thing being
+ * published, and reading it back would race with its own autosave.
+ */
+const RELATED_QUERY = `{
+  "area": *[_id == $areaRef][0]{
+    "regionSlug": region->slug.current,
+    "countrySlug": region->country->slug.current
+  },
+  "types": *[_id in $typeRefs]{ highPriority }
+}`;
+
+type RelatedResult = {
+  area: { regionSlug?: string; countrySlug?: string } | null;
+  types: { highPriority?: boolean }[];
+};
+
+/** True when the geocoder should run: either coordinate missing counts. */
+function needsGeocoding(address?: Address) {
+  return !address?.mapLocation?.lat || !address?.mapLocation?.lng;
+}
+
+export async function computeSchoolFields(
+  client: SanityClient,
+  draft: SchoolDraft | null,
+): Promise<ComputedFields> {
+  const fields: ComputedFields = {
+    nameNormalized: removeDiacritics(draft?.name || ""),
+  };
+
+  const areaRef = draft?.area?._ref ?? null;
+  const typeRefs = draft?.types?.map((type) => type._ref) ?? [];
+
+  const related = await client.fetch<RelatedResult>(RELATED_QUERY, {
+    areaRef,
+    typeRefs,
+  });
+
+  if (related?.area) {
+    fields.countrySlug = related.area.countrySlug;
+    fields.regionSlug = related.area.regionSlug;
+  }
+
+  // Ported from autoPopulateSchoolFields: a school is high priority when any
+  // of its types is. Only computed when the school has types at all, so a
+  // school with none keeps whatever value it already had.
+  if (typeRefs.length > 0) {
+    fields.isHighPriority =
+      related?.types?.some((type) => type.highPriority) || false;
+  }
+
+  if (needsGeocoding(draft?.address)) {
+    const coordinates = await getGeoLocation(draft?.address);
+
+    if (coordinates) {
+      fields["address.mapLocation"] = {
+        _type: "geopoint",
+        lat: coordinates.lat,
+        lng: coordinates.lng,
+      };
+    }
+  }
+
+  return fields;
+}
+
+/**
+ * The publish action for schools.
+ *
+ * The patch is awaited before `publish.execute()`, so the published document
+ * always carries the computed fields. If anything fails - a bad reference, a
+ * geocoder outage - the error is shown to the editor and the publish does not
+ * happen, rather than a document being published with fields that silently did
+ * not update.
+ */
+const PublishSchoolAction: DocumentActionComponent = (props) => {
+  const { publish } = useDocumentOperation(props.id, props.type);
+  const client = useClient({
+    apiVersion: import.meta.env.SANITY_STUDIO_API_VERSION || "2025-08-09",
+  });
+  const toast = useToast();
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const draft = props.draft as SchoolDraft | null;
+  const draftId = draft?._id || `drafts.${props.id}`;
+
+  return {
+    label: isPublishing ? "Publishing…" : "Publish",
+    // `publish.disabled` is what the stock action reads: it covers "nothing to
+    // publish" and "no permission".
+    disabled: isPublishing || Boolean(publish.disabled),
+    onHandle: async () => {
+      setIsPublishing(true);
+
+      try {
+        const fields = await computeSchoolFields(client, draft);
+
+        await client.patch(draftId).set(fields).commit();
+
+        publish.execute();
+      } catch (error) {
+        toast.push({
+          status: "error",
+          title: "Could not publish this school",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Computing the derived fields failed. Nothing was published.",
+        });
+        console.error("Failed to compute school fields before publish:", error);
+      } finally {
+        // Re-enables the button on both paths, so a failed publish can be
+        // retried rather than leaving the editor on a dead spinner.
+        setIsPublishing(false);
+      }
+    },
+  };
+};
+
+export const computedFieldsPlugin = definePlugin({
+  name: "computed-fields",
+  document: {
+    actions: (prev, context) =>
+      context.schemaType === "schools"
+        ? prev.map((action) =>
+            action.action === "publish" ? PublishSchoolAction : action,
+          )
+        : prev,
+  },
+});

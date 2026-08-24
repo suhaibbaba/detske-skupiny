@@ -38,7 +38,9 @@ export const schoolBreadcrumbQuery = groq`*[_type == "schools" && slug.current =
         },
         {
           "name": area->name,
-          "slug": area->fullSlug,
+          // Composed rather than read from the area's own removed fullSlug
+          // field; the school already carries the two slugs above it.
+          "slug": "/" + countrySlug + "/" + regionSlug + "/" + area->slug.current,
         },
         {
           "name": name,

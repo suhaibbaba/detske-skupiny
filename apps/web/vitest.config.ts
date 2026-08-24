@@ -13,10 +13,17 @@ const fontStub = fileURLToPath(
   new URL("./src/test/next-font-stub.ts", import.meta.url),
 );
 
+const serverOnlyStub = fileURLToPath(
+  new URL("./src/test/server-only-stub.ts", import.meta.url),
+);
+
 const alias = {
   "@": srcPath,
   // next/font/google is a build-time macro; the theme calls it at import time.
   "next/font/google": fontStub,
+  // `server-only` throws on import outside an RSC. The query modules are
+  // imported by queries.test.ts purely to read the GROQ they export.
+  "server-only": serverOnlyStub,
 };
 
 const TEST_ENV = {

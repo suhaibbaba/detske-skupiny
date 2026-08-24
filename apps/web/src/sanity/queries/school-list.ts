@@ -14,9 +14,30 @@ import {
   schoolCardFields,
 } from "@/lib/sanity/fragments";
 import { removeDiacritics } from "@/utilites/strings";
+import { orderByDailyShuffle } from "@/sanity/utilites/dailyOrder";
 
-const countryTotalQuery = groq`*[_type == "countries" && ${excludeDraft} && ${languageQuery} && slug.current == $country][0].schoolCount`;
-const regionTotalQuery = groq`*[_type == "regions" && ${excludeDraft} && ${languageQuery} && slug.current == $region][0].schoolCount`;
+/**
+ * The headline "N schools" figure for the current scope.
+ *
+ * Was `…[0].schoolCount`, a number a nightly script wrote onto the country and
+ * region documents. Counting the schools directly cannot go stale, and it is
+ * one aggregate at the database rather than a field the studio had to
+ * maintain.
+ */
+const countryTotalQuery = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  area->region->country->slug.current == $country
+])`;
+
+const regionTotalQuery = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  area->region->slug.current == $region &&
+  area->region->country->slug.current == $country
+])`;
 
 export const schoolPageQuery = (totalQuery: string) => groq`{
     "pageHero": *[_type == "schoolPage" && ${languageQuery}][0].pageHero{ ${pageHeroFields} },
@@ -93,32 +114,83 @@ export async function fetchSchoolMarkers(params: SchoolMarkersParams) {
   );
 }
 
-/** One page of the filtered list, plus the total the filters select. */
-export const schoolListQuery = groq`{
-    "totalSelectedSchools": count(*[${extendedFilter}]),
-    "schools": *[${extendedFilter}] | order(isHighPriority desc, sortOrder asc) [$start...$end]  {
-      ${schoolCardFields}
-    },
+/**
+ * Every school the filters select, reduced to what the ordering needs.
+ *
+ * Ordering used to be `order(isHighPriority desc, sortOrder asc)` with
+ * `sortOrder` a random number stored on each document. The shuffle is now
+ * computed in JS (see sanity/utilites/dailyOrder.ts), which GROQ cannot do -
+ * so the ids come back first, get ordered, and only the requested page is
+ * hydrated into cards.
+ *
+ * This is two round-trips instead of one, but neither is the expensive part:
+ * this query returns an id and a boolean per school and is shared by every
+ * page of the same filter set, and the card query below only ever touches one
+ * page worth of documents.
+ */
+export const schoolOrderQuery = groq`*[${extendedFilter}]{
+    "id": _id,
+    isHighPriority
   }`;
 
+/** The card fields for one page of schools, fetched by id. */
+export const schoolCardsQuery = groq`*[_type == "schools" && _id in $ids]{
+    ${schoolCardFields}
+  }`;
+
+function filterParams(params: SchoolFilterQueryParams) {
+  return {
+    country: params.country ?? null,
+    region: params.region ?? null,
+    area: params.area ?? null,
+    subarea: params.subarea ?? null,
+    categories: params.categories ?? [],
+    tags: params.tags ?? [],
+    search: removeDiacritics(params.search) ?? null,
+    locale: params.locale,
+  };
+}
+
+/**
+ * One page of the filtered list, plus the total the filters select.
+ *
+ * The daily shuffle is applied here rather than inside `sanityFetch`: reading
+ * the current date inside a `"use cache"` body is not allowed, and would in
+ * any case freeze the order at whatever day the entry was written. Out here it
+ * is recomputed per request, so the rotation happens even though the two
+ * queries below are served from cache until a publish drops them.
+ */
 export async function fetchSchoolList(params: SchoolFilterQueryParams) {
-  return sanityFetch<{
-    totalSelectedSchools: number;
-    schools: MiniSchool[];
-  }>(
-    schoolListQuery,
-    {
-      country: params.country ?? null,
-      region: params.region ?? null,
-      area: params.area ?? null,
-      subarea: params.subarea ?? null,
-      categories: params.categories ?? [],
-      tags: params.tags ?? [],
-      search: removeDiacritics(params.search) ?? null,
-      start: params.start ?? 0,
-      end: params.end ?? 10000,
-      locale: params.locale,
-    },
+  const ordered = orderByDailyShuffle(
+    await sanityFetch<{ id: string; isHighPriority?: boolean }[]>(
+      schoolOrderQuery,
+      filterParams(params),
+      ["schools"],
+    ),
+  );
+
+  const start = params.start ?? 0;
+  const end = params.end ?? 10000;
+  const ids = ordered.slice(start, end).map((school) => school.id);
+
+  if (ids.length === 0) {
+    return { totalSelectedSchools: ordered.length, schools: [] };
+  }
+
+  const cards = await sanityFetch<MiniSchool[]>(
+    schoolCardsQuery,
+    { ids },
     ["schools"],
   );
+
+  // `_id in $ids` returns documents in the dataset's own order, so the page is
+  // put back into the order that produced the ids.
+  const byId = new Map(cards.map((school) => [school.id, school]));
+
+  return {
+    totalSelectedSchools: ordered.length,
+    schools: ids
+      .map((id) => byId.get(id))
+      .filter((school): school is MiniSchool => Boolean(school)),
+  };
 }

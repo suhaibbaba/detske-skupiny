@@ -54,22 +54,6 @@ export default defineType({
       hidden: true,
       description: "Auto-populated from area->region",
     },
-    {
-      name: "fullSlug",
-      type: "string",
-      title: "Full Slug (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated full path",
-    },
-    defineField({
-      name: "schoolCount",
-      type: "number",
-      title: "School Count (Auto)",
-      readOnly: true,
-      hidden: true,
-      description: "Auto-populated",
-    }),
     orderRankField({
       type: "subareas",
     }),

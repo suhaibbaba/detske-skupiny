@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
 
 /**
  * Shared GROQ projections.
@@ -15,6 +16,76 @@ export const imageUrl = (field: string, alias = field) =>
   groq`"${alias}": ${field}.asset->url`;
 
 /**
+ * The catalog path of a geography document, composed from its reference chain.
+ *
+ * These replace the `fullSlug` field the studio used to denormalise onto every
+ * region, area and subarea. Nothing writes that field any more, so the path is
+ * built here from the references that define it - which also means a renamed
+ * country slug is reflected everywhere on the next publish instead of needing
+ * every descendant document rewritten.
+ *
+ * The leading slash is part of the value, exactly as `fullSlug` stored it:
+ * `getSelectedSlug` in the catalog produces the same shape, and the two are
+ * compared to decide which filter is active. Countries are the exception and
+ * stay a bare `slug.current`, as they always were.
+ *
+ * Each fragment is written for a projection of that document type - use
+ * `regionPath` inside `*[_type == "regions"]{...}`, and so on.
+ */
+export const regionPath = groq`"/" + country->slug.current + "/" + slug.current`;
+
+export const areaPath = groq`"/"
+  + region->country->slug.current + "/"
+  + region->slug.current + "/"
+  + slug.current`;
+
+export const subareaPath = groq`"/"
+  + area->region->country->slug.current + "/"
+  + area->region->slug.current + "/"
+  + area->slug.current + "/"
+  + slug.current`;
+
+/**
+ * How many schools sit inside the geography document being projected.
+ *
+ * These replace the `schoolCount` field a scheduled script used to write onto
+ * every country, region, area and subarea - a number that was wrong from the
+ * moment a school was published until the next run. The filters are ported
+ * from that script unchanged, so the values are the ones the site always meant
+ * to show; they are just computed at read time now.
+ *
+ * `^` is the document being projected, so each of these belongs directly in a
+ * projection of its own type.
+ */
+export const schoolCountForCountry = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  area->region->country->slug.current == ^.slug.current
+])`;
+
+export const schoolCountForRegion = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  area->region._ref == ^._id
+])`;
+
+export const schoolCountForArea = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  area._ref == ^._id
+])`;
+
+export const schoolCountForSubarea = groq`count(*[
+  _type == "schools" &&
+  ${excludeDraft} &&
+  ${languageQuery} &&
+  subarea._ref == ^._id
+])`;
+
+/**
  * A `link` object with its `internalLink` reference already dereferenced.
  *
  * This replaces src/sanity/utilites/expandLinks.ts, which walked every fetched
@@ -23,8 +94,9 @@ export const imageUrl = (field: string, alias = field) =>
  * ran, so the shape `parseLinkField` receives is unchanged: `_type` picks the
  * route, `slug` is a plain string, and `text`/`title` supply the label.
  *
- * The geo types keep their own overrides because their usable path is
- * `fullSlug` (or `slug.current` for a country), not the bare `slug`.
+ * The geo types keep their own overrides because their usable path is the full
+ * `/country/region/area` chain (or `slug.current` for a country), not the bare
+ * `slug` - see `regionPath` and friends below.
  */
 export const internalLinkFields = groq`
   _id,
@@ -38,15 +110,15 @@ export const internalLinkFields = groq`
   },
   _type == "regions" => {
     "text": name,
-    "slug": fullSlug,
+    "slug": ${regionPath},
   },
   _type == "areas" => {
     "text": name,
-    "slug": fullSlug,
+    "slug": ${areaPath},
   },
   _type == "subareas" => {
     "text": name,
-    "slug": fullSlug,
+    "slug": ${subareaPath},
   }
 `;
 
