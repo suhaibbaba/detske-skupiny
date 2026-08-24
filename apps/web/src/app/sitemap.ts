@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { defaultLocale } from "@/i18n/routing";
+import { defaultLocale } from "@/lib/i18n/routing";
 import { getLocalizedRoutes } from "@/routes";
 import {
   absoluteUrl,
@@ -12,7 +12,7 @@ import {
   staticRoutePaths,
 } from "@/lib/seo/routes";
 import type { LocalizedPaths } from "@/lib/seo/metadata";
-import { fetchSitemapContent, type SitemapEntry } from "@/sanity/queries/seo";
+import { fetchSitemapContent, type SitemapEntry } from "@/lib/sanity/seo";
 
 /**
  * The sitemap for whichever of the two sites asked for it.

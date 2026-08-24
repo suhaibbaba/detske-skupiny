@@ -119,7 +119,7 @@ two projects: pure functions in `node`, anything that renders in `jsdom`. No
 network, no Sanity, no env setup - `vitest.config.ts` injects dummy values for
 the few modules that build a Sanity client at import time.
 
-`src/sanity/queries/queries.test.ts` is the exception worth knowing about: it
+`src/lib/sanity/queries.test.ts` is the exception worth knowing about: it
 parses every exported GROQ query with `groq-js` and evaluates the migrated ones
 against a small synthetic dataset. The queries are assembled from shared
 fragments, and a fragment that expands to something ungrammatical produces a

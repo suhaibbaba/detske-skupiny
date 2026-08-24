@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cacheLife } from "next/cache";
-import { dailySeed } from "@/sanity/utilites/dailyOrder";
+import { dailySeed } from "@/lib/sanity/dailyOrder";
 
 /**
  * The seed the school ordering shuffles by, read once a day.

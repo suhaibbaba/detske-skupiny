@@ -19,12 +19,12 @@ import {
 import Link from "next/link";
 import Button from "@/components/ui/button";
 import { getLocalizedRoutes } from "@/routes";
-import Menu from "@/components/shared/Menu";
+import Menu from "@/components/layout/Menu";
 import { Header } from "@/types/header";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
 import { useLocale } from "next-intl";
-import LanguageSwitcher from "../ui/Language/LanguageSwitcher";
+import LanguageSwitcher from "@/components/ui/language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
 
 interface Props {

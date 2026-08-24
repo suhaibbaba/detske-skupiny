@@ -1,4 +1,4 @@
-import type { PostalAddress } from "@/sanity/types";
+import type { PostalAddress } from "@/types";
 
 /**
  * The structured data the site publishes, as plain objects.

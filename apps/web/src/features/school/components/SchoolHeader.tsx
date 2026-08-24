@@ -1,0 +1,79 @@
+import { Box, Typography, TypographyProps, BoxProps } from "@mui/material";
+import { urlImageFor } from "@/lib/sanity/imageUrl";
+import { School } from "@/types";
+import { parseLinkField } from "@/components/ui/link/parser";
+import Button from "@/components/ui/button";
+import useTranslate from "@/hooks/useTranslate";
+import { useLocale } from "next-intl";
+import Image, { type ImageProps } from "@/components/ui/image";
+
+interface Props {
+  school: School;
+}
+
+interface SchoolHeaderStyles {
+  wrapper: BoxProps;
+  name: TypographyProps;
+  logo: ImageProps;
+}
+
+const styles: SchoolHeaderStyles = {
+  wrapper: {
+    sx: {
+      display: "flex",
+      alignItems: "center",
+      gap: "20px 12px",
+      justifyContent: "space-between",
+      flexWrap: "wrap",
+    },
+  },
+  name: {
+    variant: "h2",
+    sx: {
+      display: "flex",
+      flexGrow: 1,
+      alignItems: "center",
+      gap: "12px",
+    },
+  },
+  logo: {
+    sx: {
+      width: "100%",
+      height: "100%",
+      maxWidth: "35px",
+      maxHeight: "35px",
+      objectFit: "contain",
+    },
+  },
+};
+
+const SchoolHeader = ({ school }: Props) => {
+  const translate = useTranslate();
+  const locale = useLocale();
+
+  return (
+    <Box {...styles.wrapper}>
+      <Typography {...styles.name}>
+        {school.logo && (
+          <Image
+            {...styles.logo}
+            src={school.logo}
+            alt={school.name}
+            sizes="35px"
+          />
+        )}
+        {school.name}
+      </Typography>
+      {school.website && (
+        <Button
+          variant="secondary"
+          href={parseLinkField(school.website, { locale }).url}
+        >
+          {translate("visitWebsite")}
+        </Button>
+      )}
+    </Box>
+  );
+};
+
+export default SchoolHeader;

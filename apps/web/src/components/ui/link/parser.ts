@@ -3,7 +3,7 @@
  * Collection of functions to parse and validate Sanity CMS link field structures
  */
 import type { HeaderQueryResult } from "@detske-skupiny/types";
-import { defaultLocale } from "@/i18n/routing";
+import { defaultLocale } from "@/lib/i18n/routing";
 import { getLocalizedRoutes } from "@/routes";
 
 /**

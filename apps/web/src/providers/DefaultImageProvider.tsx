@@ -1,5 +1,5 @@
-import { getSettings } from "@/sanity/queries/settings";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { getSettings } from "@/lib/sanity/settings";
+import { urlImageFor } from "@/lib/sanity/imageUrl";
 import { DefaultImageClientProvider } from "./DefaultImageClientProvider";
 
 export async function DefaultImageProvider({

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Breadcrumbs as MuiBreadcrumbs, Typography } from "@mui/material";
 import ChevronRight from "@/components/icons/ChevronRight";
 import { getLocale } from "next-intl/server";
-import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
+import { fetchBreadcrumbList } from "@/lib/sanity/breadcrumb";
 import Link from "@/components/ui/link";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import {

@@ -7,8 +7,8 @@ import {
   imageDimensions,
   isResolvedImageSource,
   urlImageFor,
-} from "@/sanity/sections/sanityImageUrl";
-import { SanityImageField } from "@/sanity/types";
+} from "@/lib/sanity/imageUrl";
+import { SanityImageField } from "@/types";
 import { useDefaultImage } from "@/providers";
 
 /**

@@ -1,7 +1,7 @@
 import { getLocalizedRoutes } from "@/routes";
 import type { LocalizedPaths } from "@/lib/seo/metadata";
 import { SUPPORTED_LOCALES } from "@/lib/seo/site";
-import type { TranslationPath } from "@/sanity/queries/seo";
+import type { TranslationPath } from "@/lib/sanity/seo";
 
 /**
  * The routes that exist without a document behind them.
@@ -49,15 +49,6 @@ export function staticRoutePaths(key: StaticRouteKey): LocalizedPaths {
 
   return Object.fromEntries(
     SUPPORTED_LOCALES.map((locale) => [locale, route.path(locale)]),
-  );
-}
-
-/** The same, for any path expressed in the app's canonical (English) form. */
-export function localizedPathsFor(
-  toPath: (locale: string) => string,
-): LocalizedPaths {
-  return Object.fromEntries(
-    SUPPORTED_LOCALES.map((locale) => [locale, toPath(locale)]),
   );
 }
 

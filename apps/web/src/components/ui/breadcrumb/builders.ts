@@ -1,8 +1,8 @@
-import { fetchSchoolBreadcrumb } from "@/sanity/queries/breadcrumb";
+import { fetchSchoolBreadcrumb } from "@/lib/sanity/breadcrumb";
 import { BreadcrumbItem } from "@/components/ui/breadcrumb/types";
-import type { BreadcrumbDocument } from "@/sanity/types";
+import type { BreadcrumbDocument } from "@/types";
 import { BASE_EXCLUDED_FOLDERS } from "@/components/ui/breadcrumb/constants";
-import { pathnames } from "@/i18n/routing";
+import { pathnames } from "@/lib/i18n/routing";
 import { getFolderLabel } from "@/components/ui/breadcrumb/utils";
 import { getLocalizedRoutes } from "@/routes";
 

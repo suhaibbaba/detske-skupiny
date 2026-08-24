@@ -1,4 +1,4 @@
-import { fetchSchoolBySlug } from "@/sanity/queries";
+import { fetchSchoolBySlug } from "@/features/school/queries";
 import { notFound, redirect } from "next/navigation";
 import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
@@ -18,16 +18,16 @@ import {
 } from "@mui/material";
 import SchoolGallery, {
   SchoolGalleryStyles,
-} from "@/app/[locale]/groups/[group]/components/SchoolGallery";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import ContentSchool from "@/app/[locale]/groups/[group]/components/ContentSchool";
-import SchoolHeader from "@/app/[locale]/groups/[group]/components/SchoolHeader";
-import InfoCardGrid from "@/app/[locale]/groups/[group]/components/InfoCardGrid";
-import { formatMessage } from "@/utilites/strings";
+} from "@/components/rich-text/SchoolGallery";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import ContentSchool from "@/features/school/components/ContentSchool";
+import SchoolHeader from "@/features/school/components/SchoolHeader";
+import InfoCardGrid from "@/features/school/components/InfoCardGrid";
+import { formatMessage } from "@/utils/strings";
 import Location from "@/components/icons/Location";
 import Link from "@/components/ui/link";
 import { getLocalizedRoutes } from "@/routes";
-import SchoolMap from "@/app/[locale]/groups/[group]/components/SchoolMap";
+import SchoolMap from "@/features/school/components/SchoolMap";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 import Globe from "@/components/icons/GlobeIcon";
@@ -35,7 +35,7 @@ import Phone from "@/components/icons/PhoneIcon";
 import Transportation from "@/components/icons/TransportationIcon";
 import ExternalLink from "@/components/icons/ExternalLinkIcon";
 import MapIcon from "@mui/icons-material/Map";
-import Offer from "./components/Offer";
+import Offer from "@/features/school/components/Offer";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import JsonLd from "@/components/seo/JsonLd";
@@ -44,7 +44,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { documentPaths } from "@/lib/seo/routes";
 import { absoluteUrl } from "@/lib/seo/site";
 import { resolveOgImage } from "@/lib/seo/images";
-import type { School } from "@/sanity/types";
+import type { School } from "@/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 
 interface PageStyles {

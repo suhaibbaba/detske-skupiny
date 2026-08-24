@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
   /**
    * The Sanity project and dataset names, inlined into the client bundle.
    *
-   * Only src/sanity/sections/sanityImageUrl.ts reads them there, and only to
+   * Only src/lib/sanity/imageUrl.ts reads them there, and only to
    * format `https://cdn.sanity.io/images/<project>/<dataset>/...` - no request
    * is made from the browser with them, and both names are already visible in
    * the text of every image URL the page renders.
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
 };
 
 // Pass the path to your i18n request config
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 /**
  * `ANALYZE=true npm run build -w apps/web` writes a treemap of the client

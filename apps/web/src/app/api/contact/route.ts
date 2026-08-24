@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { contactSchema, type ContactPayload } from "./schema";
+import { contactSchema, type ContactPayload } from "@/lib/contact/schema";
 
 const TURNSTILE_VERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";

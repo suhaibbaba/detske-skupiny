@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { defaultLocale } from "@/i18n/routing";
+import { defaultLocale } from "@/lib/i18n/routing";
 import { absoluteUrl, SUPPORTED_LOCALES } from "@/lib/seo/site";
 import {
   OG_IMAGE_HEIGHT,
   OG_IMAGE_WIDTH,
   resolveOgImage,
 } from "@/lib/seo/images";
-import { getSettings } from "@/sanity/queries/settings";
+import { getSettings } from "@/lib/sanity/settings";
 import type { SanityImageSource } from "@sanity/image-url";
 
 /**

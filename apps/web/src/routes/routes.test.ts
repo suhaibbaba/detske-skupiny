@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getLocalizedRoutes } from "./routes";
-import { defaultLocale } from "@/i18n/routing";
+import { defaultLocale } from "@/lib/i18n/routing";
 
 describe("getLocalizedRoutes", () => {
   it("uses cs as the default locale", () => {

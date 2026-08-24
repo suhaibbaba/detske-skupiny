@@ -10,14 +10,14 @@ import {
   LinkProps,
   SvgIconProps,
 } from "@mui/material";
-import { fetchFooterPage } from "@/sanity/queries/footer";
-import { urlImageFor } from "@/sanity/sections/sanityImageUrl";
+import { fetchFooterPage } from "@/lib/sanity/footer";
+import { urlImageFor } from "@/lib/sanity/imageUrl";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Link from "@/components/ui/link/Link";
 import EmailIcon from "@/components/icons/Email";
 import PhoneIcon from "@/components/icons/Phone";
 import { FooterContent } from "@/types/footer";
-import LanguageSwitcher from "@/components/ui/Language/LanguageSwitcher";
+import LanguageSwitcher from "@/components/ui/language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
 import CopyrightYear from "@/components/layout/CopyrightYear";
 

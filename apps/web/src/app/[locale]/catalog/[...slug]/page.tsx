@@ -6,29 +6,26 @@ import {
   ContainerProps,
 } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import FilterSidebar from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+import FilterSidebar from "@/features/catalog/components/filters/FilterSidebar";
 import { PageProps } from "@/types";
-import {
-  getSelectedSlug,
-  parseCatalogSlug,
-} from "@/app/[locale]/catalog/[...slug]/utilites/catalog";
-import { fetchFilters } from "@/sanity/queries";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import { getSelectedSlug, parseCatalogSlug } from "@/features/catalog/utils";
+import { fetchFilters } from "@/features/catalog/queries";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import {
   fetchSchoolList,
   fetchSchoolMarkers,
   fetchSchoolPage,
-} from "@/sanity/queries/school-list";
+} from "@/features/catalog/queries";
 import { Suspense } from "react";
-import SchoolList from "@/app/[locale]/catalog/[...slug]/components/SchoolList";
-import { CatalogTransitionProvider } from "@/app/[locale]/catalog/[...slug]/components/CatalogTransition";
+import SchoolList from "@/features/catalog/components/SchoolList";
+import { CatalogTransitionProvider } from "@/features/catalog/components/CatalogTransition";
 import {
   PAGE_SIZE,
   loadCatalogSearchParams,
   parseCatalogFilters,
   type LoadMoreInput,
-} from "@/app/[locale]/catalog/[...slug]/searchParams";
-import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/components/Filters/FilterSidebar";
+} from "@/features/catalog/searchParams";
+import { Props as FilterSidebarProps } from "@/features/catalog/components/filters/FilterSidebar";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
@@ -36,7 +33,7 @@ import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { documentPaths } from "@/lib/seo/routes";
-import { fetchCatalogNode } from "@/sanity/queries/seo";
+import { fetchCatalogNode } from "@/lib/sanity/seo";
 
 type Props = PageProps<
   { slug: string[] },

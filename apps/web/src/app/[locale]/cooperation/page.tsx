@@ -1,9 +1,9 @@
-import { fetchPageByType } from "@/sanity/queries";
+import { fetchPageByType } from "@/lib/sanity/page";
 import { Box, BoxProps } from "@mui/material";
-import Zone from "@/sanity/components/Zone";
+import Zone from "@/sections/Zone";
 import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";

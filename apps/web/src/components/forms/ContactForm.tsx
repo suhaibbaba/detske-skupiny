@@ -18,13 +18,13 @@ import {
 import Textarea from "@/components/ui/textarea/Textarea";
 import { FC, useState } from "react";
 import Button from "@/components/ui/button";
-import { ContactUsForm } from "@/sanity/types";
+import { ContactUsForm } from "@/types";
 import useTranslate from "@/hooks/useTranslate";
-import RichText from "@/sanity/components/RichText";
+import RichText from "@/components/rich-text/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
 import { useLocale } from "next-intl";
 import TurnstileWidget from "@/components/forms/TurnstileWidget";
-import type { ContactPayload } from "@/app/api/contact/schema";
+import type { ContactPayload } from "@/lib/contact/schema";
 
 interface Props {
   contactUsForm?: ContactUsForm;

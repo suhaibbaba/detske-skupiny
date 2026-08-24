@@ -1,9 +1,9 @@
-import { fetchGroupPage } from "@/sanity/queries";
+import { fetchGroupPage } from "@/features/catalog/queries";
 import { PageProps } from "@/types";
 import { Box, BoxProps } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import GroupSection from "@/app/[locale]/groups/components/groupSection";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import GroupSection from "@/features/catalog/components/GroupSection";
 import React from "react";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";

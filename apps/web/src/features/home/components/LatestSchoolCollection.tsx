@@ -1,0 +1,96 @@
+import {
+  Box,
+  BoxProps,
+  Container,
+  ContainerProps,
+  Typography,
+  TypographyProps,
+} from "@mui/material";
+import { SanityCtaField } from "@/types";
+import { fetchMiniSchools } from "@/features/school/queries";
+import SchoolCard from "@/features/home/components/SchoolCard";
+import { sharedClassNames } from "@/features/home/utils";
+
+interface Props {
+  fields: {
+    title: string;
+    description: string;
+  };
+  /** Supplied by Zone, which spreads the page's route params onto sections. */
+  locale: string;
+}
+
+interface LatestKinderGroupsSectionStyles {
+  section?: BoxProps;
+  container?: ContainerProps;
+  title?: TypographyProps;
+  description?: TypographyProps;
+  grid?: BoxProps;
+}
+
+const styles: LatestKinderGroupsSectionStyles = {
+  section: {
+    component: "section",
+    sx: {
+      pt: { xs: "50px", md: "100px" },
+      pb: { xs: "50px", md: "74px" },
+      bgcolor: "primary.light",
+      textAlign: "center",
+    },
+  },
+  container: {
+    component: "section",
+    sx: {
+      textAlign: "center",
+    },
+  },
+  title: {
+    component: "h1",
+    variant: "h1",
+    sx: {
+      mb: "12px",
+    },
+  },
+  description: {
+    sx: {
+      mb: { xs: "40px", md: "80px" },
+    },
+  },
+  grid: {
+    sx: {
+      display: "grid",
+      gridTemplateColumns: {
+        xs: "1fr",
+        sm: "1fr 1fr",
+      },
+      columnGap: "24px",
+      rowGap: {
+        xs: "32px",
+        sm: "80px",
+      },
+    },
+  },
+};
+
+const LatestSchoolCollection = async ({ fields, locale }: Props) => {
+  const { schools } = await fetchMiniSchools({
+    numberOfSchools: 4,
+    locale,
+  });
+
+  return (
+    <Box {...styles.section} className={sharedClassNames.schools}>
+      <Container {...styles.container}>
+        <Typography {...styles.title}>{fields.title}</Typography>
+        <Typography {...styles.description}>{fields.description}</Typography>
+        <Box {...styles.grid}>
+          {schools.map((school) => (
+            <SchoolCard school={school} key={school.id} />
+          ))}
+        </Box>
+      </Container>
+    </Box>
+  );
+};
+
+export default LatestSchoolCollection;

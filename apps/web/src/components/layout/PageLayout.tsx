@@ -1,7 +1,7 @@
 import { Box, BoxProps, Container } from "@mui/material";
 import Breadcrumbs from "@/components/ui/breadcrumb";
 import React, { FC, Fragment } from "react";
-import { mergeMuiProps } from "@/utilites/mergeMuiProps";
+import { mergeMuiProps } from "@/utils/mergeMuiProps";
 
 interface BaseProps {
   children: React.ReactNode;

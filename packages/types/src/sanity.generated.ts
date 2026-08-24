@@ -1390,39 +1390,7 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset;
 
-// Source: src/sanity/queries/blog-details.ts
-// Variable: blogBySlugQuery
-// Query: {    "blog":*[_type == "blogs" && (language == $locale || !defined(language)) && slug.current == $slug][0]{      "id": _id,      title,      excerpt,      "slug": slug.current,        "image": image.asset->url,  "imageLqip": image.asset->metadata.lqip,      readTime,      publishedAt,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  },      content,      category->{        "id": _id,        name,      },      author->{        "id": _id,        name,        "image": avatar.asset->url,        bio      }    },  }
-export type BlogBySlugQueryResult = {
-  blog: {
-    id: string;
-    title: string | null;
-    excerpt: string | null;
-    slug: string | null;
-    image: string | null;
-    imageLqip: string | null;
-    readTime: number | null;
-    publishedAt: string | null;
-    updatedAt: string;
-    translations: Array<{
-      locale: string;
-      path: null | string;
-    }> | null;
-    content: RichText | null;
-    category: {
-      id: string;
-      name: string | null;
-    } | null;
-    author: {
-      id: string;
-      name: string | null;
-      image: string | null;
-      bio: string | null;
-    } | null;
-  } | null;
-};
-
-// Source: src/sanity/queries/blog.ts
+// Source: src/features/blog/queries.ts
 // Variable: blogPageQuery
 // Query: {    "pageHero": *[_type == "blogPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "categories": *[_type == "blogCategories" && (language == $locale || !defined(language))] {      "id": _id,      name,      "slug": slug.current    },    "blogs": *[      _type == "blogs" &&      (language == $locale || !defined(language)) &&      (        !defined($categorySelected) ||        $categorySelected == "" ||        category->slug.current == $categorySelected      )    ] | order(publishedAt desc){        "id": _id,  title,  "slug": slug.current,  excerpt,  "image": image.asset->url,  readTime,  publishedAt,      category->{        "id": _id,        name,      },      author->{        "id": _id,        name,        "image": avatar.asset->url,        bio      }    }  }
 export type BlogPageQueryResult = {
@@ -1642,7 +1610,7 @@ export type BlogPageQueryResult = {
   }>;
 };
 
-// Source: src/sanity/queries/blog.ts
+// Source: src/features/blog/queries.ts
 // Variable: miniBlogsQuery
 // Query: {    "blogs": *[_type == "blogs" && (language == $locale || !defined(language))][0...$numberOfBlogs] | order(publishedAt desc){        "id": _id,  title,  "slug": slug.current,  excerpt,  "image": image.asset->url,  readTime,  publishedAt,      author->{        "id": _id,        name,        "image": avatar.asset->url,        "slug": slug.current,      }    },  }
 export type MiniBlogsQueryResult = {
@@ -1663,180 +1631,1003 @@ export type MiniBlogsQueryResult = {
   }>;
 };
 
-// Source: src/sanity/queries/breadcrumb.ts
-// Variable: breadcrumbListQuery
-// Query: *[slug.current in $slugs]{      _type,      "slug": slug.current,      "name": coalesce(name, title, ""),      language,    }
-export type BreadcrumbListQueryResult = Array<
-  | {
-      _type: "areas";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "authors";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "blogCategories";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "blogPage";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "blogs";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "contactUs";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "countries";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "dictionaries";
-      slug: null;
-      name: string | "";
-      language: null;
-    }
-  | {
-      _type: "footer";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "group";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "header";
-      slug: null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "home";
-      slug: null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "page";
-      slug: null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "preschool";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "regions";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "sanity.fileAsset";
-      slug: null;
-      name: string | "";
-      language: null;
-    }
-  | {
-      _type: "sanity.imageAsset";
-      slug: null;
-      name: string | "";
-      language: null;
-    }
-  | {
-      _type: "schoolCategories";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "schoolPage";
-      slug: null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "schools";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "schoolTags";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "schoolTypes";
-      slug: null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "settings";
-      slug: null;
-      name: "";
-      language: string | null;
-    }
-  | {
-      _type: "subareas";
-      slug: string | null;
-      name: string | "";
-      language: string | null;
-    }
-  | {
-      _type: "translation.metadata";
-      slug: null;
-      name: "";
-      language: null;
-    }
->;
+// Source: src/features/blog/queries.ts
+// Variable: blogBySlugQuery
+// Query: {    "blog":*[_type == "blogs" && (language == $locale || !defined(language)) && slug.current == $slug][0]{      "id": _id,      title,      excerpt,      "slug": slug.current,        "image": image.asset->url,  "imageLqip": image.asset->metadata.lqip,      readTime,      publishedAt,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  },      content,      category->{        "id": _id,        name,      },      author->{        "id": _id,        name,        "image": avatar.asset->url,        bio      }    },  }
+export type BlogBySlugQueryResult = {
+  blog: {
+    id: string;
+    title: string | null;
+    excerpt: string | null;
+    slug: string | null;
+    image: string | null;
+    imageLqip: string | null;
+    readTime: number | null;
+    publishedAt: string | null;
+    updatedAt: string;
+    translations: Array<{
+      locale: string;
+      path: null | string;
+    }> | null;
+    content: RichText | null;
+    category: {
+      id: string;
+      name: string | null;
+    } | null;
+    author: {
+      id: string;
+      name: string | null;
+      image: string | null;
+      bio: string | null;
+    } | null;
+  } | null;
+};
 
-// Source: src/sanity/queries/breadcrumb.ts
-// Variable: schoolBreadcrumbQuery
-// Query: *[_type == "schools" && slug.current == $slug && defined(area)][0]{      _type,      "breadcrumb": [        {          "name": area->region->country->name,          "slug": countrySlug,        },        {          "name": area->region->name,          "slug": "/" + countrySlug + "/" + regionSlug,        },        {          "name": area->name,          // Composed rather than read from the area's own removed fullSlug          // field; the school already carries the two slugs above it.          "slug": "/" + countrySlug + "/" + regionSlug + "/" + area->slug.current,        },        {          "name": name,          "slug": slug.current,        }      ]    }
-export type SchoolBreadcrumbQueryResult = {
-  _type: "schools";
-  breadcrumb: Array<
+// Source: src/features/catalog/queries.ts
+// Variable: schoolPageCountryQuery
+// Query: {        "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "totalSchools": coalesce(count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == $country]), 0),  }
+export type SchoolPageCountryQueryResult = {
+  pageHero: {
+    _type: "pageHero";
+    title?: string;
+    description?: string;
+    ctas: Array<{
+      _key: string;
+      _type: "cta";
+      link: {
+        _type: "link";
+        text?: string;
+        type?: string;
+        internalLink:
+          | {
+              _id: string;
+              _type: "areas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "authors";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogPage";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "blogs";
+              slug: Slug | null | string;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "contactUs";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "countries";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "dictionaries";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "footer";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "group";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "header";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "home";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "page";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "preschool";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "regions";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolPage";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "schools";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTags";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTypes";
+              slug: null;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "settings";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "subareas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | null;
+        url?: string;
+        email?: string;
+        phone?: string;
+        assetLink?: {
+          asset?: SanityFileAssetReference;
+          media?: unknown;
+          _type: "file";
+        };
+        sms?: string;
+        whatsapp?: string;
+        fax?: string;
+        value?: string;
+        blank?: boolean;
+        parameters?: string;
+        anchor?: string;
+      } | null;
+      variant?: "ghost" | "primary" | "secondary";
+    }> | null;
+  } | null;
+  totalSchools: number;
+};
+
+// Source: src/features/catalog/queries.ts
+// Variable: schoolPageRegionQuery
+// Query: {        "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "totalSchools": coalesce(count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->slug.current == $region &&  area->region->country->slug.current == $country]), 0),  }
+export type SchoolPageRegionQueryResult = {
+  pageHero: {
+    _type: "pageHero";
+    title?: string;
+    description?: string;
+    ctas: Array<{
+      _key: string;
+      _type: "cta";
+      link: {
+        _type: "link";
+        text?: string;
+        type?: string;
+        internalLink:
+          | {
+              _id: string;
+              _type: "areas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "authors";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogPage";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "blogs";
+              slug: Slug | null | string;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "contactUs";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "countries";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "dictionaries";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "footer";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "group";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "header";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "home";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "page";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "preschool";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "regions";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolPage";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "schools";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTags";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTypes";
+              slug: null;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "settings";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "subareas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | null;
+        url?: string;
+        email?: string;
+        phone?: string;
+        assetLink?: {
+          asset?: SanityFileAssetReference;
+          media?: unknown;
+          _type: "file";
+        };
+        sms?: string;
+        whatsapp?: string;
+        fax?: string;
+        value?: string;
+        blank?: boolean;
+        parameters?: string;
+        anchor?: string;
+      } | null;
+      variant?: "ghost" | "primary" | "secondary";
+    }> | null;
+  } | null;
+  totalSchools: number;
+};
+
+// Source: src/features/catalog/queries.ts
+// Variable: schoolMarkersQuery
+// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    (!defined($country) || countrySlug == $country) &&    (!defined($region) || regionSlug == $region) &&    (!defined($area) || area->slug.current == $area) &&    (!defined($subarea) || subarea->slug.current == $subarea)]{      "id": _id,  "coordinate": address.mapLocation,  name,    "fullAddress":    select(defined(address.street) => address.street, "") +    select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") +    select(defined(address.city) => ", " + address.city, "") +    select(defined(address.postalCode) => ", " + address.postalCode, "") +    select(defined(address.country) => ", " + address.country, ""),  "slug": slug.current  }
+export type SchoolMarkersQueryResult = Array<{
+  id: string;
+  coordinate: Geopoint | null;
+  name: string | null;
+  fullAddress: string | null | "";
+  slug: string | null;
+}>;
+
+// Source: src/features/catalog/queries.ts
+// Variable: schoolOrderQuery
+// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    (!defined($country) || countrySlug == $country) &&    (!defined($region) || regionSlug == $region) &&    (!defined($area) || area->slug.current == $area) &&    (!defined($subarea) || subarea->slug.current == $subarea)    && (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&    (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) &&    (!defined($search) || lower(nameNormalized) match "*" + lower($search) + "*")  ]{    "id": _id,    isHighPriority  }
+export type SchoolOrderQueryResult = Array<{
+  id: string;
+  isHighPriority: boolean | null;
+}>;
+
+// Source: src/features/catalog/queries.ts
+// Variable: schoolCardsQuery
+// Query: *[_type == "schools" && _id in $ids]{      "id": _id,  name,  "slug": slug.current,  shortSummary,  "logo": logo.asset->url,  website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },  "primaryImage": select(    defined(primaryImages[0].asset) => primaryImages[0].asset->url,    null  ),  area->{ "id": _id, name, "slug": slug.current },  "region": area->region->{ "id": _id, name, "slug": slug.current },  tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },  types[]->{   "id": _id,  name,  highPriority,  visibility,  "icon": icon.asset->url,  "backgroundColor": backgroundColor.hex },  categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex }  }
+export type SchoolCardsQueryResult = Array<{
+  id: string;
+  name: string | null;
+  slug: string | null;
+  shortSummary: string | null;
+  logo: string | null;
+  website: {
+    _type: "link";
+    text?: string;
+    type?: string;
+    internalLink:
+      | {
+          _id: string;
+          _type: "areas";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "authors";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "blogCategories";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "blogPage";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "blogs";
+          slug: Slug | null | string;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "contactUs";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "countries";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "dictionaries";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "footer";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "group";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "header";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "home";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "page";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "preschool";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "regions";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolCategories";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolPage";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "schools";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolTags";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolTypes";
+          slug: null;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "settings";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "subareas";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | null;
+    url?: string;
+    email?: string;
+    phone?: string;
+    assetLink?: {
+      asset?: SanityFileAssetReference;
+      media?: unknown;
+      _type: "file";
+    };
+    sms?: string;
+    whatsapp?: string;
+    fax?: string;
+    value?: string;
+    blank?: boolean;
+    parameters?: string;
+    anchor?: string;
+  } | null;
+  primaryImage: string | null;
+  area: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  region: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  tags: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    borderColor: string | null;
+  }> | null;
+  types: Array<{
+    id: string;
+    name: string | null;
+    highPriority: boolean | null;
+    visibility: boolean | null;
+    icon: string | null;
+    backgroundColor: string | null;
+  }> | null;
+  categories: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    emoji: string | null;
+    borderColor: null;
+  }> | null;
+}>;
+
+// Source: src/features/catalog/queries.ts
+// Variable: countryQuery
+// Query: {  "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{      "id": _id,      name,      "slug": slug.current    },  "regions": [    *[      _type == "countries" &&      slug.current == $country &&      (!defined(language) || language == $locale)    ][0]{      "id": _id,      "name": name,      "slug": slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == ^.slug.current]),    }  ] + *[_type == "regions" && country->slug.current == $country && (!defined(language) || language == $locale)] | order(orderRank) {      "id": _id,      name,      "slug": "/"        + country->slug.current + "/"        + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),    },  "areas": [],  "subareas": *[      _type == "subareas" &&      area->region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  subarea._ref == ^._id]),    },        "categories": *[    _type == "schoolCategories" &&    (!defined(language) || language == $locale)    ]{      "id": _id,      name,      "slug": slug.current,      "emoji": emoji.asset->url,    } | order(name asc),        "tags": *[_type == "schoolTags"]{        "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex,    } | order(name asc)}
+export type CountryQueryResult = {
+  country: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  regions: Array<
     | {
+        id: string;
         name: string | null;
         slug: string | null;
+        count: number;
       }
     | {
+        id: string;
         name: string | null;
         slug: string | null;
+        count: number;
       }
+    | null
   >;
-} | null;
+  areas: Array<never>;
+  subareas: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    count: number;
+  }>;
+  categories: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    emoji: string | null;
+  }>;
+  tags: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    borderColor: string | null;
+  }>;
+};
 
-// Source: src/sanity/queries/contact-us.ts
+// Source: src/features/catalog/queries.ts
+// Variable: regionQuery
+// Query: {  "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{      "id": _id,      name,      "slug": slug.current    },  "regions": [],  "areas": [    *[      _type == "regions" &&      slug.current == $region &&      country->slug.current == $country &&      (!defined(language) || language == $locale)    ][0]{      "id": _id,      "name": name,      "slug": "/" + country->slug.current + "/" + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),    }  ] + *[      _type == "areas" &&      region->slug.current == $region &&      region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area._ref == ^._id]),    },  "subareas": *[      _type == "subareas" &&      area->region->slug.current == $region &&      area->region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  subarea._ref == ^._id]),    },        "categories": *[    _type == "schoolCategories" &&    (!defined(language) || language == $locale)    ]{      "id": _id,      name,      "slug": slug.current,      "emoji": emoji.asset->url,    } | order(name asc),        "tags": *[_type == "schoolTags"]{        "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex,    } | order(name asc)}
+export type RegionQueryResult = {
+  country: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  regions: Array<never>;
+  areas: Array<
+    | {
+        id: string;
+        name: string | null;
+        slug: string | null;
+        count: number;
+      }
+    | {
+        id: string;
+        name: string | null;
+        slug: string | null;
+        count: number;
+      }
+    | null
+  >;
+  subareas: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    count: number;
+  }>;
+  categories: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    emoji: string | null;
+  }>;
+  tags: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    borderColor: string | null;
+  }>;
+};
+
+// Source: src/features/catalog/queries.ts
+// Variable: groupPageQuery
+// Query: {    "content": *[_type == "group" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "regions": *[_type == "regions" && (language == $locale || !defined(language))]{      "id": _id,      "totalSchools": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),      name,      "slug": "/" + country->slug.current + "/" + slug.current,      "backgroundCover": backgroundCover.asset->url,      "regionRef": _id,      "areas": *[_type == "areas" && (language == $locale || !defined(language)) && region._ref == ^._id]{        "id": _id,        name,        "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,        "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area._ref == ^._id]),        "regionRef": region._ref      },        "schoolCategories": *[_type == "schoolCategories" && (language == $locale || !defined(language))]{    "id": _id,    name,    "slug": slug.current,    "emoji": emoji.asset->url,    "schoolCount": count(*[      _type == "schools" &&      (language == $locale || !defined(language)) &&      area->region._ref == ^.^._id &&      ^._id in categories[]._ref    ])  }    },    "country": *[_type == "countries" && (language == $locale || !defined(language))][0]{      "id": _id,      name,      "slug": slug.current,      "backgroundCover": backgroundCover.asset->url,      "totalSchools": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == ^.slug.current]),      "areas": *[_type == "regions" && (language == $locale || !defined(language))]{        "id": _id,        name,        "slug": "/" + country->slug.current + "/" + slug.current,        "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id])      },        "schoolCategories": *[_type == "schoolCategories" && (language == $locale || !defined(language))]{    "id": _id,    name,    "slug": slug.current,    "emoji": emoji.asset->url,    "schoolCount": count(*[      _type == "schools" &&      (language == $locale || !defined(language)) &&      defined(area->region._ref) &&      ^._id in categories[]._ref    ])  }    }  }
+export type GroupPageQueryResult = {
+  content: {
+    _type: "pageHero";
+    title?: string;
+    description?: string;
+    ctas: Array<{
+      _key: string;
+      _type: "cta";
+      link: {
+        _type: "link";
+        text?: string;
+        type?: string;
+        internalLink:
+          | {
+              _id: string;
+              _type: "areas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "authors";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogPage";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "blogs";
+              slug: Slug | null | string;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "contactUs";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "countries";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "dictionaries";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "footer";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "group";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "header";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "home";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "page";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "preschool";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "regions";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolPage";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "schools";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTags";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTypes";
+              slug: null;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "settings";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "subareas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | null;
+        url?: string;
+        email?: string;
+        phone?: string;
+        assetLink?: {
+          asset?: SanityFileAssetReference;
+          media?: unknown;
+          _type: "file";
+        };
+        sms?: string;
+        whatsapp?: string;
+        fax?: string;
+        value?: string;
+        blank?: boolean;
+        parameters?: string;
+        anchor?: string;
+      } | null;
+      variant?: "ghost" | "primary" | "secondary";
+    }> | null;
+  } | null;
+  regions: Array<{
+    id: string;
+    totalSchools: number;
+    name: string | null;
+    slug: string | null;
+    backgroundCover: string | null;
+    regionRef: string;
+    areas: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      schoolCount: number;
+      regionRef: string | null;
+    }>;
+    schoolCategories: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      emoji: string | null;
+      schoolCount: number;
+    }>;
+  }>;
+  country: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+    backgroundCover: string | null;
+    totalSchools: number;
+    areas: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      schoolCount: number;
+    }>;
+    schoolCategories: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      emoji: string | null;
+      schoolCount: number;
+    }>;
+  } | null;
+};
+
+// Source: src/features/contact/queries.ts
 // Variable: contactUsQuery
 // Query: *[_type == "contactUs" && (language == $locale || !defined(language))][0]{      pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },      items,      contactForm{        ...,        sendMessageCta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },      },    }
 export type ContactUsQueryResult = {
@@ -2227,7 +3018,1195 @@ export type ContactUsQueryResult = {
   } | null;
 } | null;
 
-// Source: src/sanity/queries/footer.ts
+// Source: src/features/school/queries.ts
+// Variable: highPrioritySchoolsQuery
+// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    (true in types[]->highPriority)  ]{    "id": _id,    isHighPriority  }
+export type HighPrioritySchoolsQueryResult = Array<{
+  id: string;
+  isHighPriority: boolean | null;
+}>;
+
+// Source: src/features/school/queries.ts
+// Variable: schoolCardsByIdQuery
+// Query: *[_type == "schools" && _id in $ids]{      "id": _id,  name,  "slug": slug.current,  shortSummary,  "logo": logo.asset->url,  website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },  "primaryImage": select(    defined(primaryImages[0].asset) => primaryImages[0].asset->url,    null  ),  area->{ "id": _id, name, "slug": slug.current },  "region": area->region->{ "id": _id, name, "slug": slug.current },  tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },  types[]->{   "id": _id,  name,  highPriority,  visibility,  "icon": icon.asset->url,  "backgroundColor": backgroundColor.hex },  categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex }  }
+export type SchoolCardsByIdQueryResult = Array<{
+  id: string;
+  name: string | null;
+  slug: string | null;
+  shortSummary: string | null;
+  logo: string | null;
+  website: {
+    _type: "link";
+    text?: string;
+    type?: string;
+    internalLink:
+      | {
+          _id: string;
+          _type: "areas";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "authors";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "blogCategories";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "blogPage";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "blogs";
+          slug: Slug | null | string;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "contactUs";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "countries";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "dictionaries";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "footer";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "group";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "header";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "home";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "page";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "preschool";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "regions";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolCategories";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolPage";
+          slug: null;
+          title: string | null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "schools";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolTags";
+          slug: Slug | null | string;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "schoolTypes";
+          slug: null;
+          title: null;
+          name: string | null;
+        }
+      | {
+          _id: string;
+          _type: "settings";
+          slug: null;
+          title: null;
+          name: null;
+        }
+      | {
+          _id: string;
+          _type: "subareas";
+          slug: string | null;
+          title: null;
+          name: string | null;
+          text: string | null;
+        }
+      | null;
+    url?: string;
+    email?: string;
+    phone?: string;
+    assetLink?: {
+      asset?: SanityFileAssetReference;
+      media?: unknown;
+      _type: "file";
+    };
+    sms?: string;
+    whatsapp?: string;
+    fax?: string;
+    value?: string;
+    blank?: boolean;
+    parameters?: string;
+    anchor?: string;
+  } | null;
+  primaryImage: string | null;
+  area: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  region: {
+    id: string;
+    name: string | null;
+    slug: string | null;
+  } | null;
+  tags: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    borderColor: string | null;
+  }> | null;
+  types: Array<{
+    id: string;
+    name: string | null;
+    highPriority: boolean | null;
+    visibility: boolean | null;
+    icon: string | null;
+    backgroundColor: string | null;
+  }> | null;
+  categories: Array<{
+    id: string;
+    name: string | null;
+    slug: string | null;
+    emoji: string | null;
+    borderColor: null;
+  }> | null;
+}>;
+
+// Source: src/features/school/queries.ts
+// Variable: schoolBySlugQuery
+// Query: {    "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "school": *[_type == "schools" && (language == $locale || !defined(language)) &&  slug.current == $slug][0]{      "id": _id,      "logo": logo.asset->url,      name,      shortSummary,      "slug": slug.current,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  },      website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },      "primaryImages": primaryImages[].asset->url,      "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),      "primaryImageLqip": primaryImages[0].asset->metadata.lqip,      "region": area->region->{        "id": _id,        name,        "countrySlug": country->slug.current,        "fullSlug": "/" + country->slug.current + "/" + slug.current,      },      capacity,      providerName,      area->{ "id": _id, name, "fullSlug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current },      address,      cin,      contacts[],      links[]{        "id": _key,        ...link,        "internalLink": link.internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } },      },      types[]->{        "id": _id,        name,        "slug": slug.current      },      categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex },      transportation[]{        "id": _key,        ...      },      content,      tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },    }  }
+export type SchoolBySlugQueryResult = {
+  pageHero: {
+    _type: "pageHero";
+    title?: string;
+    description?: string;
+    ctas: Array<{
+      _key: string;
+      _type: "cta";
+      link: {
+        _type: "link";
+        text?: string;
+        type?: string;
+        internalLink:
+          | {
+              _id: string;
+              _type: "areas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "authors";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "blogPage";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "blogs";
+              slug: Slug | null | string;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "contactUs";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "countries";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "dictionaries";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "footer";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "group";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "header";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "home";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "page";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "preschool";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "regions";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolCategories";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolPage";
+              slug: null;
+              title: string | null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "schools";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTags";
+              slug: Slug | null | string;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "schoolTypes";
+              slug: null;
+              title: null;
+              name: string | null;
+            }
+          | {
+              _id: string;
+              _type: "settings";
+              slug: null;
+              title: null;
+              name: null;
+            }
+          | {
+              _id: string;
+              _type: "subareas";
+              slug: string | null;
+              title: null;
+              name: string | null;
+              text: string | null;
+            }
+          | null;
+        url?: string;
+        email?: string;
+        phone?: string;
+        assetLink?: {
+          asset?: SanityFileAssetReference;
+          media?: unknown;
+          _type: "file";
+        };
+        sms?: string;
+        whatsapp?: string;
+        fax?: string;
+        value?: string;
+        blank?: boolean;
+        parameters?: string;
+        anchor?: string;
+      } | null;
+      variant?: "ghost" | "primary" | "secondary";
+    }> | null;
+  } | null;
+  school: {
+    id: string;
+    logo: string | null;
+    name: string | null;
+    shortSummary: string | null;
+    slug: string | null;
+    updatedAt: string;
+    translations: Array<{
+      locale: string;
+      path: null | string;
+    }> | null;
+    website: {
+      _type: "link";
+      text?: string;
+      type?: string;
+      internalLink:
+        | {
+            _id: string;
+            _type: "areas";
+            slug: string | null;
+            title: null;
+            name: string | null;
+            text: string | null;
+          }
+        | {
+            _id: string;
+            _type: "authors";
+            slug: Slug | null | string;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "blogCategories";
+            slug: Slug | null | string;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "blogPage";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "blogs";
+            slug: Slug | null | string;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "contactUs";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "countries";
+            slug: string | null;
+            title: null;
+            name: string | null;
+            text: string | null;
+          }
+        | {
+            _id: string;
+            _type: "dictionaries";
+            slug: null;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "footer";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "group";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "header";
+            slug: null;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "home";
+            slug: null;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "page";
+            slug: null;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "preschool";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "regions";
+            slug: string | null;
+            title: null;
+            name: string | null;
+            text: string | null;
+          }
+        | {
+            _id: string;
+            _type: "schoolCategories";
+            slug: Slug | null | string;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "schoolPage";
+            slug: null;
+            title: string | null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "schools";
+            slug: Slug | null | string;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "schoolTags";
+            slug: Slug | null | string;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "schoolTypes";
+            slug: null;
+            title: null;
+            name: string | null;
+          }
+        | {
+            _id: string;
+            _type: "settings";
+            slug: null;
+            title: null;
+            name: null;
+          }
+        | {
+            _id: string;
+            _type: "subareas";
+            slug: string | null;
+            title: null;
+            name: string | null;
+            text: string | null;
+          }
+        | null;
+      url?: string;
+      email?: string;
+      phone?: string;
+      assetLink?: {
+        asset?: SanityFileAssetReference;
+        media?: unknown;
+        _type: "file";
+      };
+      sms?: string;
+      whatsapp?: string;
+      fax?: string;
+      value?: string;
+      blank?: boolean;
+      parameters?: string;
+      anchor?: string;
+    } | null;
+    primaryImages: Array<string | null> | null;
+    primaryImage: string | null;
+    primaryImageLqip: string | null;
+    region: {
+      id: string;
+      name: string | null;
+      countrySlug: string | null;
+      fullSlug: string | null;
+    } | null;
+    capacity: number | null;
+    providerName: string | null;
+    area: {
+      id: string;
+      name: string | null;
+      fullSlug: string | null;
+    } | null;
+    address: PostalAddress | null;
+    cin: string | null;
+    contacts: Array<
+      {
+        _key: string;
+      } & ContactInfo
+    > | null;
+    links: Array<
+      | {
+          id: string;
+          _type: "link";
+          text?: string;
+          type?: string;
+          internalLink:
+            | {
+                _id: string;
+                _type: "areas";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "authors";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "blogCategories";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "blogPage";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "blogs";
+                slug: Slug | null | string;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "contactUs";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "countries";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "dictionaries";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "footer";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "group";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "header";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "home";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "page";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "preschool";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "regions";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolCategories";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolPage";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "schools";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolTags";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolTypes";
+                slug: null;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "settings";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "subareas";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | null;
+          url?: string;
+          email?: string;
+          phone?: string;
+          assetLink?: {
+            asset?: SanityFileAssetReference;
+            media?: unknown;
+            _type: "file";
+          };
+          sms?: string;
+          whatsapp?: string;
+          fax?: string;
+          value?: string;
+          blank?: boolean;
+          parameters?: string;
+          anchor?: string;
+        }
+      | {
+          id: string;
+          internalLink:
+            | {
+                _id: string;
+                _type: "areas";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "authors";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "blogCategories";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "blogPage";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "blogs";
+                slug: Slug | null | string;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "contactUs";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "countries";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "dictionaries";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "footer";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "group";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "header";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "home";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "page";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "preschool";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "regions";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolCategories";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolPage";
+                slug: null;
+                title: string | null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "schools";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolTags";
+                slug: Slug | null | string;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "schoolTypes";
+                slug: null;
+                title: null;
+                name: string | null;
+              }
+            | {
+                _id: string;
+                _type: "settings";
+                slug: null;
+                title: null;
+                name: null;
+              }
+            | {
+                _id: string;
+                _type: "subareas";
+                slug: string | null;
+                title: null;
+                name: string | null;
+                text: string | null;
+              }
+            | null;
+        }
+    > | null;
+    types: Array<{
+      id: string;
+      name: string | null;
+      slug: null;
+    }> | null;
+    categories: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      emoji: string | null;
+      borderColor: null;
+    }> | null;
+    transportation: Array<{
+      id: string;
+      _key: string;
+      _type: "transportItem";
+      name?: string;
+      distance?: string;
+      mode?: "Bus" | "Metro" | "Train" | "Tram";
+    }> | null;
+    content: RichText | null;
+    tags: Array<{
+      id: string;
+      name: string | null;
+      slug: string | null;
+      borderColor: string | null;
+    }> | null;
+  } | null;
+};
+
+// Source: src/lib/sanity/breadcrumb.ts
+// Variable: breadcrumbListQuery
+// Query: *[slug.current in $slugs]{      _type,      "slug": slug.current,      "name": coalesce(name, title, ""),      language,    }
+export type BreadcrumbListQueryResult = Array<
+  | {
+      _type: "areas";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "authors";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "blogCategories";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "blogPage";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "blogs";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "contactUs";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "countries";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "dictionaries";
+      slug: null;
+      name: string | "";
+      language: null;
+    }
+  | {
+      _type: "footer";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "group";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "header";
+      slug: null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "home";
+      slug: null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "page";
+      slug: null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "preschool";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "regions";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "sanity.fileAsset";
+      slug: null;
+      name: string | "";
+      language: null;
+    }
+  | {
+      _type: "sanity.imageAsset";
+      slug: null;
+      name: string | "";
+      language: null;
+    }
+  | {
+      _type: "schoolCategories";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "schoolPage";
+      slug: null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "schools";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "schoolTags";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "schoolTypes";
+      slug: null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "settings";
+      slug: null;
+      name: "";
+      language: string | null;
+    }
+  | {
+      _type: "subareas";
+      slug: string | null;
+      name: string | "";
+      language: string | null;
+    }
+  | {
+      _type: "translation.metadata";
+      slug: null;
+      name: "";
+      language: null;
+    }
+>;
+
+// Source: src/lib/sanity/breadcrumb.ts
+// Variable: schoolBreadcrumbQuery
+// Query: *[_type == "schools" && slug.current == $slug && defined(area)][0]{      _type,      "breadcrumb": [        {          "name": area->region->country->name,          "slug": countrySlug,        },        {          "name": area->region->name,          "slug": "/" + countrySlug + "/" + regionSlug,        },        {          "name": area->name,          // Composed rather than read from the area's own removed fullSlug          // field; the school already carries the two slugs above it.          "slug": "/" + countrySlug + "/" + regionSlug + "/" + area->slug.current,        },        {          "name": name,          "slug": slug.current,        }      ]    }
+export type SchoolBreadcrumbQueryResult = {
+  _type: "schools";
+  breadcrumb: Array<
+    | {
+        name: string | null;
+        slug: string | null;
+      }
+    | {
+        name: string | null;
+        slug: string | null;
+      }
+  >;
+} | null;
+
+// Source: src/lib/sanity/footer.ts
 // Variable: footerQuery
 // Query: {    "footer": *[_type == "footer" && (language == $locale || !defined(language))][0] {      _id,      logo,      columns[] {        title,        content[] {          _type,          _type == "textItem" => {            text          },          _type == "linkItem" => {            link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },          }        }      },      copyright,    }  }
 export type FooterQueryResult = {
@@ -2436,245 +4415,7 @@ export type FooterQueryResult = {
   } | null;
 };
 
-// Source: src/sanity/queries/groups.ts
-// Variable: groupPageQuery
-// Query: {    "content": *[_type == "group" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "regions": *[_type == "regions" && (language == $locale || !defined(language))]{      "id": _id,      "totalSchools": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),      name,      "slug": "/" + country->slug.current + "/" + slug.current,      "backgroundCover": backgroundCover.asset->url,      "regionRef": _id,      "areas": *[_type == "areas" && (language == $locale || !defined(language)) && region._ref == ^._id]{        "id": _id,        name,        "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,        "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area._ref == ^._id]),        "regionRef": region._ref      },        "schoolCategories": *[_type == "schoolCategories" && (language == $locale || !defined(language))]{    "id": _id,    name,    "slug": slug.current,    "emoji": emoji.asset->url,    "schoolCount": count(*[      _type == "schools" &&      (language == $locale || !defined(language)) &&      area->region._ref == ^.^._id &&      ^._id in categories[]._ref    ])  }    },    "country": *[_type == "countries" && (language == $locale || !defined(language))][0]{      "id": _id,      name,      "slug": slug.current,      "backgroundCover": backgroundCover.asset->url,      "totalSchools": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == ^.slug.current]),      "areas": *[_type == "regions" && (language == $locale || !defined(language))]{        "id": _id,        name,        "slug": "/" + country->slug.current + "/" + slug.current,        "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id])      },        "schoolCategories": *[_type == "schoolCategories" && (language == $locale || !defined(language))]{    "id": _id,    name,    "slug": slug.current,    "emoji": emoji.asset->url,    "schoolCount": count(*[      _type == "schools" &&      (language == $locale || !defined(language)) &&      defined(area->region._ref) &&      ^._id in categories[]._ref    ])  }    }  }
-export type GroupPageQueryResult = {
-  content: {
-    _type: "pageHero";
-    title?: string;
-    description?: string;
-    ctas: Array<{
-      _key: string;
-      _type: "cta";
-      link: {
-        _type: "link";
-        text?: string;
-        type?: string;
-        internalLink:
-          | {
-              _id: string;
-              _type: "areas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "authors";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogPage";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "blogs";
-              slug: Slug | null | string;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "contactUs";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "countries";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "dictionaries";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "footer";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "group";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "header";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "home";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "page";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "preschool";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "regions";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolPage";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "schools";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTags";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTypes";
-              slug: null;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "settings";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "subareas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | null;
-        url?: string;
-        email?: string;
-        phone?: string;
-        assetLink?: {
-          asset?: SanityFileAssetReference;
-          media?: unknown;
-          _type: "file";
-        };
-        sms?: string;
-        whatsapp?: string;
-        fax?: string;
-        value?: string;
-        blank?: boolean;
-        parameters?: string;
-        anchor?: string;
-      } | null;
-      variant?: "ghost" | "primary" | "secondary";
-    }> | null;
-  } | null;
-  regions: Array<{
-    id: string;
-    totalSchools: number;
-    name: string | null;
-    slug: string | null;
-    backgroundCover: string | null;
-    regionRef: string;
-    areas: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      schoolCount: number;
-      regionRef: string | null;
-    }>;
-    schoolCategories: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      emoji: string | null;
-      schoolCount: number;
-    }>;
-  }>;
-  country: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-    backgroundCover: string | null;
-    totalSchools: number;
-    areas: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      schoolCount: number;
-    }>;
-    schoolCategories: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      emoji: string | null;
-      schoolCount: number;
-    }>;
-  } | null;
-};
-
-// Source: src/sanity/queries/header.ts
+// Source: src/lib/sanity/header.ts
 // Variable: headerQuery
 // Query: {    "header": *[_type == "header" && (language == $locale || !defined(language))][0]{      "logo": logo.asset->url,      "logoInverse": logoInverse.asset->url,      menuItems[]{        _type,        "id": _key,        link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },      },      cta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },    }}
 export type HeaderQueryResult = {
@@ -3052,7 +4793,7 @@ export type HeaderQueryResult = {
   } | null;
 };
 
-// Source: src/sanity/queries/page.ts
+// Source: src/lib/sanity/page.ts
 // Variable: pageByTypeQuery
 // Query: *[_type == $type && (language == $locale || !defined(language))][0]{      title,      sections[]{        ...,          ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },  cta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },  plans[]{    ...,    cta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } }  },        _type == "mapCollection" => {          ...,            ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },  cta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } },  plans[]{    ...,    cta{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } }  },          "markers": *[_type == "schools" && !(_id in path("drafts.**")) && (language == $locale || !defined(language))]{              "id": _id,  "coordinate": address.mapLocation,  name,    "fullAddress":    select(defined(address.street) => address.street, "") +    select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") +    select(defined(address.city) => ", " + address.city, "") +    select(defined(address.postalCode) => ", " + address.postalCode, "") +    select(defined(address.country) => ", " + address.country, ""),  "slug": slug.current,            "selectedRegionId": area->region->_id,          },          "regions": regions[]->{            "id": _id,            name,          },        },      },    }
 export type PageByTypeQueryResult =
@@ -4549,1748 +6290,7 @@ export type PageByTypeQueryResult =
     }
   | null;
 
-// Source: src/sanity/queries/school-filter.ts
-// Variable: countryQuery
-// Query: {  "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{      "id": _id,      name,      "slug": slug.current    },  "regions": [    *[      _type == "countries" &&      slug.current == $country &&      (!defined(language) || language == $locale)    ][0]{      "id": _id,      "name": name,      "slug": slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == ^.slug.current]),    }  ] + *[_type == "regions" && country->slug.current == $country && (!defined(language) || language == $locale)] | order(orderRank) {      "id": _id,      name,      "slug": "/"        + country->slug.current + "/"        + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),    },  "areas": [],  "subareas": *[      _type == "subareas" &&      area->region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  subarea._ref == ^._id]),    },        "categories": *[    _type == "schoolCategories" &&    (!defined(language) || language == $locale)    ]{      "id": _id,      name,      "slug": slug.current,      "emoji": emoji.asset->url,    } | order(name asc),        "tags": *[_type == "schoolTags"]{        "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex,    } | order(name asc)}
-export type CountryQueryResult = {
-  country: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  regions: Array<
-    | {
-        id: string;
-        name: string | null;
-        slug: string | null;
-        count: number;
-      }
-    | {
-        id: string;
-        name: string | null;
-        slug: string | null;
-        count: number;
-      }
-    | null
-  >;
-  areas: Array<never>;
-  subareas: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    count: number;
-  }>;
-  categories: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    emoji: string | null;
-  }>;
-  tags: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    borderColor: string | null;
-  }>;
-};
-
-// Source: src/sanity/queries/school-filter.ts
-// Variable: regionQuery
-// Query: {  "country": *[_type == "countries" && slug.current == $country && (!defined(language) || language == $locale)][0]{      "id": _id,      name,      "slug": slug.current    },  "regions": [],  "areas": [    *[      _type == "regions" &&      slug.current == $region &&      country->slug.current == $country &&      (!defined(language) || language == $locale)    ][0]{      "id": _id,      "name": name,      "slug": "/" + country->slug.current + "/" + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),    }  ] + *[      _type == "areas" &&      region->slug.current == $region &&      region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area._ref == ^._id]),    },  "subareas": *[      _type == "subareas" &&      area->region->slug.current == $region &&      area->region->country->slug.current == $country &&      (!defined(language) || language == $locale)    ] | order(orderRank) {      "id": _id,      name,      "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,      "count": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  subarea._ref == ^._id]),    },        "categories": *[    _type == "schoolCategories" &&    (!defined(language) || language == $locale)    ]{      "id": _id,      name,      "slug": slug.current,      "emoji": emoji.asset->url,    } | order(name asc),        "tags": *[_type == "schoolTags"]{        "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex,    } | order(name asc)}
-export type RegionQueryResult = {
-  country: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  regions: Array<never>;
-  areas: Array<
-    | {
-        id: string;
-        name: string | null;
-        slug: string | null;
-        count: number;
-      }
-    | {
-        id: string;
-        name: string | null;
-        slug: string | null;
-        count: number;
-      }
-    | null
-  >;
-  subareas: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    count: number;
-  }>;
-  categories: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    emoji: string | null;
-  }>;
-  tags: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    borderColor: string | null;
-  }>;
-};
-
-// Source: src/sanity/queries/school-list.ts
-// Variable: schoolPageCountryQuery
-// Query: {        "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "totalSchools": coalesce(count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == $country]), 0),  }
-export type SchoolPageCountryQueryResult = {
-  pageHero: {
-    _type: "pageHero";
-    title?: string;
-    description?: string;
-    ctas: Array<{
-      _key: string;
-      _type: "cta";
-      link: {
-        _type: "link";
-        text?: string;
-        type?: string;
-        internalLink:
-          | {
-              _id: string;
-              _type: "areas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "authors";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogPage";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "blogs";
-              slug: Slug | null | string;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "contactUs";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "countries";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "dictionaries";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "footer";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "group";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "header";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "home";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "page";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "preschool";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "regions";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolPage";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "schools";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTags";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTypes";
-              slug: null;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "settings";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "subareas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | null;
-        url?: string;
-        email?: string;
-        phone?: string;
-        assetLink?: {
-          asset?: SanityFileAssetReference;
-          media?: unknown;
-          _type: "file";
-        };
-        sms?: string;
-        whatsapp?: string;
-        fax?: string;
-        value?: string;
-        blank?: boolean;
-        parameters?: string;
-        anchor?: string;
-      } | null;
-      variant?: "ghost" | "primary" | "secondary";
-    }> | null;
-  } | null;
-  totalSchools: number;
-};
-
-// Source: src/sanity/queries/school-list.ts
-// Variable: schoolPageRegionQuery
-// Query: {        "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "totalSchools": coalesce(count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->slug.current == $region &&  area->region->country->slug.current == $country]), 0),  }
-export type SchoolPageRegionQueryResult = {
-  pageHero: {
-    _type: "pageHero";
-    title?: string;
-    description?: string;
-    ctas: Array<{
-      _key: string;
-      _type: "cta";
-      link: {
-        _type: "link";
-        text?: string;
-        type?: string;
-        internalLink:
-          | {
-              _id: string;
-              _type: "areas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "authors";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogPage";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "blogs";
-              slug: Slug | null | string;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "contactUs";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "countries";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "dictionaries";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "footer";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "group";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "header";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "home";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "page";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "preschool";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "regions";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolPage";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "schools";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTags";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTypes";
-              slug: null;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "settings";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "subareas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | null;
-        url?: string;
-        email?: string;
-        phone?: string;
-        assetLink?: {
-          asset?: SanityFileAssetReference;
-          media?: unknown;
-          _type: "file";
-        };
-        sms?: string;
-        whatsapp?: string;
-        fax?: string;
-        value?: string;
-        blank?: boolean;
-        parameters?: string;
-        anchor?: string;
-      } | null;
-      variant?: "ghost" | "primary" | "secondary";
-    }> | null;
-  } | null;
-  totalSchools: number;
-};
-
-// Source: src/sanity/queries/school-list.ts
-// Variable: schoolMarkersQuery
-// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    (!defined($country) || countrySlug == $country) &&    (!defined($region) || regionSlug == $region) &&    (!defined($area) || area->slug.current == $area) &&    (!defined($subarea) || subarea->slug.current == $subarea)]{      "id": _id,  "coordinate": address.mapLocation,  name,    "fullAddress":    select(defined(address.street) => address.street, "") +    select(defined(address.extraDistrict) => ", " + address.extraDistrict, "") +    select(defined(address.city) => ", " + address.city, "") +    select(defined(address.postalCode) => ", " + address.postalCode, "") +    select(defined(address.country) => ", " + address.country, ""),  "slug": slug.current  }
-export type SchoolMarkersQueryResult = Array<{
-  id: string;
-  coordinate: Geopoint | null;
-  name: string | null;
-  fullAddress: string | null | "";
-  slug: string | null;
-}>;
-
-// Source: src/sanity/queries/school-list.ts
-// Variable: schoolOrderQuery
-// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    (!defined($country) || countrySlug == $country) &&    (!defined($region) || regionSlug == $region) &&    (!defined($area) || area->slug.current == $area) &&    (!defined($subarea) || subarea->slug.current == $subarea)    && (!defined($categories) || count($categories) == 0 || count(categories[@->slug.current in $categories]) > 0) &&    (!defined($tags) || count($tags) == 0 || count(tags[@->slug.current in $tags]) > 0) &&    (!defined($search) || lower(nameNormalized) match "*" + lower($search) + "*")  ]{    "id": _id,    isHighPriority  }
-export type SchoolOrderQueryResult = Array<{
-  id: string;
-  isHighPriority: boolean | null;
-}>;
-
-// Source: src/sanity/queries/school-list.ts
-// Variable: schoolCardsQuery
-// Query: *[_type == "schools" && _id in $ids]{      "id": _id,  name,  "slug": slug.current,  shortSummary,  "logo": logo.asset->url,  website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },  "primaryImage": select(    defined(primaryImages[0].asset) => primaryImages[0].asset->url,    null  ),  area->{ "id": _id, name, "slug": slug.current },  "region": area->region->{ "id": _id, name, "slug": slug.current },  tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },  types[]->{   "id": _id,  name,  highPriority,  visibility,  "icon": icon.asset->url,  "backgroundColor": backgroundColor.hex },  categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex }  }
-export type SchoolCardsQueryResult = Array<{
-  id: string;
-  name: string | null;
-  slug: string | null;
-  shortSummary: string | null;
-  logo: string | null;
-  website: {
-    _type: "link";
-    text?: string;
-    type?: string;
-    internalLink:
-      | {
-          _id: string;
-          _type: "areas";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "authors";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "blogCategories";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "blogPage";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "blogs";
-          slug: Slug | null | string;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "contactUs";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "countries";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "dictionaries";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "footer";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "group";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "header";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "home";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "page";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "preschool";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "regions";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolCategories";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolPage";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "schools";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolTags";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolTypes";
-          slug: null;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "settings";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "subareas";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | null;
-    url?: string;
-    email?: string;
-    phone?: string;
-    assetLink?: {
-      asset?: SanityFileAssetReference;
-      media?: unknown;
-      _type: "file";
-    };
-    sms?: string;
-    whatsapp?: string;
-    fax?: string;
-    value?: string;
-    blank?: boolean;
-    parameters?: string;
-    anchor?: string;
-  } | null;
-  primaryImage: string | null;
-  area: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  region: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  tags: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    borderColor: string | null;
-  }> | null;
-  types: Array<{
-    id: string;
-    name: string | null;
-    highPriority: boolean | null;
-    visibility: boolean | null;
-    icon: string | null;
-    backgroundColor: string | null;
-  }> | null;
-  categories: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    emoji: string | null;
-    borderColor: null;
-  }> | null;
-}>;
-
-// Source: src/sanity/queries/schools.ts
-// Variable: highPrioritySchoolsQuery
-// Query: *[    _type == "schools" &&    (language == $locale || !defined(language)) &&    (true in types[]->highPriority)  ]{    "id": _id,    isHighPriority  }
-export type HighPrioritySchoolsQueryResult = Array<{
-  id: string;
-  isHighPriority: boolean | null;
-}>;
-
-// Source: src/sanity/queries/schools.ts
-// Variable: schoolCardsByIdQuery
-// Query: *[_type == "schools" && _id in $ids]{      "id": _id,  name,  "slug": slug.current,  shortSummary,  "logo": logo.asset->url,  website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },  "primaryImage": select(    defined(primaryImages[0].asset) => primaryImages[0].asset->url,    null  ),  area->{ "id": _id, name, "slug": slug.current },  "region": area->region->{ "id": _id, name, "slug": slug.current },  tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },  types[]->{   "id": _id,  name,  highPriority,  visibility,  "icon": icon.asset->url,  "backgroundColor": backgroundColor.hex },  categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex }  }
-export type SchoolCardsByIdQueryResult = Array<{
-  id: string;
-  name: string | null;
-  slug: string | null;
-  shortSummary: string | null;
-  logo: string | null;
-  website: {
-    _type: "link";
-    text?: string;
-    type?: string;
-    internalLink:
-      | {
-          _id: string;
-          _type: "areas";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "authors";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "blogCategories";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "blogPage";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "blogs";
-          slug: Slug | null | string;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "contactUs";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "countries";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "dictionaries";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "footer";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "group";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "header";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "home";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "page";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "preschool";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "regions";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolCategories";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolPage";
-          slug: null;
-          title: string | null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "schools";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolTags";
-          slug: Slug | null | string;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "schoolTypes";
-          slug: null;
-          title: null;
-          name: string | null;
-        }
-      | {
-          _id: string;
-          _type: "settings";
-          slug: null;
-          title: null;
-          name: null;
-        }
-      | {
-          _id: string;
-          _type: "subareas";
-          slug: string | null;
-          title: null;
-          name: string | null;
-          text: string | null;
-        }
-      | null;
-    url?: string;
-    email?: string;
-    phone?: string;
-    assetLink?: {
-      asset?: SanityFileAssetReference;
-      media?: unknown;
-      _type: "file";
-    };
-    sms?: string;
-    whatsapp?: string;
-    fax?: string;
-    value?: string;
-    blank?: boolean;
-    parameters?: string;
-    anchor?: string;
-  } | null;
-  primaryImage: string | null;
-  area: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  region: {
-    id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  tags: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    borderColor: string | null;
-  }> | null;
-  types: Array<{
-    id: string;
-    name: string | null;
-    highPriority: boolean | null;
-    visibility: boolean | null;
-    icon: string | null;
-    backgroundColor: string | null;
-  }> | null;
-  categories: Array<{
-    id: string;
-    name: string | null;
-    slug: string | null;
-    emoji: string | null;
-    borderColor: null;
-  }> | null;
-}>;
-
-// Source: src/sanity/queries/schools.ts
-// Variable: schoolBySlugQuery
-// Query: {    "pageHero": *[_type == "schoolPage" && (language == $locale || !defined(language))][0].pageHero{   ...,  ctas[]{   ...,  link{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } } } },    "school": *[_type == "schools" && (language == $locale || !defined(language)) &&  slug.current == $slug][0]{      "id": _id,      "logo": logo.asset->url,      name,      shortSummary,      "slug": slug.current,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  },      website{   ...,  internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } } },      "primaryImages": primaryImages[].asset->url,      "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),      "primaryImageLqip": primaryImages[0].asset->metadata.lqip,      "region": area->region->{        "id": _id,        name,        "countrySlug": country->slug.current,        "fullSlug": "/" + country->slug.current + "/" + slug.current,      },      capacity,      providerName,      area->{ "id": _id, name, "fullSlug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current },      address,      cin,      contacts[],      links[]{        "id": _key,        ...link,        "internalLink": link.internalLink->{   _id,  _type,  "slug": select(defined(slug.current) => slug.current, slug),  title,  name,  _type == "countries" => {    "text": name,    "slug": slug.current,  },  _type == "regions" => {    "text": name,    "slug": "/" + country->slug.current + "/" + slug.current,  },  _type == "areas" => {    "text": name,    "slug": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  },  _type == "subareas" => {    "text": name,    "slug": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,  } },      },      types[]->{        "id": _id,        name,        "slug": slug.current      },      categories[]->{   "id": _id,  name,  "slug": slug.current,  "emoji": emoji.asset->url,  "borderColor": borderColor.hex },      transportation[]{        "id": _key,        ...      },      content,      tags[]->{   "id": _id,  name,  "slug": slug.current,  "borderColor": borderColor.hex },    }  }
-export type SchoolBySlugQueryResult = {
-  pageHero: {
-    _type: "pageHero";
-    title?: string;
-    description?: string;
-    ctas: Array<{
-      _key: string;
-      _type: "cta";
-      link: {
-        _type: "link";
-        text?: string;
-        type?: string;
-        internalLink:
-          | {
-              _id: string;
-              _type: "areas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "authors";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "blogPage";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "blogs";
-              slug: Slug | null | string;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "contactUs";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "countries";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "dictionaries";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "footer";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "group";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "header";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "home";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "page";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "preschool";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "regions";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolCategories";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolPage";
-              slug: null;
-              title: string | null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "schools";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTags";
-              slug: Slug | null | string;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "schoolTypes";
-              slug: null;
-              title: null;
-              name: string | null;
-            }
-          | {
-              _id: string;
-              _type: "settings";
-              slug: null;
-              title: null;
-              name: null;
-            }
-          | {
-              _id: string;
-              _type: "subareas";
-              slug: string | null;
-              title: null;
-              name: string | null;
-              text: string | null;
-            }
-          | null;
-        url?: string;
-        email?: string;
-        phone?: string;
-        assetLink?: {
-          asset?: SanityFileAssetReference;
-          media?: unknown;
-          _type: "file";
-        };
-        sms?: string;
-        whatsapp?: string;
-        fax?: string;
-        value?: string;
-        blank?: boolean;
-        parameters?: string;
-        anchor?: string;
-      } | null;
-      variant?: "ghost" | "primary" | "secondary";
-    }> | null;
-  } | null;
-  school: {
-    id: string;
-    logo: string | null;
-    name: string | null;
-    shortSummary: string | null;
-    slug: string | null;
-    updatedAt: string;
-    translations: Array<{
-      locale: string;
-      path: null | string;
-    }> | null;
-    website: {
-      _type: "link";
-      text?: string;
-      type?: string;
-      internalLink:
-        | {
-            _id: string;
-            _type: "areas";
-            slug: string | null;
-            title: null;
-            name: string | null;
-            text: string | null;
-          }
-        | {
-            _id: string;
-            _type: "authors";
-            slug: Slug | null | string;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "blogCategories";
-            slug: Slug | null | string;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "blogPage";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "blogs";
-            slug: Slug | null | string;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "contactUs";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "countries";
-            slug: string | null;
-            title: null;
-            name: string | null;
-            text: string | null;
-          }
-        | {
-            _id: string;
-            _type: "dictionaries";
-            slug: null;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "footer";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "group";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "header";
-            slug: null;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "home";
-            slug: null;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "page";
-            slug: null;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "preschool";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "regions";
-            slug: string | null;
-            title: null;
-            name: string | null;
-            text: string | null;
-          }
-        | {
-            _id: string;
-            _type: "schoolCategories";
-            slug: Slug | null | string;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "schoolPage";
-            slug: null;
-            title: string | null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "schools";
-            slug: Slug | null | string;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "schoolTags";
-            slug: Slug | null | string;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "schoolTypes";
-            slug: null;
-            title: null;
-            name: string | null;
-          }
-        | {
-            _id: string;
-            _type: "settings";
-            slug: null;
-            title: null;
-            name: null;
-          }
-        | {
-            _id: string;
-            _type: "subareas";
-            slug: string | null;
-            title: null;
-            name: string | null;
-            text: string | null;
-          }
-        | null;
-      url?: string;
-      email?: string;
-      phone?: string;
-      assetLink?: {
-        asset?: SanityFileAssetReference;
-        media?: unknown;
-        _type: "file";
-      };
-      sms?: string;
-      whatsapp?: string;
-      fax?: string;
-      value?: string;
-      blank?: boolean;
-      parameters?: string;
-      anchor?: string;
-    } | null;
-    primaryImages: Array<string | null> | null;
-    primaryImage: string | null;
-    primaryImageLqip: string | null;
-    region: {
-      id: string;
-      name: string | null;
-      countrySlug: string | null;
-      fullSlug: string | null;
-    } | null;
-    capacity: number | null;
-    providerName: string | null;
-    area: {
-      id: string;
-      name: string | null;
-      fullSlug: string | null;
-    } | null;
-    address: PostalAddress | null;
-    cin: string | null;
-    contacts: Array<
-      {
-        _key: string;
-      } & ContactInfo
-    > | null;
-    links: Array<
-      | {
-          id: string;
-          _type: "link";
-          text?: string;
-          type?: string;
-          internalLink:
-            | {
-                _id: string;
-                _type: "areas";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "authors";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "blogCategories";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "blogPage";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "blogs";
-                slug: Slug | null | string;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "contactUs";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "countries";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "dictionaries";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "footer";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "group";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "header";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "home";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "page";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "preschool";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "regions";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolCategories";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolPage";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "schools";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolTags";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolTypes";
-                slug: null;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "settings";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "subareas";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | null;
-          url?: string;
-          email?: string;
-          phone?: string;
-          assetLink?: {
-            asset?: SanityFileAssetReference;
-            media?: unknown;
-            _type: "file";
-          };
-          sms?: string;
-          whatsapp?: string;
-          fax?: string;
-          value?: string;
-          blank?: boolean;
-          parameters?: string;
-          anchor?: string;
-        }
-      | {
-          id: string;
-          internalLink:
-            | {
-                _id: string;
-                _type: "areas";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "authors";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "blogCategories";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "blogPage";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "blogs";
-                slug: Slug | null | string;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "contactUs";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "countries";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "dictionaries";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "footer";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "group";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "header";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "home";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "page";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "preschool";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "regions";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolCategories";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolPage";
-                slug: null;
-                title: string | null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "schools";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolTags";
-                slug: Slug | null | string;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "schoolTypes";
-                slug: null;
-                title: null;
-                name: string | null;
-              }
-            | {
-                _id: string;
-                _type: "settings";
-                slug: null;
-                title: null;
-                name: null;
-              }
-            | {
-                _id: string;
-                _type: "subareas";
-                slug: string | null;
-                title: null;
-                name: string | null;
-                text: string | null;
-              }
-            | null;
-        }
-    > | null;
-    types: Array<{
-      id: string;
-      name: string | null;
-      slug: null;
-    }> | null;
-    categories: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      emoji: string | null;
-      borderColor: null;
-    }> | null;
-    transportation: Array<{
-      id: string;
-      _key: string;
-      _type: "transportItem";
-      name?: string;
-      distance?: string;
-      mode?: "Bus" | "Metro" | "Train" | "Tram";
-    }> | null;
-    content: RichText | null;
-    tags: Array<{
-      id: string;
-      name: string | null;
-      slug: string | null;
-      borderColor: string | null;
-    }> | null;
-  } | null;
-};
-
-// Source: src/sanity/queries/seo.ts
+// Source: src/lib/sanity/seo.ts
 // Variable: sitemapQuery
 // Query: {    "schools": *[      _type == "schools" &&      (language == $locale || !defined(language)) &&      !(_id in path("drafts.**")) &&      defined(slug.current)    ]{      "path": slug.current,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  }    },    "articles": *[      _type == "blogs" &&      (language == $locale || !defined(language)) &&      !(_id in path("drafts.**")) &&      defined(slug.current)    ]{      "path": slug.current,      "updatedAt": _updatedAt,      "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": slug.current }.resolved  }    },    "catalog":      *[    _type == "countries" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    defined(slug.current)  ]{    "level": "country",    "path": "/" + slug.current,    "updatedAt": _updatedAt,    "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region->country->slug.current == ^.slug.current]),    "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current) }.resolved  }  }[schoolCount > 0]      + *[    _type == "regions" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    defined(slug.current)  ]{    "level": "region",    "path": "/" + country->slug.current + "/" + slug.current,    "updatedAt": _updatedAt,    "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area->region._ref == ^._id]),    "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current) }.resolved  }  }[schoolCount > 0]      + *[    _type == "areas" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    defined(slug.current)  ]{    "level": "area",    "path": "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,    "updatedAt": _updatedAt,    "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  area._ref == ^._id]),    "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current) }.resolved  }  }[schoolCount > 0]      + *[    _type == "subareas" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    defined(slug.current)  ]{    "level": "subarea",    "path": "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current,    "updatedAt": _updatedAt,    "schoolCount": count(*[  _type == "schools" &&  !(_id in path("drafts.**")) &&  (language == $locale || !defined(language)) &&  subarea._ref == ^._id]),    "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current) }.resolved  }  }[schoolCount > 0]  }
 export type SitemapQueryResult = {
@@ -6354,12 +6354,12 @@ export type SitemapQueryResult = {
   >;
 };
 
-// Source: src/sanity/queries/seo.ts
+// Source: src/lib/sanity/seo.ts
 // Variable: searchCountrySlugQuery
 // Query: *[    _type == "countries" &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**")) &&    defined(slug.current)  ] | order(orderRank)[0].slug.current
 export type SearchCountrySlugQueryResult = string | null;
 
-// Source: src/sanity/queries/seo.ts
+// Source: src/lib/sanity/seo.ts
 // Variable: catalogNodeQuery
 // Query: *[    _type == $type &&    slug.current == $slug &&    (language == $locale || !defined(language)) &&    !(_id in path("drafts.**"))  ][0]{    name,    "path": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current),    "updatedAt": _updatedAt,    "translations": *[    _type == "translation.metadata" &&    references(^._id)  ][0].translations[]{    "locale": _key,    "path": value->{ "resolved": select(  _type == "countries" => "/" + slug.current,  _type == "regions" => "/" + country->slug.current + "/" + slug.current,  _type == "areas" => "/"  + region->country->slug.current + "/"  + region->slug.current + "/"  + slug.current,  _type == "subareas" => "/"  + area->region->country->slug.current + "/"  + area->region->slug.current + "/"  + area->slug.current + "/"  + slug.current) }.resolved  }  }
 export type CatalogNodeQueryResult =
@@ -6401,7 +6401,7 @@ export type CatalogNodeQueryResult =
     }
   | null;
 
-// Source: src/sanity/queries/settings.ts
+// Source: src/lib/sanity/settings.ts
 // Variable: settingsQuery
 // Query: *[_type == "settings"][0] {  ...,  "defaultImage": defaultImage.asset->url,}
 export type SettingsQueryResult = {

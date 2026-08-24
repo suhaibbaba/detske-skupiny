@@ -1,10 +1,10 @@
-import { fetchBlogPage } from "@/sanity/queries";
+import { fetchBlogPage } from "@/features/blog/queries";
 import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import { Box, BoxProps, Container } from "@mui/material";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
-import BlogCard from "@/app/[locale]/articles/components/BlogCard";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import BlogCategories from "@/features/blog/components/BlogCategories";
+import BlogCard from "@/features/blog/components/BlogCard";
 import Alert from "@/components/ui/alert";
 import clsx from "clsx";
 import { getTranslateServer } from "@/hooks/useTranslate";

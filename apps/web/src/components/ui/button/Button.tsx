@@ -17,13 +17,13 @@ import {
 } from "@mui/material";
 import React, { FC } from "react";
 import { useLocale } from "next-intl";
-import { mergeMuiProps } from "@/utilites/mergeMuiProps";
+import { mergeMuiProps } from "@/utils/mergeMuiProps";
 import {
   cleanUrl,
   parseLinkField,
   type SanityLinkField,
 } from "@/components/ui/link/parser";
-import { localizeHref } from "@/i18n/routing";
+import { localizeHref } from "@/lib/i18n/routing";
 
 interface ButtonProps extends Omit<MuiButtonProps, "href"> {
   href?: string;

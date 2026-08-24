@@ -11,7 +11,7 @@
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
 import React, { FC } from "react";
-import { mergeMuiProps } from "@/utilites/mergeMuiProps";
+import { mergeMuiProps } from "@/utils/mergeMuiProps";
 import {
   cleanUrl,
   parseLinkField,

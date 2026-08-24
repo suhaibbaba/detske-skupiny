@@ -1,4 +1,4 @@
-import { fetchHeaderPage } from "@/sanity/queries/header";
+import { fetchHeaderPage } from "@/lib/sanity/header";
 import HeaderClientPage from "@/components/layout/HeaderClientPage";
 
 const Header = async ({ locale }: { locale: string }) => {

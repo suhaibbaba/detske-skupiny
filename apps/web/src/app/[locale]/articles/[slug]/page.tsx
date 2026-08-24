@@ -1,4 +1,4 @@
-import { fetchBlogBySlug } from "@/sanity/queries";
+import { fetchBlogBySlug } from "@/features/blog/queries";
 import type { Blog } from "@/types/blog";
 import { PageProps } from "@/types";
 import {
@@ -13,12 +13,12 @@ import {
   AvatarProps,
 } from "@mui/material";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import BlogCategories from "@/app/[locale]/articles/components/BlogCategories";
-import { formatMessage } from "@/utilites/strings";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import BlogCategories from "@/features/blog/components/BlogCategories";
+import { formatMessage } from "@/utils/strings";
 import React from "react";
-import { formatDate } from "@/utilites/date";
-import RichText from "@/sanity/components/RichText";
+import { formatDate } from "@/utils/date";
+import RichText from "@/components/rich-text/RichText";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import Image, { type ImageProps } from "@/components/ui/image";
 import { Metadata } from "next";

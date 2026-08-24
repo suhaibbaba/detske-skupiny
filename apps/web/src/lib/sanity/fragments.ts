@@ -1,10 +1,10 @@
-import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
+import { excludeDraft, languageQuery } from "@/lib/sanity/filters";
 
 /**
  * Shared GROQ projections.
  *
  * These are the projections that used to be copy-pasted across
- * src/sanity/queries/*. Keeping one copy matters most for `linkFields`: link
+ * each feature's query module. Keeping one copy matters most for `linkFields`: link
  * resolution now happens inside GROQ, so any place that returns a `link`
  * object has to project it through this fragment or the link will arrive at
  * the browser as an unresolved reference.
@@ -15,7 +15,7 @@ import { excludeDraft, languageQuery } from "@/sanity/queries/filters";
  * query. Tagged, each one below reports a syntax error on every run and buries
  * the failures that actually matter. Untagged they are still resolved when a
  * query interpolates them, which is the only place they are ever evaluated.
- * The `groq` tag is reserved for `defineQuery` call sites in sanity/queries.
+ * The `groq` tag is reserved for `defineQuery` call sites in the query modules.
  */
 
 /**
@@ -43,7 +43,7 @@ export const imageUrlAs = (field: string, alias: string) =>
  * the school detail and article queries rather than by every image projection.
  *
  * Dimensions are deliberately NOT projected here: they are already encoded in
- * the asset id, and `imageDimensions` in sanity/sections/sanityImageUrl.ts
+ * the asset id, and `imageDimensions` in lib/sanity/imageUrl.ts
  * reads them from there. Adding them would change the shape every consumer
  * receives for a number the URL already carries.
  */
@@ -125,7 +125,7 @@ export const schoolCountForSubarea = `count(*[
 /**
  * A `link` object with its `internalLink` reference already dereferenced.
  *
- * This replaces src/sanity/utilites/expandLinks.ts, which walked every fetched
+ * This replaces the old expandLinks helper, which walked every fetched
  * payload, collected `link.internalLink` refs and resolved them in a second
  * round-trip. The projection below is a faithful port of the query that helper
  * ran, so the shape `parseLinkField` receives is unchanged: `_type` picks the
@@ -177,12 +177,6 @@ export const ctaFields = `
 export const pageHeroFields = `
   ...,
   ctas[]{ ${ctaFields} }
-`;
-
-/** Title and description fields used to build route metadata. */
-export const metaFields = `
-  title,
-  metaDescription
 `;
 
 /**

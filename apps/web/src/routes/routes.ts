@@ -1,4 +1,4 @@
-import { defaultLocale, localizeHref } from "@/i18n/routing";
+import { defaultLocale, localizeHref } from "@/lib/i18n/routing";
 
 /**
  * Every slug here arrives from a GROQ projection, where an unset field is

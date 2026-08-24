@@ -1,9 +1,9 @@
-import { fetchContactUs } from "@/sanity/queries";
+import { fetchContactUs } from "@/features/contact/queries";
 import { PageProps } from "@/types";
 import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
 import { Box, BoxProps } from "@mui/material";
-import PageHeadingTypography from "@/components/shared/PageHeadingTypography";
-import ContactInfoCard from "@/app/[locale]/contact-us/components/ContactInfoCard";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
+import ContactInfoCard from "@/features/contact/components/ContactInfoCard";
 import ContactForm from "@/components/forms/ContactForm";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
