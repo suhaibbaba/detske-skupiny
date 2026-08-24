@@ -1,4 +1,5 @@
-import { fetchBlogBySlug, fetchBlogPage } from "@/sanity/queries";
+import { fetchBlogBySlug } from "@/sanity/queries";
+import type { Blog } from "@/types/blog";
 import { PageProps } from "@/types";
 import {
   Box,
@@ -26,6 +27,12 @@ import clsx from "clsx";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
+import JsonLd from "@/components/seo/JsonLd";
+import { articleJsonLd } from "@/lib/seo/jsonLd";
+import { buildPageMetadata, siteContext } from "@/lib/seo/metadata";
+import { documentPaths } from "@/lib/seo/routes";
+import { absoluteUrl } from "@/lib/seo/site";
+import { resolveOgImage } from "@/lib/seo/images";
 
 interface BlogDetailStyles {
   pageLayout?: PageLayoutStyles;
@@ -144,24 +151,47 @@ const styles: BlogDetailStyles = {
   },
 };
 
+/**
+ * The article's own paths, keyed by locale.
+ *
+ * Only the locales the article has actually been translated into appear, so a
+ * Czech-only post links no English alternate.
+ */
+const articlePaths = (locale: string, blog: Blog) =>
+  documentPaths(locale, blog.slug, blog.translations, (target, slug) =>
+    getLocalizedRoutes(target).article(slug),
+  );
+
 export async function generateMetadata({
   params,
 }: PageProps<{ slug: string }>): Promise<Metadata> {
-  const translate = await getTranslateServer();
-
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
   const { slug, locale } = await params;
+  setRequestLocale(locale);
+
+  const translate = await getTranslateServer();
   const { blog } = await fetchBlogBySlug({ slug, locale });
 
+  // The page itself calls notFound() for this; the metadata just needs a title
+  // that is not the slug.
   if (!blog) {
-    return {
-      title: translate("article"),
-    };
+    return { title: translate("article") };
   }
 
-  return {
+  return buildPageMetadata({
+    locale,
+    paths: articlePaths(locale, blog),
     title: blog.title || translate("article"),
-    description: blog.excerpt || "",
-  };
+    description: blog.excerpt,
+    images: [blog.image],
+    type: "article",
+    publishedTime: blog.publishedAt,
+    modifiedTime: blog.updatedAt ?? blog.publishedAt,
+  });
 }
 
 /**
@@ -169,9 +199,7 @@ export async function generateMetadata({
  * awaiting it is a dynamic read. It happens in here, below the Suspense
  * boundary in `Page`, leaving the route shell prerenderable.
  */
-const ArticleContent = async ({
-  params,
-}: PageProps<{ slug: string }>) => {
+const ArticleContent = async ({ params }: PageProps<{ slug: string }>) => {
   const { slug, locale } = await params;
   setRequestLocale(locale);
   const { blog } = await fetchBlogBySlug({ slug, locale });
@@ -185,15 +213,30 @@ const ArticleContent = async ({
   const authorName = blog.author?.name;
   const publishedAt = formatDate(
     blog.publishedAt,
-    locale === "cs" ? "cs-CZ" : "en-US"
+    locale === "cs" ? "cs-CZ" : "en-US",
   );
   const readTime = blog.readTime
     ? `${blog.readTime} ${translate("minRead")}`
     : "";
   const articleMeta = [publishedAt, readTime].filter(Boolean).join(" • ");
 
+  const { siteName } = await siteContext(locale);
+  const paths = articlePaths(locale, blog);
+
   return (
     <Box {...styles.container} className={clsx(!blog?.title && "pt-20")}>
+      <JsonLd
+        data={articleJsonLd({
+          headline: blog.title,
+          url: absoluteUrl(locale, paths[locale]!),
+          description: blog.excerpt,
+          image: resolveOgImage(locale, blog.image),
+          datePublished: blog.publishedAt,
+          dateModified: blog.updatedAt ?? blog.publishedAt,
+          siteName,
+          siteUrl: absoluteUrl(locale, getLocalizedRoutes(locale).home),
+        })}
+      />
       {blog?.title && (
         <PageLayout
           contentFullWidth={false}
@@ -216,7 +259,7 @@ const ArticleContent = async ({
                 ) : (
                   ""
                 ),
-                authorName && articleMeta ? " • " : ""
+                authorName && articleMeta ? " • " : "",
               )}
             </Box>
           </Box>

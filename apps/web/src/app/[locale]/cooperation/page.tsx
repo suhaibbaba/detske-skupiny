@@ -8,6 +8,8 @@ import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { staticRoutePaths } from "@/lib/seo/routes";
 
 interface CooperationStyles {
   pageLayout?: PageLayoutStyles;
@@ -34,11 +36,28 @@ const styles: CooperationStyles = {
   },
 };
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
+  const { locale } = await params;
+  setRequestLocale(locale);
   const translate = await getTranslateServer();
-  return {
+
+  return buildPageMetadata({
+    locale,
+    paths: staticRoutePaths("cooperation"),
     title: translate("cooperation"),
-  };
+    // The preschool document has no hero copy of its own, so this falls back
+    // to the site description rather than to a dictionary key that does not
+    // exist - a missing key renders its own name, which would end up as the
+    // page's meta description.
+    description: translate("metaDescription"),
+  });
 }
 
 const Page = async ({ params }: PageProps) => {

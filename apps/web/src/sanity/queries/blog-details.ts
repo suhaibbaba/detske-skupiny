@@ -2,7 +2,7 @@ import { groq } from "next-sanity";
 import { Blog } from "@/types/blog";
 import { languageQuery } from "@/sanity/queries/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { imageUrl } from "@/lib/sanity/fragments";
+import { imageUrl, translationSlugs } from "@/lib/sanity/fragments";
 
 export const blogBySlugQuery = groq`{
     "blog":*[_type == "blogs" && ${languageQuery} && slug.current == $slug][0]{
@@ -13,6 +13,8 @@ export const blogBySlugQuery = groq`{
       ${imageUrl("image")},
       readTime,
       publishedAt,
+      "updatedAt": _updatedAt,
+      ${translationSlugs},
       content,
       category->{
         "id": _id,

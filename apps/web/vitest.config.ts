@@ -30,7 +30,10 @@ const TEST_ENV = {
   SANITY_PROJECT_ID: "testproj",
   SANITY_DATASET: "test",
   NEXT_PUBLIC_EN_DOMAIN: "en.school.local",
-  NEXT_PUBLIC_CZ_DOMAIN: "cs.school.local",
+  // The variable routing.ts actually reads is NEXT_PUBLIC_CS_DOMAIN; this
+  // was spelled CZ, so the Czech origin silently fell back to "localhost" and
+  // the two locales shared a host. The SEO tests assert on both origins.
+  NEXT_PUBLIC_CS_DOMAIN: "cs.school.local",
 };
 
 /**

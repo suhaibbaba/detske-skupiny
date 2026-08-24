@@ -14,6 +14,9 @@ import {
   buildStandardBreadcrumbs,
   EXCLUDED_SEGMENTS,
 } from "@/components/ui/breadcrumb/builders";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo/jsonLd";
+import { absoluteUrl } from "@/lib/seo/site";
 
 interface Props {
   /**
@@ -86,18 +89,44 @@ const Breadcrumbs = async ({ pathname, addSpace = true }: Props) => {
   const last = breadcrumbs[breadcrumbs.length - 1];
 
   return (
-    <MuiBreadcrumbs
-      separator={<ChevronRight sx={{ fontSize: "10px" }} />}
-      aria-label="breadcrumb"
-      sx={{ mb: addSpace ? "40px" : 0, ol: { rowGap: "8px" } }}
-    >
-      {breadcrumbs.slice(0, -1).map((item) => (
-        <Link key={item.href} href={item.href} {...styles.link}>
-          {item.label}
-        </Link>
-      ))}
-      <Typography {...styles.text}>{last.label}</Typography>
-    </MuiBreadcrumbs>
+    <React.Fragment>
+      {/*
+       * The BreadcrumbList is emitted from here rather than from each page so
+       * that it is built from the very array being rendered below. Google
+       * discards a trail that does not match the visible one, and the school
+       * trail in particular is assembled from a separate query - keeping the
+       * two in one place is the only way they cannot drift apart.
+       */}
+      <JsonLd
+        data={breadcrumbJsonLd(
+          breadcrumbs.map((item, index) => ({
+            name: item.label,
+            // The last crumb is the current page. It is rendered as text
+            // rather than a link, so its `href` is never followed and on a
+            // school page it is not even a real URL - `buildSchoolBreadcrumbs`
+            // runs the school's own slug through the catalog route. Naming the
+            // page's own path here keeps the structured data pointing at
+            // something that exists.
+            url: absoluteUrl(
+              locale,
+              index === breadcrumbs.length - 1 ? pathname : item.href,
+            ),
+          })),
+        )}
+      />
+      <MuiBreadcrumbs
+        separator={<ChevronRight sx={{ fontSize: "10px" }} />}
+        aria-label="breadcrumb"
+        sx={{ mb: addSpace ? "40px" : 0, ol: { rowGap: "8px" } }}
+      >
+        {breadcrumbs.slice(0, -1).map((item) => (
+          <Link key={item.href} href={item.href} {...styles.link}>
+            {item.label}
+          </Link>
+        ))}
+        <Typography {...styles.text}>{last.label}</Typography>
+      </MuiBreadcrumbs>
+    </React.Fragment>
   );
 };
 

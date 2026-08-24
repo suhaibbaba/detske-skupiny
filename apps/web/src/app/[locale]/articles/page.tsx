@@ -13,6 +13,8 @@ import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { staticRoutePaths } from "@/lib/seo/routes";
 
 interface BlogsStyles {
   pageLayout?: PageLayoutStyles;
@@ -56,27 +58,35 @@ const styles: BlogsStyles = {
   },
 };
 
+/**
+ * `searchParams` is deliberately not read here.
+ *
+ * The category filter changes which cards are listed, not what the page is,
+ * and every `?category=` variant has to collapse onto one canonical URL or the
+ * index competes with itself for the same query. Ignoring the query string is
+ * what produces that single canonical - and it keeps this off the request
+ * path, since the metadata for the index is the same for every visitor.
+ */
 export async function generateMetadata({
   params,
-  searchParams,
 }: PageProps): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
   const { locale } = await params;
   setRequestLocale(locale);
-  const { category: categorySelected } = ((await searchParams) ?? {}) as {
-    category?: string;
-  };
 
-  const { pageHero } = await fetchBlogPage({
-    categorySelected: categorySelected || "",
-    locale,
-  });
-
+  const { pageHero } = await fetchBlogPage({ categorySelected: "", locale });
   const translate = await getTranslateServer();
 
-  return {
+  return buildPageMetadata({
+    locale,
+    paths: staticRoutePaths("articles"),
     title: pageHero?.title || translate("articles"),
     description: pageHero?.description,
-  };
+  });
 }
 
 /**
