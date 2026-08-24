@@ -12,6 +12,7 @@ import {
   schoolCardFields,
   schoolCategoryFields,
   tagFields,
+  translationSlugs,
 } from "@/lib/sanity/fragments";
 import { orderByDailyShuffle } from "@/sanity/utilites/dailyOrder";
 import { getDailySeed } from "@/lib/sanity/dailySeed";
@@ -72,11 +73,9 @@ export async function fetchMiniSchools(params: {
     return { schools: [] };
   }
 
-  const cards = await sanityFetch<MiniSchool[]>(
-    schoolCardsByIdQuery,
-    { ids },
-    ["schools"],
-  );
+  const cards = await sanityFetch<MiniSchool[]>(schoolCardsByIdQuery, { ids }, [
+    "schools",
+  ]);
 
   const byId = new Map(cards.map((school) => [school.id, school]));
 
@@ -94,7 +93,10 @@ export const schoolBySlugQuery = groq`{
       ${imageUrl("logo")},
       name,
       metaDescription,
+      shortSummary,
       "slug": slug.current,
+      "updatedAt": _updatedAt,
+      ${translationSlugs},
       website{ ${linkFields} },
       "primaryImages": primaryImages[].asset->url,
       "primaryImage": select(defined(primaryImages[0].asset) => primaryImages[0].asset->url, null),

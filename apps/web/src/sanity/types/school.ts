@@ -8,6 +8,7 @@ import {
   SanityRichTextField,
 } from "@/sanity/types";
 import { SanityLinkField } from "@/components/ui/link/parser";
+import type { TranslationPath } from "@/sanity/queries/seo";
 
 export interface MiniSchool {
   id: string;
@@ -86,4 +87,9 @@ export interface School {
   gallery?: SanityImageField[];
   notes?: string | null;
   metaDescription?: string;
+  shortSummary?: string;
+  /** `_updatedAt`, used as the sitemap's `lastModified`. */
+  updatedAt?: string;
+  /** The other locale's version, from `translation.metadata`. */
+  translations?: TranslationPath[] | null;
 }

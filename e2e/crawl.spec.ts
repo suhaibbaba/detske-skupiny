@@ -24,7 +24,9 @@ interface PageIssue {
     | "h1"
     | "img-alt"
     | "lang"
-    | "title";
+    | "title"
+    | "canonical"
+    | "jsonld";
   detail: string;
 }
 
@@ -88,7 +90,9 @@ test.describe("full-site crawl", () => {
       const consoleErrors: string[] = [];
       const pageErrors: string[] = [];
 
-      const onConsole = (message: import("@playwright/test").ConsoleMessage) => {
+      const onConsole = (
+        message: import("@playwright/test").ConsoleMessage,
+      ) => {
         if (message.type() !== "error") return;
         if (isAllowedConsoleMessage(message.text())) return;
         consoleErrors.push(message.text());
@@ -103,15 +107,24 @@ test.describe("full-site crawl", () => {
 
       const startedAt = Date.now();
       let status = 0;
+      let isHtml = true;
 
       try {
-        const response = await page.goto(url, { waitUntil: "domcontentloaded" });
+        const response = await page.goto(url, {
+          waitUntil: "domcontentloaded",
+        });
         status = response?.status() ?? 0;
-        await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(
-          () => {
+        // The site links to a PDF in public/. Everything below asks about an
+        // HTML document - a heading, a lang attribute, a canonical - and an
+        // asset has none of them by definition, so judging one as a page just
+        // manufactures issues nobody can fix.
+        const contentType = response?.headers()["content-type"] ?? "";
+        isHtml = contentType.includes("html");
+        await page
+          .waitForLoadState("networkidle", { timeout: 15_000 })
+          .catch(() => {
             /* networkidle is best-effort; the map keeps sockets open */
-          },
-        );
+          });
       } catch (error) {
         issues.push({
           type: "status",
@@ -129,7 +142,7 @@ test.describe("full-site crawl", () => {
         });
       }
 
-      if (status > 0 && status < 400) {
+      if (status > 0 && status < 400 && isHtml) {
         const h1Count = await page.locator("h1").count();
         if (h1Count !== 1) {
           issues.push({ type: "h1", detail: `${h1Count} h1 elements` });
@@ -160,6 +173,65 @@ test.describe("full-site crawl", () => {
           issues.push({ type: "title", detail: "empty <title>" });
         }
 
+        /*
+         * Every page has to name itself.
+         *
+         * A missing canonical is the failure mode this crawl is best placed to
+         * catch: the catalog produces an unbounded number of URLs that differ
+         * only by query string, and one route forgetting its canonical is
+         * enough to have all of them indexed separately. Being absolute is
+         * part of the check because the site is served from two domains, and a
+         * relative canonical resolves against whichever one served the page.
+         */
+        const canonicals = await page.$$eval('link[rel="canonical"]', (links) =>
+          links.map((link) => link.getAttribute("href") ?? ""),
+        );
+
+        if (canonicals.length === 0) {
+          issues.push({ type: "canonical", detail: "no canonical link" });
+        } else if (canonicals.length > 1) {
+          issues.push({
+            type: "canonical",
+            detail: `${canonicals.length} canonical links: ${canonicals.join(", ")}`,
+          });
+        } else if (!/^https?:\/\//.test(canonicals[0])) {
+          issues.push({
+            type: "canonical",
+            detail: `canonical is not absolute: ${canonicals[0]}`,
+          });
+        }
+
+        /*
+         * Structured data is optional, but broken structured data is worse
+         * than none: a block that does not parse is discarded silently by
+         * every consumer, so nothing downstream would ever report it. The
+         * payloads are built from editor-entered content, which is exactly the
+         * kind of input that breaks JSON.
+         */
+        const jsonLdBlocks = await page.$$eval(
+          'script[type="application/ld+json"]',
+          (scripts) => scripts.map((script) => script.textContent ?? ""),
+        );
+
+        for (const [index, block] of jsonLdBlocks.entries()) {
+          try {
+            const parsed = JSON.parse(block);
+            if (!parsed || typeof parsed !== "object") {
+              issues.push({
+                type: "jsonld",
+                detail: `ld+json block ${index} is not an object`,
+              });
+            }
+          } catch (error) {
+            issues.push({
+              type: "jsonld",
+              detail: `ld+json block ${index} is not valid JSON: ${
+                (error as Error).message
+              }`,
+            });
+          }
+        }
+
         // Collect links before detaching the listeners.
         if (depth < MAX_DEPTH) {
           const hrefs = await page.$$eval("a[href]", (anchors) =>
@@ -187,8 +259,10 @@ test.describe("full-site crawl", () => {
       page.off("console", onConsole);
       page.off("pageerror", onPageError);
 
-      for (const detail of consoleErrors) issues.push({ type: "console", detail });
-      for (const detail of pageErrors) issues.push({ type: "pageerror", detail });
+      for (const detail of consoleErrors)
+        issues.push({ type: "console", detail });
+      for (const detail of pageErrors)
+        issues.push({ type: "pageerror", detail });
 
       visited.push({
         url,
@@ -323,7 +397,9 @@ ${
 
     const hardFailures = pagesWithIssues.flatMap((entry) =>
       entry.issues
-        .filter((issue) => issue.type === "console" || issue.type === "pageerror")
+        .filter(
+          (issue) => issue.type === "console" || issue.type === "pageerror",
+        )
         .map((issue) => `${entry.url}: [${issue.type}] ${issue.detail}`),
     );
 
@@ -334,7 +410,9 @@ ${
 
     const contentFailures = pagesWithIssues.flatMap((entry) =>
       entry.issues
-        .filter((issue) => issue.type !== "console" && issue.type !== "pageerror")
+        .filter(
+          (issue) => issue.type !== "console" && issue.type !== "pageerror",
+        )
         .map((issue) => `${entry.url}: [${issue.type}] ${issue.detail}`),
     );
 

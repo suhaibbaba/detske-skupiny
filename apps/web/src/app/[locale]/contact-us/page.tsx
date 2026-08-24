@@ -9,6 +9,8 @@ import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { staticRoutePaths } from "@/lib/seo/routes";
 
 interface ContactUsStyles {
   pageLayout?: PageLayoutStyles;
@@ -68,15 +70,22 @@ const styles: ContactUsStyles = {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
   const { locale } = await params;
   setRequestLocale(locale);
   const translate = await getTranslateServer();
   const { pageHero } = await fetchContactUs(locale);
 
-  return {
+  return buildPageMetadata({
+    locale,
+    paths: staticRoutePaths("contactUs"),
     title: pageHero?.title || translate("contact-us"),
-    description: pageHero?.description || "",
-  };
+    description: pageHero?.description,
+  });
 }
 
 const Page = async ({ params }: PageProps) => {

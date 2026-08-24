@@ -1,4 +1,5 @@
 import { SanityRichTextField } from "@/sanity/types";
+import type { TranslationPath } from "@/sanity/queries/seo";
 
 export type Blog = {
   id: string;
@@ -10,6 +11,10 @@ export type Blog = {
   image?: string;
   readTime?: number;
   publishedAt?: string;
+  /** `_updatedAt`, used as the article's `dateModified`. */
+  updatedAt?: string;
+  /** The other locale's version, from `translation.metadata`. */
+  translations?: TranslationPath[] | null;
   categories?: BlogCategory[];
   author?: Author;
 };

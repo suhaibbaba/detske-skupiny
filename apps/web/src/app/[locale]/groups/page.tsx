@@ -9,6 +9,8 @@ import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { staticRoutePaths } from "@/lib/seo/routes";
 
 interface GroupsStyles {
   container?: BoxProps;
@@ -28,11 +30,25 @@ const styles: GroupsStyles = {
   },
 };
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
+  const { locale } = await params;
+  setRequestLocale(locale);
   const translate = await getTranslateServer();
-  return {
-    title: translate("groups"),
-  };
+  const { content } = await fetchGroupPage(locale);
+
+  return buildPageMetadata({
+    locale,
+    paths: staticRoutePaths("groups"),
+    title: content?.title || translate("groups"),
+    description: content?.description,
+  });
 }
 
 const Page = async ({ params }: PageProps) => {

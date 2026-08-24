@@ -32,9 +32,11 @@ import { Props as FilterSidebarProps } from "@/app/[locale]/catalog/[...slug]/co
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslateServer } from "@/hooks/useTranslate";
-import { fetchBreadcrumbList } from "@/sanity/queries/breadcrumb";
 import { getLocalizedRoutes } from "@/routes";
 import { setRequestLocale } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { documentPaths } from "@/lib/seo/routes";
+import { fetchCatalogNode } from "@/sanity/queries/seo";
 
 type Props = PageProps<
   { slug: string[] },
@@ -85,28 +87,64 @@ const styles: GroupsPageStyles = {
   },
 };
 
+/**
+ * The catalog's metadata, with one canonical per location.
+ *
+ * `searchParams` is not read: the filters, the search term and the page number
+ * are all query state over the same set of schools, so `/katalog/praha`,
+ * `/katalog/praha?categories=x` and `/katalog/praha?page=3` are one page as far
+ * as a search engine is concerned. Every one of them names the bare location
+ * URL as its canonical, which is what stops a combinatorial explosion of
+ * filter permutations from being indexed as separate near-duplicates.
+ *
+ * The location itself comes from the path, and `fetchCatalogNode` resolves it
+ * to the geography document behind it - which is also where the counterpart
+ * locale's path comes from, since an area's English URL is a different chain
+ * of slugs, not a translation of this one.
+ */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
   const { slug, locale } = await params;
   setRequestLocale(locale);
   const translate = await getTranslateServer();
 
-  const lastSegment = slug[slug.length - 1];
-  if (!lastSegment) {
-    return {
+  const catalog = parseCatalogSlug(slug);
+  const leaf = slug[slug.length - 1];
+  const node =
+    catalog && leaf
+      ? await fetchCatalogNode({ level: catalog.level, slug: leaf, locale })
+      : null;
+
+  // The canonical is always this URL's own path, never the node's recomposed
+  // one - a page has to name the address it was reached at.
+  const paths = documentPaths(
+    locale,
+    slug.join("/"),
+    node?.translations,
+    (target, path) => getLocalizedRoutes(target).catalogs(path),
+  );
+
+  if (!node?.name) {
+    return buildPageMetadata({
+      locale,
+      paths,
       title: translate("catalog"),
       description: translate("catalogMetaDescription"),
-    };
+    });
   }
-  const pages = await fetchBreadcrumbList({ slugs: [lastSegment] });
-  return {
-    title: pages.length > 0 ? pages[0].name : translate("catalog"),
-    description:
-      pages.length > 0
-        ? translate("catalogLocationMetaDescription", {
-            location: pages[0].name,
-          })
-        : translate("catalogMetaDescription"),
-  };
+
+  return buildPageMetadata({
+    locale,
+    paths,
+    title: node.name,
+    description: translate("catalogLocationMetaDescription", {
+      location: node.name,
+    }),
+  });
 }
 
 /**

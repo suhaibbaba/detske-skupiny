@@ -39,6 +39,14 @@ import MapIcon from "@mui/icons-material/Map";
 import Offer from "./components/Offer";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
+import JsonLd from "@/components/seo/JsonLd";
+import { schoolJsonLd } from "@/lib/seo/jsonLd";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { documentPaths } from "@/lib/seo/routes";
+import { absoluteUrl } from "@/lib/seo/site";
+import { resolveOgImage } from "@/lib/seo/images";
+import type { School } from "@/sanity/types";
+import { parseLinkField } from "@/components/ui/link/parser";
 
 interface PageStyles {
   pageLayout?: PageLayoutStyles;
@@ -147,9 +155,41 @@ const styles: PageStyles = {
   },
 };
 
+const schoolPaths = (locale: string, school: School) =>
+  documentPaths(locale, school.slug, school.translations, (target, slug) =>
+    getLocalizedRoutes(target).group(slug),
+  );
+
+/**
+ * The description a school page shares, best available first.
+ *
+ * `metaDescription` is the field the query has always asked for, and is kept
+ * first so an editor-written description wins the moment the schema gains one
+ * (it does not have one today - see the recommendations in the PR). Otherwise
+ * the short summary, which is written for exactly this, and finally the name
+ * and the district, which every school has.
+ */
+function schoolDescription(school: School) {
+  const area = school.area?.name ?? school.region?.name;
+
+  return (
+    school.metaDescription?.trim() ||
+    school.shortSummary?.trim() ||
+    // Name and district: the pair reads correctly in both locales without a
+    // dictionary key, which matters because a missing key would render its own
+    // name into the description.
+    (area ? `${school.name}, ${area}` : school.name)
+  );
+}
+
 export async function generateMetadata({
   params,
 }: PageProps<{ group: string }>): Promise<Metadata> {
+  // Metadata is a pure function of the route and the published content, so it
+  // is cached rather than computed per request - without this, Cache
+  // Components treats the Sanity reads below as runtime data and refuses to
+  // prerender the route's head. Same reason as the layout's.
+  "use cache";
   const { group: groupSlug, locale } = await params;
   setRequestLocale(locale);
   const translate = await getTranslateServer();
@@ -160,15 +200,16 @@ export async function generateMetadata({
   });
 
   if (!school) {
-    return {
-      title: translate("groups"),
-    };
+    return { title: translate("groups") };
   }
 
-  return {
+  return buildPageMetadata({
+    locale,
+    paths: schoolPaths(locale, school),
     title: school.name,
-    ...(school.metaDescription && { description: school.metaDescription }),
-  };
+    description: schoolDescription(school),
+    images: [school.primaryImage, school.logo],
+  });
 }
 
 /**
@@ -192,8 +233,31 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
     notFound();
   }
 
+  const paths = schoolPaths(locale, school);
+  // The first contact that carries each; a school lists people, not one
+  // switchboard, so this is the number and address a visitor would actually
+  // use. Absent ones are dropped by the builder rather than emitted empty.
+  const telephone = school.contacts?.find((contact) => contact.phone)?.phone;
+  const email = school.contacts?.find((contact) => contact.email)?.email;
+  // `sameAs` is for other pages about the same entity, which is exactly what a
+  // school's own website is. Only a link that parsed into a real URL qualifies.
+  const website = parseLinkField(school.website, { locale });
+
   return (
     <Box {...styles.pageContainer}>
+      <JsonLd
+        data={schoolJsonLd({
+          name: school.name,
+          url: absoluteUrl(locale, paths[locale]!),
+          description: schoolDescription(school),
+          image: resolveOgImage(locale, school.primaryImage, school.logo),
+          address: school.address,
+          regionName: school.region?.name,
+          telephone,
+          email,
+          sameAs: website.valid ? website.url : undefined,
+        })}
+      />
       <PageLayout
         contentFullWidth={false}
         extendedStyles={styles.pageLayout}
@@ -219,7 +283,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                 label={category.name}
                 href={getLocalizedRoutes(locale).catalogs(
                   school.region.countrySlug,
-                  `categories=${category.slug}`
+                  `categories=${category.slug}`,
                 )}
                 variant="outlined"
                 color="primary"
@@ -263,7 +327,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                         {formatMessage(
                           "{0}, {1}",
                           school.address?.street,
-                          school.address?.city
+                          school.address?.city,
                         )}
                       </Typography>
                       <Typography>{school.address?.postalCode}</Typography>
@@ -322,7 +386,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                               linkText
                             ),
                             item.name,
-                            item.role
+                            item.role,
                           )}
                         </Typography>
                       );

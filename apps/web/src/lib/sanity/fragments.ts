@@ -248,3 +248,56 @@ export const sectionLinkFields = groq`
     cta{ ${ctaFields} }
   }
 `;
+
+/**
+ * The catalog path of a geography document, chosen by its own `_type`.
+ *
+ * `regionPath` and friends above are each written for one projection; this is
+ * the same composition where the type is not known until the document is read
+ * - the translation pairing below projects whatever document the metadata
+ * points at, which may be a country, a region, an area or a subarea.
+ *
+ * Countries get a leading slash here, unlike the bare `slug.current` the
+ * per-type fragments return for them, so every value this produces is a
+ * path. `getLocalizedRoutes(...).catalogs` strips it again when it joins.
+ */
+export const catalogPathBySelfType = groq`select(
+  _type == "countries" => "/" + slug.current,
+  _type == "regions" => ${regionPath},
+  _type == "areas" => ${areaPath},
+  _type == "subareas" => ${subareaPath}
+)`;
+
+/**
+ * The other locale's version of the document being projected.
+ *
+ * @sanity/document-internationalization does not store a pointer on the
+ * documents themselves - it keeps a separate `translation.metadata` document
+ * whose `translations` array holds one reference per language, keyed by the
+ * language id. So the only way from a document to its counterpart is to find
+ * the metadata document that references it and read the array back out. That
+ * is what `references(^._id)` does here.
+ *
+ * `value` is the reference; `pathExpression` is evaluated inside a projection
+ * of the document it points at, which is why the caller supplies it - a school
+ * needs `slug.current`, a region needs its whole composed chain.
+ *
+ * The array includes this document's own language too. Callers key by
+ * `locale`, so the self-entry is simply the entry for the locale they are
+ * already on, and pairing stays correct whichever direction it is read from.
+ */
+export const translationPaths = (
+  pathExpression: string,
+) => groq`"translations": *[
+    _type == "translation.metadata" &&
+    references(^._id)
+  ][0].translations[]{
+    "locale": _key,
+    "path": value->{ "resolved": ${pathExpression} }.resolved
+  }`;
+
+/** `translationPaths` for any document whose path is just its slug. */
+export const translationSlugs = translationPaths(groq`slug.current`);
+
+/** `translationPaths` for the geography documents behind catalog pages. */
+export const translationCatalogPaths = translationPaths(catalogPathBySelfType);

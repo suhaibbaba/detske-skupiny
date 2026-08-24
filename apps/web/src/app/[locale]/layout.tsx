@@ -10,9 +10,9 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import IntlErrorHandlingProvider from "@/i18n/IntlErrorHandlingProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { DefaultImageProvider } from "@/providers/DefaultImageProvider";
-import { getTranslateServer } from "@/hooks/useTranslate";
 import { locales } from "@/i18n/routing";
 import { PageProps } from "@/types";
+import { ogLocale, siteContext } from "@/lib/seo/metadata";
 import Script from "next/script";
 
 /**
@@ -25,20 +25,37 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/**
+ * The metadata every route inherits.
+ *
+ * Only the parts that are the same on every page live here - the title
+ * template, the site-wide description, and the Open Graph and Twitter defaults
+ * that would otherwise be repeated eight times. Each page supplies its own
+ * canonical, hreflang pair and share card on top; see lib/seo/metadata.ts.
+ *
+ * Every URL below and on the pages is absolute rather than resolved through
+ * `metadataBase` - see the note in lib/seo/metadata.ts for why there is none.
+ */
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   "use cache";
   const { locale } = await params;
   setRequestLocale(locale);
-  const translate = await getTranslateServer();
+  const { siteName, translate } = await siteContext(locale);
 
   return {
     title: {
-      template: `%s | ${translate("metaTitle")}`,
-      default: translate("metaTitle"),
+      template: `%s | ${siteName}`,
+      default: siteName,
     },
     description: translate("metaDescription"),
+    openGraph: {
+      type: "website",
+      siteName,
+      locale: ogLocale(locale),
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
