@@ -269,6 +269,32 @@ export const components: ThemeOptions["components"] = {
       },
     },
   },
+  /**
+   * Skeletons: wave by default, still under `prefers-reduced-motion`.
+   *
+   * MUI does not check the media query itself - `Skeleton.js` has one
+   * `animation: 'none'` branch and it is for `animation={false}` - so a
+   * visitor who has asked their system to stop moving things gets a shimmer
+   * across every placeholder on the page unless this is here.
+   *
+   * `animation: "wave"` as a default prop rather than a prop on each skeleton,
+   * so the four placeholder components cannot drift apart on it.
+   */
+  MuiSkeleton: {
+    defaultProps: {
+      animation: "wave",
+    },
+    styleOverrides: {
+      root: {
+        "@media (prefers-reduced-motion: reduce)": {
+          "&::after": {
+            animation: "none",
+          },
+          animation: "none",
+        },
+      },
+    },
+  },
   MuiTypography: {
     // `defaultProps: { fontFamily }` used to sit here. MUI dropped system
     // props from Typography, so it was no longer a style - it was an unknown

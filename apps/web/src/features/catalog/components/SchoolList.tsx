@@ -17,6 +17,7 @@ import {
   type LoadMoreInput,
 } from "@/features/catalog/searchParams";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { SCHOOL_GRID } from "@/components/ui/skeleton/geometry";
 
 interface Props {
   /**
@@ -43,14 +44,8 @@ const styles = {
   },
   listContainer: {
     display: "grid",
-    gridTemplateColumns: {
-      xs: "repeat(auto-fit, minmax(232px, 1fr))",
-      md: "repeat(auto-fit, minmax(232px, 280px))",
-    },
-    gap: {
-      xs: "20px",
-      md: "24px",
-    },
+    gridTemplateColumns: SCHOOL_GRID.templateColumns,
+    gap: SCHOOL_GRID.gap,
   },
   loadingContainer: {
     width: "100%",
@@ -141,6 +136,7 @@ const SchoolList: FC<Props> = ({
         filterProps={filterProps}
       />
       <Box
+        data-test-selector="SchoolGrid"
         aria-busy={isPending}
         data-pending={isPending ? "true" : undefined}
         sx={{

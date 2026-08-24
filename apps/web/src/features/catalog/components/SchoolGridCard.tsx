@@ -14,6 +14,7 @@ import SchoolTypesBadge from "@/features/catalog/components/TypeBadge";
 import { useLocale } from "next-intl";
 import Link from "@/components/ui/link/Link";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { SCHOOL_CARD } from "@/components/ui/skeleton/geometry";
 
 interface Props {
   school: MiniSchool;
@@ -22,15 +23,15 @@ interface Props {
 const styles = {
   card: (theme) => ({
     border: `1px solid ${theme.palette.custom.divider}`,
-    borderRadius: "24px",
+    borderRadius: SCHOOL_CARD.radius,
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     textAlign: "left",
-    p: "20px",
+    p: SCHOOL_CARD.padding,
     width: "100%",
-    gap: "13px",
-    maxWidth: { md: "280px" },
+    gap: SCHOOL_CARD.gap,
+    maxWidth: { md: `${SCHOOL_CARD.maxWidth}px` },
     m: {
       xs: "0 auto",
       sm: "0",
@@ -42,10 +43,10 @@ const styles = {
   },
   image: {
     width: "100%",
-    height: "158px",
+    height: SCHOOL_CARD.imageHeight,
     objectFit: "cover",
     display: "block",
-    borderRadius: "12px",
+    borderRadius: SCHOOL_CARD.imageRadius,
   },
   defaultImageWrapper: {
     display: "flex",
@@ -53,8 +54,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     bgcolor: "custom.divider",
-    height: "158px",
-    borderRadius: "12px",
+    height: SCHOOL_CARD.imageHeight,
+    borderRadius: SCHOOL_CARD.imageRadius,
   },
   defaultImage: {
     width: "80px",
@@ -64,8 +65,8 @@ const styles = {
   logo: {
     width: "100%",
     height: "100%",
-    maxWidth: "30px",
-    maxHeight: "30px",
+    maxWidth: SCHOOL_CARD.logoSize,
+    maxHeight: SCHOOL_CARD.logoSize,
     mt: "4px",
   },
   nameWrapper: {
@@ -77,24 +78,28 @@ const styles = {
     color: "custom.textHeading",
     fontWeight: 900,
     fontSize: "18px",
-    minHeight: "54px",
+    minHeight: SCHOOL_CARD.nameMinHeight,
   },
   tagsWrapper: {
     display: "flex",
-    gap: "5px",
+    gap: SCHOOL_CARD.tagGap,
+    // Reserved so a school with no tags does not collapse the row and start
+    // everything below it 24px higher than the card beside it. See the note
+    // on `tagRowMinHeight`.
+    minHeight: SCHOOL_CARD.tagRowMinHeight,
   },
   location: {
     display: "flex",
     alignItems: "center",
     gap: "6px",
     color: "custom.textHeading",
-    mb: "13px",
+    mb: SCHOOL_CARD.locationMarginBottom,
   },
   description: {
-    minHeight: "100px",
+    minHeight: SCHOOL_CARD.descriptionMinHeight,
   },
   cta: (theme) => ({
-    mt: "13px",
+    mt: SCHOOL_CARD.ctaMarginTop,
     py: "8px",
     fontSize: "14px",
     width: "100%",
@@ -153,7 +158,11 @@ const SchoolGridCard = ({ school }: Props) => {
       <Box sx={{ mt: "auto", width: "100%" }}>
         <Typography sx={styles.location}>
           <Location
-            sx={{ width: "16px", height: "20px", color: "secondary.dark" }}
+            sx={{
+              width: "16px",
+              height: SCHOOL_CARD.locationHeight,
+              color: "secondary.dark",
+            }}
           />
           {area?.name || region?.name}
         </Typography>

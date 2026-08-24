@@ -31,7 +31,7 @@ const SchoolsMap = ({ markers }: Props) => {
   }
 
   return (
-    <Box sx={styles.mapWrapper}>
+    <Box sx={styles.mapWrapper} data-test-selector="SchoolsMap">
       <MapComponent
         defaultCenter={placed[0].coordinate}
         markers={placed}

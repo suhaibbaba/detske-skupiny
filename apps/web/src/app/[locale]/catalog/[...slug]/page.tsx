@@ -29,6 +29,7 @@ import { setRequestLocale } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { documentPaths } from "@/lib/seo/routes";
 import { fetchCatalogNode } from "@/lib/sanity/seo";
+import CatalogListSkeleton from "@/features/catalog/components/CatalogListSkeleton";
 
 type Props = PageProps<
   { slug: string[] },
@@ -53,12 +54,6 @@ const styles = {
     },
     columnGap: "60px",
     mt: { xs: "40px", md: "80px" },
-  },
-  loadingBox: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    py: 4,
   },
 } satisfies Record<string, SxProps<Theme>>;
 
@@ -206,14 +201,14 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
               filterContent={filterContent}
             />
           </Box>
-          {/* The hero and the filters stream immediately; only the list waits. */}
-          <Suspense
-            fallback={
-              <Box sx={styles.loadingBox}>
-                <CircularProgress />
-              </Box>
-            }
-          >
+          {/*
+           * The hero and the filters stream immediately; only the list waits.
+           *
+           * The fallback is the grid's own shape rather than a centred
+           * spinner, which reserved none of the height the cards were about
+           * to take.
+           */}
+          <Suspense fallback={<CatalogListSkeleton />}>
             <SchoolListAsync
               listPromise={listPromise}
               markersPromise={markersPromise}
