@@ -1,12 +1,10 @@
 import React, { FC } from "react";
-import { Box, BoxProps, TypographyProps } from "@mui/material";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import PageHeadingTypography, {
-  PageHeadingTypographyStyles,
-} from "@/components/ui/PageHeadingTypography";
+import { Box } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import PageLayout from "@/components/layout/PageLayout";
+import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import { autoClamp } from "@/utils/strings";
 import { SanityCtaField, SanityImageField, SanityRichTextField } from "@/types";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
 import Image from "@/components/ui/image";
 
 interface Props {
@@ -18,100 +16,55 @@ interface Props {
   };
 }
 
-interface HeroSectionStyles {
-  pageLayout?: PageLayoutStyles;
-  contentWrapper?: BoxProps;
-  pageHeadingStyles?: PageHeadingTypographyStyles;
-  subtitle?: TypographyProps;
-  imageWrapper?: BoxProps;
-}
-
-const styles: HeroSectionStyles = {
+const styles = {
   pageLayout: {
-    section: {
-      sx: {
-        bgcolor: "secondary.main",
-        pt: "60px",
-        pb: {
-          xs: "75px",
-          sm: "120px",
-        },
-      },
-    },
+    bgcolor: "secondary.main",
+    pt: "60px",
+    pb: { xs: "75px", sm: "120px" },
   },
   contentWrapper: {
-    sx: {
-      display: "flex",
-      flexDirection: {
-        xs: "column",
-        sm: "row",
-      },
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 3,
-    },
-  },
-  pageHeadingStyles: {
-    container: {
-      sx: {
-        maxWidth: {
-          xs: "100%",
-          md: "540px",
-        },
-        alignItems: "flex-start",
-      },
-    },
-    title: {
-      sx: {
-        fontSize: autoClamp({
-          desktop: 44,
-          tablet: 40,
-          mobile: 36,
-        }),
-        textAlign: "left",
-        span: {
-          fontWeight: "inherit",
-        },
-      },
-    },
-    description: {
-      sx: {
-        textAlign: "left",
-      },
-    },
-    cta: {
-      sx: {
-        p: "14px 26px",
-      },
-    },
-  },
-  subtitle: {
-    variant: "inherit",
-    component: "span",
+    display: "flex",
+    flexDirection: { xs: "column", sm: "row" },
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 3,
   },
   imageWrapper: {
-    sx: {
-      maxWidth: 404,
-      maxHeight: 460,
-    },
+    maxWidth: 404,
+    maxHeight: 460,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
+
+/** The hero's overrides for the shared heading block, slot by slot. */
+const headingSx = {
+  container: {
+    maxWidth: { xs: "100%", md: "540px" },
+    alignItems: "flex-start",
+  },
+  title: {
+    fontSize: autoClamp({ desktop: 44, tablet: 40, mobile: 36 }),
+    textAlign: "left",
+    span: { fontWeight: "inherit" },
+  },
+  description: { textAlign: "left" },
+  cta: { p: "14px 26px" },
+} satisfies Record<string, SxProps<Theme>>;
 
 const HeroSection: FC<Props> = ({ fields }: Props) => {
   return (
     <PageLayout
       contentFullWidth={false}
       showBreadcrumb={false}
-      extendedStyles={styles.pageLayout}
+      sx={styles.pageLayout}
     >
-      <Box {...styles.contentWrapper}>
+      <Box sx={styles.contentWrapper}>
         <PageHeadingTypography
           title={fields?.title}
           description={fields?.description}
           ctaList={fields?.ctas}
-          extendedStyles={styles.pageHeadingStyles}
+          sx={headingSx}
         />
-        <Box {...styles.imageWrapper}>
+        <Box sx={styles.imageWrapper}>
           {/*
            * The hero image is the home page's LCP element. `priority` drops
            * the lazy attribute and adds a preload, so it starts downloading

@@ -1,11 +1,6 @@
-import {
-  Box,
-  BoxProps,
-  CircularProgress,
-  Container,
-  ContainerProps,
-} from "@mui/material";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, CircularProgress, Container } from "@mui/material";
+import PageLayout from "@/components/layout/PageLayout";
 import FilterSidebar from "@/features/catalog/components/filters/FilterSidebar";
 import { PageProps } from "@/types";
 import { getSelectedSlug, parseCatalogSlug } from "@/features/catalog/utils";
@@ -40,49 +35,32 @@ type Props = PageProps<
   Record<string, string | string[] | undefined>
 >;
 
-interface GroupsPageStyles {
-  pageLayout?: PageLayoutStyles;
-  pageContainer?: BoxProps;
-  container?: ContainerProps;
-  loadingBox?: BoxProps;
-}
-
-const styles: GroupsPageStyles = {
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui3)",
-      },
-    },
-  },
+const styles = {
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageCreamToLilac,
+  }),
   pageContainer: {
-    sx: {
-      pb: {
-        xs: "100px",
-        sm: "164px",
-      },
+    pb: {
+      xs: "100px",
+      sm: "164px",
     },
   },
   container: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        md: "300px 1fr",
-      },
-      columnGap: "60px",
-      mt: { xs: "40px", md: "80px" },
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      md: "300px 1fr",
     },
+    columnGap: "60px",
+    mt: { xs: "40px", md: "80px" },
   },
   loadingBox: {
-    sx: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      py: 4,
-    },
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    py: 4,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 /**
  * The catalog's metadata, with one canonical per location.
@@ -207,10 +185,10 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
   const filterProps = { catalog, selectedSlug, filterContent };
 
   return (
-    <Box {...styles.pageContainer}>
+    <Box sx={styles.pageContainer}>
       <PageLayout
         contentFullWidth={false}
-        extendedStyles={styles.pageLayout}
+        sx={styles.pageLayout}
         pathname={getLocalizedRoutes(locale).catalogs(slug.join("/"))}
       >
         <PageHeadingTypography
@@ -220,7 +198,7 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
         />
       </PageLayout>
       <CatalogTransitionProvider>
-        <Container {...styles.container}>
+        <Container sx={styles.container}>
           <Box sx={{ display: { xs: "none", md: "block" } }}>
             <FilterSidebar
               catalog={catalog}
@@ -231,7 +209,7 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
           {/* The hero and the filters stream immediately; only the list waits. */}
           <Suspense
             fallback={
-              <Box {...styles.loadingBox}>
+              <Box sx={styles.loadingBox}>
                 <CircularProgress />
               </Box>
             }

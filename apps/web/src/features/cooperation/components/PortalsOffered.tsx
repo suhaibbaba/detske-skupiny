@@ -1,3 +1,4 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import {
   Box,
   Container,
@@ -6,17 +7,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  BoxProps,
-  TypographyOwnProps,
-  ButtonProps,
-  ListProps,
-  ListItemProps,
-  ListItemIconProps,
-  ListItemTextProps,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { SanityCtaField, SanityImageField } from "@/types";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import Image, { type ImageProps } from "@/components/ui/image";
@@ -35,150 +29,106 @@ interface Props {
   locale?: string;
 }
 
-interface PortalsOfferedStyles {
-  container?: BoxProps;
-  innerBox?: BoxProps;
-  textBox?: BoxProps;
-  heading?: TypographyOwnProps;
-  description?: TypographyOwnProps;
-  list?: ListProps;
-  listItem?: ListItemProps;
-  listItemIcon?: ListItemIconProps;
-  listItemText?: ListItemTextProps;
-  button?: ButtonProps;
-  imageWrapper?: BoxProps;
-  image?: ImageProps;
-}
-
-const styles: PortalsOfferedStyles = {
+const styles = {
   container: {
-    sx: {
-      background: "var(--mui-palette-custom-ui7)",
-      pt: "100px",
-      pb: {
-        xs: "80px",
-        sm: "120px",
-      },
+    background: "custom.surfaceCream",
+    pt: "100px",
+    pb: {
+      xs: "80px",
+      sm: "120px",
     },
   },
   innerBox: {
-    sx: {
-      display: "flex",
-      flexDirection: {
-        xs: "column",
-        sm: "row",
-      },
-      justifyContent: "space-between",
-      alignItems: {
-        xs: "flex-start",
-        sm: "center",
-      },
-      gap: "60px",
+    display: "flex",
+    flexDirection: {
+      xs: "column",
+      sm: "row",
     },
+    justifyContent: "space-between",
+    alignItems: {
+      xs: "flex-start",
+      sm: "center",
+    },
+    gap: "60px",
   },
   textBox: {
-    sx: {
-      maxWidth: "468px",
-    },
+    maxWidth: "468px",
   },
-  heading: {
-    variant: "h1",
-    sx: { mb: "12px" },
-  },
-  description: {
-    sx: { mb: "12px" },
-  },
+  heading: { mb: "12px" },
+  description: { mb: "12px" },
   list: {
-    disablePadding: true,
-    sx: {
-      mb: "32px",
-    },
+    mb: "32px",
   },
   listItem: {
-    disableGutters: true,
-    sx: {
-      display: "flex",
-      alignItems: "flex-start",
-      gap: "12px",
-    },
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "12px",
   },
   listItemIcon: {
-    sx: {
-      minWidth: "auto",
-      color: "var(--mui-palette-custom-ui6)",
-    },
+    minWidth: "auto",
+    color: "custom.star",
   },
   listItemText: {
-    sx: {
-      my: 0,
-    },
+    my: 0,
   },
-  button: {
-    variant: "contained",
-  },
+  button: {},
   imageWrapper: {
-    sx: {
-      width: {
-        xs: "320px",
-        sm: "534px",
-      },
-      height: {
-        xs: "320px",
-        sm: "534px",
-      },
-      alignSelf: {
-        xs: "center",
-        sm: "initial",
-      },
-      borderRadius: "50%",
-      overflow: "hidden",
-      flexShrink: 0,
+    width: {
+      xs: "320px",
+      sm: "534px",
     },
+    height: {
+      xs: "320px",
+      sm: "534px",
+    },
+    alignSelf: {
+      xs: "center",
+      sm: "initial",
+    },
+    borderRadius: "50%",
+    overflow: "hidden",
+    flexShrink: 0,
   },
   image: {
-    sx: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const PortalsOffered = ({ fields, locale }: Props) => {
   const link = parseLinkField(fields.cta?.link, { locale });
 
   return (
-    <Box {...styles.container}>
+    <Box sx={styles.container}>
       <Container>
-        <Box {...styles.innerBox}>
-          <Box {...styles.textBox}>
-            <Typography {...styles.heading}>{fields.heading}</Typography>
-            <Typography {...styles.description}>
+        <Box sx={styles.innerBox}>
+          <Box sx={styles.textBox}>
+            <Typography sx={styles.heading} variant="h1">
+              {fields.heading}
+            </Typography>
+            <Typography sx={styles.description}>
               {fields.description}
             </Typography>
-            <List {...styles.list}>
+            <List sx={styles.list} disablePadding>
               {fields.portals?.map((item) => (
-                <ListItem key={item._key} {...styles.listItem}>
-                  <ListItemIcon {...styles.listItemIcon}>
+                <ListItem key={item._key} sx={styles.listItem} disableGutters>
+                  <ListItemIcon sx={styles.listItemIcon}>
                     <StarIcon />
                   </ListItemIcon>
-                  <ListItemText {...styles.listItemText} primary={item.title} />
+                  <ListItemText sx={styles.listItemText} primary={item.title} />
                 </ListItem>
               ))}
             </List>
             {fields.cta && (
-              <Button
-                {...styles.button}
-                variant={fields.cta.variant}
-                href={link.url}
-              >
+              <Button variant={fields.cta.variant} href={link.url}>
                 {link.text}
               </Button>
             )}
           </Box>
-          <Box {...styles.imageWrapper}>
+          <Box sx={styles.imageWrapper}>
             <Image
-              {...styles.image}
+              sx={styles.image}
               src={fields.image}
               alt={fields.heading}
               sizes="(max-width: 900px) 100vw, 50vw"

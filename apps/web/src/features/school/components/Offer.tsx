@@ -14,7 +14,7 @@ const Offer: FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        bgcolor: "custom.ui7",
+        bgcolor: "custom.surfaceCream",
         borderRadius: "12px",
         py: "40px",
         px: "16px",

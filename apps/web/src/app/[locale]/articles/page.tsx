@@ -1,7 +1,8 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import { fetchBlogPage } from "@/features/blog/queries";
 import { PageProps } from "@/types";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import { Box, BoxProps, Container } from "@mui/material";
+import PageLayout from "@/components/layout/PageLayout";
+import { Box, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import BlogCategories from "@/features/blog/components/BlogCategories";
 import BlogCard from "@/features/blog/components/BlogCard";
@@ -15,47 +16,33 @@ import { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { staticRoutePaths } from "@/lib/seo/routes";
 
-interface BlogsStyles {
-  pageLayout?: PageLayoutStyles;
-  container?: BoxProps;
-  blogsList?: BoxProps;
-}
-
-const styles: BlogsStyles = {
+const styles = {
   container: {
-    sx: {
-      "&.pt-80": {
-        pt: "80px",
-      },
+    "&.pt-80": {
+      pt: "80px",
     },
   },
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui2)",
-        pb: { xs: "80px", md: "100px" },
-      },
-    },
-  },
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageBlushToCream,
+    pb: { xs: "80px", md: "100px" },
+  }),
   blogsList: {
-    sx: {
-      display: "grid",
-      gap: {
-        xs: "50px",
-        sm: "80px 50px",
-      },
-      pb: {
-        xs: "100px",
-        sm: "120px",
-      },
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "1fr 1fr",
-        md: "1fr 1fr 1fr",
-      },
+    display: "grid",
+    gap: {
+      xs: "50px",
+      sm: "80px 50px",
+    },
+    pb: {
+      xs: "100px",
+      sm: "120px",
+    },
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "1fr 1fr",
+      md: "1fr 1fr 1fr",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 /**
  * `searchParams` is deliberately not read here.
@@ -110,11 +97,11 @@ const BlogsContent = async ({
   });
 
   return (
-    <Box {...styles.container} className={clsx(!pageHero && "pt-80")}>
+    <Box sx={styles.container} className={clsx(!pageHero && "pt-80")}>
       {pageHero && (
         <PageLayout
           contentFullWidth={false}
-          extendedStyles={styles.pageLayout}
+          sx={styles.pageLayout}
           pathname={getLocalizedRoutes(locale).article()}
         >
           <Container>
@@ -130,7 +117,7 @@ const BlogsContent = async ({
           categories={categories}
           categorySelected={categorySelected}
         />
-        <Box {...styles.blogsList}>
+        <Box sx={styles.blogsList}>
           {blogs?.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />
           ))}

@@ -1,13 +1,5 @@
-import {
-  Box,
-  BoxProps,
-  ButtonBase,
-  ButtonProps,
-  Stack,
-  StackProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, ButtonBase, Stack, Typography } from "@mui/material";
 import ArrowRightIcon from "@/components/icons/ArrowRight";
 import { GroupPage } from "@/types";
 import Link from "@/components/ui/link";
@@ -23,89 +15,63 @@ interface Props {
   hideNextArrow?: boolean;
 }
 
-interface GroupItemStyles {
-  container?: ButtonProps;
-  emoji?: ImageProps;
-  stack?: StackProps;
-  schoolCountBox?: BoxProps;
-  schoolCountText?: TypographyProps;
-  arrowBox?: BoxProps;
-  title?: TypographyProps;
-}
-
-const styles: GroupItemStyles = {
+const styles = {
   container: {
-    sx: {
-      width: 1,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      borderRadius: "24px",
-      backgroundColor: "white",
-      border: 1,
-      padding: "16px",
-      borderColor: "#EDEEF0",
-      transition: "all 300ms ease-in-out",
-      "&:hover": {
-        backgroundColor: "#EDDDFC",
-      },
+    width: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderRadius: "24px",
+    backgroundColor: "white",
+    border: 1,
+    padding: "16px",
+    borderColor: "#EDEEF0",
+    transition: "all 300ms ease-in-out",
+    "&:hover": {
+      backgroundColor: "#EDDDFC",
     },
   },
   emoji: {
-    sx: {
-      width: "28px",
-      height: "28px",
-    },
+    width: "28px",
+    height: "28px",
   },
   stack: {
-    direction: "row",
-    sx: {
-      gap: "12px",
-      alignItems: "center",
-      display: "flex",
-      width: "100%",
-    },
+    gap: "12px",
+    alignItems: "center",
+    display: "flex",
+    width: "100%",
   },
   schoolCountBox: {
-    sx: {
-      width: "36px",
-      height: "36px",
-      aspectRatio: 1,
-      borderRadius: "24px",
-      border: 1,
-      textAlign: "center",
-      borderColor: "secondary.dark",
-      flexShrink: 0,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
+    width: "36px",
+    height: "36px",
+    aspectRatio: 1,
+    borderRadius: "24px",
+    border: 1,
+    textAlign: "center",
+    borderColor: "secondary.dark",
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   schoolCountText: {
-    sx: {
-      fontSize: "13px",
-    },
+    fontSize: "13px",
   },
   arrowBox: {
-    sx: {
-      display: "flex",
-      width: "28px",
-      height: "28px",
-      justifyContent: "center",
-      alignItems: "center",
-      border: 1,
-      borderColor: "primary.main",
-      borderRadius: "24px",
-      flexShrink: 0,
-    },
+    display: "flex",
+    width: "28px",
+    height: "28px",
+    justifyContent: "center",
+    alignItems: "center",
+    border: 1,
+    borderColor: "primary.main",
+    borderRadius: "24px",
+    flexShrink: 0,
   },
   title: {
-    variant: "h3",
-    sx: {
-      mb: 0,
-    },
+    mb: 0,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
   const locale = await getLocale();
@@ -121,25 +87,26 @@ const GroupItem = async ({ baseSlug, item, hideNextArrow }: Props) => {
 
   return (
     <Link href={url}>
-      <ButtonBase {...styles.container}>
-        <Stack {...styles.stack}>
+      <ButtonBase sx={styles.container}>
+        <Stack sx={styles.stack} direction="row">
           {"emoji" in item && item.emoji && (
-            <Image src={item.emoji} alt="" sizes="24px" {...styles.emoji} />
+            <Image src={item.emoji} alt="" sizes="24px" sx={styles.emoji} />
           )}
-          <Typography {...styles.title}>{item.name}</Typography>
+          <Typography sx={styles.title} variant="h3">
+            {item.name}
+          </Typography>
           <Box
-            {...styles.schoolCountBox}
             sx={{
               ml: hideNextArrow ? "auto" : "initial",
             }}
           >
-            <Typography {...styles.schoolCountText}>
+            <Typography sx={styles.schoolCountText}>
               {item.schoolCount}
             </Typography>
           </Box>
         </Stack>
         {!hideNextArrow && (
-          <Box {...styles.arrowBox}>
+          <Box sx={styles.arrowBox}>
             <ArrowRightIcon sx={{ fontSize: "12px" }} />
           </Box>
         )}

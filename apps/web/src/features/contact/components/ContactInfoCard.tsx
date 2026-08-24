@@ -1,15 +1,9 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import React from "react";
-import {
-  Box,
-  Typography,
-  TypographyOwnProps,
-  BoxProps,
-  SvgIconProps,
-  TypographyProps,
-} from "@mui/material";
-import { SvgIconComponent } from "@mui/icons-material";
+import { Box, Typography } from "@mui/material";
+
 import { SanityImageField, SanityRichTextField } from "@/types";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+
 import RichText from "@/components/rich-text/RichText";
 import Image from "@/components/ui/image";
 
@@ -19,66 +13,49 @@ interface Props {
   description?: SanityRichTextField;
 }
 
-interface ContactInfoCardStyles {
-  container?: BoxProps;
-  iconBox?: BoxProps;
-  icon?: SvgIconProps;
-  title?: TypographyOwnProps;
-  description?: TypographyProps;
-}
-
-const styles: ContactInfoCardStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      maxWidth: "328px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: "328px",
   },
   iconBox: {
-    sx: {
-      bgcolor: "secondary.main",
-      display: "flex",
-      alignSelf: "baseline",
-      justifyContent: "center",
-      borderRadius: "50%",
-      p: "14px",
-      mb: 1,
-      mx: "auto",
-    },
+    bgcolor: "secondary.main",
+    display: "flex",
+    alignSelf: "baseline",
+    justifyContent: "center",
+    borderRadius: "50%",
+    p: "14px",
+    mb: 1,
+    mx: "auto",
   },
   icon: {
-    sx: {
-      color: "secondary.dark",
-      fontSize: "36px",
-    },
+    color: "secondary.dark",
+    fontSize: "36px",
   },
   title: {
-    variant: "h3",
-    sx: {
-      mb: "4px",
-      fontSize: "20px",
-    },
+    mb: "4px",
+    fontSize: "20px",
   },
   description: {
-    sx: {
-      textAlign: "center",
-      "& p": {
-        m: 0,
-      },
+    textAlign: "center",
+    "& p": {
+      m: 0,
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const ContactInfoCard: React.FC<Props> = ({ image, title, description }) => {
   return (
-    <Box {...styles.container}>
+    <Box sx={styles.container}>
       {image && <Image src={image} alt={title} sizes="80px" />}
-      <Typography {...styles.title}>{title}</Typography>
+      <Typography sx={styles.title} variant="h3">
+        {title}
+      </Typography>
       {description && (
-        <RichText {...styles.description}>{description}</RichText>
+        <RichText sx={styles.description}>{description}</RichText>
       )}
     </Box>
   );

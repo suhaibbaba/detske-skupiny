@@ -1,12 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-  ButtonProps,
-} from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { SanityCtaField, SanityImageField } from "@/types";
 import { urlImageFor } from "@/lib/sanity/imageUrl";
@@ -14,6 +6,7 @@ import React from "react";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import { getLocale } from "next-intl/server";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   fields: {
@@ -23,56 +16,37 @@ interface Props {
     cta?: SanityCtaField;
   };
 }
-interface HomeBannerStyles {
-  section?: (imageUrl: string) => BoxProps;
-  container?: ContainerProps;
-  title?: TypographyProps;
-  description?: TypographyProps;
-  button?: ButtonProps;
-}
+/** The background is content, so this one is a function of the row. */
+const sectionSx = (imageUrl: string): SxProps<Theme> => ({
+  backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${imageUrl}")`,
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  textAlign: "center",
+  py: { xs: "50px", md: "96px" },
+});
 
-const styles: HomeBannerStyles = {
-  section: (imageUrl: string) => ({
-    sx: {
-      backgroundImage: `linear-gradient(0deg, rgba(250,243,192,0.8), rgba(250,243,192,0.8)), url("${imageUrl}")`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      textAlign: "center",
-      py: { xs: "50px", md: "96px" },
-    },
-  }),
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
-    variant: "h1",
-    sx: {
-      fontSize: "36px",
-      mb: "16px",
-    },
+    fontSize: "36px",
+    mb: "16px",
   },
   description: {
-    sx: {
-      mb: "32px",
-    },
+    mb: "32px",
   },
   button: {
-    variant: "primary",
-    sx: {
-      mt: "32px",
-      "& .MuiButton-startIcon": {
-        marginRight: "8px",
-      },
+    mt: "32px",
+    "& .MuiButton-startIcon": {
+      marginRight: "8px",
     },
-    startIcon: <AddIcon />,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const HomeBanner = async ({ fields }: Props) => {
   const locale = await getLocale();
@@ -80,15 +54,18 @@ const HomeBanner = async ({ fields }: Props) => {
 
   return (
     <Box
-      {...styles.section?.(urlImageFor(fields.background))}
+      sx={sectionSx(urlImageFor(fields.background))}
       data-test-selector="HomeBanner"
     >
-      <Container {...styles.container}>
-        <Typography {...styles.title}>{fields.title}</Typography>
-        <Typography {...styles.description}>{fields.description}</Typography>
+      <Container sx={styles.container}>
+        <Typography sx={styles.title} variant="h1">
+          {fields.title}
+        </Typography>
+        <Typography sx={styles.description}>{fields.description}</Typography>
         {fields.cta && (
           <Button
-            {...styles.button}
+            sx={styles.button}
+            startIcon={<AddIcon />}
             variant={fields.cta.variant}
             href={link.url}
           >

@@ -1,14 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  ButtonProps,
-  Container,
-  Grid,
-  Stack,
-  StackProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { GroupPage } from "@/types";
 import { FC } from "react";
 import GroupItem from "@/features/catalog/components/GroupItem";
@@ -17,54 +7,37 @@ import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocale } from "next-intl/server";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   group?: GroupPage;
 }
 
-interface GroupSectionStyles {
-  container?: (backgroundCover?: string) => BoxProps;
-  stack?: StackProps;
-  sectionTitle?: TypographyProps;
-  viewAllContainer?: BoxProps;
-  viewAllButton?: ButtonProps;
-}
+/** The background is content, so this one is a function of the row. */
+const containerSx = (backgroundCover: string | undefined): SxProps<Theme> => ({
+  background: `linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${backgroundCover})`,
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
+  py: { xs: "50px", md: "100px" },
+});
 
-const styles: GroupSectionStyles = {
-  container: (backgroundCover?: string) => ({
-    sx: {
-      background: `linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${backgroundCover})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      py: { xs: "50px", md: "100px" },
-    },
-  }),
+const styles = {
   stack: {
-    direction: "row",
-    sx: {
-      gap: "20px",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
+    gap: "20px",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   sectionTitle: {
-    variant: "h3",
-    sx: {
-      my: "38px",
-      textTransform: "uppercase",
-    },
+    my: "38px",
+    textTransform: "uppercase",
   },
   viewAllContainer: {
-    sx: {
-      mt: "38px",
-      display: "flex",
-      justifyContent: "center",
-    },
+    mt: "38px",
+    display: "flex",
+    justifyContent: "center",
   },
-  viewAllButton: {
-    variant: "ghost",
-  },
-};
+  viewAllButton: {},
+} satisfies Record<string, SxProps<Theme>>;
 
 const GroupSection: FC<Props> = async ({ group }) => {
   const locale = await getLocale();
@@ -79,12 +52,9 @@ const GroupSection: FC<Props> = async ({ group }) => {
     group;
 
   return (
-    <Box
-      component="section"
-      {...styles.container?.(urlImageFor(backgroundCover))}
-    >
+    <Box component="section" sx={containerSx(urlImageFor(backgroundCover))}>
       <Container>
-        <Stack {...styles.stack}>
+        <Stack sx={styles.stack} direction="row">
           <Box>
             <Typography
               variant="h2"
@@ -96,7 +66,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
             </Typography>
           </Box>
         </Stack>
-        <Typography {...styles.sectionTitle}>
+        <Typography sx={styles.sectionTitle} variant="h3">
           {translate("byRegion")}
         </Typography>
         <Grid container spacing="24px">
@@ -106,7 +76,7 @@ const GroupSection: FC<Props> = async ({ group }) => {
             </Grid>
           ))}
         </Grid>
-        <Typography {...styles.sectionTitle}>
+        <Typography sx={styles.sectionTitle} variant="h3">
           {translate("byCategory")}
         </Typography>
         <Grid container spacing="24px">
@@ -116,9 +86,9 @@ const GroupSection: FC<Props> = async ({ group }) => {
             </Grid>
           ))}
         </Grid>
-        <Box {...styles.viewAllContainer}>
+        <Box sx={styles.viewAllContainer}>
           <Button
-            {...styles.viewAllButton}
+            variant="ghost"
             href={getLocalizedRoutes(locale).catalogs(slug)}
           >
             {translate("viewAllSchoolsInRegion", { region: name ?? "" })}

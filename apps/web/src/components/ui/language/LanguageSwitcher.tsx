@@ -8,49 +8,43 @@ import MenuItem, { MenuItemProps } from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useEffect, useState } from "react";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
 const CS_DOMAIN = process.env.NEXT_PUBLIC_CS_DOMAIN ?? "localhost";
 
-interface LanguageSwitcherStyles {
-  select?: SelectProps<string>;
-  menuItem?: MenuItemProps;
-}
-
-const styles: LanguageSwitcherStyles = {
+const styles = {
   select: {
-    sx: {
-      background: "transparent",
-      boxShadow: "none",
-      border: "none",
+    background: "transparent",
+    boxShadow: "none",
+    border: "none",
+    padding: 0,
+    // maxWidth: "140px",
+    "& .MuiSelect-select": {
       padding: 0,
-      // maxWidth: "140px",
-      "& .MuiSelect-select": {
-        padding: 0,
-        background: "transparent !important",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: "6px",
-      },
-      "& fieldset": {
-        border: "none",
-      },
-      "& .MuiOutlinedInput-notchedOutline": {
-        border: "none",
-      },
-      "& .MuiListItemIcon-root": {
-        minWidth: "22px",
-      },
-      "& .MuiSvgIcon-root": {
-        color: "var(--mui-palette-custom-ui3)",
-      },
-      "& .MuiTypography-root": {
-        color: "white",
-      },
+      background: "transparent !important",
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: "6px",
+    },
+    "& fieldset": {
+      border: "none",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiListItemIcon-root": {
+      minWidth: "22px",
+    },
+    "& .MuiSvgIcon-root": {
+      color: "custom.textBody",
+    },
+    "& .MuiTypography-root": {
+      color: "white",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 /**
  * Builds a complete URL with protocol, domain, port, path, search params, and hash
@@ -102,12 +96,12 @@ const LanguageSwitcher = () => {
       value={currentLocale}
       onChange={handleChange}
       displayEmpty
-      {...styles.select}
+      sx={styles.select}
     >
       {Object.keys(languages).map((key) => {
         const language = languages[key];
         return (
-          <MenuItem value={key} key={key} {...styles.menuItem}>
+          <MenuItem value={key} key={key}>
             <ListItemIcon>{language.flag}</ListItemIcon>
             <ListItemText primary={language.name} />
           </MenuItem>

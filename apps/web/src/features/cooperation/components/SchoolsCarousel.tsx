@@ -9,7 +9,6 @@
 import EmblaCarousel from "@/components/ui/EmblaCarousel";
 import PreschoolCard from "@/features/cooperation/components/PreschoolCard";
 import { MiniSchool } from "@/types";
-import { FC } from "react";
 
 interface Props {
   schools: MiniSchool[];

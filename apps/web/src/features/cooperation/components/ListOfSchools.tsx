@@ -1,4 +1,5 @@
-import { Box, BoxProps, Container } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Container } from "@mui/material";
 import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import { SanityCtaField } from "@/types";
 import { FC } from "react";
@@ -15,27 +16,20 @@ interface Props {
   locale: string;
 }
 
-interface ListOfSchoolsStyles {
-  container?: BoxProps;
-  headingContainer?: BoxProps;
-}
-
-const styles: ListOfSchoolsStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
-      gap: "54px",
-      pt: {
-        md: "20px",
-      },
-      pb: {
-        xs: "40px",
-        md: "80px",
-      },
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "54px",
+    pt: {
+      md: "20px",
+    },
+    pb: {
+      xs: "40px",
+      md: "80px",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
   const { schools } = await fetchMiniSchools({
@@ -44,7 +38,7 @@ const ListOfSchools: FC<Props> = async ({ fields, locale }) => {
   });
 
   return (
-    <Box {...styles.container} data-test-selector="ListOfSchools">
+    <Box sx={styles.container} data-test-selector="ListOfSchools">
       <Container>
         <PageHeadingTypography
           title={fields?.title}

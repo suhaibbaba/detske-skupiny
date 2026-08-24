@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  Box,
-  BoxProps,
-  SxProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { FC, useState } from "react";
 import { School } from "@/types";
 import { urlImageFor } from "@/lib/sanity/imageUrl";
@@ -24,72 +19,61 @@ interface SchoolGalleryProps {
   /** Base64 thumbnail for the first image, which is this page's LCP element. */
   mainImageLqip?: string | null;
   name?: School["name"];
-  extendedStyles?: SchoolGalleryStyles;
+  /**
+   * Extra styles for the outer box.
+   *
+   * Was `extendedStyles?: SchoolGalleryStyles` - a bag of whole MUI props
+   * objects - of which exactly one slot, `container.sx`, was ever set, by one
+   * caller.
+   */
+  sx?: SxProps<Theme>;
 }
 
-export interface SchoolGalleryStyles {
-  container?: BoxProps;
-  imageContainer?: BoxProps;
-  imageBox?: BoxProps;
-  img?: ImageProps;
-  logo?: ImageProps;
-}
-
-const styles: SchoolGalleryStyles = {
+const styles = {
   container: {
-    sx: {
-      mt: "80px",
-    },
+    mt: "80px",
   },
   imageContainer: {
-    sx: {
-      display: "flex",
-      flexDirection: {
-        xs: "column",
-        sm: "row",
-      },
-      gap: 2,
-      height: { md: 524 },
+    display: "flex",
+    flexDirection: {
+      xs: "column",
+      sm: "row",
     },
+    gap: 2,
+    height: { md: 524 },
   },
   imageBox: {
-    sx: {
-      width: "100%",
-      position: "relative",
-      borderRadius: 2,
-      overflow: "hidden",
-      cursor: "pointer",
-    },
+    width: "100%",
+    position: "relative",
+    borderRadius: 2,
+    overflow: "hidden",
+    cursor: "pointer",
   },
   img: {
-    sx: {
-      objectFit: "cover",
-      width: "100%",
-      height: "100%",
-      borderRadius: "12px",
-      display: "block",
-    },
+    objectFit: "cover",
+    width: "100%",
+    height: "100%",
+    borderRadius: "12px",
+    display: "block",
   },
   logo: {
-    sx: {
-      position: "absolute",
-      bottom: 0,
-      right: 0,
-      width: { xs: "100px", md: "160px" },
-      height: { xs: "100px", md: "160px" },
-      padding: "8px",
-      background: "white",
-      borderTopLeftRadius: "8px",
-    },
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: { xs: "100px", md: "160px" },
+    height: { xs: "100px", md: "160px" },
+    padding: "8px",
+    background: "white",
+    borderTopLeftRadius: "8px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolGallery: FC<SchoolGalleryProps> = ({
   gallery,
   logo,
   name,
   mainImageLqip,
-  extendedStyles,
+  sx,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -123,18 +107,13 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
   return (
     <>
       <Box
-        sx={
-          {
-            ...styles?.container?.sx,
-            ...extendedStyles?.container?.sx,
-          } as SxProps
-        }
+        sx={[styles.container, ...(Array.isArray(sx) ? sx : [sx])]}
         data-test-selector="SchoolGallery"
       >
-        <Box {...styles.imageContainer}>
+        <Box sx={styles.imageContainer}>
           {/* Left main */}
           {main && (
-            <Box {...styles.imageBox} onClick={() => openImage(0)}>
+            <Box sx={styles.imageBox} onClick={() => openImage(0)}>
               {/*
                * The first gallery image is the school page's LCP element, so
                * it is fetched eagerly. The four thumbnails beside it stay
@@ -152,10 +131,10 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
                       blurDataURL: mainImageLqip,
                     }
                   : {})}
-                {...styles.img}
+                sx={styles.img}
               />
               {logo && (
-                <Image src={logo} alt={name} sizes="64px" {...styles.logo} />
+                <Image src={logo} alt={name} sizes="64px" sx={styles.logo} />
               )}
             </Box>
           )}
@@ -175,14 +154,14 @@ const SchoolGallery: FC<SchoolGalleryProps> = ({
             {rights.map((img, idx) => (
               <Box
                 key={idx}
-                {...styles.imageBox}
+                sx={styles.imageBox}
                 onClick={() => openImage(idx + 1)}
               >
                 <Image
                   src={img}
                   alt={name}
                   sizes="(max-width: 900px) 50vw, 20vw"
-                  {...styles.img}
+                  sx={styles.img}
                 />
               </Box>
             ))}

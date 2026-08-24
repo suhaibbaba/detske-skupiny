@@ -1,7 +1,7 @@
-import { Box, BoxProps, Container } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Container } from "@mui/material";
 import Breadcrumbs from "@/components/ui/breadcrumb";
 import React, { FC, Fragment } from "react";
-import { mergeMuiProps } from "@/utils/mergeMuiProps";
 
 interface BaseProps {
   children: React.ReactNode;
@@ -9,7 +9,15 @@ interface BaseProps {
    * It means the content has max-width 100%
    */
   contentFullWidth?: boolean;
-  extendedStyles?: PageLayoutStyles;
+  /**
+   * Extra styles for the section wrapper.
+   *
+   * Was `extendedStyles?: { section?: BoxProps }`, deep-merged into a base
+   * props object with lodash. A plain `sx` says the same thing, and MUI's own
+   * array form composes it - later entries win, which is what the merge was
+   * emulating at runtime on every render.
+   */
+  sx?: SxProps<Theme>;
 }
 
 /**
@@ -24,17 +32,9 @@ type Props = BaseProps &
     | { showBreadcrumb: false; pathname?: never }
   );
 
-export interface PageLayoutStyles {
-  section?: BoxProps;
-}
-
-const pageLayoutStyles: PageLayoutStyles = {
-  section: {
-    sx: {
-      pt: { xs: 2, md: 5 },
-      pb: { xs: 5, md: 12.5 },
-    },
-  },
+const sectionSx: SxProps<Theme> = {
+  pt: { xs: 2, md: 5 },
+  pb: { xs: 5, md: 12.5 },
 };
 
 const PageLayout: FC<Props> = ({
@@ -42,15 +42,17 @@ const PageLayout: FC<Props> = ({
   contentFullWidth = false,
   showBreadcrumb = true,
   pathname,
-  extendedStyles,
+  sx,
 }) => {
-  const styles = mergeMuiProps(pageLayoutStyles, extendedStyles);
   const breadcrumbs = showBreadcrumb && pathname !== undefined && (
     <Breadcrumbs pathname={pathname} />
   );
 
   return (
-    <Box component="section" {...styles.section}>
+    <Box
+      component="section"
+      sx={[sectionSx, ...(Array.isArray(sx) ? sx : [sx])]}
+    >
       <Container
         maxWidth={contentFullWidth ? false : "lg"}
         disableGutters={!contentFullWidth}

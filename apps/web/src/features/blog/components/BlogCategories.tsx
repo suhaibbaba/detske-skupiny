@@ -1,72 +1,58 @@
 "use client";
 
-import { Box, Stack, BoxProps, ButtonProps, StackProps } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import React, { FC } from "react";
 import { BlogCategory } from "@/types";
 import Button from "@/components/ui/button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useTranslate from "@/hooks/useTranslate";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 
 interface Props {
   categories?: BlogCategory[];
   categorySelected?: string;
 }
 
-interface BlogTabsStyles {
-  container?: BoxProps;
-  stack?: StackProps;
-  button?: ButtonProps;
-  activeButton?: ButtonProps;
-}
-
-const styles: BlogTabsStyles = {
+const styles = {
   container: {
-    sx: {
-      bgcolor: "custom.ui5",
-      width: "100%",
-      py: "16px",
-      px: "24px",
-      borderRadius: "32px",
-      display: "flex",
-      justifyContent: "center",
-      border: `1px solid var(--mui-palette-custom-ui12)`,
-      transform: "translateY(-50%)",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-    },
+    bgcolor: "custom.surfaceLilac",
+    width: "100%",
+    py: "16px",
+    px: "24px",
+    borderRadius: "32px",
+    display: "flex",
+    justifyContent: "center",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "custom.divider",
+    transform: "translateY(-50%)",
+    boxShadow: custom.shadows.card,
   },
   stack: {
-    sx: {
-      flexWrap: "wrap",
-      gap: "12px",
-      width: "100%",
-      justifyContent: "center",
-    },
-    direction: "row",
+    flexWrap: "wrap",
+    gap: "12px",
+    width: "100%",
+    justifyContent: "center",
   },
   button: {
-    variant: "outlined",
-    sx: {
-      boxSizing: "content-box",
-      flex: "1 0 0",
-      padding: "10px 20px",
-      maxWidth: "230px",
-      borderRadius: "24px",
-      borderColor: "var(--mui-palette-custom-ui12)",
-      bgcolor: "var(--mui-palette-common-white)",
-      color: "var(--mui-palette-text-primary)",
-    },
+    boxSizing: "content-box",
+    flex: "1 0 0",
+    padding: "10px 20px",
+    maxWidth: "230px",
+    borderRadius: "24px",
+    borderColor: "custom.divider",
+    bgcolor: "var(--mui-palette-common-white)",
+    color: "var(--mui-palette-text-primary)",
   },
   activeButton: {
-    variant: "primary",
-    sx: {
-      boxSizing: "content-box",
-      flex: "1 0 0",
-      padding: "10px 20px",
-      maxWidth: "230px",
-      borderRadius: "24px",
-    },
+    boxSizing: "content-box",
+    flex: "1 0 0",
+    padding: "10px 20px",
+    maxWidth: "230px",
+    borderRadius: "24px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
   const translate = useTranslate();
@@ -91,8 +77,8 @@ const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
   }
 
   return (
-    <Box {...styles.container}>
-      <Stack {...styles.stack}>
+    <Box sx={styles.container}>
+      <Stack sx={styles.stack} direction="row">
         <Button
           onClick={() =>
             onSelect({

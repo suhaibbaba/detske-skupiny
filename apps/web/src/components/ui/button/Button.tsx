@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import React, { FC } from "react";
 import { useLocale } from "next-intl";
-import { mergeMuiProps } from "@/utils/mergeMuiProps";
 import {
   cleanUrl,
   parseLinkField,
@@ -32,8 +31,6 @@ interface ButtonProps extends Omit<MuiButtonProps, "href"> {
   scroll?: boolean;
 }
 
-const buttonStyles: MuiButtonProps = {};
-
 const Button: FC<ButtonProps> = ({
   children,
   sx,
@@ -43,7 +40,6 @@ const Button: FC<ButtonProps> = ({
   ...otherProps
 }) => {
   const locale = useLocale();
-  const styles = mergeMuiProps(buttonStyles, { sx });
 
   if (link) {
     const passedProps = parseLinkField(link, { locale });
@@ -51,7 +47,7 @@ const Button: FC<ButtonProps> = ({
     return (
       <MuiButton
         component={NextLink}
-        {...styles}
+        sx={sx}
         {...otherProps}
         href={passedProps.url}
         scroll={scroll}
@@ -68,7 +64,7 @@ const Button: FC<ButtonProps> = ({
     return (
       <MuiButton
         component={NextLink}
-        {...styles}
+        sx={sx}
         {...otherProps}
         href={localizedHref}
         scroll={scroll}
@@ -80,7 +76,7 @@ const Button: FC<ButtonProps> = ({
   }
 
   return (
-    <MuiButton {...styles} {...otherProps} onClick={onClick}>
+    <MuiButton sx={sx} {...otherProps} onClick={onClick}>
       {children}
     </MuiButton>
   );

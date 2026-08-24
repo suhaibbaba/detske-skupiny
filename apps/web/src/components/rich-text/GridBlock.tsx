@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+
 import { Grid } from "@mui/material";
 import * as React from "react";
 import { SanityImageField, SanityRichTextField } from "@/types";

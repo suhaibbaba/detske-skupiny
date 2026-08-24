@@ -1,12 +1,6 @@
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
-import { SanityCtaField } from "@/types";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Container, Typography } from "@mui/material";
+
 import { fetchMiniSchools } from "@/features/school/queries";
 import SchoolCard from "@/features/home/components/SchoolCard";
 import { sharedClassNames } from "@/features/home/utils";
@@ -20,57 +14,35 @@ interface Props {
   locale: string;
 }
 
-interface LatestKinderGroupsSectionStyles {
-  section?: BoxProps;
-  container?: ContainerProps;
-  title?: TypographyProps;
-  description?: TypographyProps;
-  grid?: BoxProps;
-}
-
-const styles: LatestKinderGroupsSectionStyles = {
+const styles = {
   section: {
-    component: "section",
-    sx: {
-      pt: { xs: "50px", md: "100px" },
-      pb: { xs: "50px", md: "74px" },
-      bgcolor: "primary.light",
-      textAlign: "center",
-    },
+    pt: { xs: "50px", md: "100px" },
+    pb: { xs: "50px", md: "74px" },
+    bgcolor: "primary.light",
+    textAlign: "center",
   },
   container: {
-    component: "section",
-    sx: {
-      textAlign: "center",
-    },
+    textAlign: "center",
   },
   title: {
-    component: "h1",
-    variant: "h1",
-    sx: {
-      mb: "12px",
-    },
+    mb: "12px",
   },
   description: {
-    sx: {
-      mb: { xs: "40px", md: "80px" },
-    },
+    mb: { xs: "40px", md: "80px" },
   },
   grid: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "1fr 1fr",
-      },
-      columnGap: "24px",
-      rowGap: {
-        xs: "32px",
-        sm: "80px",
-      },
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "1fr 1fr",
+    },
+    columnGap: "24px",
+    rowGap: {
+      xs: "32px",
+      sm: "80px",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const LatestSchoolCollection = async ({ fields, locale }: Props) => {
   const { schools } = await fetchMiniSchools({
@@ -79,11 +51,17 @@ const LatestSchoolCollection = async ({ fields, locale }: Props) => {
   });
 
   return (
-    <Box {...styles.section} className={sharedClassNames.schools}>
-      <Container {...styles.container}>
-        <Typography {...styles.title}>{fields.title}</Typography>
-        <Typography {...styles.description}>{fields.description}</Typography>
-        <Box {...styles.grid}>
+    <Box
+      sx={styles.section}
+      component="section"
+      className={sharedClassNames.schools}
+    >
+      <Container sx={styles.container} component="section">
+        <Typography sx={styles.title} component="h1" variant="h1">
+          {fields.title}
+        </Typography>
+        <Typography sx={styles.description}>{fields.description}</Typography>
+        <Box sx={styles.grid}>
           {schools.map((school) => (
             <SchoolCard school={school} key={school.id} />
           ))}

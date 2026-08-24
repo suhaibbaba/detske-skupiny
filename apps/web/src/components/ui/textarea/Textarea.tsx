@@ -12,7 +12,7 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
   box-sizing: border-box;
   padding: 12px 16px;
   border-radius: 24px;
-  border: 1px solid ${theme.palette.custom.ui2};
+  border: 1px solid ${theme.palette.custom.inputBorder};
   width: 100%;
   transition: all 0.3s ease;
   font-size: 15px;
@@ -29,7 +29,7 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
 
   &:focus {
     border-width: 1px;
-    border-color: ${theme.palette.custom.ui4};
+    border-color: ${theme.palette.custom.inputBorderFocused};
   }
   
   & input::placeholder: {

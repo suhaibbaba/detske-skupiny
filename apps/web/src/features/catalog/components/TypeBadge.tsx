@@ -14,8 +14,9 @@
  * Pre-existing; it predates the switch to `next/image` here and reproduces
  * with the plain `<img>` this used to render.
  */
-import { Box, BoxProps, Chip, ChipProps } from "@mui/material";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+import { Box, Chip } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+
 import Star from "@/components/icons/Star";
 import { SchoolType } from "@/types";
 import { FC } from "react";
@@ -25,45 +26,37 @@ interface Props {
   types?: SchoolType[];
 }
 
-interface SchoolTypesBadgeStyles {
-  container?: BoxProps;
-  badge: (backgroundColor: string | null) => ChipProps;
-}
-
-const styles: SchoolTypesBadgeStyles = {
+const styles = {
   container: {
-    sx: {
-      position: "absolute",
-      top: 12,
-      left: 12,
-      display: "flex",
-      flexDirection: "column",
-      gap: "8px",
-    },
+    position: "absolute",
+    top: 12,
+    left: 12,
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
   },
-  badge: (backgroundColorProps) => {
-    const backgroundColor = backgroundColorProps || "white";
-    const borderColor = backgroundColorProps || "primary.main";
-    return {
-      size: "small",
-      sx: {
-        bgcolor: backgroundColor,
-        color: "custom.ui1",
-        fontWeight: 400,
-        fontSize: "14px",
-        borderRadius: "24px",
-        px: "10px",
-        borderColor: borderColor,
-        "& .MuiChip-icon": {
-          color: "custom.ui19",
-          width: "13px",
-          height: "13px",
-          fontSize: "10px",
-        },
-      },
-    };
+} satisfies Record<string, SxProps<Theme>>;
+
+/**
+ * The badge takes its fill from the school type, so it is a function of the
+ * row. Deliberately not the shared `DataChip`: this one keeps MUI's own chip
+ * icon margins, and inheriting DataChip's would move the star.
+ */
+const badgeSx = (backgroundColorProps: string | null): SxProps<Theme> => ({
+  bgcolor: backgroundColorProps || "white",
+  color: "custom.labelStrong",
+  fontWeight: 400,
+  fontSize: "14px",
+  borderRadius: "24px",
+  px: "10px",
+  borderColor: backgroundColorProps || "primary.main",
+  "& .MuiChip-icon": {
+    color: "custom.labelOnCream",
+    width: "13px",
+    height: "13px",
+    fontSize: "10px",
   },
-};
+});
 
 const SchoolTypesBadge: FC<Props> = ({ types: typesProps }) => {
   const types = typesProps?.sort((a, b) => {
@@ -77,7 +70,7 @@ const SchoolTypesBadge: FC<Props> = ({ types: typesProps }) => {
   }
 
   return (
-    <Box {...styles.container}>
+    <Box sx={styles.container}>
       {types.map((type) => {
         let icon;
         if (type.icon) {
@@ -89,7 +82,8 @@ const SchoolTypesBadge: FC<Props> = ({ types: typesProps }) => {
         return (
           <Chip
             key={type.id}
-            {...styles.badge?.(type.backgroundColor)}
+            size="small"
+            sx={badgeSx(type.backgroundColor)}
             label={type.name}
             variant="outlined"
             icon={icon}

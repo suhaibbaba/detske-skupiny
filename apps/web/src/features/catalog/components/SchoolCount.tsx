@@ -1,10 +1,11 @@
 "use client";
 
-import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SearchBar from "@/features/catalog/components/SearchBar";
 import useTranslate from "@/hooks/useTranslate";
 import FilterSidebarDialog from "@/features/catalog/components/filters/FilterSidebarDialog";
 import { Props as FilterSidebarProps } from "@/features/catalog/components/filters/FilterSidebar";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   total: number;
@@ -12,38 +13,26 @@ interface Props {
   filterProps: FilterSidebarProps;
 }
 
-interface SchoolCountStyles {
-  container?: BoxProps;
-  topRow?: BoxProps;
-  text?: TypographyProps;
-}
-
-const styles: SchoolCountStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "grid",
-      gap: "24px",
-      width: "100%",
-      gridTemplateColumns: { xs: "1fr", md: "1fr auto" },
-    },
+    display: "grid",
+    gap: "24px",
+    width: "100%",
+    gridTemplateColumns: { xs: "1fr", md: "1fr auto" },
   },
   topRow: {
-    sx: {
-      display: "flex",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      flexWrap: "nowrap",
-      gap: "12px",
-    },
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexWrap: "nowrap",
+    gap: "12px",
   },
   text: {
-    sx: {
-      fontSize: "28px",
-      fontWeight: 900,
-      color: "custom.ui13",
-    },
+    fontSize: "28px",
+    fontWeight: 900,
+    color: "custom.textHeading",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolsCount = ({
   total,
@@ -52,15 +41,15 @@ const SchoolsCount = ({
 }: Props) => {
   const translate = useTranslate();
   return (
-    <Box {...styles.container}>
+    <Box sx={styles.container}>
       <Box>
-        <Typography {...styles.text}>
+        <Typography sx={styles.text}>
           {translate("showingResultsShort", {
             filterTotal,
           })}
         </Typography>
       </Box>
-      <Box {...styles.topRow}>
+      <Box sx={styles.topRow}>
         <Box sx={{ display: { xs: "block", md: "none" } }}>
           <FilterSidebarDialog
             catalog={catalog}

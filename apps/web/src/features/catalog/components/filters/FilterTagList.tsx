@@ -1,21 +1,13 @@
 "use client";
 
-import {
-  alpha,
-  Box,
-  BoxProps,
-  Chip,
-  ChipProps,
-  Divider,
-  DividerProps,
-  LinkProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { alpha, Box, Divider, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { FC } from "react";
 import { FiltersResponse } from "@/features/catalog/queries";
 import useTranslate from "@/hooks/useTranslate";
 import { Filters } from "@/features/catalog/useSchoolFilters";
+import DataChip from "@/components/ui/DataChip";
+import SectionHeading from "@/components/ui/SectionHeading";
 import DoneIcon from "@mui/icons-material/Done";
 
 interface Props {
@@ -26,93 +18,60 @@ interface Props {
   clear?: (key?: keyof Filters) => void;
 }
 
-interface FilterListStyles {
-  container?: BoxProps;
-  sectionHeading?: TypographyProps;
-  listContainer?: BoxProps;
-  chip?: (backgroundColor?: string | null) => ChipProps;
-  viewAllContainer?: BoxProps;
-  viewAll?: LinkProps;
-  divider?: DividerProps;
-}
-
-const styles: FilterListStyles = {
-  sectionHeading: {
-    sx: {
-      color: "custom.ui13",
-      textTransform: "capitalize",
-      mb: "16px",
-      fontWeight: 900,
-      fontSize: "18px",
-    },
-  },
+const styles = {
   listContainer: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "repeat(auto-fit, 132px)",
-        sm: "repeat(2, 1fr)",
-      },
-      gap: "16px",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "repeat(auto-fit, 132px)",
+      sm: "repeat(2, 1fr)",
     },
+    gap: "16px",
   },
   divider: {
-    sx: {
-      mt: "20px",
-      mb: "16px",
-      bgcolor: "common.ui18",
-    },
-  },
-  chip: (borderColorProps) => {
-    const borderColor = borderColorProps || "#9980B0";
-    return {
-      sx: {
-        borderRadius: "24px",
-        px: "6px",
-        py: "2px",
-        fontSize: 12,
-        fontWeight: 400,
-        color: "custom.ui20",
-        bgcolor: "white",
-        border: `1px solid ${borderColor}`,
-        transition: "all 0.3s ease",
-        maxWidth: 180,
-        "& .MuiChip-label": {
-          padding: 0,
-        },
-        "&.checked": {
-          bgcolor: "white",
-          borderColor: borderColor,
-        },
-        "&:hover": {
-          bgcolor: "white",
-          borderColor: alpha(borderColor, 0.5),
-        },
-        "& .MuiChip-icon": {
-          mr: "4px",
-          ml: 0,
-        },
-      },
-    };
+    mt: "20px",
+    mb: "16px",
   },
   viewAllContainer: {
-    sx: {
-      display: "flex",
-    },
+    display: "flex",
   },
   viewAll: {
-    sx: {
-      color: "custom.ui11",
-      fontWeight: 500,
-      fontSize: "16px",
-      mt: "16px",
-      cursor: "pointer",
-      alignSelf: "baseline",
-      "&:hover": {
-        color: "primary.dark",
-      },
+    color: "custom.textLilac",
+    fontWeight: 500,
+    fontSize: "16px",
+    mt: "16px",
+    cursor: "pointer",
+    alignSelf: "baseline",
+    "&:hover": {
+      color: "primary.dark",
     },
   },
+} satisfies Record<string, SxProps<Theme>>;
+
+/**
+ * The pill's outline is the tag's own colour, falling back to the brand
+ * purple - so it is a function of the row, not a constant.
+ */
+const chipSx = (borderColorProps?: string | null): SxProps<Theme> => {
+  const borderColor = borderColorProps || "#9980B0";
+
+  return {
+    px: "6px",
+    py: "2px",
+    fontWeight: 400,
+    color: "custom.textSecondary",
+    bgcolor: "white",
+    border: `1px solid ${borderColor}`,
+    transition: "all 0.3s ease",
+    maxWidth: 180,
+    "&.checked": {
+      bgcolor: "white",
+      borderColor,
+    },
+    "&:hover": {
+      bgcolor: "white",
+      borderColor: alpha(borderColor, 0.5),
+    },
+  };
 };
 
 const FilterTagList: FC<Props> = ({
@@ -130,18 +89,18 @@ const FilterTagList: FC<Props> = ({
   }
 
   return (
-    <Box {...styles.container} data-test-selector="FilterTagList">
-      {showDivider && <Divider {...styles.divider} />}
-      <Typography {...styles.sectionHeading}>{translate("tags")}</Typography>
-      <Box {...styles.listContainer}>
+    <Box data-test-selector="FilterTagList">
+      {showDivider && <Divider sx={styles.divider} />}
+      <SectionHeading>{translate("tags")}</SectionHeading>
+      <Box sx={styles.listContainer}>
         {tags?.map((tag) => {
           const checked = selectedTags?.includes(tag.slug ?? "");
           return (
-            <Chip
+            <DataChip
               key={tag.id}
               label={tag.name}
               onClick={() => toggleTag?.(tag.slug)}
-              {...styles.chip?.(tag.borderColor)}
+              sx={chipSx(tag.borderColor)}
               role="checkbox"
               aria-checked={checked}
               tabIndex={0}
@@ -160,8 +119,8 @@ const FilterTagList: FC<Props> = ({
         })}
       </Box>
       {clear && selectedTags && selectedTags.length > 0 && (
-        <Box {...styles.viewAllContainer}>
-          <Typography {...styles.viewAll} onClick={() => clear("tags")}>
+        <Box sx={styles.viewAllContainer}>
+          <Typography sx={styles.viewAll} onClick={() => clear("tags")}>
             {translate("viewAll")}
           </Typography>
         </Box>

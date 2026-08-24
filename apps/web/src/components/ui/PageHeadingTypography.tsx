@@ -5,15 +5,9 @@
  * pulling it (and everything it imports) into the client bundle of pages that
  * have nothing interactive in their hero at all.
  */
+import type { SxProps, Theme } from "@mui/material/styles";
 import React, { FC } from "react";
-import {
-  Box,
-  BoxProps,
-  ButtonProps,
-  Typography,
-  TypographyOwnProps,
-} from "@mui/material";
-import { mergeMuiProps } from "@/utils/mergeMuiProps";
+import { Box, Typography } from "@mui/material";
 import { SanityCtaField, SanityRichTextField } from "@/types";
 import RichText from "@/components/rich-text/RichText";
 import { parseLinkField } from "@/components/ui/link/parser";
@@ -24,85 +18,99 @@ interface Props {
   title?: string | SanityRichTextField | null;
   description?: string | SanityRichTextField | null;
   ctaList?: SanityCtaField[] | null;
-  extendedStyles?: PageHeadingTypographyStyles;
+  /**
+   * Per-slot overrides.
+   *
+   * Was `extendedStyles?: PageHeadingTypographyStyles` - a bag of whole MUI
+   * props objects, deep-merged with lodash so a caller could set `variant` as
+   * well as `sx`. No caller ever did: every one of them passed `sx` and
+   * nothing else. This is that, typed.
+   */
+  sx?: {
+    container?: SxProps<Theme>;
+    title?: SxProps<Theme>;
+    description?: SxProps<Theme>;
+    ctaWrapper?: SxProps<Theme>;
+    cta?: SxProps<Theme>;
+  };
 }
 
-export interface PageHeadingTypographyStyles {
-  container?: BoxProps;
-  title?: TypographyOwnProps;
-  description?: TypographyOwnProps;
-  ctaWrapper?: BoxProps;
-  cta?: ButtonProps;
-}
-
-const pageHeadingTypographyStyles: PageHeadingTypographyStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "16px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "16px",
   },
-  title: {
-    variant: "h1",
-    align: "center",
-    sx: { mb: 0 },
-  },
-  description: {
-    align: "center",
-    sx: { maxWidth: "854px" },
-  },
+  title: { mb: 0 },
+  description: { maxWidth: "854px" },
   ctaWrapper: {
-    sx: {
-      mt: "20px",
-      gap: "12px",
-      flexWrap: "wrap",
-      display: "flex",
-    },
+    mt: "20px",
+    gap: "12px",
+    flexWrap: "wrap",
+    display: "flex",
   },
   cta: {
-    variant: "contained",
-    sx: {
-      padding: "14px 10px",
-      letterSpacing: 0,
-      minWidth: { xs: "100px", sm: "172px" },
-    },
+    padding: "14px 10px",
+    letterSpacing: 0,
+    minWidth: { xs: "100px", sm: "172px" },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
+
+/** `[base, ...caller]` - MUI's own composition, later entries winning. */
+const compose = (base: SxProps<Theme>, extra?: SxProps<Theme>) =>
+  [base, ...(Array.isArray(extra) ? extra : [extra])] as SxProps<Theme>;
 
 const PageHeadingTypography: FC<Props> = ({
   title,
   description,
   ctaList,
-  extendedStyles,
+  sx,
 }) => {
   const locale = useLocale();
-  // Was a `useState` lazy initialiser, which computes once and then ignores
-  // any later `extendedStyles` - the same latent bug as in Link.tsx.
-  const styles = mergeMuiProps(pageHeadingTypographyStyles, extendedStyles);
 
   return (
-    <Box {...styles.container}>
+    <Box sx={compose(styles.container, sx?.container)}>
       {typeof title === "string" ? (
-        <Typography {...styles.title}>{title}</Typography>
+        <Typography
+          variant="h1"
+          align="center"
+          sx={compose(styles.title, sx?.title)}
+        >
+          {title}
+        </Typography>
       ) : (
-        <RichText {...styles.description}>{title}</RichText>
+        <RichText
+          align="center"
+          sx={compose(styles.description, sx?.description)}
+        >
+          {title}
+        </RichText>
       )}
       {typeof description === "string" ? (
-        <Typography {...styles.description}>{description}</Typography>
+        <Typography
+          align="center"
+          sx={compose(styles.description, sx?.description)}
+        >
+          {description}
+        </Typography>
       ) : (
-        <RichText {...styles.description}>{description}</RichText>
+        <RichText
+          align="center"
+          sx={compose(styles.description, sx?.description)}
+        >
+          {description}
+        </RichText>
       )}
       {ctaList && ctaList.length > 0 && (
-        <Box {...styles.ctaWrapper}>
+        <Box sx={compose(styles.ctaWrapper, sx?.ctaWrapper)}>
           {ctaList.map((cta, idx) => {
             const link = parseLinkField(cta.link, { locale });
             return (
               <Button
                 key={`${cta._key}_${idx}`}
-                {...styles.cta}
+                sx={compose(styles.cta, sx?.cta)}
                 variant={cta.variant || "contained"}
                 href={link.url}
               >

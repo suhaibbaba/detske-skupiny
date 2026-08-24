@@ -1,103 +1,80 @@
 "use client";
 
 import React from "react";
-import {
-  Box,
-  IconButton,
-  Typography,
-  TypographyProps,
-  LinkProps,
-  ButtonProps,
-  BoxProps,
-  ThemeProvider,
-} from "@mui/material";
+import { Box, IconButton, Typography, ThemeProvider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { MarkerData } from "@/types";
 import { getLocalizedRoutes } from "@/routes";
 import Link from "@/components/ui/link";
 import theme from "@/theme";
 import { useLocale } from "next-intl";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface PopupContentProps {
   markerData: MarkerData;
   onClose: () => void;
 }
 
-interface PopupStyles {
-  container: BoxProps;
-  closeButton: ButtonProps;
-  titleLink: LinkProps;
-  address: TypographyProps;
-}
-
-const styles: PopupStyles = {
+const styles = {
   container: {
-    sx: {
-      textAlign: "left",
-      maxWidth: 300,
-      overflow: "hidden",
-    },
+    textAlign: "left",
+    maxWidth: 300,
+    overflow: "hidden",
   },
   closeButton: {
-    size: "small",
-    disableRipple: true,
-    sx: {
-      position: "absolute",
-      top: "13px",
-      right: "2px",
-      zIndex: 10,
-      width: 26,
-      height: 26,
+    position: "absolute",
+    top: "13px",
+    right: "2px",
+    zIndex: 10,
+    width: 26,
+    height: 26,
+    bgcolor: "transparent",
+    border: "none",
+    boxShadow: "none",
+    color: "text.secondary",
+    "&:hover": {
       bgcolor: "transparent",
       border: "none",
       boxShadow: "none",
-      color: "text.secondary",
-      "&:hover": {
-        bgcolor: "transparent",
-        border: "none",
-        boxShadow: "none",
-        color: "error.main",
-      },
-      "&:active": {
-        bgcolor: "transparent",
-        border: "none",
-        boxShadow: "none",
-        color: "error.dark",
-      },
-      "&:focus": {
-        bgcolor: "transparent",
-        border: "none",
-        boxShadow: "none",
-      },
+      color: "error.main",
+    },
+    "&:active": {
+      bgcolor: "transparent",
+      border: "none",
+      boxShadow: "none",
+      color: "error.dark",
+    },
+    "&:focus": {
+      bgcolor: "transparent",
+      border: "none",
+      boxShadow: "none",
     },
   },
   titleLink: {
-    sx: {
-      fontSize: "16px",
-      mb: "16px",
-      display: "inline-block",
-      maxWidth: "95%",
-      "&:hover": {
-        color: "primary.main",
-      },
+    fontSize: "16px",
+    mb: "16px",
+    display: "inline-block",
+    maxWidth: "95%",
+    "&:hover": {
+      color: "primary.main",
     },
   },
   address: {
-    sx: {
-      fontSize: "16px",
-      textAlign: "left",
-    },
+    fontSize: "16px",
+    textAlign: "left",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
   const locale = useLocale();
   return (
     <ThemeProvider theme={theme}>
-      <Box {...styles.container} data-test-selector="PopupContent">
+      <Box sx={styles.container} data-test-selector="PopupContent">
         <IconButton
           onClick={onClose}
-          {...styles.closeButton}
+          sx={styles.closeButton}
+          size="small"
+          disableRipple
           aria-label="Close popup"
         >
           <CloseIcon fontSize="small" />
@@ -106,7 +83,7 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
         {markerData.name && markerData.slug && (
           <Link
             href={getLocalizedRoutes(locale).group(markerData.slug)}
-            {...styles.titleLink}
+            sx={styles.titleLink}
           >
             {markerData.name}
           </Link>
@@ -114,7 +91,6 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
 
         {markerData.fullAddress && (
           <Typography
-            {...styles.address}
             sx={{
               color: "text.secondary",
             }}

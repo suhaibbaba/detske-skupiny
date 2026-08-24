@@ -1,7 +1,4 @@
-import type {
-  BreadcrumbListQueryResult,
-  SchoolBreadcrumbQueryResult,
-} from "@detske-skupiny/types";
+import type { BreadcrumbListQueryResult } from "@detske-skupiny/types";
 
 export interface BreadcrumbParams {
   slugs: string[];

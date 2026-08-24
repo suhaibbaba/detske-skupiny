@@ -1,5 +1,5 @@
 import { defineQuery } from "next-sanity";
-import { Author, Blog, BlogCategory, MiniBlog } from "@/types/blog";
+import { Blog, BlogCategory, MiniBlog } from "@/types/blog";
 import { PageHero } from "@/types";
 import { languageQuery } from "@/lib/sanity/filters";
 import { sanityFetch } from "@/lib/sanity/fetch";

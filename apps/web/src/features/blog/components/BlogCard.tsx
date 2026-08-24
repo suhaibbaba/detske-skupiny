@@ -1,23 +1,14 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  BoxProps,
-  ButtonProps,
-  CardProps,
-  TypographyOwnProps,
-  CardContentProps,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import React from "react";
 import Link from "@/components/ui/link";
 import { ellipses } from "@/utils/strings";
-import { mergeMuiProps } from "@/utils/mergeMuiProps";
 import { getLocalizedRoutes } from "@/routes";
 import Button from "@/components/ui/button";
 import { getTranslateServer } from "@/hooks/useTranslate";
 import { getLocale } from "next-intl/server";
 import Image from "@/components/ui/image";
+import { custom } from "@/theme/custom";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 /**
  * What a card reads off an article.
@@ -38,98 +29,72 @@ export interface BlogCardFields {
 
 interface Props {
   blog: BlogCardFields;
-  extendedStyles?: BlogsCardStylesType;
 }
 
-export interface BlogsCardStylesType {
-  card?: CardProps;
-  cardContent?: CardContentProps;
-  tag?: TypographyOwnProps;
-  title?: TypographyOwnProps;
-  description?: TypographyOwnProps;
-  footer?: BoxProps;
-  readNowButton?: ButtonProps;
-}
-
-const blogsCardStylesType: BlogsCardStylesType = {
+const styles = {
   card: {
-    sx: {
-      borderRadius: "20px",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-      maxWidth: { xs: "100%", md: "394px" },
-      display: "flex",
-      flexDirection: "column",
-      gap: "24px",
-      p: "24px",
-    },
+    borderRadius: "20px",
+    boxShadow: custom.shadows.card,
+    maxWidth: { xs: "100%", md: "394px" },
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
+    p: "24px",
   },
   cardContent: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      flexGrow: "1",
-      gap: "12px",
-      p: 0,
-      "&:last-child": {
-        paddingBottom: 0,
-      },
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: "1",
+    gap: "12px",
+    p: 0,
+    "&:last-child": {
+      paddingBottom: 0,
     },
   },
   tag: {
-    sx: {
-      backgroundColor: "var(--mui-palette-custom-ui5)",
-      color: "var(--mui-palette-custom-ui11)",
-      borderRadius: "8px",
-      px: "10px",
-      py: "2px",
-      fontWeight: 900,
-      fontSize: "14px",
-      display: "inline-block",
-      alignSelf: "baseline",
-    },
+    backgroundColor: "custom.surfaceLilac",
+    color: "custom.textLilac",
+    borderRadius: "8px",
+    px: "10px",
+    py: "2px",
+    fontWeight: 900,
+    fontSize: "14px",
+    display: "inline-block",
+    alignSelf: "baseline",
   },
   title: {
-    sx: {
-      color: "var(--mui-palette-custom-ui13)",
-      textDecoration: "none",
-      fontWeight: 900,
-      fontSize: "20px",
-      minHeight: "60px",
-      textAlign: "left",
-      ...ellipses(2),
-    },
+    color: "custom.textHeading",
+    textDecoration: "none",
+    fontWeight: 900,
+    fontSize: "20px",
+    minHeight: "60px",
+    textAlign: "left",
+    ...ellipses(2),
   },
-  description: {
-    sx: { textAlign: "left" },
-  },
+  description: { textAlign: "left" },
   footer: {
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      mt: "auto",
-      gap: "6px",
-    },
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    mt: "auto",
+    gap: "6px",
   },
   readNowButton: {
-    sx: {
-      bgcolor: "var(--mui-palette-secondary-light)",
-      color: "var(--mui-palette-custom-ui16)",
-      boxShadow: "none",
-      fontSize: "14px",
-      fontWeight: 500,
-      p: "10px 20px",
-      borderRadius: "24px",
-      whiteSpace: "nowrap",
-      "&:hover": {
-        bgcolor: "var(--mui-palette-secondary-dark)",
-      },
+    bgcolor: "secondary.light",
+    color: "custom.labelOnSecondary",
+    boxShadow: "none",
+    fontSize: "14px",
+    fontWeight: 500,
+    p: "10px 20px",
+    borderRadius: "24px",
+    whiteSpace: "nowrap",
+    "&:hover": {
+      bgcolor: "secondary.dark",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
-const BlogCard = async ({ blog, extendedStyles }: Props) => {
-  const styles = mergeMuiProps(blogsCardStylesType, extendedStyles);
+const BlogCard = async ({ blog }: Props) => {
   const translate = await getTranslateServer();
   const locale = await getLocale();
 
@@ -137,7 +102,7 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
   const url = getLocalizedRoutes(locale).article(slug);
 
   return (
-    <Card {...styles.card}>
+    <Card sx={styles.card}>
       <Link href={url}>
         <Image
           src={image}
@@ -156,16 +121,16 @@ const BlogCard = async ({ blog, extendedStyles }: Props) => {
           }}
         />
       </Link>
-      <CardContent {...styles.cardContent}>
+      <CardContent sx={styles.cardContent}>
         {blog.category && (
-          <Typography {...styles.tag}>{blog.category.name}</Typography>
+          <Typography sx={styles.tag}>{blog.category.name}</Typography>
         )}
-        <Link href={url} {...styles.title}>
+        <Link href={url} sx={styles.title}>
           {title}
         </Link>
-        <Typography {...styles.description}>{excerpt}</Typography>
-        <Box {...styles.footer}>
-          <Button {...styles.readNowButton} href={url} fullWidth>
+        <Typography sx={styles.description}>{excerpt}</Typography>
+        <Box sx={styles.footer}>
+          <Button sx={styles.readNowButton} href={url} fullWidth>
             {translate("readNow")}
           </Button>
         </Box>

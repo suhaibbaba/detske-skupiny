@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Box,
-  BoxProps,
-  Typography,
-  TypographyProps,
-  ButtonProps,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useTranslate from "@/hooks/useTranslate";
 import { CatalogParams } from "@/features/catalog/utils";
@@ -16,6 +10,7 @@ import FilterCategoriesList from "@/features/catalog/components/filters/FilterCa
 import FilterTagList from "@/features/catalog/components/filters/FilterTagList";
 import { useSchoolFilters } from "@/features/catalog/useSchoolFilters";
 import Button from "@/components/ui/button";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 export interface Props {
   catalog: CatalogParams;
@@ -23,50 +18,35 @@ export interface Props {
   filterContent: FiltersResponse;
 }
 
-interface FilterSidebarStyles {
-  root?: BoxProps;
-  headingContainer?: BoxProps;
-  heading?: TypographyProps;
-  clearButton?: ButtonProps;
-}
-
-const styles: FilterSidebarStyles = {
+const styles = {
   root: {
-    sx: {
-      width: "100%",
-      maxWidth: {
-        xs: "100%",
-        md: "300px",
-      },
+    width: "100%",
+    maxWidth: {
+      xs: "100%",
+      md: "300px",
     },
   },
   headingContainer: {
-    sx: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      pb: "20px",
-      mb: "16px",
-      borderBottom: `1px solid var(--mui-palette-custom-ui18)`,
-    },
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    pb: "20px",
+    mb: "16px",
+    borderBottomWidth: "1px",
+    borderBottomStyle: "solid",
+    borderBottomColor: "custom.borderSubtle",
   },
   heading: {
-    sx: {
-      color: "custom.ui13",
-      textTransform: "capitalize",
-      fontWeight: 900,
-      fontSize: "20px",
-    },
+    color: "custom.textHeading",
+    textTransform: "capitalize",
+    fontWeight: 900,
+    fontSize: "20px",
   },
   clearButton: {
-    variant: "primary",
-    startIcon: <CloseIcon sx={{ width: 24, height: 24 }} />,
-    sx: {
-      p: "8px 12px",
-      fontSize: 12,
-    },
+    p: "8px 12px",
+    fontSize: 12,
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const FilterSidebar = ({
   catalog,
@@ -78,11 +58,16 @@ const FilterSidebar = ({
     useSchoolFilters();
 
   return (
-    <Box {...styles.root}>
-      <Box {...styles.headingContainer}>
-        <Typography {...styles.heading}>{translate("filters")}</Typography>
+    <Box sx={styles.root}>
+      <Box sx={styles.headingContainer}>
+        <Typography sx={styles.heading}>{translate("filters")}</Typography>
         {hasActiveFilters && (
-          <Button {...styles.clearButton} onClick={() => clear()}>
+          <Button
+            sx={styles.clearButton}
+            variant="primary"
+            startIcon={<CloseIcon sx={{ width: 24, height: 24 }} />}
+            onClick={() => clear()}
+          >
             {translate("clearAll")}
           </Button>
         )}

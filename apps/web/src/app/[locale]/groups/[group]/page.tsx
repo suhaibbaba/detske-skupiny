@@ -1,24 +1,10 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import { fetchSchoolBySlug } from "@/features/school/queries";
 import { notFound, redirect } from "next/navigation";
 import { PageProps } from "@/types";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  ListItemProps,
-  ListProps,
-  Typography,
-  TypographyProps,
-  Chip,
-  ChipProps,
-  Button,
-  IconButton,
-} from "@mui/material";
-import SchoolGallery, {
-  SchoolGalleryStyles,
-} from "@/components/rich-text/SchoolGallery";
+import PageLayout from "@/components/layout/PageLayout";
+import { Box, Container, Typography, Chip, IconButton } from "@mui/material";
+import SchoolGallery from "@/components/rich-text/SchoolGallery";
 import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import ContentSchool from "@/features/school/components/ContentSchool";
 import SchoolHeader from "@/features/school/components/SchoolHeader";
@@ -47,114 +33,73 @@ import { resolveOgImage } from "@/lib/seo/images";
 import type { School } from "@/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 
-interface PageStyles {
-  pageLayout?: PageLayoutStyles;
-  pageContainer?: BoxProps;
-  container?: ContainerProps;
-  contentWrapper?: BoxProps;
-  name?: TypographyProps;
-  logo?: BoxProps;
-  schoolGalleryStyles?: SchoolGalleryStyles;
-  list?: ListProps;
-  listItem?: ListItemProps;
-  sectionHeading?: TypographyProps;
-  chip?: ChipProps;
-  chipContainer?: BoxProps;
-}
-
-const styles: PageStyles = {
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui3)",
-        pb: { xs: 5 },
-      },
-    },
-  },
+const styles = {
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageCreamToLilac,
+    pb: { xs: 5 },
+  }),
   pageContainer: {
-    sx: {
-      pb: {
-        xs: "100px",
-        sm: "164px",
-      },
+    pb: {
+      xs: "100px",
+      sm: "164px",
     },
   },
   container: {
-    sx: {
-      mt: "20px",
-    },
+    mt: "20px",
   },
   name: {
-    variant: "h2",
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-    },
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
   },
   logo: {
-    sx: {
-      width: "100%",
-      height: "100%",
-      maxWidth: "35px",
-      maxHeight: "35px",
-    },
+    width: "100%",
+    height: "100%",
+    maxWidth: "35px",
+    maxHeight: "35px",
   },
   sectionHeading: {
-    sx: {
-      color: "custom.ui13",
-      mb: "20px",
-      mt: "80px",
-      textTransform: "capitalize",
-      fontWeight: 600,
-      fontSize: "24px",
-    },
+    color: "custom.textHeading",
+    mb: "20px",
+    mt: "80px",
+    textTransform: "capitalize",
+    fontWeight: 600,
+    fontSize: "24px",
   },
   list: {
-    disablePadding: true,
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "1fr 1fr",
-      },
-      gap: "12px",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "1fr 1fr",
     },
+    gap: "12px",
   },
   listItem: {
-    disableGutters: true,
-    disablePadding: true,
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-    },
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   },
   chipContainer: {
-    sx: {
-      display: "flex",
-      gap: "8px",
-      my: "20px",
-    },
+    display: "flex",
+    gap: "8px",
+    my: "20px",
   },
   chip: {
-    sx: {
-      borderRadius: "24px",
-      px: "6px",
-      py: "2px",
-      fontSize: 12,
-      fontWeight: 400,
-      color: "custom.ui20",
-      "& .MuiChip-label": {
-        padding: 0,
-      },
-      "& .MuiChip-icon": {
-        marginRight: "4px",
-        marginLeft: 0,
-      },
+    borderRadius: "24px",
+    px: "6px",
+    py: "2px",
+    fontSize: 12,
+    fontWeight: 400,
+    color: "custom.textSecondary",
+    "& .MuiChip-label": {
+      padding: 0,
+    },
+    "& .MuiChip-icon": {
+      marginRight: "4px",
+      marginLeft: 0,
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const schoolPaths = (locale: string, school: School) =>
   documentPaths(locale, school.slug, school.translations, (target, slug) =>
@@ -245,7 +190,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
   const website = parseLinkField(school.website, { locale });
 
   return (
-    <Box {...styles.pageContainer}>
+    <Box sx={styles.pageContainer}>
       <JsonLd
         data={schoolJsonLd({
           name: school.name,
@@ -261,22 +206,22 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
       />
       <PageLayout
         contentFullWidth={false}
-        extendedStyles={styles.pageLayout}
+        sx={styles.pageLayout}
         pathname={getLocalizedRoutes(locale).group(groupSlug)}
       >
         <PageHeadingTypography title={school?.name} />
       </PageLayout>
-      <Container {...styles.container}>
-        <Box {...styles.contentWrapper}>
+      <Container sx={styles.container}>
+        <Box>
           <SchoolGallery
             gallery={school.primaryImages}
             logo={school.logo}
             name={school.name}
             mainImageLqip={school.primaryImageLqip}
-            extendedStyles={{ container: { sx: { mt: "40px" } } }}
+            sx={{ mt: "40px" }}
           />
           {/* <SchoolHeader school={school} /> */}
-          <Box {...styles.chipContainer}>
+          <Box sx={styles.chipContainer}>
             {school?.categories?.map((category) => (
               <Chip
                 component="a"
@@ -289,7 +234,7 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                 )}
                 variant="outlined"
                 color="primary"
-                {...styles.chip}
+                sx={styles.chip}
               />
             ))}
             <Chip
@@ -300,16 +245,15 @@ const SchoolContent = async ({ params }: PageProps<{ group: string }>) => {
                 school.region?.fullSlug,
               )}
               variant="outlined"
-              {...styles.chip}
+              sx={styles.chip}
             />
             <Chip
               component="a"
               clickable
               label={school.area?.name}
               href={getLocalizedRoutes(locale).catalogs(school.area?.fullSlug)}
-              {...styles.chip}
               variant="outlined"
-              sx={{ color: "custom.ui20", borderColor: "#B2AD88" }}
+              sx={{ color: "custom.textSecondary", borderColor: "#B2AD88" }}
             />
           </Box>
           <InfoCardGrid

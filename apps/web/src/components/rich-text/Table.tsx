@@ -1,3 +1,4 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import {
   Box,
   Table as MuiTable,
@@ -7,7 +8,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TypographyProps,
 } from "@mui/material";
 import useTranslate from "@/hooks/useTranslate";
 
@@ -22,18 +22,12 @@ interface Props {
   };
 }
 
-interface TableStyles {
-  title?: TypographyProps;
-}
-
-const styles: TableStyles = {
+const styles = {
   title: {
-    sx: {
-      mb: "20px",
-      mt: "80px",
-    },
+    mb: "20px",
+    mt: "80px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 export default function Table({ value }: Props) {
   const translate = useTranslate();
@@ -44,7 +38,7 @@ export default function Table({ value }: Props) {
   return (
     <Box component="section">
       {value.heading && (
-        <Typography variant="h2" {...styles.title}>
+        <Typography variant="h2" sx={styles.title}>
           {translate(value.heading)}
         </Typography>
       )}

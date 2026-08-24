@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Box, BoxProps, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress } from "@mui/material";
 import SchoolGridCard from "@/features/catalog/components/SchoolGridCard";
 import useTranslate from "@/hooks/useTranslate";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -16,6 +16,7 @@ import {
   catalogParsers,
   type LoadMoreInput,
 } from "@/features/catalog/searchParams";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   /**
@@ -34,42 +35,30 @@ interface Props {
   filterProps: FilterSidebarProps;
 }
 
-interface SchoolListStyles {
-  container?: BoxProps;
-  listContainer?: BoxProps;
-  loadingContainer?: BoxProps;
-}
-
-const styles: SchoolListStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "26px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    gap: "26px",
   },
   listContainer: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "repeat(auto-fit, minmax(232px, 1fr))",
-        md: "repeat(auto-fit, minmax(232px, 280px))",
-      },
-      gap: {
-        xs: "20px",
-        md: "24px",
-      },
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "repeat(auto-fit, minmax(232px, 1fr))",
+      md: "repeat(auto-fit, minmax(232px, 280px))",
+    },
+    gap: {
+      xs: "20px",
+      md: "24px",
     },
   },
   loadingContainer: {
-    sx: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    },
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolList: FC<Props> = ({
   schools: serverSchools,
@@ -144,7 +133,7 @@ const SchoolList: FC<Props> = ({
   });
 
   return (
-    <Box {...styles.container} data-test-selector="SchoolList">
+    <Box sx={styles.container} data-test-selector="SchoolList">
       <SchoolsMap markers={markers} />
       <SchoolsCount
         filterTotal={totalSelectedSchools}
@@ -152,11 +141,10 @@ const SchoolList: FC<Props> = ({
         filterProps={filterProps}
       />
       <Box
-        {...styles.listContainer}
         aria-busy={isPending}
         data-pending={isPending ? "true" : undefined}
         sx={{
-          ...styles.listContainer?.sx,
+          ...styles.listContainer,
           opacity: isPending ? 0.5 : 1,
           transition: "opacity 150ms ease-in-out",
         }}
@@ -178,7 +166,7 @@ const SchoolList: FC<Props> = ({
         )}
       </Box>
       {loadingMore && (
-        <Box {...styles.loadingContainer}>
+        <Box sx={styles.loadingContainer}>
           <CircularProgress />
         </Box>
       )}

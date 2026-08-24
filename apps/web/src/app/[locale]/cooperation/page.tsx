@@ -1,8 +1,9 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import { fetchPageByType } from "@/lib/sanity/page";
-import { Box, BoxProps } from "@mui/material";
+import { Box } from "@mui/material";
 import Zone from "@/sections/Zone";
 import { PageProps } from "@/types";
-import PageLayout, { PageLayoutStyles } from "@/components/layout/PageLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import PageHeadingTypography from "@/components/ui/PageHeadingTypography";
 import { Metadata } from "next";
 import { getTranslateServer } from "@/hooks/useTranslate";
@@ -11,30 +12,16 @@ import { setRequestLocale } from "next-intl/server";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { staticRoutePaths } from "@/lib/seo/routes";
 
-interface CooperationStyles {
-  pageLayout?: PageLayoutStyles;
-  container?: BoxProps;
-}
-
-const styles: CooperationStyles = {
-  pageLayout: {
-    section: {
-      sx: {
-        background: "var(--mui-palette-gradients-ui1)",
-        pb: {
-          xs: "64px",
-          sm: "130px",
-        },
-      },
-    },
-  },
+const styles = {
+  pageLayout: (theme: Theme) => ({
+    background: theme.custom.gradients.pageLilacToCream,
+    pb: { xs: "64px", sm: "130px" },
+  }),
   container: {
-    sx: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
-    },
+    display: "grid",
+    gridTemplateColumns: "1fr",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 export async function generateMetadata({
   params,
@@ -67,11 +54,11 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <PageLayout
-      extendedStyles={styles.pageLayout}
+      sx={styles.pageLayout}
       contentFullWidth
       pathname={getLocalizedRoutes(queryParams.locale).cooperation}
     >
-      <Box {...styles.container}>
+      <Box sx={styles.container}>
         <Zone sections={data?.sections} types="all" {...queryParams} />
       </Box>
     </PageLayout>

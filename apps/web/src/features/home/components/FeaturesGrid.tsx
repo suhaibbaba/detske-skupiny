@@ -1,12 +1,6 @@
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Container, Typography } from "@mui/material";
+
 import { SanityImageField } from "@/types";
 import Image, { type ImageProps } from "@/components/ui/image";
 
@@ -24,96 +18,71 @@ interface Props {
   };
 }
 
-interface PremiumSchoolsFeatureSectionStyles {
-  section?: BoxProps;
-  container?: ContainerProps;
-  heading?: TypographyProps;
-  subheading?: TypographyProps;
-  grid?: BoxProps;
-  item?: BoxProps;
-  icon?: ImageProps;
-  itemTitle?: TypographyProps;
-  itemDescription?: TypographyProps;
-}
-
-const styles: PremiumSchoolsFeatureSectionStyles = {
+const styles = {
   section: {
-    sx: {
-      bgcolor: "secondary.main",
-      py: { xs: "50px", md: "100px" },
-      textAlign: "center",
-    },
+    bgcolor: "secondary.main",
+    py: { xs: "50px", md: "100px" },
+    textAlign: "center",
   },
   heading: {
-    variant: "h1",
-    sx: {
-      mb: "12px",
-    },
+    mb: "12px",
   },
   subheading: {},
   grid: {
-    sx: {
-      display: {
-        xs: "flex",
-        md: "grid",
-      },
-      flexDirection: {
-        xs: "column",
-        md: "row",
-      },
-      alignItems: {
-        xs: "center",
-        md: "unset",
-      },
-      gridTemplateColumns: {
-        md: "repeat(3, 1fr)",
-      },
-      columnGap: {
-        md: "94px",
-      },
-      rowGap: {
-        xs: "60px",
-        sm: "70px",
-      },
-      mt: "80px",
+    display: {
+      xs: "flex",
+      md: "grid",
     },
+    flexDirection: {
+      xs: "column",
+      md: "row",
+    },
+    alignItems: {
+      xs: "center",
+      md: "unset",
+    },
+    gridTemplateColumns: {
+      md: "repeat(3, 1fr)",
+    },
+    columnGap: {
+      md: "94px",
+    },
+    rowGap: {
+      xs: "60px",
+      sm: "70px",
+    },
+    mt: "80px",
   },
   item: {
-    sx: {
-      textAlign: "center",
-      maxWidth: "250px",
-      mx: "auto",
-    },
+    textAlign: "center",
+    maxWidth: "250px",
+    mx: "auto",
   },
   icon: {
-    sx: {
-      width: "58px",
-      height: "58px",
-      mb: "12px",
-    },
+    width: "58px",
+    height: "58px",
+    mb: "12px",
   },
   itemTitle: {
-    sx: {
-      color: "custom.ui13",
-      fontSize: "16px",
-      fontWeight: 900,
-      mb: "12px",
-    },
+    color: "custom.textHeading",
+    fontSize: "16px",
+    fontWeight: 900,
+    mb: "12px",
   },
   itemDescription: {
-    sx: {
-      textAlign: "center",
-    },
+    textAlign: "center",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const FeaturesGrid = ({ fields }: Props) => {
   return (
-    <Box {...styles.section}>
-      <Container {...styles.container}>
-        <Typography {...styles.heading}>{fields.title}</Typography>
-        <Typography {...styles.subheading}>{fields.description}</Typography>
-        <Box {...styles.grid}>
+    <Box sx={styles.section}>
+      <Container>
+        <Typography sx={styles.heading} variant="h1">
+          {fields.title}
+        </Typography>
+        <Typography>{fields.description}</Typography>
+        <Box sx={styles.grid}>
           {fields.items?.map((feature, idx) => {
             const index = idx + 1; // Start from 1 to simplify logic
 
@@ -139,22 +108,21 @@ const FeaturesGrid = ({ fields }: Props) => {
             return (
               <Box
                 key={index}
-                {...styles.item}
                 sx={{
-                  ...styles.item?.sx,
+                  ...styles.item,
                   gridColumn,
                   gridRow,
                   alignSelf,
                 }}
               >
                 <Image
-                  {...styles.icon}
+                  sx={styles.icon}
                   src={feature.icon}
                   alt={feature.title}
                   sizes="64px"
                 />
-                <Typography {...styles.itemTitle}>{feature.title}</Typography>
-                <Typography {...styles.itemDescription}>
+                <Typography sx={styles.itemTitle}>{feature.title}</Typography>
+                <Typography sx={styles.itemDescription}>
                   {feature.description}
                 </Typography>
               </Box>

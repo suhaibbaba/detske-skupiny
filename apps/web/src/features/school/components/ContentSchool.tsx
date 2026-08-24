@@ -1,5 +1,6 @@
+import type { SxProps, Theme } from "@mui/material/styles";
 import React, { FC } from "react";
-import { Box, BoxProps, TypographyProps } from "@mui/material";
+import { Box } from "@mui/material";
 import { School } from "@/types";
 import RichText from "@/components/rich-text/RichText";
 
@@ -9,39 +10,26 @@ interface Props {
   school: School;
 }
 
-interface AboutSchoolStyles {
-  container?: BoxProps;
-  title?: TypographyProps;
-  description?: TypographyProps;
-  tagsContainer?: BoxProps;
-}
-
-const styles: AboutSchoolStyles = {
+const styles = {
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      mt: "80px",
-    },
+    display: "flex",
+    flexDirection: "column",
+    mt: "80px",
   },
-  title: {
-    variant: "h3",
-  },
+  title: {},
   tagsContainer: {
-    sx: {
-      mt: "20px",
-      gap: "16px",
-      display: "flex",
-    },
+    mt: "20px",
+    gap: "16px",
+    display: "flex",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const ContentSchool: FC<Props> = ({ content }) => {
   if (!content) return null;
 
   return (
-    <Box {...styles.container}>
-      <RichText {...styles.description}>{content}</RichText>
+    <Box sx={styles.container}>
+      <RichText>{content}</RichText>
     </Box>
   );
 };

@@ -3,18 +3,11 @@
 import { useState } from "react";
 import {
   AppBar,
-  AppBarProps,
   Toolbar,
-  ToolbarProps,
   Container,
   Drawer,
   IconButton,
-  IconButtonProps,
   Box,
-  BoxProps,
-  SvgIconProps,
-  ButtonProps,
-  DrawerProps,
 } from "@mui/material";
 import Link from "next/link";
 import Button from "@/components/ui/button";
@@ -26,106 +19,67 @@ import HeaderMenuIcon from "@/components/icons/HeaderMenuIcon";
 import { useLocale } from "next-intl";
 import LanguageSwitcher from "@/components/ui/language/LanguageSwitcher";
 import Image, { type ImageProps } from "@/components/ui/image";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   header?: Header | null;
 }
 
-interface HeaderStyles {
-  root: BoxProps;
-  appBar: AppBarProps;
-  toolbar: ToolbarProps;
-  logo: ImageProps;
-  drawerLogoContainer: BoxProps;
-  menuButton: IconButtonProps;
-  menuIcon: SvgIconProps;
-  cta?: ButtonProps;
-  ctaMobile?: ButtonProps;
-  drawer?: DrawerProps;
-}
-
-const styles: HeaderStyles = {
+const styles = {
   root: {
-    sx: {
-      borderBottom: 1,
-      borderColor: "#E7E8EA",
-      boxShadow:
-        "0px 1px 8px 1px rgba(0, 0, 0, 0.08), 0px 1px 7px 0px rgba(0, 0, 0, 0.1)",
-    },
+    borderBottom: 1,
+    borderColor: "#E7E8EA",
+    boxShadow:
+      "0px 1px 8px 1px rgba(0, 0, 0, 0.08), 0px 1px 7px 0px rgba(0, 0, 0, 0.1)",
   },
   appBar: {
-    sx: {
-      backgroundColor: "white",
-      py: 1.5,
-      boxShadow: "none",
-    },
+    backgroundColor: "white",
+    py: 1.5,
+    boxShadow: "none",
   },
   toolbar: {
-    sx: {
-      display: "flex",
-      justifyContent: "space-between",
-      px: "0 !important",
-    },
+    display: "flex",
+    justifyContent: "space-between",
+    px: "0 !important",
   },
   logo: {
-    sx: {
-      width: "120px",
-      display: "block",
-      marginLeft: "auto",
-      marginRight: "auto",
-    },
+    width: "120px",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   drawerLogoContainer: {
-    sx: {
-      p: "8px 0 9px",
-      mb: "12px",
-      borderBottom: `1px solid var(--mui-palette-custom-ui14)`,
-    },
+    p: "8px 0 9px",
+    mb: "12px",
+    borderBottomWidth: "1px",
+    borderBottomStyle: "solid",
+    borderBottomColor: "custom.borderLilac",
   },
   menuButton: {
-    sx: {
-      display: {
-        md: "none",
-      },
+    display: {
+      md: "none",
     },
   },
   menuIcon: {
-    sx: {
-      color: "primary.main",
-      fontSize: 40,
-    },
+    color: "primary.main",
+    fontSize: 40,
   },
   cta: {
-    variant: "primary",
-    sx: {
-      padding: "10px 20px",
-      display: {
-        xs: "none",
-        md: "flex",
-      },
+    padding: "10px 20px",
+    display: {
+      xs: "none",
+      md: "flex",
     },
   },
   ctaMobile: {
-    variant: "ghost",
-    sx: {
-      mt: "16px",
-    },
+    mt: "16px",
   },
   drawer: {
-    slotProps: {
-      paper: {
-        sx: {
-          backgroundColor: "primary.main",
-        },
-      },
-    },
-    sx: {
-      display: {
-        md: "none",
-      },
+    display: {
+      md: "none",
     },
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const HeaderClientPage = ({ header }: Props) => {
   const locale = useLocale();
@@ -140,10 +94,10 @@ const HeaderClientPage = ({ header }: Props) => {
   }
 
   return (
-    <Box {...styles.root}>
+    <Box sx={styles.root}>
       <Container>
-        <AppBar position="static" {...styles.appBar}>
-          <Toolbar {...styles.toolbar}>
+        <AppBar position="static" sx={styles.appBar}>
+          <Toolbar sx={styles.toolbar}>
             <Link href={getLocalizedRoutes(locale).home}>
               {/*
                * The header logo is the first image on every page, so it is
@@ -157,21 +111,28 @@ const HeaderClientPage = ({ header }: Props) => {
                 // `next/image` sizes the srcset from the asset's intrinsic
                 // width instead and offers a 3840px file for a 120px slot.
                 sizes="120px"
-                {...styles.logo}
+                sx={styles.logo}
               />
             </Link>
             <IconButton
-              {...styles.menuButton}
+              sx={styles.menuButton}
               onClick={() => setMenuOpen(true)}
             >
-              <HeaderMenuIcon {...styles.menuIcon} />
+              <HeaderMenuIcon sx={styles.menuIcon} />
             </IconButton>
             <Drawer
               anchor="left"
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
               ModalProps={{ keepMounted: true }}
-              {...styles.drawer}
+              sx={styles.drawer}
+              slotProps={{
+                paper: {
+                  sx: {
+                    backgroundColor: "primary.main",
+                  },
+                },
+              }}
             >
               <Box
                 sx={{
@@ -181,12 +142,12 @@ const HeaderClientPage = ({ header }: Props) => {
                   flexGrow: 1,
                 }}
               >
-                <Box {...styles.drawerLogoContainer}>
+                <Box sx={styles.drawerLogoContainer}>
                   <Image
                     src={header.logoInverse}
                     alt="Logo"
                     sizes="120px"
-                    {...styles.logo}
+                    sx={styles.logo}
                   />
                 </Box>
                 <Menu
@@ -197,7 +158,8 @@ const HeaderClientPage = ({ header }: Props) => {
                   <Button
                     startIcon={<AddCircleRoundedIcon />}
                     link={header.cta.link}
-                    {...styles.ctaMobile}
+                    sx={styles.ctaMobile}
+                    variant="ghost"
                     onClick={handleCloseDrawer}
                   />
                 )}
@@ -210,9 +172,16 @@ const HeaderClientPage = ({ header }: Props) => {
             {header.cta && (
               <Button
                 startIcon={<AddCircleRoundedIcon />}
-                variant={header.cta.variant}
                 link={header.cta.link}
-                {...styles.cta}
+                sx={styles.cta}
+                /*
+                 * "primary", not `header.cta.variant`. The style object this
+                 * replaces set `variant: "primary"` and was spread AFTER the
+                 * `variant={header.cta.variant}` that used to sit here, so the
+                 * editor's choice has never reached this button. Preserved as
+                 * it renders today rather than fixed in a refactor pass.
+                 */
+                variant="primary"
               />
             )}
           </Toolbar>

@@ -1,11 +1,5 @@
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemProps,
-  ListItemText,
-  ListProps as MuiListProps,
-} from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { FC } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -13,33 +7,21 @@ export interface ListProps {
   items: { text?: string }[];
 }
 
-interface CheckListStyles {
-  list?: MuiListProps;
-  listItem?: ListItemProps;
-}
-
-const styles: CheckListStyles = {
+const styles = {
   list: {
-    disablePadding: true,
-    sx: {
-      display: "grid",
-      gridTemplateColumns: {
-        xs: "1fr",
-        sm: "1fr 1fr",
-      },
-      gap: "12px",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr",
+      sm: "1fr 1fr",
     },
+    gap: "12px",
   },
   listItem: {
-    disableGutters: true,
-    disablePadding: true,
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-    },
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const CheckList: FC<ListProps> = ({ items }) => {
   if (!items || items.length === 0) {
@@ -47,9 +29,14 @@ const CheckList: FC<ListProps> = ({ items }) => {
   }
 
   return (
-    <List {...styles.list}>
+    <List sx={styles.list} disablePadding>
       {items.map((item) => (
-        <ListItem key={item.text} {...styles.listItem}>
+        <ListItem
+          key={item.text}
+          sx={styles.listItem}
+          disableGutters
+          disablePadding
+        >
           <ListItemIcon sx={{ minWidth: "initial" }}>
             <CheckIcon color="success" />
           </ListItemIcon>

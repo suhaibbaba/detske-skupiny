@@ -4,7 +4,7 @@ import Typography, { TypographyProps } from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { PortableTextBlock } from "@portabletext/types";
 import Link from "@/components/ui/link";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+
 import CheckList from "@/components/rich-text/CheckList";
 import { SanityRichTextField } from "@/types";
 import Table from "@/components/rich-text/Table";

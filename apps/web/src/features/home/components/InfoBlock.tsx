@@ -1,19 +1,13 @@
-import {
-  Box,
-  BoxProps,
-  ButtonProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Container, Typography } from "@mui/material";
 import { SanityCtaField, SanityImageField } from "@/types";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
 import { sharedClassNames } from "@/features/home/utils";
 import { getLocale } from "next-intl/server";
 import Image from "@/components/ui/image";
+import { custom } from "@/theme/custom";
 
 interface Props {
   fields: {
@@ -24,100 +18,72 @@ interface Props {
   };
 }
 
-interface NeighbourKinderGroupSectionStyles {
-  section?: BoxProps;
-  container?: ContainerProps;
-  contentWrapper?: BoxProps;
-  textBlock?: BoxProps;
-  heading?: TypographyProps;
-  description?: TypographyProps;
-  ctaButton?: ButtonProps;
-  imageWrapper?: BoxProps;
-  image?: BoxProps;
-}
-
-const styles: NeighbourKinderGroupSectionStyles = {
+const styles = {
   section: {
-    sx: {
-      bgcolor: "common.white",
-      py: {
-        xs: "100px",
-        md: "120px",
-      },
+    bgcolor: "common.white",
+    py: {
+      xs: "100px",
+      md: "120px",
     },
   },
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: {
-        xs: "column",
-        md: "row",
-      },
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: "80px",
+    display: "flex",
+    flexDirection: {
+      xs: "column",
+      md: "row",
     },
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "80px",
   },
   textBlock: {
-    sx: {
-      flex: 1,
-      maxWidth: "467px",
-    },
+    flex: 1,
+    maxWidth: "467px",
   },
   heading: {
-    component: "h1",
-    variant: "h1",
-    sx: {
-      mb: "12px",
-    },
+    mb: "12px",
   },
   description: {
-    sx: {
-      mb: "24px",
-      textAlign: {
-        xs: "center",
-        md: "left",
-      },
+    mb: "24px",
+    textAlign: {
+      xs: "center",
+      md: "left",
     },
   },
   imageWrapper: {
-    sx: {
-      flex: 1,
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: "24px",
-      overflow: "hidden",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-      bgcolor: "var(--mui-palette-common-white)",
-      p: "20px 24px",
-    },
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "24px",
+    overflow: "hidden",
+    boxShadow: custom.shadows.card,
+    bgcolor: "var(--mui-palette-common-white)",
+    p: "20px 24px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const InfoBlock = async ({ fields }: Props) => {
   const locale = await getLocale();
   const link = parseLinkField(fields.cta?.link, { locale });
 
   return (
-    <Box {...styles.section} className={sharedClassNames.infoBlock}>
-      <Container {...styles.container}>
-        <Box {...styles.textBlock}>
-          <Typography {...styles.heading}>{fields.title}</Typography>
-          <Typography {...styles.description}>{fields.description}</Typography>
+    <Box sx={styles.section} className={sharedClassNames.infoBlock}>
+      <Container sx={styles.container}>
+        <Box sx={styles.textBlock}>
+          <Typography sx={styles.heading} component="h1" variant="h1">
+            {fields.title}
+          </Typography>
+          <Typography sx={styles.description}>{fields.description}</Typography>
           {fields.cta && (
-            <Button
-              {...styles.ctaButton}
-              variant={fields.cta.variant}
-              href={link.url}
-            >
+            <Button variant={fields.cta.variant} href={link.url}>
               {link.text}
             </Button>
           )}
         </Box>
 
-        <Box {...styles.imageWrapper}>
+        <Box sx={styles.imageWrapper}>
           <Image
             src={fields.image}
             alt={fields.title}

@@ -1,37 +1,30 @@
-import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Typography } from "@mui/material";
 import { hasPosition, type School } from "@/types";
 import useTranslate from "@/hooks/useTranslate";
 import MapComponent from "@/components/map/LazyMap";
 import { parseAddress } from "@/features/school/utils";
+import { custom } from "@/theme/custom";
 
 interface Props {
   school?: School;
 }
 
-interface SchoolMapStyles {
-  title?: TypographyProps;
-  mapWrapper?: BoxProps;
-}
-
-const styles: SchoolMapStyles = {
+const styles = {
   title: {
-    sx: {
-      mb: "20px",
-      mt: "80px",
-    },
+    mb: "20px",
+    mt: "80px",
   },
   mapWrapper: {
-    sx: {
-      bgcolor: "common.white",
-      width: "100%",
-      maxHeight: "426px",
-      height: "426px",
-      borderRadius: "24px",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-      p: "20px",
-    },
+    bgcolor: "common.white",
+    width: "100%",
+    maxHeight: "426px",
+    height: "426px",
+    borderRadius: "24px",
+    boxShadow: custom.shadows.card,
+    p: "20px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolMap = ({ school }: Props) => {
   const translate = useTranslate();
@@ -43,10 +36,10 @@ const SchoolMap = ({ school }: Props) => {
 
   return (
     <Box component="section" id="map">
-      <Typography variant="h2" {...styles.title}>
+      <Typography variant="h2" sx={styles.title}>
         {translate("map")}
       </Typography>
-      <Box {...styles.mapWrapper}>
+      <Box sx={styles.mapWrapper}>
         <MapComponent
           defaultCenter={marker.coordinate}
           markers={[marker]}

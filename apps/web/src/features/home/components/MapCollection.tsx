@@ -1,19 +1,13 @@
 "use client";
 
-import {
-  Box,
-  BoxProps,
-  ButtonProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { MapCoordinate, MarkerData, Region } from "@/types";
 import Button from "@/components/ui/button";
 import MapComponent from "@/components/map/LazyMap";
 import useTranslate from "@/hooks/useTranslate";
 import { useState } from "react";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 
 interface Props {
   fields: {
@@ -25,83 +19,58 @@ interface Props {
   };
 }
 
-interface MapCollectionStyles {
-  section?: BoxProps;
-  container?: ContainerProps;
-  title?: TypographyProps;
-  description?: TypographyProps;
-  filterWrapper?: BoxProps;
-  filterButton?: ButtonProps;
-  mapWrapper?: BoxProps;
-}
-
-const styles: MapCollectionStyles = {
+const styles = {
   section: {
-    sx: {
-      bgcolor: "var(--mui-palette-secondary-main)",
-      pt: { xs: "100px", md: "100px" },
-      pb: { xs: "100px", md: "120px" },
-      textAlign: "center",
-    },
+    bgcolor: "var(--mui-palette-secondary-main)",
+    pt: { xs: "100px", md: "100px" },
+    pb: { xs: "100px", md: "120px" },
+    textAlign: "center",
   },
   container: {
-    sx: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   title: {
-    variant: "h1",
-    sx: {
-      mb: "12px",
-    },
+    mb: "12px",
   },
   description: {
-    sx: {
-      mb: "46px",
-    },
+    mb: "46px",
   },
   filterWrapper: {
-    sx: {
-      display: "flex",
-      gap: "24px",
-      justifyContent: "center",
-      flexDirection: {
-        xs: "column",
-        sm: "row",
-      },
-      width: "100%",
+    display: "flex",
+    gap: "24px",
+    justifyContent: "center",
+    flexDirection: {
+      xs: "column",
+      sm: "row",
     },
+    width: "100%",
   },
   filterButton: {
-    sx: {
-      width: "100%",
-      "&.selected": {
-        borderColor: "custom.ui11",
-      },
+    width: "100%",
+    "&.selected": {
+      borderColor: "custom.textLilac",
     },
   },
   mapWrapper: {
-    sx: {
-      bgcolor: "common.white",
-      position: "relative",
-      width: "100%",
-      maxHeight: {
-        xs: "520px",
-        sm: "686px",
-      },
-      height: {
-        xs: "520px",
-        sm: "686px",
-      },
-      mt: "48px",
-      borderRadius: "24px",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-      p: "20px",
+    bgcolor: "common.white",
+    position: "relative",
+    width: "100%",
+    maxHeight: {
+      xs: "520px",
+      sm: "686px",
     },
+    height: {
+      xs: "520px",
+      sm: "686px",
+    },
+    mt: "48px",
+    borderRadius: "24px",
+    boxShadow: custom.shadows.card,
+    p: "20px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const MapCollection = ({ fields }: Props) => {
   const [selectedRegionId, setSelectedRegionId] = useState("");
@@ -112,14 +81,16 @@ const MapCollection = ({ fields }: Props) => {
   };
 
   return (
-    <Box {...styles.section} data-test-selection="MapCollection">
-      <Container {...styles.container}>
-        <Typography {...styles.title}>{fields.title}</Typography>
-        <Typography {...styles.description}>{fields.description}</Typography>
-        <Box {...styles.filterWrapper}>
+    <Box sx={styles.section} data-test-selection="MapCollection">
+      <Container sx={styles.container}>
+        <Typography sx={styles.title} variant="h1">
+          {fields.title}
+        </Typography>
+        <Typography sx={styles.description}>{fields.description}</Typography>
+        <Box sx={styles.filterWrapper}>
           <Button
             variant="ghost"
-            {...styles.filterButton}
+            sx={styles.filterButton}
             onClick={() => onSelectedRegionIdClick("")}
             className={!selectedRegionId ? "selected" : ""}
           >
@@ -131,7 +102,7 @@ const MapCollection = ({ fields }: Props) => {
               <Button
                 key={region.id}
                 variant="ghost"
-                {...styles.filterButton}
+                sx={styles.filterButton}
                 className={region.id === selectedRegionId ? "selected" : ""}
                 onClick={() => onSelectedRegionIdClick(region.id)}
               >
@@ -140,7 +111,7 @@ const MapCollection = ({ fields }: Props) => {
             );
           })}
         </Box>
-        <Box {...styles.mapWrapper}>
+        <Box sx={styles.mapWrapper}>
           <MapComponent
             selectedRegionId={selectedRegionId}
             defaultCenter={fields.defaultCenter}

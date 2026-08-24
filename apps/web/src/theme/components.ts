@@ -75,7 +75,7 @@ export const components: ThemeOptions["components"] = {
         fontFamily: nunitoFontFamily,
       },
       outlined: {
-        color: baseTheme.palette.custom.ui1,
+        color: baseTheme.palette.custom.labelStrong,
         border: "1px solid",
       },
       text: {
@@ -101,7 +101,7 @@ export const components: ThemeOptions["components"] = {
           ...createButtonStyle({
             bgColor: baseTheme.palette.secondary.light,
             hoverBgColor: baseTheme.palette.secondary.dark,
-            textColor: baseTheme.palette.custom.ui16,
+            textColor: baseTheme.palette.custom.labelOnSecondary,
           }),
         },
       },
@@ -110,9 +110,9 @@ export const components: ThemeOptions["components"] = {
         style: {
           ...createButtonStyle({
             bgColor: baseTheme.palette.common.white,
-            hoverBgColor: baseTheme.palette.custom.ui17,
-            textColor: baseTheme.palette.custom.ui1,
-            borderColor: baseTheme.palette.custom.ui17,
+            hoverBgColor: baseTheme.palette.custom.ghostHover,
+            textColor: baseTheme.palette.custom.labelStrong,
+            borderColor: baseTheme.palette.custom.ghostHover,
           }),
         },
       },
@@ -142,7 +142,7 @@ export const components: ThemeOptions["components"] = {
     styleOverrides: {
       root: {
         padding: "0 24px 24px 48px",
-        color: "#6C7685",
+        color: baseTheme.palette.custom.textBody,
         fontSize: "20px",
         fontFamily: nunitoFontFamily,
       },
@@ -190,7 +190,7 @@ export const components: ThemeOptions["components"] = {
   MuiTableHead: {
     styleOverrides: {
       root: {
-        backgroundColor: "#FBF8FE",
+        backgroundColor: baseTheme.palette.primary.light,
         fontFamily: nunitoFontFamily,
       },
     },
@@ -199,20 +199,20 @@ export const components: ThemeOptions["components"] = {
     styleOverrides: {
       root: {
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: baseTheme.palette.custom.ui2,
+          borderColor: baseTheme.palette.custom.inputBorder,
           transition: "all 0.3s ease",
         },
         "&:hover .MuiOutlinedInput-notchedOutline": {
           borderColor: alpha(baseTheme.palette.common.black, 0.87),
         },
         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: baseTheme.palette.custom.ui4, // border on focus
+          borderColor: baseTheme.palette.custom.inputBorderFocused, // border on focus
           borderWidth: "2px",
         },
       },
       input: {
         "&::placeholder": {
-          color: baseTheme.palette.custom.ui3,
+          color: baseTheme.palette.custom.textBody,
           opacity: 1,
           fontSize: 14,
         },
@@ -257,14 +257,14 @@ export const components: ThemeOptions["components"] = {
         },
         "& .MuiSvgIcon-root": {
           color: "transparent",
-          border: "0.5px solid #848C99",
+          border: `0.5px solid ${baseTheme.palette.custom.inputBorder}`,
           borderRadius: "4px",
           backgroundColor: "#EDEEF0",
         },
         "&.Mui-checked .MuiSvgIcon-root": {
-          backgroundColor: "#9980B0",
-          borderColor: "#9980B0",
-          color: "#fff",
+          backgroundColor: baseTheme.palette.primary.main,
+          borderColor: baseTheme.palette.primary.main,
+          color: baseTheme.palette.common.white,
         },
       },
     },

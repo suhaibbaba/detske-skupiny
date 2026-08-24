@@ -1,29 +1,25 @@
-import { Box, BoxProps } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box } from "@mui/material";
 import MapComponent from "@/components/map/LazyMap";
 import { hasPosition, type MarkerData } from "@/types";
+import { custom } from "@/theme/custom";
 
 interface Props {
   markers?: MarkerData[];
 }
 
-interface SchoolsMapStyles {
-  mapWrapper?: BoxProps;
-}
-
-const styles: SchoolsMapStyles = {
+const styles = {
   mapWrapper: {
-    sx: {
-      bgcolor: "common.white",
-      position: "relative",
-      width: "100%",
-      maxHeight: "400px",
-      height: "400px",
-      borderRadius: "24px",
-      boxShadow: "var(--mui-palette-shadows-ui1)",
-      p: "20px",
-    },
+    bgcolor: "common.white",
+    position: "relative",
+    width: "100%",
+    maxHeight: "400px",
+    height: "400px",
+    borderRadius: "24px",
+    boxShadow: custom.shadows.card,
+    p: "20px",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolsMap = ({ markers }: Props) => {
   // A school whose address carries no map location has nothing to place, and
@@ -35,7 +31,7 @@ const SchoolsMap = ({ markers }: Props) => {
   }
 
   return (
-    <Box {...styles.mapWrapper}>
+    <Box sx={styles.mapWrapper}>
       <MapComponent
         defaultCenter={placed[0].coordinate}
         markers={placed}

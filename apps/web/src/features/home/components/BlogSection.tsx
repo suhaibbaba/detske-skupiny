@@ -1,16 +1,8 @@
-import {
-  Box,
-  BoxProps,
-  Container,
-  ContainerProps,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
-import BlogCard, {
-  BlogsCardStylesType,
-} from "@/features/blog/components/BlogCard";
+import { Box, Container, Typography } from "@mui/material";
+import BlogCard from "@/features/blog/components/BlogCard";
 import { fetchMiniBlogs } from "@/features/blog/queries";
 import { sharedClassNames } from "@/features/home/utils";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
   fields: {
@@ -21,40 +13,21 @@ interface Props {
   locale: string;
 }
 
-interface BlogSectionStyles {
-  section?: BoxProps;
-  container?: ContainerProps;
-  heading?: TypographyProps;
-  description?: TypographyProps;
-  blogsWrapper?: BoxProps;
-  blogCard?: BlogsCardStylesType;
-}
-
-const styles: BlogSectionStyles = {
+const styles = {
   section: {
-    sx: {
-      bgcolor: "custom.ui5",
+      bgcolor: "custom.surfaceLilac",
       pt: { xs: "100px", md: "120px" },
       pb: "100px",
       textAlign: "center",
     },
-  },
   container: {
-    sx: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
     },
-  },
-  heading: {
-    variant: "h1",
-    sx: { mb: "12px" },
-  },
-  description: {
-    sx: { mb: "68px" },
-  },
+  heading: { mb: "12px" },
+  description: { mb: "68px" },
   blogsWrapper: {
-    sx: {
       display: "flex",
       flexDirection: {
         xs: "column",
@@ -63,8 +36,7 @@ const styles: BlogSectionStyles = {
       justifyContent: "center",
       gap: "50px",
     },
-  },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const BlogSection = async ({ fields, locale }: Props) => {
   const { blogs } = await fetchMiniBlogs({ numberOfBlogs: 2, locale });
@@ -74,19 +46,15 @@ const BlogSection = async ({ fields, locale }: Props) => {
   }
 
   return (
-    <Box {...styles.section} className={sharedClassNames.blog}>
-      <Container {...styles.container}>
+    <Box sx={styles.section} className={sharedClassNames.blog}>
+      <Container sx={styles.container}>
         <Box>
-          <Typography {...styles.heading}>{fields.title}</Typography>
-          <Typography {...styles.description}>{fields.description}</Typography>
+          <Typography sx={styles.heading} variant="h1">{fields.title}</Typography>
+          <Typography sx={styles.description}>{fields.description}</Typography>
         </Box>
-        <Box {...styles.blogsWrapper}>
+        <Box sx={styles.blogsWrapper}>
           {blogs.map((blog) => (
-            <BlogCard
-              key={blog.id}
-              blog={blog}
-              extendedStyles={styles.blogCard}
-            />
+            <BlogCard key={blog.id} blog={blog} />
           ))}
         </Box>
       </Container>

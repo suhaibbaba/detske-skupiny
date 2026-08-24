@@ -1,5 +1,6 @@
-import { Box, Typography, TypographyProps, BoxProps } from "@mui/material";
-import { urlImageFor } from "@/lib/sanity/imageUrl";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { Box, Typography } from "@mui/material";
+
 import { School } from "@/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 import Button from "@/components/ui/button";
@@ -11,52 +12,39 @@ interface Props {
   school: School;
 }
 
-interface SchoolHeaderStyles {
-  wrapper: BoxProps;
-  name: TypographyProps;
-  logo: ImageProps;
-}
-
-const styles: SchoolHeaderStyles = {
+const styles = {
   wrapper: {
-    sx: {
-      display: "flex",
-      alignItems: "center",
-      gap: "20px 12px",
-      justifyContent: "space-between",
-      flexWrap: "wrap",
-    },
+    display: "flex",
+    alignItems: "center",
+    gap: "20px 12px",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
   },
   name: {
-    variant: "h2",
-    sx: {
-      display: "flex",
-      flexGrow: 1,
-      alignItems: "center",
-      gap: "12px",
-    },
+    display: "flex",
+    flexGrow: 1,
+    alignItems: "center",
+    gap: "12px",
   },
   logo: {
-    sx: {
-      width: "100%",
-      height: "100%",
-      maxWidth: "35px",
-      maxHeight: "35px",
-      objectFit: "contain",
-    },
+    width: "100%",
+    height: "100%",
+    maxWidth: "35px",
+    maxHeight: "35px",
+    objectFit: "contain",
   },
-};
+} satisfies Record<string, SxProps<Theme>>;
 
 const SchoolHeader = ({ school }: Props) => {
   const translate = useTranslate();
   const locale = useLocale();
 
   return (
-    <Box {...styles.wrapper}>
-      <Typography {...styles.name}>
+    <Box sx={styles.wrapper}>
+      <Typography sx={styles.name} variant="h2">
         {school.logo && (
           <Image
-            {...styles.logo}
+            sx={styles.logo}
             src={school.logo}
             alt={school.name}
             sizes="35px"
