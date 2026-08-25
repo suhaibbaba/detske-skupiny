@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { fetchGroupPage } from "@/features/catalog/queries";
 import { PageProps } from "@/types";
 import { Box } from "@mui/material";
@@ -15,9 +16,9 @@ import { staticRoutePaths } from "@/lib/seo/routes";
 
 const styles = {
   container: {},
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageCreamToLilac,
-  }),
+  pageLayout: {
+    background: custom.gradients.pageCreamToLilac,
+  },
 } satisfies Record<string, SxProps<Theme>>;
 
 export async function generateMetadata({

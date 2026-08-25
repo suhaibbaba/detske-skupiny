@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { fetchBlogPage } from "@/features/blog/queries";
 import { PageProps } from "@/types";
 import PageLayout from "@/components/layout/PageLayout";
@@ -22,10 +23,10 @@ const styles = {
       pt: "80px",
     },
   },
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageBlushToCream,
+  pageLayout: {
+    background: custom.gradients.pageBlushToCream,
     pb: { xs: "80px", md: "100px" },
-  }),
+  },
   blogsList: {
     display: "grid",
     gap: {

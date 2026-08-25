@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { alpha, TextareaAutosize as BaseTextareaAutosize } from "@mui/material";
 import { styled } from "@mui/system";
@@ -9,6 +11,11 @@ export default function Textarea(props: TextareaAutosizeProps) {
 
 /**
  * The contact form's message field.
+ *
+ * `"use client"` because `styled()` is Emotion, and Emotion's `styled` is a
+ * client module - a server module that calls it throws. Its only call site,
+ * `ContactForm`, is already a client component, so the directive states a fact
+ * about this module rather than moving a boundary. See docs/client-surface.md.
  *
  * This used to carry `&:focus-visible { outline: 0 }`, marked "firefox", which
  * removed the only visible focus indicator the control had: the `:focus` rule

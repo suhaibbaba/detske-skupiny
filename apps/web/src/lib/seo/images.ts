@@ -1,4 +1,4 @@
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
 import { absoluteUrl } from "@/lib/seo/site";
 
@@ -15,7 +15,7 @@ import { absoluteUrl } from "@/lib/seo/site";
  * It shares the project/dataset configuration with sanityImageUrl.ts, which
  * next.config.ts inlines; see the note there for why that is safe.
  */
-const builder = imageUrlBuilder({
+const builder = createImageUrlBuilder({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_DATASET!,
 });

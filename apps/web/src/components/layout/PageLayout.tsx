@@ -16,6 +16,13 @@ interface BaseProps {
    * props object with lodash. A plain `sx` says the same thing, and MUI's own
    * array form composes it - later entries win, which is what the merge was
    * emulating at runtime on every render.
+   *
+   * Must be serialisable: no `(theme) => ...` callback and no function-valued
+   * key inside it. This component is a Server Component and hands the value
+   * straight to `Box`, which is a Client Component, so a function in here is
+   * "Functions cannot be passed directly to Client Components" at request
+   * time. Theme values reach `sx` as string paths (`bgcolor: "primary.light"`)
+   * and the non-palette tokens are plain constants in `theme/custom.ts`.
    */
   sx?: SxProps<Theme>;
 }

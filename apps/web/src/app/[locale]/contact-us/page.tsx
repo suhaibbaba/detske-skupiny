@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { fetchContactUs } from "@/features/contact/queries";
 import { PageProps } from "@/types";
 import PageLayout from "@/components/layout/PageLayout";
@@ -14,10 +15,10 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { staticRoutePaths } from "@/lib/seo/routes";
 
 const styles = {
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageLilacToCream,
+  pageLayout: {
+    background: custom.gradients.pageLilacToCream,
     pb: { xs: "64px", sm: "130px" },
-  }),
+  },
   container: {
     display: "grid",
     gridTemplateColumns: "1fr",
