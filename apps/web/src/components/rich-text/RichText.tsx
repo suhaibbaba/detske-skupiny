@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Typography, { TypographyProps } from "@mui/material/Typography";
+import type { SxProps, Theme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { PortableTextBlock } from "@portabletext/types";
 import Link from "@/components/ui/link";
@@ -44,15 +45,36 @@ interface RichTextProps extends Omit<TypographyProps, "children"> {
 function RichText({
   children,
   compactParagraphs = false,
+  sx,
   ...typographyProps
 }: RichTextProps) {
   if (!children?.length) return null;
 
-  // Shared text styles: render Shift+Enter (`\n`) as actual line breaks
-  const textSx = {
-    whiteSpace: "pre-line",
-    ...(typographyProps.sx || {}),
-  };
+  /*
+   * Shared text styles: render Shift+Enter (`\n`) as actual line breaks.
+   *
+   * `sx` is pulled out of `typographyProps` and composed as an array, because
+   * this was `{ whiteSpace: "pre-line", ...(typographyProps.sx || {}) }`
+   * handed to `sx={textSx}` with `{...typographyProps}` spread AFTER it. Two
+   * mistakes stacked: the later spread put `typographyProps.sx` back on the
+   * element, dropping `whiteSpace` outright for every caller that passed one -
+   * and the object spread could not have merged them anyway, since `sx` is
+   * just as legally an array or a callback as an object.
+   * `PageHeadingTypography` passes an array, and an array spread into an
+   * object gives `{ 0: ..., 1: ... }`.
+   *
+   * Every renderer below goes through `compose` so that the base, the
+   * renderer's own additions and the caller's overrides always land in that
+   * order, with the caller winning - which is MUI's array semantics and what
+   * `compose` in PageHeadingTypography already does.
+   */
+  const callerSx = Array.isArray(sx) ? sx : sx ? [sx] : [];
+  const compose = (...extra: SxProps<Theme>[]): SxProps<Theme> => [
+    { whiteSpace: "pre-line" },
+    ...extra,
+    ...callerSx,
+  ];
+  const textSx = compose();
 
   // Was `(typographyProps as any)?.mb ?? 2`. `mb` is not a Typography prop -
   // MUI system props are gone from it - and every caller passes margins inside
@@ -133,7 +155,7 @@ function RichText({
         // Enter on an empty row in Studio creates a new (often empty) paragraph; skip it.
         isEmptyContent(children) ? null : (
           <Typography
-            sx={{ ...textSx, mb: paragraphMargin }}
+            sx={compose({ mb: paragraphMargin })}
             {...typographyProps}
           >
             {children}
@@ -146,7 +168,7 @@ function RichText({
           >
             <Typography
               variant="body1"
-              sx={{ fontStyle: "italic", ...textSx }}
+              sx={compose({ fontStyle: "italic" })}
               {...typographyProps}
             >
               {children}
@@ -195,12 +217,7 @@ function RichText({
         <Typography
           component="span"
           variant="inherit"
-          sx={[
-            {
-              fontWeight: 900,
-            },
-            ...(Array.isArray(textSx) ? textSx : [textSx]),
-          ]}
+          sx={compose({ fontWeight: 900 })}
         >
           {children}
         </Typography>
@@ -209,12 +226,7 @@ function RichText({
         <Typography
           component="span"
           variant="inherit"
-          sx={[
-            {
-              fontStyle: "italic",
-            },
-            ...(Array.isArray(textSx) ? textSx : [textSx]),
-          ]}
+          sx={compose({ fontStyle: "italic" })}
         >
           {children}
         </Typography>
@@ -242,7 +254,7 @@ function RichText({
         <Typography
           component="span"
           variant="inherit"
-          sx={{ color: value?.color?.hex, ...textSx }}
+          sx={compose({ color: value?.color?.hex })}
         >
           {children}
         </Typography>

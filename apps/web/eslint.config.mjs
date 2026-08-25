@@ -208,6 +208,203 @@ const serializableSx = {
   },
 };
 
+/**
+ * Styles belong in `sx`, not spread onto a component as props.
+ *
+ * `<Button {...styles.button}>` worked while MUI put the system props on every
+ * component. v9 removed them, and the failure is silent rather than loud: a
+ * JSX spread is not excess-property checked, so it typechecks, and at runtime
+ * every declaration lands on the DOM node as a bare attribute -
+ * `padding="10px 20px"`, `bgcolor="var(--mui-palette-common-white)"` - which
+ * Emotion never sees. The component renders unstyled and nothing says so.
+ *
+ * Two shapes are reported, which between them cover how this codebase writes
+ * styles:
+ *
+ *   {...styles.button}                          a member of a `styles`-ish object
+ *   {...(cond ? styles.a : styles.b)}           either branch of a ternary
+ *   {...pill}                                   a local const whose object
+ *                                               literal is mostly style keys
+ *
+ * The third is what catches a style constant that is not called `styles`. It
+ * needs the declaration to be a local `const x = { ... }` with at least two
+ * recognised style properties, which is deliberately conservative: it is what
+ * keeps every genuine props spread in this repo quiet.
+ *
+ * NOT reported, and each of these exists in the tree today:
+ *
+ *   {...props} {...otherProps} {...typographyProps} {...queryParams} {...item}
+ *       parameters and destructured rests - no object literal to inspect.
+ *   {...sizing}
+ *       `const sizing = resolveSizing(...)` in ui/image/Image.tsx. Its keys
+ *       include `width`/`height`, but the initialiser is a call, not a literal,
+ *       so there is nothing to judge and the rule stays out of it.
+ *   {...(blog.imageLqip ? { placeholder: "blur", blurDataURL } : {})}
+ *   {...(isSanity ? { loader: sanityLoader } : {})}
+ *   {...{ fields: section }}
+ *       object literals whose keys are real props, not style properties.
+ *
+ * There is no allowlist and nothing needs one. If a genuine props object ever
+ * does trip it - a component that really does take `width` and `padding` as
+ * props - the fix is a disable comment naming that component, not a hole in
+ * the pattern.
+ */
+const noStyleObjectSpread = {
+  meta: {
+    type: "problem",
+    docs: {
+      description: "forbid spreading style objects onto JSX elements",
+    },
+    schema: [],
+    messages: {
+      styleSpread:
+        "Style objects go in `sx`, not spread as props. MUI v9 removed system props from components, so a spread declaration lands on the DOM node as an attribute and styles nothing - silently, since a JSX spread is not excess-property checked. Write `sx={...}`; if the element already has one, compose with MUI's array form (`sx={[base, existing]}`), never an object spread.",
+    },
+  },
+  create(context) {
+    // Enough of the sx/system vocabulary to recognise a style table, and
+    // nothing so generic that a props object trips over it by accident.
+    const STYLE_KEYS = new Set([
+      "alignItems",
+      "backgroundColor",
+      "bgcolor",
+      "border",
+      "borderColor",
+      "borderRadius",
+      "borderStyle",
+      "borderWidth",
+      "bottom",
+      "boxShadow",
+      "boxSizing",
+      "color",
+      "columnGap",
+      "cursor",
+      "display",
+      "flex",
+      "flexDirection",
+      "flexWrap",
+      "fontSize",
+      "fontWeight",
+      "gap",
+      "gridColumn",
+      "gridTemplateColumns",
+      "height",
+      "justifyContent",
+      "left",
+      "letterSpacing",
+      "lineHeight",
+      "margin",
+      "marginBottom",
+      "marginLeft",
+      "marginRight",
+      "marginTop",
+      "maxHeight",
+      "maxWidth",
+      "minHeight",
+      "minWidth",
+      "objectFit",
+      "opacity",
+      "overflow",
+      "padding",
+      "paddingBottom",
+      "paddingLeft",
+      "paddingRight",
+      "paddingTop",
+      "position",
+      "right",
+      "rowGap",
+      "textAlign",
+      "textDecoration",
+      "textOverflow",
+      "textTransform",
+      "top",
+      "transform",
+      "transition",
+      "whiteSpace",
+      "width",
+      "zIndex",
+      // The shorthand aliases, which only ever mean `sx`.
+      "m",
+      "mb",
+      "ml",
+      "mr",
+      "mt",
+      "mx",
+      "my",
+      "p",
+      "pb",
+      "pl",
+      "pr",
+      "pt",
+      "px",
+      "py",
+    ]);
+
+    const STYLES_IDENTIFIER = /^[a-zA-Z]*[Ss]tyles?$/;
+
+    /** How many of an object literal's own keys read as style properties. */
+    const styleKeyCount = (object) =>
+      object.properties.filter(
+        (property) =>
+          property.type === "Property" &&
+          !property.computed &&
+          STYLE_KEYS.has(
+            property.key.type === "Identifier"
+              ? property.key.name
+              : property.key.value,
+          ),
+      ).length;
+
+    /** The object literal behind `name`, if it is a local `const x = {...}`. */
+    const localObjectLiteral = (scope, name) => {
+      for (let s = scope; s; s = s.upper) {
+        const variable = s.variables.find((v) => v.name === name);
+        if (!variable) continue;
+        const [definition] = variable.defs;
+        if (definition?.type !== "Variable") return null;
+        let init = definition.node.init;
+        // `const pill = {...} satisfies SxProps<Theme>`
+        while (
+          init &&
+          (init.type === "TSSatisfiesExpression" ||
+            init.type === "TSAsExpression")
+        ) {
+          init = init.expression;
+        }
+        return init?.type === "ObjectExpression" ? init : null;
+      }
+      return null;
+    };
+
+    const check = (node, scope) => {
+      if (!node) return false;
+      if (node.type === "ConditionalExpression")
+        // Either branch spreading styles is the same bug.
+        return [node.consequent, node.alternate].some((b) => check(b, scope));
+      if (node.type === "MemberExpression")
+        return (
+          node.object.type === "Identifier" &&
+          STYLES_IDENTIFIER.test(node.object.name)
+        );
+      if (node.type === "ObjectExpression") return styleKeyCount(node) >= 2;
+      if (node.type === "Identifier") {
+        const object = localObjectLiteral(scope, node.name);
+        return object ? styleKeyCount(object) >= 2 : false;
+      }
+      return false;
+    };
+
+    return {
+      JSXSpreadAttribute(node) {
+        const scope = context.sourceCode.getScope(node);
+        if (check(node.argument, scope)) {
+          context.report({ node, messageId: "styleSpread" });
+        }
+      },
+    };
+  },
+};
+
 const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
@@ -238,12 +435,14 @@ const eslintConfig = [
         rules: {
           "client-only-styled": clientOnlyStyled,
           "serializable-sx": serializableSx,
+          "no-style-object-spread": noStyleObjectSpread,
         },
       },
     },
     rules: {
       "boundary/client-only-styled": "error",
       "boundary/serializable-sx": "error",
+      "boundary/no-style-object-spread": "error",
     },
   },
 

@@ -25,7 +25,7 @@ demotions below used.
 Being "interactive-looking" is not a reason. A hover effect is CSS. A link is
 a link.
 
-## Two rules about styling, both learned the hard way
+## Three rules about styling, all learned the hard way
 
 **1. Any module that calls `styled()` is a client module.**
 
@@ -80,6 +80,64 @@ constants exported from `theme/custom.ts`. `theme.custom` and
 module without the directive. A helper that *returns* an sx object
 (`const chipSx = (colour): SxProps<Theme> => ({...})`) is called at the call
 site and produces a plain object, so it is not this bug and is not reported.
+
+**3. Styles go in `sx`. They are never spread onto a component as props.**
+
+```tsx
+<Button {...styles.button}>          // no
+<Button sx={styles.button}>          // yes
+```
+
+MUI v9 removed the system props from components. The spread form worked while
+they existed, and now fails in the worst possible way: a JSX spread is *not*
+excess-property checked, so it still typechecks, and at runtime every
+declaration lands on the DOM node as a bare HTML attribute -
+`padding="10px 20px"`, `bgcolor="var(--mui-palette-common-white)"` - which
+Emotion never sees. The component renders unstyled and nothing warns. The blog
+category pills shipped like that; see `docs/perf/rsc-boundaries.md`.
+
+Compose with MUI's array form, later entries winning. Never object-spread two
+`sx` values (`{...base, ...extra}`): `sx` is as legally an array or a callback
+as it is an object, so the spread is wrong for two of the three shapes - and
+never reintroduce a deep merge for it.
+
+```tsx
+sx={[styles.base, callerSx]}                       // compose
+sx={selected ? styles.active : styles.button}      // choose
+const styles = { button: [pill, { ... }] }         // share a base
+```
+
+When a component takes `sx` and also spreads the rest of its props, pull `sx`
+out of the rest first - otherwise the later spread puts the caller's `sx` back
+on the element and silently discards the component's own.
+
+`eslint`'s `boundary/no-style-object-spread` fails the build on a spread of a
+`styles`-ish member, of either branch of a ternary, of a local const whose
+object literal is mostly style properties, and of an inline style literal. It
+has no allowlist: genuine props spreads (`{...props}`, `{...otherProps}`,
+`{...sizing}`, `{...{ fields: section }}`) are all quiet because they are
+either parameters or objects whose keys are real props. If a component ever
+does take `width` and `padding` as genuine props, disable the rule on that line
+rather than widening the pattern.
+
+## Variant candidates
+
+Style objects that now repeat across files, listed rather than built - each is
+a judgement call about whether a shared name is worth the indirection, and
+`theme/components.ts` already carries three `MuiButton` variants (`primary`,
+`secondary`, `ghost`) that are the natural home for the first two.
+
+| Repeated shape | Where | Suggested |
+| --- | --- | --- |
+| Selected/unselected pill: `borderRadius: 24px`, white when unselected, theme colours when selected | `features/blog/BlogCategories` (ternary `sx`), `features/home/MapRegionFilter.filterButton` and `features/catalog/filters/FilterCategoriesList.item` (both via an `&.selected` class) | `MuiButton` variant `pill`, with the selected state as a class the three already agree on |
+| Card surface: `bgcolor: common.white` + `borderRadius: 24px` + `custom.shadows.card` | `catalog/SchoolsMap.mapWrapper`, `school/SchoolMap.mapWrapper`, `home/MapRegionFilter.mapWrapper`, `home/SchoolCard.card`, `home/InfoBlock`, `blog/BlogCard.card` (20px, the one outlier) | `theme/custom.ts` token `surfaces.card`, or a `Surface` styled primitive |
+| "View all" text link: `custom.textLilac`, 500/16px, `mt: 16px`, `cursor: pointer`, `alignSelf: baseline`, `&:hover → primary.dark` | `catalog/filters/FilterTagList.viewAll` and `FilterCategoriesList.viewAll` - byte-identical | shared `sx` const, or a `MuiLink` variant `quiet` |
+
+Three files still hold a hand-written `var(--mui-palette-*)` string where a
+theme path would do - `layout/Footer`, `home/SchoolCard`, `home/InfoBlock`,
+plus a `2px solid var(--mui-palette-primary-main)` outline in
+`FilterCategoriesList`. Left alone deliberately: none of them was being edited,
+and a colour sweep wants to be its own diff.
 
 ## The inventory
 
