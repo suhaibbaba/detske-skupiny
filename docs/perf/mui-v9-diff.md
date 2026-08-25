@@ -122,7 +122,7 @@ on home and rose 3% on catalog from one change.
 - **Catalog CLS.** Multi-modal at this sample size; needs more runs per data
   point, and separately needs someone to find what shifts - Lighthouse's
   `layout-shift-elements` audit returns no elements in any of the 18 runs
-  across both trees, which is where `docs/perf-after-phase6.md` also stopped.
+  across both trees, which is where `docs/perf/phase6-after.md` also stopped.
 - **Anything image-dependent.** `cdn.sanity.io` is blocked in this sandbox, so
   images are served by a local generator at representative but not real sizes.
 - **Production scale.** The dataset is 30 schools and 6 articles, so list pages

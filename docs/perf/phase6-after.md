@@ -1,6 +1,6 @@
 # Performance after phase 6
 
-Same harness as `docs/perf-before-phase6.md`: a production `next build` served
+Same harness as `docs/perf/phase6-before.md`: a production `next build` served
 by `next start`, Lighthouse 12 on Chromium 1194, desktop `--preset=desktop`
 and mobile at Lighthouse's default throttling. Both runs were taken back to
 back against the same local dataset.

@@ -13,7 +13,7 @@ npm run dev -w @detske-skupiny/studio
 It is meant to answer "what is this site?" in about three minutes, read top to
 bottom.
 
-```
+```text
 Dětské skupinky
 ├── Content ............... the pages a visitor lands on
 │   ├── Home
@@ -69,6 +69,65 @@ regions, areas and subareas is what the catalog's menus sort by, and it can
 only be changed by dragging in `Geography → Reorder`. The browse lists sort by
 the same field, so both views agree; only one of them can rewrite it.
 
+## The one plugin
+
+`plugins/computedFields.ts` is the only thing in this Studio that writes a
+computed field. It wraps the publish action for **`schools` only** and resolves
+four values GROQ genuinely cannot derive - `nameNormalized` (no diacritics
+function in GROQ), `countrySlug` and `regionSlug` (filtering by a dereferenced
+path is far slower than an equality check), `isHighPriority` (GROQ cannot order
+by a dereferenced field) - plus `address.mapLocation` from a MapTiler geocode
+when coordinates are missing.
+
+It replaced **seven `autoPopulate*` plugins and two cron scripts that nothing
+scheduled**; the reasoning, and what was deliberately left derived instead, is
+[ADR-002](../../docs/adr/002-remove-denormalization.md).
+
+The patch is awaited before `publish.execute()`, so a published school never
+carries stale values. A geocoding failure raises a warning toast and publishes
+anyway - a MapTiler outage must not make every school unpublishable. A broken
+area reference is fatal and blocks the publish. There is no `setTimeout`
+anywhere in this Studio.
+
+## Adding a language
+
+Add it to `packages/config/src/locales.ts` - the one list both apps read. It
+flows from there into the document-internationalization config, the per-locale
+fields on every dictionary entry, and the language grouping in the structure.
+
+Then, outside the Studio: add the matching domain to the web app's routing and
+environment (`NEXT_PUBLIC_<LOCALE>_DOMAIN`), and backfill content - existing
+documents have no document in the new language until someone creates one, so
+`Translations → Missing <NEW>` starts out listing everything.
+
+Why one document per language rather than one document with per-locale fields,
+and what the `cz` → `cs` rename had to migrate:
+[ADR-004](../../docs/adr/004-document-level-i18n.md).
+
+## Running the migrate scripts
+
+Both live in `scripts/`, run in Node only, and **default to a dry run**. Both
+need `SANITY_SCRIPT_TOKEN` - an Editor token, deliberately *not*
+`SANITY_STUDIO_*`-prefixed, because every variable with that prefix is inlined
+into the publicly served Studio bundle.
+
+```bash
+npm run migrate:locale                                   # dry run
+npm run migrate:locale -- --apply                        # cz → cs rename
+
+npm run migrate:dictionary                               # dry run
+npm run migrate:dictionary -- --dataset staging --apply  # fill missing UI strings
+```
+
+Always dry-run against `staging` first; the dry run prints the exact documents
+and paths it would touch.
+
+`migrate:dictionary` upserts **by keyword** and fills only genuinely empty
+locales, so it never overwrites text an editor has typed and is safe to re-run.
+It exists because a missing dictionary entry does not render blank - next-intl
+falls back to the key itself, so the raw keyword appears in the page. The
+crawler now fails on that; see [docs/testing.md](../../docs/testing.md#the-raw-key-check).
+
 ## What is deliberately not here
 
 **No "Untranslated" document badge.** It is implementable - badges render only
@@ -94,16 +153,12 @@ numbers the site shows are computed once per page by the web app's own query
 (see `apps/web/src/lib/sanity/fragments.ts`); a second set here would be slower
 and a second source of truth.
 
-## Screenshots to take
+## Screenshots
 
-Three, and no more - these are the ones that show what changed:
-
-1. **The sidebar**, expanded to the six sections, at the top level.
-2. **`Schools → Schools`**, showing one row per school with "Area · Region"
-   subtitles and logos - beside `Schools · all languages`, where the same
-   schools appear twice and the English rows carry a 🌐 EN badge.
-3. **One school document**, on the Basic Information tab, showing the seven
-   group tabs in editing order and the field descriptions under each input.
+The two Studio screenshots the root README uses - the sidebar, and the schools
+list grouped by language - are specified in
+[`docs/images/README.md`](../../docs/images/README.md) and captured with
+`npm run shots -- --studio` from the repo root.
 
 ## Docs
 

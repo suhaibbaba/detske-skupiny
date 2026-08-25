@@ -38,7 +38,7 @@ That matters for reading the absolute numbers:
 - **The dataset is smaller than production.** The catalog renders 9 cards and a
   load-more, not the real corpus, so list pages do less work here than they
   would live.
-- **Images load, and are synthetic.** Unlike the earlier `docs/perf-*-phase6.md`
+- **Images load, and are synthetic.** Unlike the earlier `docs/perf/phase6-*.md`
   runs - where the blocked CDN meant no image ever arrived and LCP was a text
   node on every page - the LCP element here is the hero image, as it would be in
   production. The bytes are representative rather than real.
@@ -55,7 +55,7 @@ kept alongside it.
 
 ### A1. Route table, verbatim
 
-```
+```text
 Route (app)
 ┌ ƒ /_not-found
 ├   /[locale]
@@ -108,7 +108,7 @@ emitted are gone, and no flag brings them back. The brief asks for size and
 first-load JS per route, so those are measured instead, from the HTML the
 server actually sends: every `/_next/static/chunks/*.js` the document
 references, summed on disk and gzipped. This is the same method
-`docs/perf-after-phase6.md` used, and it reproduces that report's figures
+`docs/perf/phase6-after.md` used, and it reproduces that report's figures
 exactly (home 1,062 kB, catalog 1,369 kB), which is the check that the harness
 is measuring the same thing.
 
@@ -222,7 +222,7 @@ counts are not comparable at all between the two.
 
 ### A3. Static JavaScript on disk
 
-```
+```text
 $ du -sh .next/static/chunks
 2.9M    .next/static/chunks      (2,958,290 bytes)
 ```
@@ -283,7 +283,7 @@ MUI's.
 
 ### C6. Client components
 
-```
+```text
 $ grep -rl '"use client"' apps/web/src | wc -l
 34
 ```
@@ -332,7 +332,7 @@ Under `cacheComponents: true` Next refuses to prerender an unstable clock read,
 and because the footer is in the root layout this fails **every route**, not
 one:
 
-```
+```text
 Error: Route "/[locale]/articles": Next.js encountered the unstable value
 `new Date()` while prerendering.
 ```

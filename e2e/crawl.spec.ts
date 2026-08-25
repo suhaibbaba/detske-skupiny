@@ -28,7 +28,8 @@ interface PageIssue {
     | "lang"
     | "title"
     | "canonical"
-    | "jsonld";
+    | "jsonld"
+    | "raw-key";
   detail: string;
 }
 
@@ -223,6 +224,102 @@ test.describe("full-site crawl", () => {
         const title = (await page.title()).trim();
         if (!title) {
           issues.push({ type: "title", detail: "empty <title>" });
+        }
+
+        /*
+         * No raw dictionary key is rendering as visible text.
+         *
+         * next-intl is configured (`apps/web/src/i18n/request.ts`) with a
+         * `getMessageFallback` that returns the key itself, and an `onError`
+         * that swallows the miss. A keyword the editor never added to the
+         * Sanity dictionary therefore does not render blank and does not
+         * throw - it renders as `contactFormPrivacyPolicyLinkLabel`, in the
+         * page, in production. That is exactly what happened next to the
+         * contact form's GDPR consent checkbox, and nothing in the suite
+         * noticed, because by every other measure the page was healthy.
+         *
+         * So: a text node whose entire trimmed content is a camelCase
+         * identifier is a leaked key. Matching the *whole* node rather than
+         * searching inside it is what keeps this quiet - Czech prose does not
+         * consist of a single camelCase word, but it may well contain one.
+         */
+        const rawKeys = await page.$$eval("body", (bodies) => {
+          const body = bodies[0];
+          if (!body) return [] as string[];
+
+          const KEY = /^[a-z]+([A-Z][a-z]+)+$/;
+
+          // Code samples in rich text are legitimately camelCase, and so is
+          // anything the editor deliberately marked up as code.
+          const CODE = new Set(["CODE", "PRE", "KBD", "SAMP", "VAR"]);
+          const SKIP = new Set([
+            "SCRIPT",
+            "STYLE",
+            "NOSCRIPT",
+            "TEMPLATE",
+            "TITLE",
+          ]);
+
+          const found: string[] = [];
+          const walker = document.createTreeWalker(
+            body,
+            NodeFilter.SHOW_TEXT,
+            null,
+          );
+
+          let node: Node | null;
+          while ((node = walker.nextNode())) {
+            const text = (node.textContent ?? "").trim();
+            if (!text || !KEY.test(text)) continue;
+
+            const parent = node.parentElement;
+            if (!parent) continue;
+
+            let ancestor: HTMLElement | null = parent;
+            let skip = false;
+            while (ancestor) {
+              if (SKIP.has(ancestor.tagName) || CODE.has(ancestor.tagName)) {
+                skip = true;
+                break;
+              }
+              ancestor = ancestor.parentElement;
+            }
+            if (skip) continue;
+
+            // Visually-hidden helper text (skip-link targets, screen-reader
+            // captions) is still "visible" to a screen reader, so it is not
+            // exempt - but a node in a closed menu or a `display: none`
+            // branch has not leaked anything to anyone.
+            if (typeof parent.checkVisibility === "function") {
+              if (
+                !parent.checkVisibility({
+                  contentVisibilityAuto: true,
+                  visibilityProperty: false,
+                  opacityProperty: false,
+                })
+              ) {
+                continue;
+              }
+            } else if (!parent.isConnected) {
+              continue;
+            }
+
+            const where =
+              parent.tagName.toLowerCase() +
+              (parent.className && typeof parent.className === "string"
+                ? `.${parent.className.trim().split(/\s+/).slice(0, 2).join(".")}`
+                : "");
+            found.push(`${text} (in <${where}>)`);
+          }
+
+          return [...new Set(found)];
+        });
+
+        for (const leaked of rawKeys) {
+          issues.push({
+            type: "raw-key",
+            detail: `raw dictionary key rendered as text: ${leaked}`,
+          });
         }
 
         /*

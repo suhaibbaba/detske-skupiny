@@ -11,7 +11,7 @@ home and catalog pages. None of the three ran.
 `next build` reaches "Compiled successfully" and finishes TypeScript, then
 stops:
 
-```
+```text
 Collecting page data using 3 workers ...
 Error: Failed to collect configuration for /sitemap.xml
   [cause]: Error: Configuration must contain `projectId`
@@ -21,7 +21,7 @@ Error: Failed to collect configuration for /sitemap.xml
 Supplying a placeholder project id gets one step further and then fails the
 same way for a different reason:
 
-```
+```text
 GET https://<project>.api.sanity.io/... resulted in HTTP 403 Forbidden
 (Host not in allowlist: <project>.api.sanity.io.)
 ```

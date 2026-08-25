@@ -1,6 +1,9 @@
 {
   "name": "detske-skupiny",
+  "version": "1.0.0",
   "private": true,
+  "license": "UNLICENSED",
+  "description": "Directory of Czech state-registered childcare groups (detske skupiny) - Next.js 16 front end and Sanity v5 Studio in an npm workspaces monorepo, served in Czech and English from two domains.",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -19,7 +22,8 @@
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "playwright test --project=chromium",
     "test:crawl": "playwright test --project=crawl",
-    "test:all": "npm run test && npm run test:e2e && npm run test:crawl"
+    "test:all": "npm run test && npm run test:e2e && npm run test:crawl",
+    "shots": "node scripts/take-shots.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

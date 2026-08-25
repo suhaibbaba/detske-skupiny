@@ -1,0 +1,23 @@
+// Markdown conventions for this repository.
+//
+// The house style is 80-column prose, which MD013 enforces. Tables and code
+// blocks are exempt because neither can be wrapped without breaking it, and
+// several tables here are wide by necessity - the journey table in the README
+// carries a source citation per row.
+{
+  "config": {
+    "MD013": {
+      "line_length": 80,
+      "tables": false,
+      "code_blocks": false,
+      "headings": false
+    },
+    // Inline HTML is required for the README's screenshot layout: a two-column
+    // table of images, and width/alt attributes Markdown cannot express.
+    "MD033": false,
+    // The README opens with the hero screenshot rather than the h1, on purpose.
+    "MD041": false
+  },
+  "globs": ["**/*.md"],
+  "ignores": ["**/node_modules/**", "**/.next/**", "**/dist/**", "apps/web/CLAUDE.md", "apps/web/AGENTS.md", "e2e/reports/**", "test-results/**", "playwright-report/**"]
+}

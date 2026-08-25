@@ -1,34 +1,38 @@
 # Upgrade verification
 
-Date: 2026-08-23
-Commit audited: `23d366b` (branch `claude/studio-document-action-bugs-s1pqh0`, on top of `main`)
-Node 22.22.2 / npm 10.9.7
+Date: 2026-08-23 Commit audited: `23d366b` (branch
+`claude/studio-document-action-bugs-s1pqh0`, on top of `main`) Node 22.22.2 /
+npm 10.9.7
 
 ## Scope note — read this first
 
-This pass was requested as a verification of "the dependency upgrade". **No dependency
-upgrade exists in this repository yet.** The tree is still on:
+This pass was requested as a verification of "the dependency upgrade". **No
+dependency upgrade exists in this repository yet.** The tree is still on:
 
 - `next@15.3.6` (latest is 16.3.2)
-- the MUI `overrides` block in the root `package.json`, pinning the whole MUI family to 7.1.0
-- `src/middleware.ts` (the Next 15 convention; the Next 16 `proxy.ts` rename has not happened)
+- the MUI `overrides` block in the root `package.json`, pinning the whole MUI
+  family to 7.1.0
+- `src/middleware.ts` (the Next 15 convention; the Next 16 `proxy.ts` rename has
+  not happened)
 
-There is also no upgrade report to cross-reference intentional pins against, so check 3
-below records the pins that exist and infers their cause from the lockfile rather than
-from a stated rationale.
+There is also no upgrade report to cross-reference intentional pins against, so
+check 3 below records the pins that exist and infers their cause from the
+lockfile rather than from a stated rationale.
 
-Every check was still run, against the tree as it actually stands. Treat this document as
-**the pre-upgrade baseline**, not as a verification that an upgrade landed correctly.
+Every check was still run, against the tree as it actually stands. Treat this
+document as **the pre-upgrade baseline**, not as a verification that an upgrade
+landed correctly.
 
 Two further environment limits shaped part B:
 
-- **Sanity is unreachable from the audit sandbox.** Outbound egress is allowlisted and
-  `*.apicdn.sanity.io` is not on the list, so every page render fails at the i18n
-  dictionary fetch with a proxy 403. No real project ID is committed to the repo either
-  (correctly — it is env-only), so no amount of configuration fixes this here.
-- Because of that, the page-level status-code checks are recorded as **blocked**, with
-  static evidence from the source in place of a live result. The `/api/contact` checks
-  were fully exercised and pass.
+- **Sanity is unreachable from the audit sandbox.** Outbound egress is
+  allowlisted and `*.apicdn.sanity.io` is not on the list, so every page render
+  fails at the i18n dictionary fetch with a proxy 403. No real project ID is
+  committed to the repo either (correctly — it is env-only), so no amount of
+  configuration fixes this here.
+- Because of that, the page-level status-code checks are recorded as
+  **blocked**, with static evidence from the source in place of a live result.
+  The `/api/contact` checks were fully exercised and pass.
 
 ## Results
 
@@ -61,19 +65,21 @@ Two further environment limits shaped part B:
 
 No peer-dependency conflicts. The warnings that matter:
 
-- **`EBADENGINE`: `sanity-plugin-link-field@1.7.0` requires `node >=22.12` and `npm >=11.17.0`.**
-  The audit container has npm 10.9.7, so it warns here — and **CI pins `node-version: 20`**,
-  which will warn there too and is below the package's stated floor.
-- **`next@15.3.6` is deprecated by its publisher for a security vulnerability**, pointing at
-  the 2025-12-11 Next.js security update.
+- **`EBADENGINE`: `sanity-plugin-link-field@1.7.0` requires `node >=22.12` and
+  `npm >=11.17.0`.** The audit container has npm 10.9.7, so it warns here — and
+  **CI pins `node-version: 20`**, which will warn there too and is below the
+  package's stated floor.
+- **`next@15.3.6` is deprecated by its publisher for a security vulnerability**,
+  pointing at the 2025-12-11 Next.js security update.
 - `@sanity/next-loader@2.1.2` is deprecated in favour of `next-sanity/live`.
-- Remaining deprecations are transitive: `glob@10.5.0`, `uuid@8.3.2` (×2), `eslint@9.39.5`,
-  `tsconfck@3.1.6`, `whatwg-encoding@3.1.1`, `get-random-values-esm@1.0.2`.
+- Remaining deprecations are transitive: `glob@10.5.0`, `uuid@8.3.2` (×2),
+  `eslint@9.39.5`, `tsconfck@3.1.6`, `whatwg-encoding@3.1.1`,
+  `get-random-values-esm@1.0.2`.
 
 ## Build output — full route table
 
-Baseline: **First Load JS shared by all = 102 kB** (`chunks/8315` 46.6 kB + `chunks/87c73c54` 53.2 kB + 2.36 kB other).
-Middleware bundle: 45.8 kB.
+Baseline: **First Load JS shared by all = 102 kB** (`chunks/8315` 46.6 kB +
+`chunks/87c73c54` 53.2 kB + 2.36 kB other). Middleware bundle: 45.8 kB.
 
 | route | size | first load JS | marker | over 250 kB |
 | --- | --- | --- | --- | --- |
@@ -91,8 +97,8 @@ Middleware bundle: 45.8 kB.
 
 ### 5 biggest first-load-JS routes and their contributors
 
-Attribution was done from `.next/app-build-manifest.json` plus per-chunk gzip sizes, so no
-`@next/bundle-analyzer` devDependency was added or removed.
+Attribution was done from `.next/app-build-manifest.json` plus per-chunk gzip
+sizes, so no `@next/bundle-analyzer` devDependency was added or removed.
 
 | # | route | first load JS | biggest contributors (gzip) |
 | --- | --- | --- | --- |
@@ -104,19 +110,21 @@ Attribution was done from `.next/app-build-manifest.json` plus per-chunk gzip si
 
 Two observations, both recorded rather than fixed:
 
-- **The map stack is ~315 kB gzip (~48%) of every heavy route.** `MapComponent.tsx` imports
-  `@maptiler/sdk` statically and is imported statically by `SchoolsMap`, `MapCollection` and
-  `SchoolMap`, so mapbox-gl lands in the initial bundle. A `next/dynamic` import with
-  `ssr: false` would move it out of first load.
-- **The Sanity client chunk (72 kB gzip) ships to the browser on every route**, via the
-  `[locale]` layout.
+- **The map stack is ~315 kB gzip (~48%) of every heavy route.**
+  `MapComponent.tsx` imports `@maptiler/sdk` statically and is imported
+  statically by `SchoolsMap`, `MapCollection` and `SchoolMap`, so mapbox-gl
+  lands in the initial bundle. A `next/dynamic` import with `ssr: false` would
+  move it out of first load.
+- **The Sanity client chunk (72 kB gzip) ships to the browser on every route**,
+  via the `[locale]` layout.
 
 ### Static vs dynamic (phase-3 baseline)
 
-Only `/sitemap.xml` prerenders. All 10 other routes are `ƒ` server-rendered on demand. This
-matches expectations: the `[locale]` layout awaits `getSettings()` and the i18n dictionary on
-every request, and `middleware.ts` writes a per-request cookie. Nothing here needs changing
-before phase 3 — it is the baseline to compare against once `cacheComponents` is enabled.
+Only `/sitemap.xml` prerenders. All 10 other routes are `ƒ` server-rendered on
+demand. This matches expectations: the `[locale]` layout awaits `getSettings()`
+and the i18n dictionary on every request, and `middleware.ts` writes a
+per-request cookie. Nothing here needs changing before phase 3 — it is the
+baseline to compare against once `cacheComponents` is enabled.
 
 ## Audit summary (`npm audit --omit=dev`)
 
@@ -132,37 +140,42 @@ before phase 3 — it is the baseline to compare against once `cacheComponents` 
 | `@sanity/runtime-cli` | high | no | `sanity@6.10.1` — major |
 | `adm-zip` (GHSA-xcpc-8h2w-3j85, CVSS 7.5) | high | no | `sanity@6.10.1` — major |
 
-`next@15.3.6` alone carries ~30 advisories, the most severe being SSRF via WebSocket upgrades
-(GHSA-c4j6-fc7j-m34r, **CVSS 8.6**), plus multiple 7.5 DoS and middleware/proxy-bypass issues.
-The moderate findings are `prismjs`/`refractor` (via `@sanity/orderable-document-list`) and
-`uuid <11.1.1` (via `next-sanity`), both needing major bumps.
+`next@15.3.6` alone carries ~30 advisories, the most severe being SSRF via
+WebSocket upgrades (GHSA-c4j6-fc7j-m34r, **CVSS 8.6**), plus multiple 7.5 DoS
+and middleware/proxy-bypass issues. The moderate findings are
+`prismjs`/`refractor` (via `@sanity/orderable-document-list`) and `uuid <11.1.1`
+(via `next-sanity`), both needing major bumps.
 
-**The single highest-value action is the `next` 15.3.6 → 15.5.23 bump: it is non-major, stays
-within the declared range, and clears 3 of the 7 highs.**
+**The single highest-value action is the `next` 15.3.6 → 15.5.23 bump: it is
+non-major, stays within the declared range, and clears 3 of the 7 highs.**
 
 ## Ready for phase 3: **no**
 
 Blockers, in order:
 
-1. **`npm run build` fails in CI.** The workflow supplies no `NEXT_PUBLIC_SANITY_PROJECT_ID` /
-   `NEXT_PUBLIC_SANITY_DATASET`, so `next build` cannot collect page data. Until this is fixed
-   the CI build step cannot be trusted as a gate for any upgrade.
-2. **7 high-severity advisories in production dependencies**, 3 of which clear with a
-   non-major `next` bump that has not been applied.
-3. **The upgrade this document was meant to verify has not happened.** `next` is on 15, the
-   MUI overrides block is still pinning 7.1.0, and the `proxy.ts` rename is not started.
+1. **`npm run build` fails in CI.** The workflow supplies no
+   `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET`, so `next
+   build` cannot collect page data. Until this is fixed the CI build step cannot
+   be trusted as a gate for any upgrade.
+2. **7 high-severity advisories in production dependencies**, 3 of which clear
+   with a non-major `next` bump that has not been applied.
+3. **The upgrade this document was meant to verify has not happened.** `next` is
+   on 15, the MUI overrides block is still pinning 7.1.0, and the `proxy.ts`
+   rename is not started.
 
 Non-blocking, worth queuing:
 
-- CI runs `node 20`, below `sanity-plugin-link-field@1.7.0`'s declared `>=22.12` floor.
+- CI runs `node 20`, below `sanity-plugin-link-field@1.7.0`'s declared `>=22.12`
+  floor.
 - `apps/studio` is not linted at all and its eslint config is broken.
-- `x-current-pathname` is still in use (check 6c) and needs a plan, not a deletion.
-- Layout-level `getSettings()` and the i18n dictionary have no null/error guard, so an
-  unreachable or empty Sanity dataset turns **every** route into a 500 — including the 404
-  page. This is exactly what made checks 9a–9c unverifiable here, and it is a real
-  availability risk in production.
-- Route-level 404 handling itself is correct by inspection; re-run checks 9a–9c in an
-  environment with Sanity access to confirm end-to-end.
+- `x-current-pathname` is still in use (check 6c) and needs a plan, not a
+  deletion.
+- Layout-level `getSettings()` and the i18n dictionary have no null/error guard,
+  so an unreachable or empty Sanity dataset turns **every** route into a 500 —
+  including the 404 page. This is exactly what made checks 9a–9c unverifiable
+  here, and it is a real availability risk in production.
+- Route-level 404 handling itself is correct by inspection; re-run checks 9a–9c
+  in an environment with Sanity access to confirm end-to-end.
 
 ## Reproducing
 

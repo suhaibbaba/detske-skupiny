@@ -18,7 +18,7 @@ stand-in rather than the real one. So:
 What the numbers *are* good for is the **delta**: the after-run uses the same
 build pipeline, dataset, Chrome and throttling, so a change in JS bytes,
 blocking time or paint timing is attributable to the code. Where a phase 6 item
-cannot be measured here at all, `docs/perf-after-phase6.md` says so rather than
+cannot be measured here at all, `docs/perf/phase6-after.md` says so rather than
 inventing a number.
 
 Lighthouse 12, Chromium 1194 (`/opt/pw-browsers/chromium`), categories
