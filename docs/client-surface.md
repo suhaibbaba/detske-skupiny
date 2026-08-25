@@ -20,9 +20,66 @@ demotions below used.
 - **function prop** - hands a component or callback to another component,
   which cannot cross the server/client boundary
 - **library** - a dependency that is client-only
+- **styled** - the module calls `styled()`; see the rule below
 
-Being "interactive-looking" is not a reason. A hover effect is CSS, and `sx`
-and `styled` both run on the server. A link is a link.
+Being "interactive-looking" is not a reason. A hover effect is CSS. A link is
+a link.
+
+## Two rules about styling, both learned the hard way
+
+**1. Any module that calls `styled()` is a client module.**
+
+`styled` is Emotion, and Emotion's `styled` carries `"use client"` all the way
+down - `@mui/material/styles/styled.mjs` and `@mui/system/styled` both have the
+directive. A server module that imports it does not get a function, it gets a
+client *reference*, so calling it throws at module evaluation:
+
+```
+Attempted to call the default export of .../@mui/material/styles/styled.mjs
+from the server, but it's on the client.
+```
+
+This is about the module graph, not about rendering: the output SSRs perfectly
+well. So the fix is never to stop using `styled`, and it is certainly not
+`"use server"` - that directive declares a Server Action and has nothing to do
+with serialisation.
+
+**Styled primitives live in their own small `"use client"` files, and Server
+Components import and render them freely.** A Server Component may render a
+Client Component; what it may not do is *be* one. The children it hands that
+component stay server-rendered, so the phase 7 pushdown survives intact. The
+three primitives below cost nothing extra either way - each wraps a MUI
+component (`Chip`, `Typography`, `TextareaAutosize`) that already carries the
+directive, so the boundary sits exactly where it always did.
+
+Where the styling does not need `styled()` at all, express it as `sx` at the
+call site instead and keep the module on the server.
+
+`eslint`'s `boundary/client-only-styled` fails the build on a `styled(` call in
+a module without the directive.
+
+**2. An `sx` written in a server module has to be serialisable.**
+
+Every MUI component is a Client Component, so whatever a Server Component puts
+in `sx` is serialised across the boundary. A `(theme) => ...` callback - or a
+single function-valued key inside the object, which is easier to miss - is:
+
+```
+Functions cannot be passed directly to Client Components unless you
+explicitly expose it by marking it with "use server".
+```
+
+Again, `"use server"` is not the fix. The theme reaches `sx` without a callback
+in two ways: palette values as string paths (`bgcolor: "primary.light"`,
+`color: "custom.textHeading"`), and the non-palette tokens as the plain
+constants exported from `theme/custom.ts`. `theme.custom` and
+`sx={(theme) => ...}` stay the right way in from a client module.
+
+`eslint`'s `boundary/serializable-sx` fails the build on a function inside an
+`sx={...}` attribute or a `satisfies Record<string, SxProps<Theme>>` table in a
+module without the directive. A helper that *returns* an sx object
+(`const chipSx = (colour): SxProps<Theme> => ({...})`) is called at the call
+site and produces a plain object, so it is not this bug and is not reported.
 
 ## The inventory
 
@@ -32,37 +89,46 @@ and `styled` both run on the server. A link is a link.
 | `providers/DefaultImageClientProvider.tsx` | 22 | context - the fallback image every `<Image>` reads |
 | `features/blog/components/DynamicOffsetVar.tsx` | 28 | effect, browser - measures its own height into a CSS variable |
 | `lib/i18n/IntlErrorHandlingProvider.tsx` | 29 | context - next-intl's provider |
+| `components/ui/DataChip.tsx` | 30 | styled - `styled(Chip)`; `Chip` is a client module already |
+| `components/ui/SectionHeading.tsx` | 32 | styled - `styled(Typography)`; `Typography` is a client module already |
 | `components/layout/CopyrightYear.tsx` | 36 | effect - reads the clock per visitor, so the cached footer cannot go stale |
 | `app/[locale]/error.tsx` | 39 | framework - Next requires error boundaries to be client |
+| `components/map/LazyMap.tsx` | 48 | library - `next/dynamic` with `ssr: false` is only legal in a client file |
 | `features/catalog/components/CatalogTransition.tsx` | 49 | context, state - shares one `useTransition` between the filters and the list |
-| `features/catalog/components/filters/FilterSidebarDialog.tsx` | 64 | state - the mobile filter dialog's open flag |
+| `components/ui/textarea/Textarea.tsx` | 53 | styled - `styled(TextareaAutosize)`; its only call site, `ContactForm`, is client anyway |
+| `components/rich-text/GalleryLightboxDialog.tsx` | 54 | library - `yet-another-react-lightbox`, reached only through `dynamic(..., { ssr: false })` |
+| `components/rich-text/GalleryLightbox.tsx` | 65 | state - which slide the lightbox is on |
 | `features/catalog/components/SchoolCount.tsx` | 66 | rendered by `SchoolList`, which is client |
-| `components/rich-text/GalleryLightbox.tsx` | 72 | state - which slide the lightbox is on |
-| `components/map/LazyMap.tsx` | 75 | library - `next/dynamic` with `ssr: false` is only legal in a client file |
+| `features/catalog/components/filters/FilterSidebarDialog.tsx` | 68 | state - the mobile filter dialog's open flag |
 | `components/ui/EmblaCarousel.tsx` | 81 | state, handler - the embla instance and its prev/next buttons |
-| `components/layout/HeaderDrawer.tsx` | 82 | state - whether the mobile drawer is open |
 | `components/ui/button/Button.tsx` | 85 | function prop - hands MUI `component={NextLink}` |
 | `components/ui/link/Link.tsx` | 88 | function prop - same |
+| `components/layout/HeaderDrawer.tsx` | 95 | state - whether the mobile drawer is open |
 | `features/catalog/components/TypeBadge.tsx` | 97 | library - MUI `Chip` clones its `icon` element, which does not survive the boundary |
 | `features/catalog/useSchoolFilters.ts` | 99 | state - nuqs URL state for the catalog filters |
 | `features/home/components/MapRegionFilter.tsx` | 101 | state - the region the pills and the map agree on |
-| `components/map/PopupContent.tsx` | 106 | handler - rendered into a MapTiler popup through a portal |
-| `components/ui/language/LanguageSwitcher.tsx` | 114 | browser - reads `window.location` to pick the current domain |
 | `features/blog/components/BlogCategories.tsx` | 114 | handler - pushes the selected category into the URL |
-| `features/catalog/components/filters/FilterSidebar.tsx` | 115 | handler - the clear-filters button |
+| `features/catalog/components/filters/FilterSidebar.tsx` | 114 | handler - the clear-filters button |
 | `features/catalog/components/SearchBar.tsx` | 125 | state, effect - a debounced input |
 | `features/catalog/components/filters/FilterCategoriesList.tsx` | 127 | handler - toggles a category |
+| `components/map/PopupContent.tsx` | 130 | handler - rendered into a MapTiler popup through a portal |
 | `components/forms/TurnstileWidget.tsx` | 131 | browser - loads and mounts Cloudflare's widget |
 | `features/catalog/components/filters/FilterTagList.tsx` | 132 | handler - toggles a tag |
-| `features/catalog/components/SchoolGridCard.tsx` | 175 | rendered by `SchoolList`, which is client |
+| `components/ui/language/LanguageSwitcher.tsx` | 143 | browser - reads `window.location` to pick the current domain |
 | `features/cooperation/components/PreschoolCard.tsx` | 175 | library - same MUI `Chip` icon problem as `TypeBadge` |
-| `features/catalog/components/SchoolList.tsx` | 177 | state - appends the load-more page without a navigation |
-| `components/ui/image/Image.tsx` | 192 | context - reads the fallback image; also `styled(NextImage)` |
+| `features/catalog/components/SchoolGridCard.tsx` | 184 | rendered by `SchoolList`, which is client |
+| `components/ui/image/Image.tsx` | 192 | context - reads the fallback image; also styled - `styled(NextImage)` |
+| `features/catalog/components/SchoolList.tsx` | 224 | state - appends the load-more page without a navigation |
 | `features/catalog/components/filters/FilterList.tsx` | 235 | state - the in-list search box |
-| `components/forms/ContactForm.tsx` | 299 | state, handler - the contact form |
-| `components/map/MapComponent.tsx` | 424 | browser, library - MapTiler needs a DOM node; the school list beside it is its accessible alternative, see docs/a11y.md |
+| `components/forms/ContactForm.tsx` | 354 | state, handler - the contact form |
+| `components/map/MapComponent.tsx` | 555 | browser, library - MapTiler needs a DOM node; the school list beside it is its accessible alternative, see docs/a11y.md |
 
-33 files, 3,773 lines.
+37 files, 4,219 lines.
+
+The three `styled` rows and `GalleryLightboxDialog` are the only additions
+since phase 7; the line counts moved because the accessibility and Studio
+branches landed in between. Phase 7's own figures are in
+`docs/perf/phase7-after.md` and are left as they were measured.
 
 ## What moved to the server in phase 7
 
@@ -87,3 +153,12 @@ target of "-15-25% of the shared client baseline" was written against. That
 number needs a production build, and this sandbox cannot produce one - the
 build stops at the Sanity credentials it has no network egress for. See
 `docs/perf/phase7-before.md`.
+
+## Measurement, after the boundary fixes
+
+The three `styled` promotions add 115 source lines to the client surface, which
+sounds like a partial revert of the phase 7 win and is not one. Real per-route
+client-chunk bytes, read off Turbopack's own client reference manifests, are in
+`docs/perf/rsc-boundaries.md`: every route got *smaller*, and `/` and
+`/cooperation` lost a client reference, because `styled.mjs` itself had been
+sitting in their client module list - which is exactly the bug.

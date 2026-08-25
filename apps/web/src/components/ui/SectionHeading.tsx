@@ -1,3 +1,5 @@
+"use client";
+
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
@@ -11,6 +13,12 @@ import Typography from "@mui/material/Typography";
  * A `styled` component rather than a shared `sx` object because that is what a
  * repeated *look* is - one element with a name - and a call site's own `sx`
  * still wins over it if a fourth heading ever needs to differ.
+ *
+ * `"use client"` because `styled()` is Emotion, and Emotion's `styled` is a
+ * client module - a server module that calls it throws. MUI's `Typography`
+ * already carries the directive, so the boundary is where it was; a server
+ * component renders this freely and its children stay server-rendered. See
+ * docs/client-surface.md.
  */
 const SectionHeading = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "dense",

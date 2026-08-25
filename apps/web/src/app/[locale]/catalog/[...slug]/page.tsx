@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { Box, CircularProgress, Container } from "@mui/material";
 import PageLayout from "@/components/layout/PageLayout";
 import FilterSidebar from "@/features/catalog/components/filters/FilterSidebar";
@@ -37,9 +38,9 @@ type Props = PageProps<
 >;
 
 const styles = {
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageCreamToLilac,
-  }),
+  pageLayout: {
+    background: custom.gradients.pageCreamToLilac,
+  },
   pageContainer: {
     pb: {
       xs: "100px",

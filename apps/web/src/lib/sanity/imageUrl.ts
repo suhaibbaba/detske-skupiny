@@ -1,4 +1,4 @@
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
 
 /**
@@ -15,7 +15,7 @@ import type { SanityImageSource } from "@sanity/image-url";
  * so there is nothing to hide - but they are exposed by one reviewable line of
  * config rather than by a naming convention.
  */
-const builder = imageUrlBuilder({
+const builder = createImageUrlBuilder({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_DATASET!,
 });

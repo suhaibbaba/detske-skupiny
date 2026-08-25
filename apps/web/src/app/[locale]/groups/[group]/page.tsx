@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { fetchSchoolBySlug } from "@/features/school/queries";
 import { notFound, redirect } from "next/navigation";
 import { PageProps } from "@/types";
@@ -34,10 +35,10 @@ import type { School } from "@/types";
 import { parseLinkField } from "@/components/ui/link/parser";
 
 const styles = {
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageCreamToLilac,
+  pageLayout: {
+    background: custom.gradients.pageCreamToLilac,
     pb: { xs: 5 },
-  }),
+  },
   pageContainer: {
     pb: {
       xs: "100px",

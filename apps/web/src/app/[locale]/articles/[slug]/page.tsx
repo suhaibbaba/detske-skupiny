@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
+import { custom } from "@/theme/custom";
 import { fetchBlogBySlug } from "@/features/blog/queries";
 import type { Blog } from "@/types/blog";
 import { PageProps } from "@/types";
@@ -32,11 +33,11 @@ const styles = {
       pt: "20px",
     },
   },
-  pageLayout: (theme: Theme) => ({
-    background: theme.custom.gradients.pageBlushToCream,
+  pageLayout: {
+    background: custom.gradients.pageBlushToCream,
     pb: "100px",
     mb: "100px",
-  }),
+  },
   detailsHintBox: {
     mx: "auto",
     maxWidth: "920px",

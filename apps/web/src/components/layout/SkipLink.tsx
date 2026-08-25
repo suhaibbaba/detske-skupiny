@@ -1,5 +1,10 @@
 import { Box } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
+// Read as plain constants rather than through an `sx={(theme) => ...}`
+// callback: this file is a Server Component and `Box` is a Client Component,
+// so a function anywhere in `sx` - including as one key's value - is a value
+// React cannot serialise across the boundary.
+import { custom } from "@/theme/custom";
 import { getTranslateServer } from "@/hooks/useTranslate";
 
 /** The id on the `<main>` in app/[locale]/layout.tsx that this jumps to. */
@@ -22,7 +27,7 @@ const styles = {
     position: "absolute",
     left: "-9999px",
     top: 0,
-    zIndex: (theme: Theme) => theme.zIndex.tooltip + 1,
+    zIndex: custom.zIndex.skipLink,
     padding: "12px 20px",
     margin: "8px",
     borderRadius: "24px",
@@ -31,7 +36,7 @@ const styles = {
     fontWeight: 600,
     fontSize: 16,
     textDecoration: "none",
-    boxShadow: (theme: Theme) => theme.custom.shadows.card,
+    boxShadow: custom.shadows.card,
     "&:focus": {
       left: 0,
     },
