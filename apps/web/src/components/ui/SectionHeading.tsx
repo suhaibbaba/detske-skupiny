@@ -16,7 +16,6 @@ const SectionHeading = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "dense",
 })<{ dense?: boolean }>(({ theme, dense }) => ({
   color: theme.palette.custom.textHeading,
-  textTransform: "capitalize",
   fontWeight: 900,
   fontSize: "18px",
   marginBottom: dense ? "8px" : "16px",

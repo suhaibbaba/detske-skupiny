@@ -1,6 +1,7 @@
 "use client";
 
-import { Alert, Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import Button from "@/components/ui/button";
 import SchoolGridCard from "@/features/catalog/components/SchoolGridCard";
 import useTranslate from "@/hooks/useTranslate";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -11,6 +12,7 @@ import { Props as FilterSidebarProps } from "@/features/catalog/components/filte
 import { MarkerData, MiniSchool } from "@/types";
 import SchoolsMap from "@/features/catalog/components/SchoolsMap";
 import { useCatalogTransition } from "@/features/catalog/components/CatalogTransition";
+import { useSchoolFilters } from "@/features/catalog/useSchoolFilters";
 import { loadMoreSchools } from "@/features/catalog/actions";
 import {
   catalogParsers,
@@ -53,6 +55,27 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
   },
+  /**
+   * The empty state spans the whole grid rather than sitting in the first
+   * column, which is what an `Alert` dropped into a grid child does.
+   */
+  empty: {
+    gridColumn: "1 / -1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "16px",
+    textAlign: "center",
+    py: "48px",
+  },
+  emptyTitle: {
+    fontWeight: 700,
+    fontSize: "20px",
+    color: "custom.textHeading",
+  },
+  emptyBody: {
+    maxWidth: 420,
+  },
 } satisfies Record<string, SxProps<Theme>>;
 
 const SchoolList: FC<Props> = ({
@@ -67,6 +90,7 @@ const SchoolList: FC<Props> = ({
 }) => {
   const translate = useTranslate();
   const { isPending } = useCatalogTransition();
+  const { hasActiveFilters, clear } = useSchoolFilters();
 
   // Pages fetched by the action since this render. The server-rendered pages
   // stay in props; only what paging adds lives here.
@@ -153,11 +177,38 @@ const SchoolList: FC<Props> = ({
             {hasMore && <div ref={sentryRef} />}
           </>
         ) : (
+          /*
+           * Nothing matched.
+           *
+           * This was an `Alert severity="info"` carrying `noSchoolsFound` and
+           * nothing else - which tells someone who has just ticked four
+           * filters that they are stuck, without telling them how to get
+           * unstuck. The way out is the same "clear all" the sidebar offers,
+           * except the sidebar is a drawer on mobile, so at the moment the
+           * grid empties the control that would fix it is off screen.
+           *
+           * `role="status"` with `aria-live` because the grid empties in
+           * response to a filter change on the same page: there is no
+           * navigation for a screen reader to announce, so without this the
+           * result of the interaction is silent.
+           */
           !loadingMore &&
           !isPending && (
-            <Alert severity="info" sx={{ maxWidth: 600, gridColumn: "1 / -1" }}>
-              {translate("noSchoolsFound")}
-            </Alert>
+            <Box sx={styles.empty} role="status" aria-live="polite">
+              <Typography sx={styles.emptyTitle}>
+                {translate("noSchoolsFound")}
+              </Typography>
+              {hasActiveFilters && (
+                <>
+                  <Typography sx={styles.emptyBody}>
+                    {translate("noSchoolsFoundHint")}
+                  </Typography>
+                  <Button variant="primary" onClick={() => clear()}>
+                    {translate("clearAll")}
+                  </Button>
+                </>
+              )}
+            </Box>
           )
         )}
       </Box>

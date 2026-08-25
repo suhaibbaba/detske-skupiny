@@ -31,6 +31,10 @@ export default function FilterSidebarDialog({
       <IconButton
         size="small"
         onClick={handleClickOpen}
+        // Icon-only, so it needs a name of its own; `filters` is already in
+        // the dictionary as the sidebar's own heading.
+        aria-label={translate("filters")}
+        aria-expanded={open}
         sx={{ aspectRatio: 1, border: 1, borderColor: "primary.main", p: 1 }}
       >
         <TuneIcon
@@ -40,7 +44,7 @@ export default function FilterSidebarDialog({
       <Dialog open={open} onClose={handleClose} fullWidth={true}>
         <DialogTitle sx={{ m: 0, p: 3 }} />
         <IconButton
-          aria-label="close"
+          aria-label={translate("close")}
           onClick={handleClose}
           sx={(theme) => ({
             position: "absolute",

@@ -1,0 +1,63 @@
+import { Box } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
+import { getTranslateServer } from "@/hooks/useTranslate";
+
+/** The id on the `<main>` in app/[locale]/layout.tsx that this jumps to. */
+export const MAIN_CONTENT_ID = "main-content";
+
+/**
+ * Visible only when focused, which is the whole trick.
+ *
+ * Not `display: none` and not `visibility: hidden` - either would take the
+ * link out of the tab order, which is the one thing it must stay in. It is
+ * positioned off the top of the viewport instead, and slides back into the
+ * corner the moment it takes focus.
+ *
+ * `clip` and the 1px box are the belt-and-braces half of the same idea: some
+ * screen readers announce an off-screen element's position oddly, and a
+ * clipped 1px box is the shape every "visually hidden" recipe converged on.
+ */
+const styles = {
+  link: {
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    zIndex: (theme: Theme) => theme.zIndex.tooltip + 1,
+    padding: "12px 20px",
+    margin: "8px",
+    borderRadius: "24px",
+    backgroundColor: "common.white",
+    color: "custom.textHeading",
+    fontWeight: 600,
+    fontSize: 16,
+    textDecoration: "none",
+    boxShadow: (theme: Theme) => theme.custom.shadows.card,
+    "&:focus": {
+      left: 0,
+    },
+  },
+} satisfies Record<string, SxProps<Theme>>;
+
+/**
+ * The first thing in the tab order on every page.
+ *
+ * Every route on this site opens with the same header - logo, five nav items,
+ * a language switcher and a CTA - so reaching the actual content with a
+ * keyboard meant eight or nine tab presses, on every single page. That is what
+ * WCAG 2.4.1 is about, and the site had no bypass at all.
+ *
+ * It renders on the server and reads its label from the Sanity dictionary. If
+ * the `skipToContent` key is missing, next-intl's fallback returns the key
+ * itself, so the link would read "skipToContent" rather than disappear - ugly
+ * but still functional, and visible enough that someone will fix it. The key
+ * is listed in docs/a11y.md for the editor.
+ */
+export default async function SkipLink() {
+  const translate = await getTranslateServer();
+
+  return (
+    <Box component="a" href={`#${MAIN_CONTENT_ID}`} sx={styles.link}>
+      {translate("skipToContent")}
+    </Box>
+  );
+}

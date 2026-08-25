@@ -7,6 +7,16 @@ export default function Textarea(props: TextareaAutosizeProps) {
   return <TextareaAutosize {...props} />;
 }
 
+/**
+ * The contact form's message field.
+ *
+ * This used to carry `&:focus-visible { outline: 0 }`, marked "firefox", which
+ * removed the only visible focus indicator the control had: the `:focus` rule
+ * below changes the border colour but not its width, so a keyboard user
+ * landing here saw a 1px hairline shift from grey to purple and nothing else.
+ * The ring comes from the `:focus-visible` rule in theme/components.ts now,
+ * which every focusable element on the site shares.
+ */
 const TextareaAutosize = styled(BaseTextareaAutosize)(
   ({ theme }) => `
   box-sizing: border-box;
@@ -18,11 +28,6 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
   font-size: 15px;
   font-weight: normal;
   
-  /* firefox */
-  &:focus-visible {
-    outline: 0;
-  }
-
   &:hover {
     border-color: ${alpha(theme.palette.common.black, 0.87)};
   }

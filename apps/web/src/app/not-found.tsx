@@ -93,7 +93,6 @@ export default async function NotFound() {
                 py: 1.5,
                 borderRadius: "24px",
                 padding: "14px 20px",
-                textTransform: "capitalize",
                 lineHeight: "16px",
               }}
             >

@@ -60,7 +60,7 @@ and `styled` both run on the server. A link is a link.
 | `components/ui/image/Image.tsx` | 192 | context - reads the fallback image; also `styled(NextImage)` |
 | `features/catalog/components/filters/FilterList.tsx` | 235 | state - the in-list search box |
 | `components/forms/ContactForm.tsx` | 299 | state, handler - the contact form |
-| `components/map/MapComponent.tsx` | 424 | browser, library - MapTiler needs a DOM node |
+| `components/map/MapComponent.tsx` | 424 | browser, library - MapTiler needs a DOM node; the school list beside it is its accessible alternative, see docs/a11y.md |
 
 33 files, 3,773 lines.
 

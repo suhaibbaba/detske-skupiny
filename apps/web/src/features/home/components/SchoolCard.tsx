@@ -125,7 +125,6 @@ const styles = {
     color: "custom.textHeading",
     fontSize: "20px",
     fontWeight: 900,
-    textTransform: "capitalize",
   },
   description: {
     textAlign: "left",

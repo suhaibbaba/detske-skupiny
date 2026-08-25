@@ -7,8 +7,10 @@ import Select, {
 import MenuItem, { MenuItemProps } from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useEffect, useState } from "react";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { useLocale } from "next-intl";
+import useTranslate from "@/hooks/useTranslate";
+import { counterpartUrl } from "@/components/ui/language/counterpart";
 
 const EN_DOMAIN = process.env.NEXT_PUBLIC_EN_DOMAIN ?? "localhost";
 const CS_DOMAIN = process.env.NEXT_PUBLIC_CS_DOMAIN ?? "localhost";
@@ -46,34 +48,56 @@ const styles = {
   },
 } satisfies Record<string, SxProps<Theme>>;
 
+/** `https://en.example.com` for the target domain, on this page's protocol and port. */
+const originFor = (targetDomain: string): string => {
+  const { protocol, port } = window.location;
+  return `${protocol}//${targetDomain}${port ? `:${port}` : ""}`;
+};
+
 /**
- * Builds a complete URL with protocol, domain, port, path, search params, and hash
+ * The other language's version of the page being viewed.
+ *
+ * Reads the page's own `<link rel="alternate" hreflang="...">` first. That tag
+ * is emitted by `generateMetadata` from the document's `translation.metadata`
+ * pairing, so it is the only thing that knows a school's English slug given
+ * its Czech one - the two are unrelated strings in two Sanity documents.
+ *
+ * Everything else is in counterpart.ts, which is where the fallbacks are
+ * tested.
  */
-const buildUrl = (targetDomain: string): string => {
-  if (typeof window === "undefined") return "";
+const targetUrl = (fromLocale: string, toLocale: string, domain: string) => {
+  const declaredAlternate = document
+    .querySelector<HTMLLinkElement>(
+      `link[rel="alternate"][hreflang="${toLocale}"]`,
+    )
+    ?.getAttribute("href");
 
-  const protocol = window.location.protocol; // http: or https:
-  const port = window.location.port;
-  // Build port string (only if port exists)
-  const portString = port ? `:${port}` : "";
-
-  return `${protocol}//${targetDomain}${portString}/`;
+  return counterpartUrl({
+    declaredAlternate,
+    pathname: window.location.pathname,
+    search: window.location.search,
+    hash: window.location.hash,
+    fromLocale,
+    toLocale,
+    targetOrigin: originFor(domain),
+  });
 };
 
 const LanguageSwitcher = () => {
-  const [currentLocale, setCurrentLocale] = useState<string>("en");
+  const translate = useTranslate();
 
-  useEffect(() => {
-    // Detect current locale based on domain
-    if (typeof window !== "undefined") {
-      const hostname = window.location.hostname;
-      const locale =
-        Object.keys(languages).find(
-          (key) => languages[key].domain === hostname,
-        ) || "en";
-      setCurrentLocale(locale);
-    }
-  }, []);
+  /**
+   * The locale next-intl already resolved for this request.
+   *
+   * This used to be state seeded with "en" and corrected in an effect that
+   * matched `window.location.hostname` against the domain list. Two problems
+   * with that: on the Czech site the control rendered "English (US)" on first
+   * paint and flipped after hydration, and the effect cannot run during SSR,
+   * so the server always emitted the wrong value. next-intl derives the locale
+   * from the same domain on both sides, so reading it here is correct from the
+   * first frame and one render cheaper.
+   */
+  const currentLocale = useLocale();
 
   const languages: {
     [key: string]: { domain: string; name: string; flag: string };
@@ -84,11 +108,13 @@ const LanguageSwitcher = () => {
 
   const handleChange = (e: SelectChangeEvent<string>) => {
     const selectedLocale = e.target.value;
-    const targetDomain = languages[selectedLocale].domain;
-    const newUrl = buildUrl(targetDomain);
+    if (selectedLocale === currentLocale) return;
 
-    // Redirect to the new domain while preserving the current path
-    window.location.href = newUrl;
+    window.location.href = targetUrl(
+      currentLocale,
+      selectedLocale,
+      languages[selectedLocale].domain,
+    );
   };
 
   return (
@@ -97,6 +123,9 @@ const LanguageSwitcher = () => {
       onChange={handleChange}
       displayEmpty
       sx={styles.select}
+      // A bare combobox with two flags in it announces as "combobox, English
+      // (US)" and nothing about what choosing one would do.
+      inputProps={{ "aria-label": translate("languageSwitcherLabel") }}
     >
       {Object.keys(languages).map((key) => {
         const language = languages[key];

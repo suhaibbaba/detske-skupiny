@@ -232,6 +232,92 @@ test.describe("catalog", () => {
     expect(restored.slice(0, firstPage.length)).toEqual(firstPage);
   });
 
+  /**
+   * Going back from a school should put you where you were.
+   *
+   * With Cache Components on, Next keeps the previous route mounted inside
+   * React's `<Activity>` rather than unmounting it, so the DOM, the component
+   * state and the scroll position all survive a back navigation - for the
+   * three most recent routes. This asserts the promise rather than the
+   * mechanism: a change that resets the catalog subtree (a `key` on it, a
+   * remount, a redirect through a third route) breaks this without breaking
+   * anything else, and nothing else in the suite would notice.
+   *
+   * Run on a mobile viewport because that is where it costs most: the list is
+   * one column, so the same number of results is several times further down.
+   */
+  test("back from a school detail restores scroll and the loaded pages", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openCatalog(page);
+    await settled(page);
+
+    const cards = page.locator(
+      `[data-test-selector='SchoolList'] a[href^='${PATHS.groups}/']`,
+    );
+    if ((await cards.count()) === 0) {
+      test.skip(true, "catalog list is empty in this dataset");
+    }
+
+    // Far enough down that a reset to the top is unambiguous.
+    await page.mouse.wheel(0, 1200);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(200);
+
+    const scrollBefore = await page.evaluate(() => window.scrollY);
+    const schoolsBefore = await listedSchools(page);
+    const urlBefore = page.url();
+
+    const target = cards.first();
+    await target.scrollIntoViewIfNeeded();
+    await target.click();
+    await page.waitForLoadState("networkidle");
+    expect(page.url()).toContain(`${PATHS.groups}/`);
+
+    await page.goBack();
+    await settled(page);
+
+    expect(page.url()).toBe(urlBefore);
+    expect(await listedSchools(page)).toEqual(schoolsBefore);
+
+    // Not exact: the browser restores to the pixel it recorded, and a lazy
+    // image settling can move it by a row.
+    const scrollAfter = await page.evaluate(() => window.scrollY);
+    expect(
+      Math.abs(scrollAfter - scrollBefore),
+      `scroll was ${scrollBefore} before and ${scrollAfter} after`,
+    ).toBeLessThan(200);
+  });
+
+  /**
+   * A stale `?page=` under new filters would render a page of results the
+   * filters do not match, or an empty list with a "load more" that goes
+   * nowhere. Every setter in useSchoolFilters clears it in the same URL
+   * update; this is the assertion that says so from the outside.
+   */
+  test("changing a filter drops ?page= from the URL", async ({ page }) => {
+    const href = await openCatalog(page);
+    await page.goto(`${href}?page=2`);
+    await settled(page);
+
+    const option = page
+      .locator("[data-test-selector='FilterTypeList']")
+      .first()
+      .getByRole("checkbox")
+      .first();
+
+    if ((await option.count()) === 0) {
+      test.skip(true, "no category filters in this dataset");
+    }
+
+    await option.click();
+    await expect
+      .poll(() => new URL(page.url()).searchParams.has("page"))
+      .toBe(false);
+  });
+
   test("the back button restores the previous filter state", async ({
     page,
   }) => {

@@ -1,9 +1,19 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import { createPortal } from "react-dom";
+import { Box, Typography } from "@mui/material";
+import { visuallyHidden } from "@mui/utils";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
+import type { SxProps, Theme } from "@mui/material/styles";
+import useTranslate from "@/hooks/useTranslate";
 import {
   hasPosition,
   type MapCoordinate,
@@ -52,6 +62,32 @@ const clusterCenter = (feature: {
     : undefined;
 };
 
+const styles = {
+  /**
+   * Sits over the canvas rather than replacing it: the MapTiler instance has
+   * to keep its container, and unmounting it to show a message would tear the
+   * whole map down and rebuild it the moment a filter matched again.
+   */
+  emptyOverlay: {
+    position: "absolute",
+    inset: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    p: 3,
+    // Above MapTiler's own canvas and controls, below the popup.
+    zIndex: 2,
+    backgroundColor: "rgba(255, 255, 255, 0.88)",
+    pointerEvents: "none",
+  },
+  emptyMessage: {
+    maxWidth: 420,
+    textAlign: "center",
+    fontWeight: 600,
+    color: "custom.textHeading",
+  },
+} satisfies Record<string, SxProps<Theme>>;
+
 export interface MapProps {
   selectedRegionId?: string;
   defaultCenter?: MapCoordinate;
@@ -69,11 +105,9 @@ const MapComponent: React.FC<MapProps> = ({
   onMarkerClick,
   minHeight = 400,
 }) => {
+  const translate = useTranslate();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maptilersdk.Map | null>(null);
-  const [filteredMarkers, setFilteredMarkers] = useState<PositionedMarker[]>(
-    [],
-  );
   const markersMapRef = useRef<Map<string, PositionedMarker>>(new Map());
 
   // State for popup management
@@ -85,17 +119,35 @@ const MapComponent: React.FC<MapProps> = ({
   const popupRef = useRef<maptilersdk.Popup | null>(null);
   const popupContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Filter markers based on regionId
-  //
-  // `hasPosition` drops schools whose address carries no map location. They
-  // were previously kept and then read for `coordinate.lng`, which throws.
-  useEffect(() => {
+  /**
+   * The markers this map will actually draw.
+   *
+   * `hasPosition` drops schools whose address carries no map location. They
+   * were previously kept and then read for `coordinate.lng`, which throws.
+   *
+   * Derived with `useMemo` rather than an effect writing to state. The effect
+   * version was one render behind, so a map whose filters match nothing
+   * rendered once with an empty list before the effect had run - which the
+   * empty message below would have read as "no results" and flashed on every
+   * single mount, including the ones that were about to draw markers.
+   */
+  const filteredMarkers = useMemo<PositionedMarker[]>(() => {
     const filtered = selectedRegionId
       ? markers.filter((marker) => marker.selectedRegionId === selectedRegionId)
       : markers;
 
-    setFilteredMarkers(filtered.filter(hasPosition));
+    return filtered.filter(hasPosition);
   }, [markers, selectedRegionId]);
+
+  /**
+   * True when there is nothing to draw but something was asked for.
+   *
+   * Distinguishes "this filter combination has no places in it", which is
+   * worth saying, from "this map has not been given any markers", which is
+   * either a page that draws an empty map on purpose or a bug - and in neither
+   * case does an editor-facing message help.
+   */
+  const hasNoResults = markers.length > 0 && filteredMarkers.length === 0;
 
   // Function to close current popup
   const closeCurrentPopup = useCallback(() => {
@@ -129,6 +181,29 @@ const MapComponent: React.FC<MapProps> = ({
     },
     [onMarkerClick],
   );
+
+  /**
+   * Escape closes the popup.
+   *
+   * The popup is a panel that opens over the content and traps nothing, so
+   * WCAG 2.1.2 wants a keyboard way out of it. There was none: it closed on a
+   * click on the map background or on its own close button, both of which need
+   * a pointer to reach.
+   *
+   * Bound on `document` rather than on the popup, because the popup is
+   * portalled into MapTiler's own DOM and focus may well be somewhere else on
+   * the page by the time the user reaches for Escape.
+   */
+  useEffect(() => {
+    if (!activePopup) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeCurrentPopup();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [activePopup, closeCurrentPopup]);
 
   // Initialize map
   useEffect(() => {
@@ -190,7 +265,10 @@ const MapComponent: React.FC<MapProps> = ({
         source: "markers",
         filter: ["has", "point_count"],
         paint: {
-          "circle-color": "#9980B0",
+          // The brand purple, in step with `primary.main` in theme/palette.ts.
+          // It carries the white cluster count, so it is held to 4.5:1 like any
+          // other text - see theme/contrast.ts.
+          "circle-color": "#886AA3",
           "circle-radius": [
             "step",
             ["get", "point_count"],
@@ -213,7 +291,16 @@ const MapComponent: React.FC<MapProps> = ({
         filter: ["has", "point_count"],
         layout: {
           "text-field": "{point_count_abbreviated}",
-          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          /*
+           * Fonts MapTiler actually serves.
+           *
+           * "DIN Offc Pro Medium" is a Mapbox glyph set, not a MapTiler one,
+           * so the first entry always missed and the label fell through to
+           * whatever the style happened to have - which is why cluster counts
+           * rendered in a different face from the rest of the site and could
+           * change between loads.
+           */
+          "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
           "text-size": 12,
         },
         paint: {
@@ -228,7 +315,7 @@ const MapComponent: React.FC<MapProps> = ({
         source: "markers",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#9980B0",
+          "circle-color": "#886AA3",
           "circle-radius": 8,
           "circle-stroke-width": 2,
           "circle-stroke-color": "#fff",
@@ -402,11 +489,55 @@ const MapComponent: React.FC<MapProps> = ({
   }, [filteredMarkers, closeCurrentPopup, markers]);
 
   return (
-    <>
+    /*
+     * A labelled region, not a bare div.
+     *
+     * A map is a single interactive widget the size of a page section, and
+     * with no role and no name a screen reader reads it as an unlabelled block
+     * of canvas - there is no way to tell it apart from the rest of the page,
+     * or to jump past it. `role="region"` with a name puts it in the landmark
+     * list, so it can be both found and skipped.
+     */
+    <Box
+      role="region"
+      aria-label={translate("mapRegionLabel")}
+      sx={{ position: "relative", height: "100%" }}
+    >
+      {/*
+       * The accessible alternative, named.
+       *
+       * There is no way to make a clustered vector map usable without sight,
+       * and the honest answer is not to pretend otherwise: the school list on
+       * this page carries every place the map draws, with the same name and
+       * address, in a form that reads and tabs. WCAG 1.1.1 is satisfied by
+       * that equivalent, not by an alt text on a canvas - but only if someone
+       * is told the list is there, which is what this sentence does.
+       *
+       * Recorded as a decision in docs/a11y.md.
+       */}
+      <Box sx={visuallyHidden}>{translate("mapListAlternative")}</Box>
+
       <div
         ref={mapContainer}
         style={{ minHeight: `${minHeight}px`, height: "100%" }}
       />
+
+      {/*
+       * Zero markers is a state, not a blank canvas.
+       *
+       * Narrowing the filters until nothing matches used to leave the map
+       * drawing streets and nothing else, which reads as "the map is broken"
+       * rather than "there is nothing here". `aria-live` because this appears
+       * in response to a filter change the user made somewhere else on the
+       * page, with no navigation to announce it.
+       */}
+      {hasNoResults && (
+        <Box role="status" aria-live="polite" sx={styles.emptyOverlay}>
+          <Typography sx={styles.emptyMessage}>
+            {translate("mapNoResults")}
+          </Typography>
+        </Box>
+      )}
 
       {/* Portal for popup content - stays within React tree */}
       {activePopup &&
@@ -417,7 +548,7 @@ const MapComponent: React.FC<MapProps> = ({
           />,
           activePopup.container,
         )}
-    </>
+    </Box>
   );
 };
 
