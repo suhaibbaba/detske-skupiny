@@ -111,7 +111,7 @@ The e2e failure is the same wall as the build. With
 runs fine - the browser opens, the specs execute - and every assertion that
 needs a page fails on a 500:
 
-```
+```text
 [WebServer] ⨯ Error: Configuration must contain `projectId`
 [WebServer]     at module evaluation (src/lib/sanity/client.ts:13:35)
 [WebServer]  GET / 500

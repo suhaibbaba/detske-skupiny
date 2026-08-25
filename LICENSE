@@ -1,0 +1,33 @@
+Copyright (c) 2026 <COPYRIGHT HOLDER — TODO>
+
+All rights reserved.
+
+This software and its accompanying documentation are proprietary and
+confidential. No licence, express or implied, is granted to any person to use,
+copy, modify, merge, publish, distribute, sublicense, or sell any part of this
+software, except under a separate written agreement with the copyright holder.
+
+Unauthorised copying, distribution, or use of this software, via any medium, is
+prohibited.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+--------------------------------------------------------------------------------
+TODO — before this repository is shared with anyone outside the project:
+
+  1. Replace <COPYRIGHT HOLDER — TODO> above with the legal entity that owns
+     this code. This is client work, so the owner is most likely the client
+     company rather than any individual contributor. Confirm which, in writing,
+     before publishing.
+  2. Confirm the year. 2026 is the year this file was added, not necessarily the
+     year of first publication.
+  3. If the intent is instead to open-source this, replace this file wholesale
+     with the chosen licence text (MIT, Apache-2.0, …) and update
+     `"license"` in package.json and apps/studio/package.json to match.
+
+Until step 1 is done, treat this repository as all-rights-reserved and do not
+distribute it. `package.json` and `apps/studio/package.json` both declare
+"UNLICENSED", which is npm's marker for exactly this state.
+--------------------------------------------------------------------------------

@@ -11,6 +11,7 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "migrate:locale": "node scripts/migrate-locale-cz-to-cs.mjs",
+    "migrate:dictionary": "node scripts/add-dictionary-entries.mjs",
     "typecheck": "tsc --noEmit",
     "schema:extract": "sanity schema extract --path ./schema.json"
   },

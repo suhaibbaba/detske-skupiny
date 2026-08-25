@@ -33,7 +33,7 @@ In [Sanity manage](https://www.sanity.io/manage) → your project → **API** �
 
 Then add the same secret to the web app's environment:
 
-```
+```dotenv
 SANITY_WEBHOOK_SECRET=<the secret you generated>
 ```
 
@@ -147,12 +147,14 @@ Point the studio at the staging dataset (`SANITY_STUDIO_DATASET=staging`) and:
 1. **Geocoding and slugs.** Create or open a school that has a street address
    but no map location, and make sure its **Area** is set. Press **Publish**.
    - In Vision, run:
+
      ```groq
      *[_type == "schools" && slug.current == "<the-slug>"][0]{
        nameNormalized, countrySlug, regionSlug, isHighPriority,
        "coords": address.mapLocation
      }
      ```
+
    - `coords` should now hold a `lat`/`lng` near the address, and
      `countrySlug`/`regionSlug` should match the school's area → region →
      country chain.

@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
    * The React Compiler memoizes components and hook results automatically.
    *
    * Kept on because the build cost measured small on this app (see
-   * docs/perf-after-phase6.md) and it removes the need for hand-written
+   * docs/perf/phase6-after.md) and it removes the need for hand-written
    * `useMemo`/`useCallback` - several of which this codebase had wrapped
    * around work cheaper than the memo itself.
    */

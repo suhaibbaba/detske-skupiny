@@ -64,7 +64,7 @@ Everything that could carry a function across the boundary, and what was found:
 `lib/sanity/imageUrl.ts` and `lib/seo/images.ts` both did
 `import imageUrlBuilder from "@sanity/image-url"`, which logs
 
-```
+```text
 The default export of @sanity/image-url has been deprecated.
 Use the named export `createImageUrlBuilder` instead.
 ```
@@ -136,7 +136,7 @@ proxy in `docs/client-surface.md` says the opposite (+115 lines).
 
 The reason is in the module list for `/`:
 
-```
+```text
 removed: @mui/material/Chip/Chip.mjs
 removed: @mui/material/styles/styled.mjs      <- the bug, visible in the manifest
 added:   src/components/ui/DataChip.tsx
@@ -174,7 +174,7 @@ server, on a temporary route that renders `PageLayout`, `SchoolTag` (a Server
 Component, so `DataChip` is reached from the server graph), `SectionHeading`,
 `Textarea` and `urlImageFor` without touching Sanity. Before:
 
-```
+```text
 ⨯ Error: Attempted to call the default export of .../styled.mjs from the server
     at module evaluation (src/components/ui/DataChip.tsx:15:24)
     at module evaluation (src/features/school/components/SchoolTag.tsx:3:1)

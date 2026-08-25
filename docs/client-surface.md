@@ -34,7 +34,7 @@ down - `@mui/material/styles/styled.mjs` and `@mui/system/styled` both have the
 directive. A server module that imports it does not get a function, it gets a
 client *reference*, so calling it throws at module evaluation:
 
-```
+```text
 Attempted to call the default export of .../@mui/material/styles/styled.mjs
 from the server, but it's on the client.
 ```
@@ -64,7 +64,7 @@ Every MUI component is a Client Component, so whatever a Server Component puts
 in `sx` is serialised across the boundary. A `(theme) => ...` callback - or a
 single function-valued key inside the object, which is easier to miss - is:
 
-```
+```text
 Functions cannot be passed directly to Client Components unless you
 explicitly expose it by marking it with "use server".
 ```

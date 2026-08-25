@@ -31,7 +31,7 @@ here.
 **Byte-for-byte identical to the before-run.** Rather than reprint 42 lines,
 here is the check:
 
-```
+```text
 $ diff before/route-table.txt after/route-table.txt
 $ echo $?
 0
@@ -163,7 +163,7 @@ build - so the numbers are comparable within a column, not across.
 
 ### A3. Static JavaScript on disk
 
-```
+```text
 $ du -sh .next/static/chunks
 3.0M    .next/static/chunks      (2,965,317 bytes, was 2,958,290)
 ```
@@ -203,7 +203,7 @@ is a coin flip:
 Both medians are drawn from the same set of outcomes; three samples just landed
 differently. Six extra runs on the upgraded tree confirm it:
 
-```
+```text
 run 4  CLS 0.000  perf 59      run 7  CLS 0.192  perf 65
 run 5  CLS 0.672  perf 44      run 8  CLS 0.672  perf 48
 run 6  CLS 0.000  perf 65      run 9  CLS 0.192  perf 64
@@ -218,7 +218,7 @@ So the honest reading of the catalog CLS and catalog mobile performance rows is
 **unchanged, and unresolvable at three runs**. Fixing that needs more samples
 per data point, and separately, someone should find what is actually shifting -
 Lighthouse's `layout-shift-elements` audit returns no elements in any run,
-before or after, which is the same dead end `docs/perf-after-phase6.md` hit.
+before or after, which is the same dead end `docs/perf/phase6-after.md` hit.
 
 The stable rows are the desktop ones and TBT, and they say the same thing:
 home desktop 99 → 99, catalog desktop 78 → 78, TBT within 5 ms everywhere.
@@ -240,7 +240,7 @@ it is MUI's, so there was no reason to expect this to move.
 
 ### C6. Client components
 
-```
+```text
 $ grep -rl '"use client"' apps/web/src | wc -l
 34
 ```
