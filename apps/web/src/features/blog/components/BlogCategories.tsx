@@ -14,6 +14,30 @@ interface Props {
   categorySelected?: string;
 }
 
+/**
+ * The shape both pills share. They differed only in the three colour lines in
+ * `styles.button`, and repeated these five in full on each.
+ */
+const pill = {
+  boxSizing: "content-box",
+  flex: "1 0 0",
+  padding: "10px 20px",
+  maxWidth: "230px",
+  borderRadius: "24px",
+} satisfies SxProps<Theme>;
+
+/**
+ * The two pills used to be spread onto `<Button>` as props -
+ * `{...styles.button}` - which MUI v9 does not accept: system props are gone
+ * from components, so every declaration landed on the DOM node as a bare
+ * attribute (`padding="10px 20px"`, `bgcolor="..."`) and styled nothing. Both
+ * pills rendered as plain contained buttons, and it typechecked the whole
+ * time, because a JSX spread is not excess-property checked.
+ *
+ * `sx` takes an array and composes it with later entries winning, which is
+ * what carries the shared half. BlogCategories.test.tsx asserts the
+ * declarations reach CSS and that nothing lands on the DOM node again.
+ */
 const styles = {
   container: {
     bgcolor: "custom.surfaceLilac",
@@ -35,23 +59,17 @@ const styles = {
     width: "100%",
     justifyContent: "center",
   },
-  button: {
-    boxSizing: "content-box",
-    flex: "1 0 0",
-    padding: "10px 20px",
-    maxWidth: "230px",
-    borderRadius: "24px",
-    borderColor: "custom.divider",
-    bgcolor: "var(--mui-palette-common-white)",
-    color: "var(--mui-palette-text-primary)",
-  },
-  activeButton: {
-    boxSizing: "content-box",
-    flex: "1 0 0",
-    padding: "10px 20px",
-    maxWidth: "230px",
-    borderRadius: "24px",
-  },
+  /** Unselected: white, with the divider hairline and body-text ink. */
+  button: [
+    pill,
+    {
+      borderColor: "custom.divider",
+      bgcolor: "common.white",
+      color: "text.primary",
+    },
+  ],
+  /** Selected: the theme's own contained-button colours. */
+  activeButton: [pill],
 } satisfies Record<string, SxProps<Theme>>;
 
 const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
@@ -89,7 +107,7 @@ const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
               slug: "all",
             })
           }
-          {...(!categorySelected ? styles.activeButton : styles.button)}
+          sx={!categorySelected ? styles.activeButton : styles.button}
         >
           {translate("all")}
         </Button>
@@ -98,9 +116,11 @@ const BlogCategories: FC<Props> = ({ categories, categorySelected }) => {
             <Button
               key={category.name}
               onClick={() => onSelect(category)}
-              {...(category.slug === categorySelected
-                ? styles.activeButton
-                : styles.button)}
+              sx={
+                category.slug === categorySelected
+                  ? styles.activeButton
+                  : styles.button
+              }
             >
               {category.name}
             </Button>
