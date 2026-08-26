@@ -36,21 +36,20 @@ export default defineConfig({
   /**
    * Hard-coded, not read from the environment.
    *
-   * This used to be `process.env.SANITY_STUDIO_PROJECT_Name`, which no build
-   * ever set - Vite only inlines names it is given verbatim, and the mixed-case
-   * `_Name` in `.env.example` never matched anything a deploy exported. Every
-   * studio therefore fell through to the `"My Project"` fallback. One studio
-   * serves one project, so the name is not configuration; it is a constant.
+   * One studio serves one project, so the name is not configuration; it is a
+   * constant. Reading it from the environment also means trusting Vite to
+   * inline a name it was given verbatim, and a mismatch falls through to a
+   * `"My Project"` placeholder rather than failing.
    */
   title: "Dětské skupinky",
   /**
    * The navbar mark. `icon` rather than `studio.components.logo`: the logo slot
    * is deprecated in v5 ("Custom logo components are no longer supported. Users
    * are encouraged to provide custom components for individual workspace icons
-   * instead") and `StudioLogo` is no longer rendered by the navbar at all. The
+   * instead") and `StudioLogo` is not rendered by the navbar at all. The
    * navbar's `HomeButton` reads `activeWorkspace.icon`, which is this - so the
-   * mark appears in the top-left corner exactly where the logo used to, off a
-   * supported API. See icons/BrandMark.tsx.
+   * mark appears in the top-left corner off a supported API. See
+   * icons/BrandMark.tsx.
    */
   icon: BrandMark,
   /**
@@ -76,10 +75,9 @@ export default defineConfig({
        * being edited, plus the ones that have no language at all (objects and
        * the untranslated singletons).
        *
-       * `$defaultLanguage` used to be passed alongside `$language` here. The
-       * filter never referenced it, and GROQ rejects nothing for an unused
-       * param, so it was invisible - a second language the code looked like it
-       * honoured and did not.
+       * `$language` is the only param, deliberately: GROQ rejects nothing for
+       * an unused param, so a second one the filter never references would read
+       * as a language this honours and does not.
        */
       referenceFilterOptions: {
         filter: ({ document }) => {

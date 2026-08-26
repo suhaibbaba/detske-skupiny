@@ -5,8 +5,8 @@ import { NextRequest } from "next/server";
 // Next 16 renames the `middleware` convention to `proxy`. The file runs on the
 // Node.js runtime, so no `runtime` segment config is needed here.
 //
-// next-intl still ships its handler under `next-intl/middleware` - only the
-// Next.js file convention was renamed, not next-intl's API.
+// next-intl ships its handler under `next-intl/middleware`: the rename is a
+// Next.js file convention, not a change to next-intl's API.
 const intlProxy = createMiddleware(routing);
 
 export default function proxy(request: NextRequest) {

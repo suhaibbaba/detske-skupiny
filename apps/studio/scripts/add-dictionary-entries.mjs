@@ -3,13 +3,13 @@
  *
  * The web app resolves UI strings through next-intl, whose `getMessageFallback`
  * in `apps/web/src/i18n/request.ts` returns the *key itself* when a message is
- * missing. So a key that was never added to the dictionary does not render
- * blank and does not throw - it renders as `contactFormPrivacyPolicyLinkLabel`,
- * in the page, in production, next to a GDPR consent checkbox.
+ * missing. So a key absent from the dictionary does not render blank and does
+ * not throw - it renders as `contactFormPrivacyPolicyLinkLabel`, in the page,
+ * in production.
  *
- * That is what this script fixes, and `e2e/crawl.spec.ts` now fails the build
- * on any visible text node that looks like a raw camelCase key, so the class of
- * bug cannot come back silently.
+ * This script fills those gaps; `e2e/crawl.spec.ts` fails the build on any
+ * visible text node that looks like a raw camelCase key, so one cannot appear
+ * silently.
  *
  * Entries are **upserted by keyword**: an entry that already exists keeps every
  * locale value it already has, and only genuinely empty locales are filled in.

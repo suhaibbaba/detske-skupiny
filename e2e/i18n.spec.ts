@@ -58,11 +58,10 @@ test.describe("i18n", () => {
   /**
    * The switcher has to offer the *equivalent* page, not the home page.
    *
-   * It used to build `protocol//domain/` and nothing else - every visitor on
-   * every page landed on the English home page, however deep they were - while
-   * the function's own comment claimed it preserved "path, search params, and
-   * hash". The fallback chain now is: the page's declared hreflang alternate,
-   * then a segment-by-segment translation of the path, then home.
+   * The fallback chain is: the page's declared hreflang alternate, then a
+   * segment-by-segment translation of the path, then home. Building
+   * `protocol//domain/` alone would land every visitor on the English home
+   * page, however deep they were.
    *
    * The English domain is a different host and is not served by this dev
    * server, so this asserts what the switcher *would* navigate to rather than

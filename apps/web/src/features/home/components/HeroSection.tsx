@@ -68,9 +68,9 @@ const HeroSection: FC<Props> = ({ fields }: Props) => {
           {/*
            * The hero image is the home page's LCP element. `priority` drops
            * the lazy attribute and adds a preload, so it starts downloading
-           * with the HTML rather than after the layout settles - and the
-           * width/height `<Image>` derives from the asset means it no longer
-           * reserves zero space and then shoves the page down on arrival.
+           * with the HTML rather than after the layout settles. The
+           * width/height `<Image>` derives from the asset reserve its space,
+           * so its arrival shifts nothing.
            */}
           <Image
             src={fields.image}

@@ -45,11 +45,11 @@ const EXCLUDED_NAVIGATION_SEGMENTS = [
 export const EXCLUDED_SEGMENTS = [...new Set(EXCLUDED_NAVIGATION_SEGMENTS)];
 
 /**
- * The documents a breadcrumb trail was built from, keyed by slug.
+ * The documents a breadcrumb trail is built from, keyed by slug.
  *
- * Was `Map<string, any>`. The value is the generated union of every document
- * `breadcrumbListQuery` can match, so `_type` narrows and `name` is known to be
- * a string rather than assumed to be one.
+ * The value is the generated union of every document `breadcrumbListQuery` can
+ * match, so `_type` narrows and `name` is known to be a string rather than
+ * assumed to be one.
  */
 export type SlugPageMap = ReadonlyMap<string, BreadcrumbDocument>;
 

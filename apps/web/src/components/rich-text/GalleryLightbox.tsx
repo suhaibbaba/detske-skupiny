@@ -26,14 +26,14 @@ interface Props {
 /**
  * Opens a lightbox for whichever gallery image was clicked.
  *
- * The grid this wraps used to live in here, which made every `<Image>` in it -
- * and the school page's LCP element among them - client code, for two pieces
- * of state: whether the lightbox is open and which slide it is on.
+ * This owns two pieces of state - whether the lightbox is open and which slide
+ * it is on - and nothing else. The grid arrives as `children` and stays
+ * server-rendered, so every `<Image>` in it, the school page's LCP element
+ * among them, is out of the client bundle.
  *
- * The grid arrives as `children` now and stays server-rendered. Which image
- * was clicked comes from a `data-gallery-index` attribute read off the event
- * target rather than from a closure per tile, which is what let the tiles move
- * out.
+ * Which image was clicked comes from a `data-gallery-index` attribute read off
+ * the event target rather than from a closure per tile, which is what keeps the
+ * tiles on the server.
  */
 const GalleryLightbox = ({ children, slides }: Props) => {
   const [openAt, setOpenAt] = useState<number | null>(null);

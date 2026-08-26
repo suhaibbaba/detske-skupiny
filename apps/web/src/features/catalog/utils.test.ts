@@ -3,9 +3,9 @@ import { getSelectedSlug, parseCatalogSlug } from "./utils";
 import { FilterTypes } from "@/types/school-filter";
 
 /**
- * parseCatalogSlug decides whether a /katalog/... URL exists at all. Returning
- * a truthy object for an out-of-range depth is what previously turned a bad
- * URL into a 500 instead of a 404, so the null cases below are the P0 guard.
+ * parseCatalogSlug decides whether a /katalog/... URL exists at all. A truthy
+ * object for an out-of-range depth turns a bad URL into a 500 instead of a 404,
+ * so the null cases below are the load-bearing ones.
  */
 describe("parseCatalogSlug", () => {
   it("parses a country (1 segment)", () => {

@@ -8,8 +8,7 @@ import { CATCH_ALL_TAG, tagsForType } from "@/lib/sanity/tags";
  *
  * Content is cached with `cacheLife("max")`, so nothing expires on a timer -
  * this endpoint is the only thing that makes a publish visible. It is driven
- * by a Sanity webhook configured with the projection `{_type, _id}`; see
- * docs/webhook-and-computed-fields.md for the exact settings.
+ * by a Sanity webhook configured with the projection `{_type, _id}`.
  *
  * Authentication is the webhook's own HMAC signature rather than a shared
  * header: Sanity signs the raw body with the secret, so a replayed or edited

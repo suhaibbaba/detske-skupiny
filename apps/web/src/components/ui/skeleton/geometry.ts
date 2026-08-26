@@ -32,12 +32,13 @@ export const SCHOOL_CARD = {
   /**
    * One row of tags.
    *
-   * A `minHeight` rather than a natural height: a school with no tags used to
-   * collapse this row to nothing and a school with tags did not, so two cards
-   * side by side disagreed about where everything below started. Reserving the
-   * row is what makes a card's fixed section a known height, which is what the
-   * skeleton needs. The value is one outlined `DataChip`: 12px text on a
-   * 1.43 line-height, 2px of padding either side, 1px of border.
+   * A `minHeight` rather than a natural height: without it a school with no
+   * tags collapses this row to nothing while a school with tags does not, so
+   * two cards side by side disagree about where everything below starts.
+   * Reserving the row is what makes a card's fixed section a known height,
+   * which is what the skeleton needs. The value is one outlined `DataChip`:
+   * 12px text on a 1.43 line-height, 2px of padding either side, 1px of
+   * border.
    */
   tagRowMinHeight: "24px",
   tagGap: "5px",

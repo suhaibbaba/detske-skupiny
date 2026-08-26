@@ -53,15 +53,13 @@ function RichText({
   /*
    * Shared text styles: render Shift+Enter (`\n`) as actual line breaks.
    *
-   * `sx` is pulled out of `typographyProps` and composed as an array, because
-   * this was `{ whiteSpace: "pre-line", ...(typographyProps.sx || {}) }`
-   * handed to `sx={textSx}` with `{...typographyProps}` spread AFTER it. Two
-   * mistakes stacked: the later spread put `typographyProps.sx` back on the
-   * element, dropping `whiteSpace` outright for every caller that passed one -
-   * and the object spread could not have merged them anyway, since `sx` is
-   * just as legally an array or a callback as an object.
-   * `PageHeadingTypography` passes an array, and an array spread into an
-   * object gives `{ 0: ..., 1: ... }`.
+   * `sx` is pulled out of `typographyProps` and composed as an array. Two ways
+   * to get this wrong, both avoided here: spreading `{...typographyProps}` onto
+   * the element after `sx={textSx}` puts the caller's `sx` back and drops
+   * `whiteSpace` outright, and object-spreading `typographyProps.sx` into the
+   * base cannot merge it anyway, since an `sx` is just as legally an array or a
+   * callback as an object - `PageHeadingTypography` passes an array, and an
+   * array spread into an object gives `{ 0: ..., 1: ... }`.
    *
    * Every renderer below goes through `compose` so that the base, the
    * renderer's own additions and the caller's overrides always land in that
@@ -76,10 +74,8 @@ function RichText({
   ];
   const textSx = compose();
 
-  // Was `(typographyProps as any)?.mb ?? 2`. `mb` is not a Typography prop -
-  // MUI system props are gone from it - and every caller passes margins inside
-  // `sx`, so that branch read `undefined` on every render and the fallback was
-  // the only value it ever produced. The cast was what hid that.
+  // Not read off `typographyProps.mb`: MUI v9 has no system props on
+  // Typography, and every caller passes margins inside `sx`.
   const paragraphMargin = compactParagraphs ? 0.5 : 2;
 
   const components: PortableTextComponents = {

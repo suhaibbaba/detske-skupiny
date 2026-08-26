@@ -6,13 +6,11 @@ import { Skeleton } from "@mui/material";
  * The style is copied from `MapComponent`'s own container rather than
  * approximated: same `minHeight`, same `height: 100%`. Every call site already
  * wraps the map in a fixed-height parent, so matching the inner element is
- * what keeps the swap invisible - the catalog's 0.30 CLS was the map arriving
- * into a container with no reserved height, and a skeleton of a different size
- * would only move the shift rather than remove it.
+ * what keeps the swap invisible. A map arriving into a container with no
+ * reserved height is a large layout shift, and a skeleton of a different size
+ * only moves that shift rather than removing it.
  *
- * Lives with the other skeletons so the four of them share one look; it is the
- * one they were aligned to, because it is the one that was already measured
- * against a real component.
+ * Lives with the other skeletons so the four of them share one look.
  */
 const MapSkeleton = ({ minHeight = 400 }: { minHeight?: number }) => (
   <Skeleton

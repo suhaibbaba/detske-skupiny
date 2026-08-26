@@ -17,9 +17,9 @@ export default defineType({
     injectLanguage(),
   ],
   /**
-   * This type had no preview, so every standalone page rendered as
-   * "Untitled" - Sanity's fallback when nothing tells it which field is the
-   * title - and a list of them was indistinguishable rows.
+   * Without a preview, every standalone page renders as "Untitled" - Sanity's
+   * fallback when nothing tells it which field is the title - and a list of
+   * them is indistinguishable rows.
    */
   preview: {
     select: { title: "title", language: "language" },

@@ -35,9 +35,9 @@ import { getDailySeed } from "@/lib/sanity/dailySeed";
  * Everything the catalog reads: the list and its markers, the filter sidebar's
  * counts, and the groups index that sits above it.
  *
- * One module per feature rather than one per query. They share `baseFilter`
- * and the geography count fragments, and splitting them across three files is
- * what made the old `sanity/queries` folder hard to hold in one's head.
+ * One module per feature rather than one per query: they share `baseFilter`
+ * and the geography count fragments, which is easier to follow in one place
+ * than split across three files.
  */
 
 // ============================ the list ============================
@@ -45,10 +45,9 @@ import { getDailySeed } from "@/lib/sanity/dailySeed";
 /**
  * The headline "N schools" figure for the current scope.
  *
- * Was `…[0].schoolCount`, a number a nightly script wrote onto the country and
- * region documents. Counting the schools directly cannot go stale, and it is
- * one aggregate at the database rather than a field the studio had to
- * maintain.
+ * Counted directly rather than read from a stored `schoolCount` field: an
+ * aggregate at the database cannot go stale, and it is nothing for the studio
+ * to maintain.
  */
 const countryTotalQuery = `count(*[
   _type == "schools" &&
@@ -127,14 +126,12 @@ const extendedFilter = `${baseFilter}
  * Map markers for the current geographic scope.
  *
  * Deliberately filtered by `baseFilter` only - country/region/area/subarea -
- * and NOT by categories, tags or the search term. That is what the combined
- * query did before this was split, so the map has always shown every school in
- * the area regardless of which list filters are active, and that behaviour is
- * preserved here.
+ * and NOT by categories, tags or the search term: the map shows every school
+ * in the area regardless of which list filters are active.
  *
- * Splitting it out of the list query is what makes that worth doing: the
- * marker set no longer changes when a filter does, so one cache entry per geo
- * scope serves every combination of filters.
+ * Keeping it separate from the list query is what makes that cheap. The marker
+ * set does not change when a filter does, so one cache entry per geo scope
+ * serves every combination of filters.
  */
 export const schoolMarkersQuery = defineQuery(`*[${baseFilter}]{
     ${markerFields}
@@ -165,11 +162,9 @@ export async function fetchSchoolMarkers(params: SchoolMarkersParams) {
 /**
  * Every school the filters select, reduced to what the ordering needs.
  *
- * Ordering used to be `order(isHighPriority desc, sortOrder asc)` with
- * `sortOrder` a random number stored on each document. The shuffle is now
- * computed in JS (see lib/sanity/dailyOrder.ts), which GROQ cannot do -
- * so the ids come back first, get ordered, and only the requested page is
- * hydrated into cards.
+ * The daily shuffle is computed in JS (see lib/sanity/dailyOrder.ts), which
+ * GROQ cannot express - so the ids come back first, get ordered, and only the
+ * requested page is hydrated into cards.
  *
  * This is two round-trips instead of one, but neither is the expensive part:
  * this query returns an id and a boolean per school and is shared by every
@@ -417,10 +412,10 @@ export async function fetchFilters(
 /**
  * Per-category school counts, resolved by GROQ rather than in JavaScript.
  *
- * This used to pull every school document in the dataset - `regionRef` and
- * `categoryRefs` for all of them - and tally the pairs in a JS loop. The
- * counts are the only thing that survived that transfer, so `count()` does the
- * same work at the database and returns integers.
+ * The alternative is pulling `regionRef` and `categoryRefs` for every school
+ * in the dataset and tallying the pairs in JS. The counts are the only thing
+ * that survives that transfer, so `count()` does the work at the database and
+ * returns integers instead.
  *
  * `^` walks out one scope per level: inside the count filter it is the
  * category being projected, `^.^` the region around it.
@@ -443,8 +438,9 @@ const categoryCountsForRegion = `
 /**
  * The same counts for the country row, which is the sum over every region.
  *
- * `defined(area->region._ref)` keeps it equal to the old JS total: that loop
- * skipped schools with no region, so they were never part of any sum.
+ * `defined(area->region._ref)` keeps it consistent with the per-region counts
+ * above: a school with no region belongs to no region's sum, so it belongs to
+ * no country sum either.
  */
 const categoryCountsForCountry = `
   "schoolCategories": *[_type == "schoolCategories" && ${languageQuery}]{

@@ -180,12 +180,11 @@ const SchoolList: FC<Props> = ({
           /*
            * Nothing matched.
            *
-           * This was an `Alert severity="info"` carrying `noSchoolsFound` and
-           * nothing else - which tells someone who has just ticked four
-           * filters that they are stuck, without telling them how to get
-           * unstuck. The way out is the same "clear all" the sidebar offers,
-           * except the sidebar is a drawer on mobile, so at the moment the
-           * grid empties the control that would fix it is off screen.
+           * The message carries its own way out, not just `noSchoolsFound`:
+           * someone who has ticked four filters needs the "clear all" the
+           * sidebar offers, and on mobile that sidebar is a drawer - so at the
+           * moment the grid empties, the control that would fix it is off
+           * screen.
            *
            * `role="status"` with `aria-live` because the grid empties in
            * response to a filter change on the same page: there is no

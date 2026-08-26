@@ -15,10 +15,9 @@ export type Filters = {
  * Reads and writes the catalog filters, which live in the URL and nowhere else.
  *
  * Every setter navigates (`shallow: false`), so the server re-renders the page
- * with the new filters and returns the new list. There is no client-side
- * refetch to keep in step with it - this hook used to call `router.replace`
- * *and* hand the same filters to a fetch in SchoolListClient, which meant two
- * requests for one click.
+ * with the new filters and returns the new list. There is deliberately no
+ * client-side refetch alongside it: a navigation plus a fetch of the same
+ * filters would mean two requests for one click.
  *
  * Any filter change also clears `page`: the reset is part of the same URL
  * update, so paging state cannot survive into a different result set.

@@ -2,8 +2,7 @@
 //
 // The house style is 80-column prose, which MD013 enforces. Tables and code
 // blocks are exempt because neither can be wrapped without breaking it, and
-// several tables here are wide by necessity - the journey table in the README
-// carries a source citation per row.
+// several tables are wide by necessity.
 {
   "config": {
     "MD013": {

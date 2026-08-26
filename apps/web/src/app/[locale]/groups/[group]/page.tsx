@@ -109,12 +109,10 @@ const schoolPaths = (locale: string, school: School) =>
 /**
  * The description a school page shares, best available first.
  *
- * The query used to ask for `metaDescription` first, "so an editor-written
- * description wins the moment the schema gains one". The `schools` schema does
- * not have that field, so the projection returned null on every school and the
- * branch could never be taken - which the generated types made visible. It is
- * the short summary, which is written for exactly this, and then the name and
- * the district, which every school has.
+ * The short summary, which is written for exactly this, then the name and the
+ * district, which every school has. The `schools` schema carries no
+ * editor-written meta description field, so there is nothing ahead of the
+ * summary.
  */
 function schoolDescription(school: School) {
   const area = school.area?.name ?? school.region?.name;

@@ -37,12 +37,10 @@ const styles = {
  * which means the logo, the navigation and the CTA are still rendered on the
  * server and only pass through here as an already-rendered subtree.
  *
- * Closing is delegated rather than wired per item. It used to be an
- * `onItemClick` callback threaded into `Menu` and an `onClick` on the CTA,
- * which forced both of them to be client code for the sake of one setter. The
- * handler below closes on a click that landed inside a link or a button -
- * which is exactly the set of things those two callbacks covered - and ignores
- * a click on the panel's padding, as before.
+ * Closing is delegated rather than wired per item: a callback threaded into
+ * `Menu` and the CTA would force both of them to be client code for the sake
+ * of one setter. The handler below closes on a click that landed inside a link
+ * or a button, and ignores a click on the panel's padding.
  */
 const HeaderDrawer = ({ children }: { children: React.ReactNode }) => {
   const translate = useTranslate();

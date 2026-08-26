@@ -43,7 +43,7 @@ export default defineType({
   /**
    * Both flags, not just one. `visibility` is off by exception and a hidden
    * type silently disappears from every filter on the site, so "Hidden" is the
-   * most important thing a row can say - it was not said anywhere before.
+   * most important thing a row can say.
    */
   preview: {
     select: {

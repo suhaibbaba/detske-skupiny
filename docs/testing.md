@@ -1,7 +1,6 @@
 # Testing
 
-Three layers, all runnable locally with npm scripts. The CI gates they enforce
-are summarised in the [README](../README.md#testing); this is the detail.
+Three layers, all runnable locally with npm scripts.
 
 | Layer | Command | What it covers | Needs Sanity? |
 | --- | --- | --- | --- |
@@ -112,11 +111,10 @@ On every page it checks:
 
 next-intl is configured in `apps/web/src/i18n/request.ts` with a
 `getMessageFallback` that returns the key itself and an `onError` that swallows
-the miss. A keyword never added to the Sanity dictionary therefore does not
+the miss. A keyword missing from the Sanity dictionary therefore does not
 render blank and does not throw — it renders as
-`contactFormPrivacyPolicyLinkLabel`, in the page, in production. That is exactly
-what shipped next to the contact form's GDPR consent checkbox, and every other
-assertion in this crawler said the page was healthy.
+`contactFormPrivacyPolicyLinkLabel`, in the page, in production, and no other
+assertion in this crawler would notice.
 
 The check flags any visible text node whose **entire trimmed content** matches
 `/^[a-z]+([A-Z][a-z]+)+$/`. Matching the whole node rather than searching inside
@@ -140,10 +138,6 @@ Reports land in `e2e/reports/` (git-ignored, uploaded as a CI artifact):
 - `crawl.json` — full machine-readable result
 - `crawl-report.md` — summary, broken links, per-page issues, slowest 10 pages,
   external links
-
-A committed baseline of the last known-good run lives at
-[`docs/crawl-baseline.md`](crawl-baseline.md), with instructions for
-regenerating it.
 
 Third-party console noise (map tile aborts, analytics) is filtered through an
 allowlist in `e2e/helpers.ts`. Keep that list short — every entry is something

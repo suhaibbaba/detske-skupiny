@@ -1,13 +1,11 @@
 /**
  * WCAG contrast maths, and the pairs the design actually puts on screen.
  *
- * This exists because the sandbox that builds this branch cannot run the axe
- * e2e suite - every route needs Sanity credentials it does not have - and
- * "the colours look fine" is not a substitute for a number. Contrast is the
- * one accessibility property that can be checked without a browser at all:
- * it is a pure function of two hex values, so it can be a unit test, and a
- * unit test is a better deal than an audit anyway. An audit is true on the day
- * someone runs it; this fails the build the day someone lightens a token.
+ * Contrast is the one accessibility property that needs no browser to check:
+ * it is a pure function of two hex values, so it can be a unit test rather than
+ * an axe run that needs a server and Sanity credentials. A one-off audit is
+ * true on the day someone runs it; this fails the build the day someone
+ * lightens a token.
  *
  * The pairs in `CONTRAST_PAIRS` are not every possible combination. They are
  * the ones traced to a call site - which element renders in this colour, on
@@ -61,8 +59,7 @@ export type ContrastPair = {
  * The three gradient stops are in here because the page washes in
  * theme/custom.ts are full-bleed: body copy on the home, cooperation and
  * catalog pages sits on a tint, not on white, and a colour that clears 4.5
- * against white can be under it against #F3E8FD. That was the single largest
- * source of failures in this audit.
+ * against white can be under it against #F3E8FD.
  */
 const BG = {
   white: "#FFFFFF",
@@ -81,8 +78,8 @@ const READING_SURFACES = Object.values(BG);
  * The audited pairs.
  *
  * Kept as data rather than written as assertions so the list reads as a record
- * of what was checked - `it.each` in the test file turns each entry into its
- * own named case, so a failure names the element rather than a line number.
+ * of what is checked - `it.each` in the test file turns each entry into its own
+ * named case, so a failure names the element rather than a line number.
  */
 export const CONTRAST_PAIRS: ContrastPair[] = [
   ...READING_SURFACES.map((background) => ({
@@ -210,13 +207,13 @@ export const CONTRAST_PAIRS: ContrastPair[] = [
 ];
 
 /**
- * Pairs audited and deliberately left alone, with the reason.
+ * Pairs checked and deliberately left alone, with the reason.
  *
- * These are here so that "we did not check it" and "we checked it and it is
- * exempt" are different states, and so a later reader does not have to
- * re-derive the argument. WCAG 1.4.11 exempts decoration and anything whose
- * information is also conveyed in adjacent text; axe has no rule for either,
- * so nothing here would ever be caught by the gate.
+ * These are here so that "not checked" and "checked and exempt" are different
+ * states, and so a later reader does not have to re-derive the argument. WCAG
+ * 1.4.11 exempts decoration and anything whose information is also conveyed in
+ * adjacent text; axe has no rule for either, so nothing here would be caught by
+ * the gate.
  */
 export const AUDITED_EXEMPT = [
   {

@@ -62,7 +62,7 @@ const NO_SECTIONS = {
  * graph is - so the fix is never to stop using `styled`. It is to keep the
  * primitive in its own small `"use client"` file, which a Server Component
  * then imports and renders like any other element, its children still
- * server-rendered. See docs/client-surface.md.
+ * server-rendered.
  *
  * Written inline rather than as a package because it is fifteen lines and the
  * config already prefers a readable rule over a dependency.
@@ -77,7 +77,7 @@ const clientOnlyStyled = {
     schema: [],
     messages: {
       missingDirective:
-        '`styled()` is a client-only call, so this module needs a "use client" directive at the top of the file. If it should stay on the server, express the styling as `sx` at the call site instead, or move the styled primitive into its own small "use client" file. See docs/client-surface.md.',
+        '`styled()` is a client-only call, so this module needs a "use client" directive at the top of the file. If it should stay on the server, express the styling as `sx` at the call site instead, or move the styled primitive into its own small "use client" file.',
     },
   },
   create(context) {
@@ -415,14 +415,10 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-expressions": "off",
 
-      // TODO: eslint-plugin-react-hooks 7 (via eslint-config-next 16) added
-      // this at "error". The two components still tripping it - LanguageSwitcher
-      // and MapComponent - both derive state in an effect, and the fix is a
-      // behavioural change rather than a mechanical one.
-      //
-      // "react-hooks/immutability" used to be demoted here too. Its only
-      // offender was SchoolListClient, which this branch deleted, so the rule
-      // is back at its default "error".
+      // TODO: eslint-plugin-react-hooks 7 (via eslint-config-next 16) ships
+      // this at "error". Two components still trip it - LanguageSwitcher and
+      // MapComponent - both deriving state in an effect, and unwinding that is
+      // a behavioural change rather than a mechanical one.
       "react-hooks/set-state-in-effect": "warn",
     },
   },

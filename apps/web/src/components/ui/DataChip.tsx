@@ -16,9 +16,9 @@ import { styled } from "@mui/material/styles";
  *
  * `"use client"` because `styled()` is Emotion, and Emotion's `styled` is a
  * client module - a server module that calls it throws. Nothing is lost by it:
- * MUI's own `Chip` already carries the directive, so this file adds a wrapper
- * to a boundary that existed anyway, and a server component still renders it
- * like any other element. See docs/client-surface.md.
+ * MUI's own `Chip` already carries the directive, so this file wraps a
+ * boundary that exists anyway, and a server component still renders it like
+ * any other element.
  */
 const DataChip = styled(Chip)({
   borderRadius: "24px",

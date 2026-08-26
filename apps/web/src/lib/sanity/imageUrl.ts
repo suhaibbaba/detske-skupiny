@@ -37,10 +37,10 @@ export function urlImageFor(source?: SanityImageSource | null) {
  * space are already in hand at render time, with no extra field on any query
  * and no extra round trip.
  *
- * That matters more than it sounds: the alternative was projecting
+ * That matters more than it sounds: the alternative is projecting
  * `asset->metadata.dimensions` into every image field in every query, which
  * changes the shape each consumer receives and invalidates every cached
- * response for a number that was already encoded in the string next to it.
+ * response for a number already encoded in the string next to it.
  *
  * Returns `null` for anything it cannot read - a local path like
  * `/og-default.png`, or an asset whose id does not carry a size. Callers treat

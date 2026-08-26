@@ -16,9 +16,8 @@ import Typography from "@mui/material/Typography";
  *
  * `"use client"` because `styled()` is Emotion, and Emotion's `styled` is a
  * client module - a server module that calls it throws. MUI's `Typography`
- * already carries the directive, so the boundary is where it was; a server
- * component renders this freely and its children stay server-rendered. See
- * docs/client-surface.md.
+ * already carries the directive, so this moves no boundary: a server component
+ * renders this freely and its children stay server-rendered.
  */
 const SectionHeading = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "dense",

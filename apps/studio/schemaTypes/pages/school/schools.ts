@@ -18,16 +18,10 @@ export default defineType({
   /**
    * The tabs, in the order a school is actually filled in.
    *
-   * They used to run basic, extra, provider, location, classification,
-   * content, media - which put the provider's company number, a field that
-   * changes nothing a visitor sees, in front of where the school is and what
-   * kind it is. An editor adding a school worked left to right, hit two tabs
-   * of administrative detail before reaching anything the site renders, and
-   * the two tabs that decide whether the school appears in the catalog at all
-   * were fourth and fifth.
-   *
-   * Now: what it is called, where it is, what kind it is, what it says, what
-   * it looks like - then the extras, then the paperwork. The field
+   * What it is called, where it is, what kind it is, what it says, what it
+   * looks like - then the extras, then the paperwork. An editor working left
+   * to right reaches the two tabs that decide whether the school appears in
+   * the catalog before any administrative detail. The field
    * declarations below are in the same order, because the "All fields" tab
    * renders them in declaration order and a form that disagrees with its own
    * tabs is worse than either order alone.
@@ -127,14 +121,13 @@ export default defineType({
             language,
           };
 
-          // Pinned, not read from the environment. This was
-          // `import.meta.env.SANITY_STUDIO_API_VERSION || ""`, and an empty
-          // string is not a valid API version - the client rejects it, so on
-          // any studio without that variable set the uniqueness check threw
-          // instead of answering, and the editor saw a validation error on a
-          // slug that was perfectly fine. The query is a `count()` whose
-          // behaviour does not vary by API version, so a constant is the
-          // honest form: nothing about it is deployment-specific.
+          // Pinned, not read from the environment. An unset
+          // SANITY_STUDIO_API_VERSION falls back to an empty string, which is
+          // not a valid API version - the client rejects it, so the uniqueness
+          // check throws instead of answering and the editor sees a validation
+          // error on a perfectly good slug. The query is a `count()` whose
+          // behaviour does not vary by API version, so nothing about it is
+          // deployment-specific.
           const result = await getClient({
             apiVersion: "2026-01-01",
           }).fetch(query, params);

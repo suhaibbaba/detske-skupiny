@@ -5,14 +5,11 @@
  * `icon` prop.
  *
  * `Chip` clones that element, and an element created on the server and passed
- * into a Client Component does not survive the trip: the server rendered the
- * chip with its label and no icon, the client rendered it with both, and React
- * reported a hydration mismatch on every page showing a highlighted school
- * type. It only surfaced on the home page - the catalog's card is already a
- * Client Component, so there was no boundary for the icon to cross.
- *
- * Pre-existing; it predates the switch to `next/image` here and reproduces
- * with the plain `<img>` this used to render.
+ * into a Client Component does not survive the trip: the server renders the
+ * chip with its label and no icon, the client renders it with both, and React
+ * reports a hydration mismatch on every page showing a highlighted school
+ * type. The catalog's card is already a Client Component, so the home page is
+ * the only place the icon would otherwise have a boundary to cross.
  */
 import { Box, Chip } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";

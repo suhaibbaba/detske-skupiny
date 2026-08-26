@@ -3,11 +3,10 @@ import { excludeDraft, languageQuery } from "@/lib/sanity/filters";
 /**
  * Shared GROQ projections.
  *
- * These are the projections that used to be copy-pasted across
- * each feature's query module. Keeping one copy matters most for `linkFields`: link
- * resolution now happens inside GROQ, so any place that returns a `link`
- * object has to project it through this fragment or the link will arrive at
- * the browser as an unresolved reference.
+ * One copy of each projection, shared by every feature's query module. That
+ * matters most for `linkFields`: link resolution happens inside GROQ, so any
+ * place that returns a `link` object has to project it through this fragment or
+ * the link arrives at the browser as an unresolved reference.
  *
  * Nothing here carries the `groq` tag, and that is deliberate. These are
  * fragments - halves of a projection, a bare filter, a count - not queries, and
@@ -55,16 +54,13 @@ export const imageUrlWithLqip = (field: string) => `
 /**
  * The catalog path of a geography document, composed from its reference chain.
  *
- * These replace the `fullSlug` field the studio used to denormalise onto every
- * region, area and subarea. Nothing writes that field any more, so the path is
- * built here from the references that define it - which also means a renamed
- * country slug is reflected everywhere on the next publish instead of needing
- * every descendant document rewritten.
+ * Composed at read time from the references that define it rather than stored
+ * on each document, so a renamed country slug is reflected everywhere on the
+ * next publish instead of needing every descendant rewritten.
  *
- * The leading slash is part of the value, exactly as `fullSlug` stored it:
- * `getSelectedSlug` in the catalog produces the same shape, and the two are
- * compared to decide which filter is active. Countries are the exception and
- * stay a bare `slug.current`, as they always were.
+ * The leading slash is part of the value: `getSelectedSlug` in the catalog
+ * produces the same shape, and the two are compared to decide which filter is
+ * active. Countries are the exception and stay a bare `slug.current`.
  *
  * Each fragment is written for a projection of that document type - use
  * `regionPath` inside `*[_type == "regions"]{...}`, and so on.
@@ -85,11 +81,9 @@ export const subareaPath = `"/"
 /**
  * How many schools sit inside the geography document being projected.
  *
- * These replace the `schoolCount` field a scheduled script used to write onto
- * every country, region, area and subarea - a number that was wrong from the
- * moment a school was published until the next run. The filters are ported
- * from that script unchanged, so the values are the ones the site always meant
- * to show; they are just computed at read time now.
+ * Counted at read time rather than stored on each country, region, area and
+ * subarea, where the number would be wrong from the moment a school is
+ * published until something recomputed it.
  *
  * `^` is the document being projected, so each of these belongs directly in a
  * projection of its own type.
@@ -125,11 +119,10 @@ export const schoolCountForSubarea = `count(*[
 /**
  * A `link` object with its `internalLink` reference already dereferenced.
  *
- * This replaces the old expandLinks helper, which walked every fetched
- * payload, collected `link.internalLink` refs and resolved them in a second
- * round-trip. The projection below is a faithful port of the query that helper
- * ran, so the shape `parseLinkField` receives is unchanged: `_type` picks the
- * route, `slug` is a plain string, and `text`/`title` supply the label.
+ * Resolved inside the query rather than by a second round-trip that walks the
+ * fetched payload collecting `link.internalLink` refs. The shape
+ * `parseLinkField` receives: `_type` picks the route, `slug` is a plain string,
+ * and `text`/`title` supply the label.
  *
  * The geo types keep their own overrides because their usable path is the full
  * `/country/region/area` chain (or `slug.current` for a country), not the bare
@@ -182,13 +175,12 @@ export const pageHeroFields = `
 /**
  * The single-line address the map popups and school cards render.
  *
- * Was duplicated verbatim in page.ts (mapCollection markers) and
- * school-list.ts (catalog markers).
+ * One copy, shared by the mapCollection markers and the catalog markers.
  *
- * The district segment reads `address.extra`. It read `address.extraDistrict`,
- * which the `postalAddress` schema has never had a field called - so the part
- * of an address that says "Praha 6" was dropped from every map popup and every
- * card on the site, silently, because a missing field in GROQ is just null.
+ * The district segment reads `address.extra`, which is what the `postalAddress`
+ * schema calls it. A misspelled field name here does not fail - GROQ returns
+ * null for it - so the part of an address that says "Praha 6" would simply
+ * vanish from every map popup and card.
  */
 export const fullAddressField = `
   "fullAddress":
@@ -322,19 +314,16 @@ export const catalogPathBySelfType = `select(
  * `locale`, so the self-entry is simply the entry for the locale they are
  * already on, and pairing stays correct whichever direction it is read from.
  *
- * `coalesce(language, _key)` is where the language id actually lives, and this
- * projected `_key` alone. Under @sanity/document-internationalization v6 the
- * plugin writes each array member as
+ * `coalesce(language, _key)` is where the language id lives. Under
+ * @sanity/document-internationalization v6 the plugin writes each array member
+ * as
  *
  *     {[LANGUAGE_FIELD_NAME]: language, _key: randomKey(), _type: ..., value}
  *
- * - the id is in `language` and `_key` is a random string. So `locale` never
- * matched "cs" or "en", `alternatesFor` found nothing under either key, and
- * every document-backed page - every school, every article, every catalog
- * level - shipped with its hreflang alternates silently dropped. The `_key`
- * fallback is kept because older plugin versions did key by language id, and
- * it is the form the plugin's own migration guide prescribes for a dataset
- * that has been through the upgrade.
+ * - the id is in `language` and `_key` is a random string. Projecting `_key`
+ * alone gives a `locale` that matches neither "cs" nor "en", which drops the
+ * hreflang alternates on every document-backed page. The `_key` fallback covers
+ * older plugin versions, which do key by language id.
  */
 export const translationPaths = (pathExpression: string) => `"translations": *[
     _type == "translation.metadata" &&

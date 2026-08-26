@@ -14,20 +14,18 @@ import { useDefaultImage } from "@/providers";
 /**
  * Every image the site renders, through `next/image`.
  *
- * This used to be `<Box component="img">`, which is a plain `<img>`: no
- * `width`/`height`, so every image reserved zero space until it arrived and
- * then pushed the page around; no `srcset`, so a phone downloaded the same
- * 1920px file as a desktop; and no `loading="lazy"`, so images far below the
- * fold competed with the ones on screen.
+ * `next/image` rather than a plain `<img>`: it reserves space from
+ * `width`/`height` so nothing shifts as the image arrives, emits a `srcset` so
+ * a phone does not download the desktop file, and lazy-loads anything below
+ * the fold.
  *
- * Two things make the swap possible without annotating every call site:
+ * Two things let call sites stay unannotated:
  *
  * 1. **Dimensions come from the asset id.** Sanity encodes them in the ref and
  *    the URL, so `imageDimensions` recovers them with no query change - see
  *    the note there. Call sites only pass sizes when they want to override.
- * 2. **`styled(NextImage)` keeps `sx` working.** The call sites style images
- *    with MUI's `sx`, and re-expressing all of that as `style` would have been
- *    a much larger and riskier diff than this one.
+ * 2. **`styled(NextImage)` keeps `sx` working.** Call sites style images with
+ *    MUI's `sx`, which a bare `next/image` does not accept.
  */
 // MUI's default `shouldForwardProp` for a component target already withholds
 // `sx`, `as`, `theme` and `ownerState`, which is exactly what `next/image`

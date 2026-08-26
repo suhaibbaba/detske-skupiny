@@ -30,9 +30,9 @@ import {
  * only fails when Sanity is asked to run it - which no unit test and no build
  * would notice. Parsing every exported query here closes that gap.
  *
- * The evaluated cases go further and pin the values the migration had to
- * preserve: the school counts that replaced the stored `schoolCount` field,
- * and the composed catalog paths that replaced `fullSlug`.
+ * The evaluated cases go further and pin the derived values: the school counts
+ * the aggregates produce, and the catalog paths composed from the geography
+ * tree.
  */
 
 const dataset = [

@@ -224,12 +224,11 @@ test.describe("catalog canonical", () => {
   /**
    * The English alternate, when the dataset has one.
    *
-   * The test above only ever asserted the Czech alternate and x-default, both
-   * of which are the page's own path - so it passed for a long time while the
-   * English link was never emitted at all. `translationPaths` projected
-   * `"locale": _key`, and under document-internationalization v6 `_key` is a
-   * random string with the language id in `language` instead, so the lookup by
-   * locale never matched and every counterpart was dropped.
+   * The test above asserts only the Czech alternate and x-default, both of
+   * which are the page's own path, so it would pass with the English link never
+   * emitted at all. That is a real failure mode: `translationPaths` has to read
+   * the language id out of `language`, since under
+   * document-internationalization v6 `_key` is a random string.
    *
    * Written as "if it is there, it must be right" rather than "it must be
    * there", because a dataset with no English translations is a legitimate

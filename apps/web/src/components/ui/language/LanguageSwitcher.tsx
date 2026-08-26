@@ -89,13 +89,10 @@ const LanguageSwitcher = () => {
   /**
    * The locale next-intl already resolved for this request.
    *
-   * This used to be state seeded with "en" and corrected in an effect that
-   * matched `window.location.hostname` against the domain list. Two problems
-   * with that: on the Czech site the control rendered "English (US)" on first
-   * paint and flipped after hydration, and the effect cannot run during SSR,
-   * so the server always emitted the wrong value. next-intl derives the locale
-   * from the same domain on both sides, so reading it here is correct from the
-   * first frame and one render cheaper.
+   * Read from next-intl rather than matched out of `window.location.hostname`
+   * in an effect: next-intl derives the locale from the same domain on the
+   * server and the client, so the control renders the right language from the
+   * first frame with no post-hydration flip.
    */
   const currentLocale = useLocale();
 

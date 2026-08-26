@@ -31,17 +31,16 @@ const TEST_ENV = {
   SANITY_PROJECT_ID: "testproj",
   SANITY_DATASET: "test",
   NEXT_PUBLIC_EN_DOMAIN: "en.school.local",
-  // The variable routing.ts actually reads is NEXT_PUBLIC_CS_DOMAIN; this
-  // was spelled CZ, so the Czech origin silently fell back to "localhost" and
-  // the two locales shared a host. The SEO tests assert on both origins.
+  // NEXT_PUBLIC_CS_DOMAIN is the name routing.ts reads - spelled CZ, the Czech
+  // origin falls back to "localhost" and the two locales share a host. The SEO
+  // tests assert on both origins.
   NEXT_PUBLIC_CS_DOMAIN: "cs.school.local",
 };
 
 /**
- * Two projects instead of one config with `environmentMatchGlobs`: that option
- * was removed in Vitest 4, and `projects` is its supported replacement. The
- * split is the same - pure functions run in `node`, anything that renders runs
- * in `jsdom`.
+ * Two projects rather than one config with `environmentMatchGlobs`, which
+ * Vitest 4 does not have: pure functions run in `node`, anything that renders
+ * runs in `jsdom`.
  */
 export default defineConfig({
   plugins: [react()],

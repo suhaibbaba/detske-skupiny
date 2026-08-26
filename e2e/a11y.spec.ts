@@ -5,13 +5,10 @@ import { firstCatalogHref, PATHS } from "./helpers";
 /**
  * The accessibility gate.
  *
- * This used to be a list: every violation was printed and none of them failed
- * the run, because the backlog was the deliverable and fixing it was a later
- * phase. That phase has happened, so the gate is now strict - a serious or
- * critical violation fails the build.
+ * A serious or critical violation fails the build.
  *
- * Moderate and minor are still only printed. They are not a free pass; they
- * are a backlog with a lower bar, and keeping them visible in every run is
+ * Moderate and minor are printed rather than failed. They are not a free pass;
+ * they are a backlog with a lower bar, and keeping them visible in every run is
  * what stops them turning into a surprise later. Promote them when the list is
  * short enough to be worth clearing.
  */

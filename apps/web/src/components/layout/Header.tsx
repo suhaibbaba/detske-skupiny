@@ -59,12 +59,11 @@ const styles = {
 /**
  * The site header, rendered on the server.
  *
- * It used to hand everything to a `"use client"` component, so the logo, the
- * navigation, the call to action and the whole MUI shell around them were
- * client code on every route - for one `useState` holding whether the mobile
- * drawer is open. Two leaves need the client now: `HeaderDrawer`, which owns
- * that boolean and takes its panel contents as children, and
- * `LanguageSwitcher`, which reads `window.location`.
+ * Only two leaves need the client: `HeaderDrawer`, which owns the boolean for
+ * whether the mobile drawer is open and takes its panel contents as children,
+ * and `LanguageSwitcher`, which reads `window.location`. The logo, the
+ * navigation, the call to action and the MUI shell around them all render on
+ * the server.
  *
  * The navigation is deliberately not client. It is a list of links.
  */
@@ -81,11 +80,9 @@ const Header = async ({ locale }: { locale: string }) => {
       link={header.cta.link}
       sx={styles.cta}
       /*
-       * "primary", not `header.cta.variant`. The style object this replaces
-       * set `variant: "primary"` and was spread AFTER the
-       * `variant={header.cta.variant}` that used to sit here, so the editor's
-       * choice has never reached this button. Preserved as it renders today
-       * rather than fixed in a refactor pass.
+       * "primary", not `header.cta.variant`: the header call to action is
+       * always the primary variant, so the editor's choice of variant is not
+       * read here.
        */
       variant="primary"
     />

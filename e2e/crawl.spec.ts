@@ -234,9 +234,8 @@ test.describe("full-site crawl", () => {
          * that swallows the miss. A keyword the editor never added to the
          * Sanity dictionary therefore does not render blank and does not
          * throw - it renders as `contactFormPrivacyPolicyLinkLabel`, in the
-         * page, in production. That is exactly what happened next to the
-         * contact form's GDPR consent checkbox, and nothing in the suite
-         * noticed, because by every other measure the page was healthy.
+         * page, in production, and by every other measure in this suite the
+         * page looks healthy.
          *
          * So: a text node whose entire trimmed content is a camelCase
          * identifier is a leaked key. Matching the *whole* node rather than

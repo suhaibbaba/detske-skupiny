@@ -17,9 +17,8 @@ interface SchoolGalleryProps {
   /**
    * Extra styles for the outer box.
    *
-   * Was `extendedStyles?: SchoolGalleryStyles` - a bag of whole MUI props
-   * objects - of which exactly one slot, `container.sx`, was ever set, by one
-   * caller.
+   * One `sx` rather than a per-slot bag of MUI props objects: the outer box is
+   * the only thing any caller styles.
    */
   sx?: SxProps<Theme>;
 }

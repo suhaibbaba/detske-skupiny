@@ -14,10 +14,9 @@ const nextConfig: NextConfig = {
   /**
    * The React Compiler memoizes components and hook results automatically.
    *
-   * Kept on because the build cost measured small on this app (see
-   * docs/perf/phase6-after.md) and it removes the need for hand-written
-   * `useMemo`/`useCallback` - several of which this codebase had wrapped
-   * around work cheaper than the memo itself.
+   * On because the build cost measures small on this app and it removes the
+   * need for hand-written `useMemo`/`useCallback` around work that is often
+   * cheaper than the memo itself.
    */
   reactCompiler: true,
   /**
@@ -85,9 +84,7 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
  *
  *   npx next experimental-analyze -o
  *       Turbopack's own analyzer, over the bundle the app actually ships.
- *       This is the one whose numbers belong in a report.
- *
- * See docs/perf/mui-v9-before.md for the figures each produced.
+ *       This is the one whose numbers describe what visitors download.
  */
 const withBundleAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",

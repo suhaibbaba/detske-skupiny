@@ -14,11 +14,9 @@ import type { PostalAddress } from "@detske-skupiny/types";
 /**
  * The one place the studio writes a computed field.
  *
- * It replaces seven plugins and two cron scripts that denormalised counts,
- * paths and a random sort order across every geography document. Those all
- * existed to make GROQ cheaper; the web app now derives the same values with
- * `count()` subqueries and composed projections, so the only fields still
- * worth storing are the ones a query genuinely cannot compute:
+ * Everything the web app can derive at read time - counts, catalog paths, sort
+ * order - it derives, with `count()` subqueries and composed projections. The
+ * only fields worth storing are the ones a query genuinely cannot compute:
  *
  *   nameNormalized - GROQ has no diacritics-stripping function, and search
  *                    matches against it

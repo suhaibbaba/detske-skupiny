@@ -7,9 +7,9 @@ import type {
 /**
  * Portable Text as the schema defines it.
  *
- * The hand-written version was `string | PortableTextBlock[]`, which let a
- * plain string in anywhere a rich text field was expected. No schema field is
- * both.
+ * Generated from the schema rather than widened to `string | PortableTextBlock[]`,
+ * which would let a plain string in anywhere a rich text field is expected. No
+ * schema field is both.
  */
 export type SanityRichTextField = RichText;
 

@@ -9,12 +9,9 @@ import { getLocalizedRoutes } from "@/routes";
 /**
  * What the parser can be told to do.
  *
- * `allowExternal`, `allowEmail`, `allowPhone`, `allowFile` and `defaultTarget`
- * used to be here too. No caller and no test ever passed one, so every guard
- * they gated was a branch that could not be taken and `defaultTarget` was a
- * constant spelled as a knob. The two that survive are the two something
- * actually sets: `allowInternal` in parser.test.ts and `requireText` in the
- * same file, plus `locale`, which every call site passes.
+ * Deliberately three options and no more: `allowInternal` and `requireText`
+ * are set by parser.test.ts, and `locale` is passed by every call site. An
+ * option nothing sets is a branch nothing can reach.
  */
 interface ParserOptions {
   allowInternal?: boolean;

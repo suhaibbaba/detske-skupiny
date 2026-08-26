@@ -33,9 +33,9 @@ distinguishes them - the file sits outside `app/[locale]`, is skipped by the
 next-intl proxy (its matcher excludes paths containing a dot), and receives no
 params.
 
-The alternative, one sitemap listing both hosts, is what this file used to do.
-It is legal only when both hosts are verified as one property, and it means each
-domain publishes a document mostly about the other one.
+The alternative — one sitemap listing both hosts — is legal only when both hosts
+are verified as one property, and it means each domain publishes a document
+mostly about the other one.
 
 What it lists, all from Sanity through `sanityFetch` under the usual tags:
 

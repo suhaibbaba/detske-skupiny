@@ -4,22 +4,21 @@ import { BASE_LANGUAGE } from "@/structure/language";
 /**
  * What a new document starts out as.
  *
- * Two problems this solves, both of which used to land on the editor.
+ * Two things these settle, both of which would otherwise land on the editor.
  *
  * The first is `language`. It is a hidden, read-only field: the
  * internationalization plugin writes it when a *translation* is created, but
- * nothing writes it for the original. So every school and every post created
- * through the studio began life with no language at all, and stayed that way
- * unless somebody noticed. The base-language templates below set it on
- * creation, which is the difference between a new school appearing in the
- * Schools list and appearing nowhere in particular.
+ * nothing writes it for the original. Without a template, every school and
+ * every post created through the studio would begin life with no language at
+ * all - which is the difference between a new school appearing in the Schools
+ * list and appearing nowhere in particular.
  *
  * The second is the drill-down. Geography is browsed country -> region -> area
- * -> subarea now (structure/sections/geographySection.ts), and creating a
- * region from inside a country has to produce a region *in that country* -
- * otherwise the new document lands outside the list it was created from and
- * the editor has to go find it. The parameterised templates carry the parent
- * reference down; the structure passes the id it already has.
+ * -> subarea (structure/sections/geographySection.ts), and creating a region
+ * from inside a country has to produce a region *in that country* - otherwise
+ * the new document lands outside the list it was created from and the editor
+ * has to go find it. The parameterised templates carry the parent reference
+ * down; the structure passes the id it already has.
  *
  * Templates with `parameters` are excluded from any UI that cannot supply them,
  * so the four geography templates never appear in the global "New document"

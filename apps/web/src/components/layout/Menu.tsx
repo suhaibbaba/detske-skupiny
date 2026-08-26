@@ -57,10 +57,9 @@ const styles = {
 /**
  * The header navigation - a list of links, and nothing else.
  *
- * It used to carry `"use client"` for an `onItemClick` callback that existed
- * only so a menu item could close the mobile drawer. `HeaderDrawer` closes
- * itself on a delegated click now, so this renders on the server on every
- * route.
+ * It renders on the server on every route. Closing the mobile drawer is
+ * handled by `HeaderDrawer` on a delegated click, so no callback has to be
+ * threaded through here.
  */
 const Menu = ({ menuItems, hideOnMobile }: Props) => {
   if (!menuItems || !menuItems.length) {

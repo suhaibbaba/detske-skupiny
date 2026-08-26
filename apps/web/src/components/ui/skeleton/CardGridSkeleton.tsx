@@ -88,8 +88,8 @@ const CardSkeleton = () => (
 /**
  * The catalog list, before it arrives.
  *
- * Replaces a centred `CircularProgress`, which reserved none of the height the
- * grid was about to take and so guaranteed a shift the moment it did.
+ * A skeleton rather than a centred spinner: a spinner reserves none of the
+ * height the grid is about to take, so its swap shifts the page.
  *
  * `aria-hidden` and `aria-busy` together: there is nothing here to read out,
  * and the region announces that it is loading rather than announcing nine

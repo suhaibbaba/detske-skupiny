@@ -3,24 +3,20 @@ import localFont from "next/font/local";
 /**
  * Nunito, self-hosted.
  *
- * The three places that needed a font used to call `next/font/google`
- * separately, which means the build reaches out to Google on every cold
- * compile: a network dependency in CI for two files that never change. These
- * are the same files Google serves, committed next to the code.
+ * Self-hosted rather than `next/font/google`, which reaches out to Google on
+ * every cold compile: a network dependency in CI for two files that never
+ * change. These are the same files Google serves, committed next to the code.
  *
  * # Why two files
  *
  * Google splits the family by script, and the split is not cosmetic for this
  * site: the `latin` subset covers á, í, ú, ý and é but **not** ě, š, č, ř, ž,
- * ů, ď, ť or ň. The previous configuration asked for `subsets: ["latin"]`
- * only, so every one of those characters - which is to say most Czech words -
- * was rendered by whatever the operating system fell back to, next to Nunito
- * for the rest of the word. Loading both subsets fixes that.
+ * ů, ď, ť or ň. With `latin` alone, every one of those characters - which is to
+ * say most Czech words - falls back to an operating-system font, next to Nunito
+ * for the rest of the word. Both subsets are loaded.
  *
  * They stay two files rather than one merged file because the `unicode-range`
  * descriptors below let the browser skip a download it has no characters for.
- * That is the same arrangement `next/font/google` produced; nothing about the
- * network shape changes, only where the bytes come from.
  *
  * Both are the variable font, so `weight: "400 900"` covers the four weights
  * the theme actually asks for (400, 500, 600 and 900) out of one file each.

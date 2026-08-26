@@ -1,10 +1,9 @@
 /**
  * Client-safe surface only.
  *
- * DefaultImageProvider is a Server Component that reads Sanity, and it used to
- * be re-exported from here too. Because `useDefaultImage` is imported from
- * this barrel by Client Components, that pulled the data layer into the client
- * bundle - which `server-only` in lib/sanity now rejects outright. The layout
- * imports the server provider from its own module.
+ * `useDefaultImage` is imported from this barrel by Client Components, so
+ * nothing that reaches Sanity may be re-exported here - `server-only` in
+ * lib/sanity rejects it outright. `DefaultImageProvider` is a Server Component
+ * and the layout imports it from its own module.
  */
 export * from "./DefaultImageClientProvider";

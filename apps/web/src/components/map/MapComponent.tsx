@@ -26,9 +26,9 @@ import PopupContent from "@/components/map/PopupContent";
 /**
  * One GeoJSON point handed to the MapTiler source.
  *
- * Was `any[]`. The array is built here and read straight back by
- * `source.setData`, so the shape is fully known - and `clusterCenter` below
- * needs it to read a cluster's position back out of a rendered feature.
+ * The array is built here and read straight back by `source.setData`, so the
+ * shape is fully known - and `clusterCenter` below needs it to read a cluster's
+ * position back out of a rendered feature.
  */
 type MarkerFeature = {
   type: "Feature";
@@ -122,14 +122,13 @@ const MapComponent: React.FC<MapProps> = ({
   /**
    * The markers this map will actually draw.
    *
-   * `hasPosition` drops schools whose address carries no map location. They
-   * were previously kept and then read for `coordinate.lng`, which throws.
+   * `hasPosition` drops schools whose address carries no map location; reading
+   * `coordinate.lng` off one of those throws.
    *
-   * Derived with `useMemo` rather than an effect writing to state. The effect
-   * version was one render behind, so a map whose filters match nothing
-   * rendered once with an empty list before the effect had run - which the
-   * empty message below would have read as "no results" and flashed on every
-   * single mount, including the ones that were about to draw markers.
+   * Derived with `useMemo` rather than an effect writing to state. An effect
+   * would be one render behind, so a map would render once with an empty list
+   * before it ran - which the empty message below would read as "no results"
+   * and flash on every mount, including the ones about to draw markers.
    */
   const filteredMarkers = useMemo<PositionedMarker[]>(() => {
     const filtered = selectedRegionId
@@ -186,9 +185,8 @@ const MapComponent: React.FC<MapProps> = ({
    * Escape closes the popup.
    *
    * The popup is a panel that opens over the content and traps nothing, so
-   * WCAG 2.1.2 wants a keyboard way out of it. There was none: it closed on a
-   * click on the map background or on its own close button, both of which need
-   * a pointer to reach.
+   * WCAG 2.1.2 wants a keyboard way out of it. Its other two exits - a click on
+   * the map background and its own close button - both need a pointer.
    *
    * Bound on `document` rather than on the popup, because the popup is
    * portalled into MapTiler's own DOM and focus may well be somewhere else on
@@ -512,8 +510,6 @@ const MapComponent: React.FC<MapProps> = ({
        * address, in a form that reads and tabs. WCAG 1.1.1 is satisfied by
        * that equivalent, not by an alt text on a canvas - but only if someone
        * is told the list is there, which is what this sentence does.
-       *
-       * Recorded as a decision in docs/a11y.md.
        */}
       <Box sx={visuallyHidden}>{translate("mapListAlternative")}</Box>
 
@@ -525,11 +521,11 @@ const MapComponent: React.FC<MapProps> = ({
       {/*
        * Zero markers is a state, not a blank canvas.
        *
-       * Narrowing the filters until nothing matches used to leave the map
-       * drawing streets and nothing else, which reads as "the map is broken"
-       * rather than "there is nothing here". `aria-live` because this appears
-       * in response to a filter change the user made somewhere else on the
-       * page, with no navigation to announce it.
+       * Without this, narrowing the filters until nothing matches leaves the
+       * map drawing streets and nothing else, which reads as "the map is
+       * broken" rather than "there is nothing here". `aria-live` because it
+       * appears in response to a filter change the user made somewhere else
+       * on the page, with no navigation to announce it.
        */}
       {hasNoResults && (
         <Box role="status" aria-live="polite" sx={styles.emptyOverlay}>

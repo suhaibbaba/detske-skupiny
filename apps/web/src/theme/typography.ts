@@ -6,11 +6,9 @@ import { baseTheme } from "@/theme/palette";
 /**
  * The type scale.
  *
- * The colours were hex literals - `#6C7685` on body text and `#272E39` on
- * every heading - duplicating two palette entries that already held exactly
- * those values. They are palette references now, so `textBody` and
- * `textHeading` have one definition each and renaming a colour reaches the
- * type scale with everything else. No rendered colour changed.
+ * The colours are palette references, never hex literals, so `textBody` and
+ * `textHeading` have one definition each and a colour change reaches the type
+ * scale with everything else.
  */
 export const typography: ThemeOptions["typography"] = {
   fontFamily: nunitoFontFamily,

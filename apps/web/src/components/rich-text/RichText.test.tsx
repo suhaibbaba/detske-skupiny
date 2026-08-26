@@ -18,14 +18,14 @@ const body = () => document.querySelector("p") as HTMLElement;
 
 /**
  * `whiteSpace: "pre-line"` is what turns an author's Shift+Enter into a line
- * break, and it used to disappear the moment a caller passed `sx`.
+ * break, and it has to survive a caller passing its own `sx`.
  *
- * Two mistakes stacked: the base was merged with `{ ...typographyProps.sx }` -
- * an object spread of a value that is just as legally an array or a callback -
- * and then `{...typographyProps}` was spread onto the element *after*
- * `sx={textSx}`, putting the caller's `sx` back and dropping the base outright.
- * `PageHeadingTypography` passes an array, which is the shape that made both
- * halves visible.
+ * Two ways to lose it, both covered here: object-spreading `typographyProps.sx`
+ * into the base, when an `sx` is just as legally an array or a callback; and
+ * spreading `{...typographyProps}` onto the element after `sx={textSx}`, which
+ * puts the caller's `sx` back and drops the base outright.
+ * `PageHeadingTypography` passes an array, which is the shape that exposes
+ * both.
  */
 describe("RichText sx composition", () => {
   it("keeps pre-line when no sx is passed", () => {

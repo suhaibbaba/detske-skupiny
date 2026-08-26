@@ -8,7 +8,7 @@ import type { TranslationPath } from "@/lib/sanity/seo";
  *
  * The catalog is deliberately absent: its top level is a country document, so
  * it comes out of Sanity with the rest of the catalog tree rather than being
- * hard-coded here the way the old sitemap hard-coded `/katalog/ceska-republika`.
+ * hard-coded here.
  *
  * Each entry resolves its own path per locale through `getLocalizedRoutes`,
  * which is the single place that knows `/articles` is `/clanky` in Czech - so

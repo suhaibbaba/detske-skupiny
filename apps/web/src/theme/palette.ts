@@ -4,17 +4,12 @@ import { BREAKPOINTS } from "@/constants";
 /**
  * The extra colours.
  *
- * `palette.custom` used to be `ui1` through `ui20`: twenty names that said
- * nothing about what a colour was for, so picking one meant grepping for the
- * hex. Every key below is named for the job it does at its call sites - the
- * old-to-new mapping is in the pull request description. `ui9` is gone because
- * nothing referenced it.
+ * Every key below is named for the job it does at its call sites, not for a
+ * position in a scale, so picking one does not mean grepping for a hex.
  *
- * Four of these were darkened for WCAG AA - `textBody`, `inputBorder`,
- * `accentLilac`, `borderSubtle` - each by the smallest step that clears the
- * threshold for the job it does, with the old value recorded on the line. The
- * pairs and the arithmetic are in theme/contrast.ts, and theme/contrast.test.ts
- * fails the build if any of them drifts back.
+ * Several are held to a WCAG AA threshold against the surfaces they actually
+ * render on. The pairs and the arithmetic are in theme/contrast.ts, and
+ * theme/contrast.test.ts fails the build if any of them drifts under.
  *
  * Declared out here rather than inline in `createTheme` so the augmentation in
  * theme.d.ts can name its type. Inline, that type would have to be read off
@@ -27,30 +22,28 @@ const customPalette = {
   /**
    * Input outlines and the search icon.
    *
-   * Was #848C99, which cleared 3:1 on white but not on the lilac page wash
-   * (2.87). An input's outline is what says there is an input there, so
-   * WCAG 1.4.11 applies to it.
+   * An input's outline is what says there is an input there, so WCAG 1.4.11
+   * applies: it has to clear 3:1 against the lilac page wash, not just against
+   * white.
    *
-   * It used to colour the breadcrumb trail too, which is text and needs 4.5 -
-   * a bar this colour cannot meet without becoming much darker than an input
-   * outline should be. The breadcrumbs read `textBody` now, which is what they
-   * always should have used.
+   * Outlines only. Text needs 4.5, which this cannot meet without becoming much
+   * darker than an input outline should be - the breadcrumb trail and every
+   * other run of text read `textBody`.
    */
   inputBorder: "#808896",
   /**
    * Body copy, and the placeholder text that matches it.
    *
-   * Was #6C7685, which cleared 4.5 on white by a hair (4.60) and missed it on
-   * every tinted surface the site actually renders body copy on - 3.89 on the
-   * lilac panel behind the blog section, 4.19 on the home page's own wash.
-   * The full-bleed gradients mean most body text is not on white at all, so
-   * this was the widest failure in the audit.
+   * Held to 4.5:1 against the tinted surfaces body copy actually renders on -
+   * the lilac panel behind the blog section and the home page's own wash - not
+   * just against white. The full-bleed gradients mean most body text is not on
+   * white at all.
    */
   textBody: "#626C79",
   /**
    * The focused input outline - still the same purple as `primary.main`, so it
    * moved with it. As a focus indicator it needs 3:1 against what surrounds it
-   * (WCAG 1.4.11), which #9980B0 missed on the lilac panel at 2.93.
+   * (WCAG 1.4.11), and the lilac panel is the tightest surface it sits on.
    */
   inputBorderFocused: "#886AA3",
   /** Pale lilac panel: the blog section, category pills. */
@@ -64,8 +57,8 @@ const customPalette = {
   /**
    * Lilac accent: the pricing figure, the selected-filter check.
    *
-   * Was #C5A4E2 at 2.15:1 on white - under the bar even for large text, and
-   * the pricing figure is the largest thing on that card.
+   * Held to the large-text threshold on white: the pricing figure is the
+   * largest thing on that card, and this is the only colour it is drawn in.
    */
   accentLilac: "#AA7AD5",
   /** Muted purple text: filter labels, blog tags, the map card border. */
@@ -85,8 +78,8 @@ const customPalette = {
   /**
    * Quiet outline: the search bar, the filter sidebar, school cards.
    *
-   * Was #AAB0B9 at 2.18:1. Same 1.4.11 reasoning as `inputBorder`: the search
-   * bar is a box drawn entirely by this hairline.
+   * Same 1.4.11 reasoning as `inputBorder`: the search bar is a box drawn
+   * entirely by this hairline, so it has to clear 3:1.
    */
   borderSubtle: "#868E9B",
   /** Label on a cream badge. */
@@ -105,10 +98,10 @@ export type CustomPalette = typeof customPalette;
  * `baseTheme.palette.primary.main` and friends - which needs a finished theme,
  * not the options that describe one.
  *
- * The gradients and the card shadow are no longer here. They are not palette
- * colours, and living under `palette` meant MUI minted a CSS variable for each
- * and call sites reached for it by string. They sit on `theme.custom` now; see
- * theme/custom.ts.
+ * The gradients and the card shadow are deliberately not here. They are not
+ * palette colours, and under `palette` MUI would mint a CSS variable for each,
+ * leaving call sites to reach for them by string. They sit on `theme.custom`;
+ * see theme/custom.ts.
  */
 export const baseTheme = createTheme({
   cssVariables: true,
@@ -119,12 +112,11 @@ export const baseTheme = createTheme({
   },
   palette: {
     /**
-     * `main` was #9980B0, the brand purple, and it failed WCAG AA in both
-     * directions at once: white on it is 3.46:1 (every primary CTA on the
-     * site), and it on white is the same 3.46:1 (the "show more" filter link,
-     * the desktop nav hover). Darkening it 7% in lightness - same hue, same
-     * saturation - clears 4.5 for both without the purple reading as a
-     * different colour. `dark` and `light` were already fine and are unchanged.
+     * `main` has to clear WCAG AA in both directions at once: white on it
+     * (every primary CTA on the site) and it on white (the "show more" filter
+     * link, the desktop nav hover). This is the brand purple darkened enough in
+     * lightness - same hue, same saturation - to clear 4.5 both ways without
+     * reading as a different colour.
      */
     primary: {
       main: "#886AA3",

@@ -90,9 +90,9 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
     }
   }, [status]);
 
-  // Both were `useMemo`. Neither feeds a dependency array, and a regex test
-  // over one short string costs less than the comparison that would skip it -
-  // the React Compiler memoizes them anyway if it decides it is worth it.
+  // Not memoized: neither feeds a dependency array, and a regex test over one
+  // short string costs less than the comparison that would skip it - the React
+  // Compiler memoizes them anyway if it decides it is worth it.
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
   const isValid =
@@ -171,11 +171,11 @@ const ContactForm: FC<Props> = ({ contactUsForm }) => {
         {/*
          * One live region, always mounted.
          *
-         * The two alerts used to mount and unmount with the status, and a
-         * live region that does not exist when the page loads is not
+         * A live region that does not exist when the page loads is not
          * reliably watched: several screen readers only announce changes
          * inside a region that was already in the DOM. Keeping the container
-         * and swapping its contents is what makes the announcement happen.
+         * mounted and swapping its contents is what makes the announcement
+         * happen.
          *
          * `aria-live="polite"` rather than `assertive` for both, because
          * focus moves here anyway - see `resultRef` - so the message is read

@@ -3,10 +3,6 @@
 /**
  * A Client Component for the same reason as Button.tsx: `component={NextLink}`
  * is a function prop, which cannot cross the server/client boundary.
- *
- * The `useState(() => mergeMuiProps(...))` it used to open with is gone
- * though, and that was not just unnecessary: a lazy initialiser runs once, so
- * a later `sx` was silently ignored.
  */
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
@@ -30,11 +26,10 @@ interface LinkProps
 /**
  * The two rules every link on the site starts from.
  *
- * Composed through MUI's own `sx` array rather than through a lodash deep
- * merge: later entries win, which is exactly what the merge was emulating - at
- * runtime, on every render. `styled(MuiLink)` would be the other option and is
- * what Textarea and Image use, but it drops the polymorphic `component` prop
- * from the types, and this component's whole job is handing MUI `NextLink`.
+ * Composed through MUI's own `sx` array, where later entries win.
+ * `styled(MuiLink)` is the other option, and is what Textarea and Image use,
+ * but it drops the polymorphic `component` prop from the types - and this
+ * component's whole job is handing MUI `NextLink`.
  */
 const baseSx: SxProps<Theme> = {
   textDecoration: "none",
