@@ -88,7 +88,7 @@ export default async function RootLayout({
          * `dns-prefetch` is the fallback for browsers that ignore it.
          *
          * MapTiler only matters on the routes that draw a map, and there it is
-         * reached late, after the SDK chunk loads. It gets `dns-prefetch`
+         * reached once the SDK chunk loads. It gets `dns-prefetch`
          * alone: a preconnect held open on a route with no map is a wasted
          * socket, and browsers cap how many they will keep.
          */}
@@ -121,15 +121,14 @@ export default async function RootLayout({
                       <Header locale={locale} />
                     </Suspense>
                     {/*
-                     * The main landmark, which the site did not have.
+                     * The main landmark.
                      *
-                     * Every route rendered its content into a bare `<Box>`, so
-                     * there was nothing for a screen reader's "jump to main"
-                     * to find, nothing for the skip link to target, and axe's
-                     * landmark rules had no main region to check content
-                     * against. It lives here rather than in each page because
-                     * exactly one per document is the requirement, and a
-                     * single shell is the only way to guarantee that.
+                     * It is what a screen reader's "jump to main" finds, what
+                     * the skip link targets, and what axe's landmark rules
+                     * check content against. It lives here rather than in each
+                     * page because exactly one per document is the
+                     * requirement, and a single shell is the only way to
+                     * guarantee that.
                      *
                      * `tabIndex={-1}` makes it a valid focus target: without
                      * it, following the skip link moves the viewport but

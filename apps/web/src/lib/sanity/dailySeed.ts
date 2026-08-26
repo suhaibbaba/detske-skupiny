@@ -18,12 +18,10 @@ import { dailySeed } from "@/lib/sanity/dailyOrder";
  * daily: the entry has to expire for a new seed to be produced, and no
  * publish should reshuffle the list, so this value carries no cache tag.
  *
- * Caching it also makes paging correct. The seed is read again by the
- * load-more Server Action, minutes or hours after the page was rendered; if
- * each read saw the current date, a "load more" that crossed midnight UTC
- * would page through a different permutation and show duplicates while
- * dropping other schools. One cached value means every request in a day
- * shuffles identically.
+ * Caching it is also what makes paging correct. The seed is read again by the
+ * load-more Server Action, minutes or hours after the page was rendered; with
+ * an uncached clock, a "load more" that crossed midnight UTC would page through
+ * a different permutation, showing duplicates while dropping other schools.
  */
 export async function getDailySeed(): Promise<string> {
   "use cache";

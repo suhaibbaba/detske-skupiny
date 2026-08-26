@@ -44,10 +44,9 @@ export default defineType({
     injectLanguage(),
   ],
   /**
-   * The avatar is the fastest way to recognise an author, and it was not shown
-   * anywhere: the preview selected the name and nothing else, so a list of
-   * authors was a column of text with a column of identical placeholder icons
-   * beside it.
+   * The avatar is the fastest way to recognise an author, so the preview
+   * selects it: on name alone, a list of authors is a column of text beside a
+   * column of identical placeholder icons.
    */
   preview: {
     select: {

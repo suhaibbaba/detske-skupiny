@@ -63,7 +63,7 @@ export const formatDate = (value?: string): string | undefined => {
  * not a query. Counting the *other* documents that point at this one would be
  * a fetch per row, and a list of four hundred rows would issue four hundred of
  * them; those counts belong in the web app, which computes them once per page
- * in the query it was already running.
+ * in the query it is already running.
  */
 export const countLabel = (
   items: unknown,

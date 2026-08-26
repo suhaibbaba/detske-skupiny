@@ -21,11 +21,8 @@ import { pathTranslations } from "@/lib/i18n/routing";
  *     not need an alternate to be emitted for them.
  *  3. The home page, which always exists.
  *
- * Split out of the component so the fallback chain can be unit tested. It is
- * the part with the branches, and it was previously not tested because it did
- * not exist: the switcher hardcoded "/" and landed every visitor on the home
- * page, whatever they had been reading, while its own comments claimed it
- * preserved "path, search params, and hash".
+ * Split out of the component so the fallback chain can be unit tested - it is
+ * the part with the branches.
  */
 
 /** Every locale a segment is known in, as `{ [segment]: { [locale]: seg } }`. */
@@ -34,7 +31,7 @@ type SegmentMap = typeof pathTranslations;
 /**
  * Rewrites one path's segments from `fromLocale` into `toLocale`.
  *
- * Segment by segment rather than by regex over the whole string: the earlier
+ * Segment by segment rather than by regex over the whole string:
  * `localizeHref` does the latter and can only translate *out of* English,
  * because it matches on the English spelling. This has to go both ways.
  */

@@ -4,8 +4,7 @@ import type { PostalAddress } from "@detske-skupiny/types";
  * Geocodes a postal address to a coordinate via MapTiler.
  *
  * Called from the publish action in plugins/computedFields.ts, for one school
- * at a time - the batching helper that used to live here belonged to the
- * dataset-wide job plugin and went with it.
+ * at a time.
  *
  * Returns `undefined` rather than throwing when the address does not resolve:
  * a school with an unrecognised address should still publish, just without a

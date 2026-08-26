@@ -18,12 +18,12 @@ import { GEOGRAPHY_TEMPLATES } from "@/structure/templates";
  * Geography, browsed the way it is shaped.
  *
  * The dataset is a four-level tree - a country has regions, a region has
- * areas, an area has subareas - and it used to be presented as four flat lists
- * side by side. That reads fine until there is more than one country: "Areas"
- * is then every area everywhere in one alphabetical run, and finding the areas
- * of Středočeský kraj means knowing their names already. Worse, flat lists say
- * nothing about the tree, so nothing shows that a region has no areas in it
- * yet - which is exactly the state that leaves a catalog page empty.
+ * areas, an area has subareas - and four flat lists side by side would not show
+ * it. With more than one country, "Areas" becomes every area everywhere in one
+ * alphabetical run, and finding the areas of Středočeský kraj means knowing
+ * their names already. Flat lists also say nothing about the tree, so nothing
+ * shows that a region has no areas in it yet - which is exactly the state that
+ * leaves a catalog page empty.
  *
  * So the browse path is a drill-down: countries, then that country's regions,
  * then that region's areas, then its subareas. Each level opens on the

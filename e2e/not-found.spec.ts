@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { PATHS } from "./helpers";
 
 /**
- * The point of these is the distinction between 404 and 500: before the
- * routing fix, an out-of-range catalog depth threw and produced a 500.
+ * The point of these is the distinction between 404 and 500: an out-of-range
+ * catalog depth or an unknown slug must not be allowed to throw.
  */
 const NOT_FOUND_PATHS = [
   { name: "catalog with 5 segments", path: `${PATHS.catalog}/a/b/c/d/e` },

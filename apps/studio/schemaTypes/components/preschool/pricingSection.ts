@@ -87,9 +87,9 @@ export default defineType({
     }),
   ],
   /**
-   * The plan count is what tells two pricing sections apart, and there was no
-   * preview here at all - the section rendered as "Pricing Section" with an
-   * empty line under it, whatever was in it.
+   * The plan count is what tells two pricing sections apart. Without it every
+   * section reads as "Pricing Section" with an empty line under it, whatever
+   * is in it.
    */
   preview: {
     select: { title: "title", plans: "plans", media: "mostPopularImage" },

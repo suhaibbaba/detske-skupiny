@@ -50,11 +50,10 @@ describe("WCAG AA across the palette", () => {
 });
 
 /**
- * The pairs above name their colours as literals, so that the file reads as a
- * record of what was checked. This is what keeps those literals honest: if a
- * token moves in palette.ts and nobody updates the audit, the audit is
- * checking a colour the site no longer renders, and that is worse than no
- * audit at all.
+ * The pairs above name their colours as literals, so the file reads as a record
+ * of what is checked. This is what keeps those literals honest: if a token moves
+ * in palette.ts and the audit is not updated with it, the audit is checking a
+ * colour the site does not render, which is worse than no audit at all.
  */
 describe("the audited colours are the ones the theme ships", () => {
   const { custom, primary, secondary } = baseTheme.palette;

@@ -344,11 +344,10 @@ export const components: ThemeOptions["components"] = {
     },
   },
   MuiTypography: {
-    // `defaultProps: { fontFamily }` used to sit here. MUI dropped system
-    // props from Typography, so it was no longer a style - it was an unknown
-    // prop spread onto the DOM node. Typing this object as
-    // `ThemeOptions["components"]` is what surfaced that. Nothing changes
-    // visually: `typography.fontFamily` already sets Nunito for every variant.
+    // No `defaultProps: { fontFamily }`: MUI v9 has no system props on
+    // Typography, so that would be an unknown prop spread onto the DOM node
+    // rather than a style. `typography.fontFamily` sets Nunito for every
+    // variant already.
     styleOverrides: {
       root: {
         // Ensure Typography doesn't override Link colors

@@ -46,16 +46,15 @@ const styles = {
 /**
  * The first thing in the tab order on every page.
  *
- * Every route on this site opens with the same header - logo, five nav items,
- * a language switcher and a CTA - so reaching the actual content with a
- * keyboard meant eight or nine tab presses, on every single page. That is what
- * WCAG 2.4.1 is about, and the site had no bypass at all.
+ * Every route opens with the same header - logo, five nav items, a language
+ * switcher and a CTA - so without a bypass, reaching the content with a
+ * keyboard costs eight or nine tab presses on every page. That is what
+ * WCAG 2.4.1 asks for.
  *
  * It renders on the server and reads its label from the Sanity dictionary. If
  * the `skipToContent` key is missing, next-intl's fallback returns the key
- * itself, so the link would read "skipToContent" rather than disappear - ugly
- * but still functional, and visible enough that someone will fix it. The key
- * is listed in docs/a11y.md for the editor.
+ * itself, so the link reads "skipToContent" rather than disappearing - ugly,
+ * but still functional and visible enough to be noticed.
  */
 export default async function SkipLink() {
   const translate = await getTranslateServer();

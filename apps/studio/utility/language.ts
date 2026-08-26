@@ -23,8 +23,8 @@ export const TRANSLATION_LANGUAGES = LOCALES.slice(1).map(
  *
  * Base-language documents get nothing, and that is the point. Every list in
  * the studio is overwhelmingly Czech - the base-language lists are *only*
- * Czech - so a "🌐 CS" on every row was a column of identical text that said
- * nothing and pushed the useful half of the subtitle out of view. A badge that
+ * Czech - so a "🌐 CS" on every row would be a column of identical text saying
+ * nothing, pushing the useful half of the subtitle out of view. A badge that
  * appears only on the exceptions is a badge worth reading: in the mixed
  * "all languages" lists and the translation cockpit, the marked rows are
  * exactly the translations.

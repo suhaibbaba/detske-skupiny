@@ -118,10 +118,8 @@ export default defineType({
   /**
    * A row in the post list.
    *
-   * `media` selects `image`. It used to select `coverImage`, a field this type
-   * has never had, so every post in every list showed the fallback icon and
-   * the cover image the editor uploaded was visible nowhere but the document
-   * itself.
+   * `media` selects `image`, which is the field this type actually carries -
+   * naming any other one leaves every row showing the fallback icon.
    *
    * The subtitle is who and when, which is what tells two posts apart in a
    * list ordered by date.

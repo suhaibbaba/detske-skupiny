@@ -5,10 +5,6 @@
  * and a component reference is a function - functions do not serialise across
  * the server/client boundary, so a Server Component rendering this would throw
  * "Functions cannot be passed directly to Client Components".
- *
- * The `useMemo` it used to carry is gone regardless; it only wrapped a two-key
- * object merge, which is cheaper to redo than to memoize, and the React
- * Compiler now decides that for itself.
  */
 import NextLink from "next/link";
 import {

@@ -37,9 +37,9 @@ const styles = {
   /*
    * The card shadow is written out rather than taken from `theme.custom`: it
    * is a two-layer shadow this card alone uses, not the site's one elevation.
-   * It was a `sx: (theme) => ...` callback, which a Server Component cannot
-   * hand to a Client Component - the callback only read `common.black`, which
-   * the theme pins to #000000.
+   * Written as a literal rather than an `sx: (theme) => ...` callback, which a
+   * Server Component cannot hand to a Client Component: the only theme value
+   * it needs is `common.black`, which the theme pins to #000000.
    */
   container: {
     width: { xs: "272px", sm: "302px" },
@@ -110,9 +110,8 @@ const styles = {
 } satisfies Record<string, SxProps<Theme>>;
 
 const PreschoolCard = ({ school, locale }: Props) => {
-  // The default-image fallback lives inside `<Image>` itself, so reading the
-  // context here as well was duplicate work - and it was the one thing keeping
-  // this card on the client once `SchoolsCarousel` stopped forcing it there.
+  // The default-image fallback lives inside `<Image>` itself, so this card
+  // does not read the context - which is what keeps it off the client.
 
   return (
     <Card sx={styles.container} data-test-selector="PreschoolCard">
@@ -134,11 +133,10 @@ const PreschoolCard = ({ school, locale }: Props) => {
             </Box>
           ) : (
             /*
-             * Was a `CardMedia` with no `component`, which renders a div with
-             * a CSS background-image: no srcset, no lazy loading, and nothing
-             * for a preload scanner to find. The wrapper keeps the same fixed
-             * 158px box, so `fill` reserves exactly the space the background
-             * used to occupy.
+             * A real `<img>` rather than a CSS background-image, which carries
+             * no srcset, no lazy loading, and nothing for a preload scanner to
+             * find. The wrapper holds a fixed 158px box, so `fill` has exact
+             * space to reserve.
              */
             <Box sx={styles.cardMedia}>
               <Image

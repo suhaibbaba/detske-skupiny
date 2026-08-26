@@ -206,8 +206,8 @@ const CatalogContent = async ({ params, searchParams }: Props) => {
            * The hero and the filters stream immediately; only the list waits.
            *
            * The fallback is the grid's own shape rather than a centred
-           * spinner, which reserved none of the height the cards were about
-           * to take.
+           * spinner, which would reserve none of the height the cards are
+           * about to take.
            */}
           <Suspense fallback={<CatalogListSkeleton />}>
             <SchoolListAsync

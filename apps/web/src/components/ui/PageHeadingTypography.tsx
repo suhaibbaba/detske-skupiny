@@ -21,10 +21,9 @@ interface Props {
   /**
    * Per-slot overrides.
    *
-   * Was `extendedStyles?: PageHeadingTypographyStyles` - a bag of whole MUI
-   * props objects, deep-merged with lodash so a caller could set `variant` as
-   * well as `sx`. No caller ever did: every one of them passed `sx` and
-   * nothing else. This is that, typed.
+   * `sx` per slot, and nothing else: a bag of whole MUI props objects would
+   * let a caller set `variant` and the rest, which no call site needs and
+   * every one of them would have to be deep-merged for.
    */
   sx?: {
     container?: SxProps<Theme>;

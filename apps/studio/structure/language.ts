@@ -43,10 +43,9 @@ export const BASE_LANGUAGE_PARAMS = { baseLanguage: BASE_LANGUAGE };
  * Each entry is an `internationalizedArrayReferenceValue`:
  * `{_key, _type, language, value: {_ref}}`. `language` is the field the plugin
  * writes today (`LANGUAGE_FIELD_NAME` in sanity-plugin-internationalized-array);
- * `_key` held the language id in older versions and still does for documents
- * written back then. Matching either is the form the plugin's own migration
- * guide prescribes, and it is why these queries work on a dataset that has been
- * through the upgrade.
+ * `_key` carries the language id in older plugin versions, and still does for
+ * documents written by them. Matching either is what makes these queries work
+ * across both shapes.
  *
  * Use inside a filter, where `^` is the document being tested.
  */

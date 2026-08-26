@@ -2,9 +2,8 @@
 
 /**
  * Embla owns a ref to a scroll container and drives it with pointer events, so
- * this is where the client boundary belongs. It used to inherit the directive
- * from `SchoolsCarousel`, which meant every card that carousel rendered was
- * client code too.
+ * this is where the client boundary belongs - not on `SchoolsCarousel`, which
+ * would pull every card that carousel renders into the client bundle.
  */
 import React, { ReactNode } from "react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -29,7 +28,7 @@ export default function EmblaCarousel({
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
   // Plain functions: they are only ever passed to onClick, never to a
-  // dependency array, so their identity was memoized for nothing.
+  // dependency array, so their identity does not need to be stable.
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
 

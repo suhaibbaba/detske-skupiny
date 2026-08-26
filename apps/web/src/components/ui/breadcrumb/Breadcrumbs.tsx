@@ -19,10 +19,8 @@ import type { SxProps, Theme } from "@mui/material/styles";
 interface Props {
   /**
    * The localized pathname of the page rendering the breadcrumbs, e.g.
-   * "/katalog/praha". Passed in by the page rather than read from a request
-   * cookie: the App Router exposes no pathname to server components, and the
-   * `x-current-pathname` cookie that used to carry it was set by the old
-   * middleware, which Next 16's `proxy` replaces with next-intl handling only.
+   * "/katalog/praha". Passed in by the page because the App Router exposes no
+   * pathname to Server Components.
    */
   pathname: string;
   addSpace?: boolean;
@@ -37,9 +35,8 @@ const styles = {
   },
   /**
    * `custom.textBody`, not `custom.inputBorder`. The trail is text at 14px, so
-   * it needs 4.5:1, and it was borrowing the colour meant for input outlines -
-   * which is held to 3:1 and sat at 3.09 against the lilac page wash these
-   * breadcrumbs render on.
+   * it needs 4.5:1; the input-outline colour is held to 3:1 and measures 3.09
+   * against the lilac page wash these breadcrumbs render on.
    */
   text: {
     textDecoration: "none",

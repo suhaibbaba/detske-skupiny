@@ -1,11 +1,9 @@
 /**
- * The deterministic daily shuffle that replaces the stored `sortOrder` field.
+ * The deterministic daily shuffle the school listings are ordered by.
  *
- * Schools used to be listed in the order of a random number written onto every
- * document by a nightly script - which meant the "random" order was a piece of
- * content, editors saw a meaningless field, and re-rolling it rewrote the
- * entire dataset. The order is a presentation concern, so it is computed here
- * instead, from the school's `_id` and the current date.
+ * Computed from the school's `_id` and the current date rather than read from a
+ * stored sort field: the order is a presentation concern, so nothing about it
+ * is content an editor sees or a write anything has to make.
  *
  * Two properties matter:
  *
@@ -15,9 +13,8 @@
  *  - Different between days. The seed is the date, so which schools sit at the
  *    top rotates once a day without anything being written anywhere.
  *
- * High-priority schools still sort first, exactly as `order(isHighPriority
- * desc, sortOrder asc)` did; the shuffle only decides the order within each of
- * the two groups.
+ * High-priority schools sort first; the shuffle only decides the order within
+ * each of the two groups.
  */
 
 export type DailyOrderable = {

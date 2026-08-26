@@ -23,7 +23,7 @@ const styles = {
 
 const SchoolsMap = ({ markers }: Props) => {
   // A school whose address carries no map location has nothing to place, and
-  // centring on its missing coordinate is what used to throw.
+  // centring on its missing coordinate throws.
   const placed = markers?.filter(hasPosition) ?? [];
 
   if (placed.length === 0) {

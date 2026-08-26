@@ -15,17 +15,16 @@ const categories = [
 ] as BlogCategory[];
 
 /**
- * These pills spent a release rendering unstyled.
+ * These pills must be styled through `sx`, never by spreading a style object
+ * onto `<Button>` as props.
  *
- * The styles were spread onto `<Button>` as props - `{...styles.button}` -
- * which worked under MUI's old system props and does nothing in v9: every
- * declaration landed on the `<button>` as a bare HTML attribute
- * (`padding="10px 20px"`, `bgcolor="var(--mui-palette-common-white)"`) and
- * Emotion never saw any of it. It typechecked the whole time, because a JSX
- * spread is not excess-property checked.
+ * MUI v9 has no system props on components, so a spread declaration lands on
+ * the `<button>` as a bare HTML attribute (`padding="10px 20px"`,
+ * `bgcolor="var(--mui-palette-common-white)"`) and Emotion never sees it - and
+ * it typechecks, because a JSX spread is not excess-property checked.
  *
- * So these assert the two halves of that failure: that the declarations reach
- * CSS, and that nothing leaks onto the DOM node.
+ * So these assert both halves: that the declarations reach CSS, and that
+ * nothing leaks onto the DOM node.
  */
 describe("BlogCategories", () => {
   const pills = () => {

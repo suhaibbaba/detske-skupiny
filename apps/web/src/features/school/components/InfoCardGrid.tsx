@@ -1,10 +1,10 @@
 /**
  * Deliberately not a Client Component.
  *
- * Its only reason to be one was the translation hook, and this is rendered
- * straight from the school detail page - a Server Component - so it can take
- * the server translator instead. That moves the whole info-card grid, and the
- * items inside it, off the hydration path.
+ * The only thing that would force it is the translation hook, and this renders
+ * straight from the school detail page - a Server Component - so it takes the
+ * server translator instead. That keeps the whole info-card grid, and the items
+ * inside it, off the hydration path.
  */
 import { Box } from "@mui/material";
 import InfoCardItem, {

@@ -33,10 +33,10 @@ import { fetchSitemapContent, type SitemapEntry } from "@/lib/sanity/seo";
  * image. That is what search engines expect: a sitemap should list the URLs of
  * the host that serves it, and cross-link the rest.
  *
- * The alternative - one sitemap listing both hosts' URLs, which is what this
- * file used to do - is legal only when both hosts are verified as one
- * property, and it means each domain publishes a document that is mostly about
- * the other one. Emitting per-host is the smaller, more conventional thing.
+ * The alternative - one sitemap listing both hosts' URLs - is legal only when
+ * both hosts are verified as one property, and it means each domain publishes
+ * a document that is mostly about the other one. Emitting per-host is the
+ * smaller, more conventional thing.
  *
  * Reading a header makes this route dynamic. That costs nothing here: it is a
  * single XML document rather than a page, and every Sanity read below it is
@@ -113,9 +113,9 @@ function toSitemapEntry(
  * The newest `_updatedAt` in a group of documents.
  *
  * The index routes have no document of their own, so this is what gives them a
- * `lastModified` that means something. `new Date()` - what the old sitemap used
- * on every row - would tell a crawler the whole site changed on every fetch,
- * which is the same as telling it nothing.
+ * `lastModified` that means something. A `new Date()` on every row would tell a
+ * crawler the whole site changed on every fetch, which is the same as telling
+ * it nothing.
  */
 function newestUpdate(...groups: SitemapEntry[][]): string | undefined {
   let newest: string | undefined;

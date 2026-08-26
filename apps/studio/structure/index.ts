@@ -88,9 +88,9 @@ export const PAGE_CONFIG_TYPES = ["schoolPage", "blogPage", "dictionaries"];
  * The pairing document `@sanity/document-internationalization` writes.
  *
  * It is a real document type in the schema, so it turns up in
- * `documentTypeListItems()` - and it was appearing at the bottom of the
- * sidebar as "Translation.metadata", a list of machine-written join records
- * that an editor can only damage by opening. What it holds is presented in
+ * `documentTypeListItems()` and has to be filtered out: at the bottom of the
+ * sidebar it reads as "Translation.metadata", a list of machine-written join
+ * records an editor can only damage by opening. What it holds is presented in
  * Translations, in terms of the documents it pairs.
  */
 const TRANSLATION_METADATA_TYPE = "translation.metadata";

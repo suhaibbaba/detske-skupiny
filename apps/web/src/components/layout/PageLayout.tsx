@@ -12,10 +12,8 @@ interface BaseProps {
   /**
    * Extra styles for the section wrapper.
    *
-   * Was `extendedStyles?: { section?: BoxProps }`, deep-merged into a base
-   * props object with lodash. A plain `sx` says the same thing, and MUI's own
-   * array form composes it - later entries win, which is what the merge was
-   * emulating at runtime on every render.
+   * A plain `sx` rather than a props bag deep-merged into a base object: MUI's
+   * own array form composes it, with later entries winning.
    *
    * Must be serialisable: no `(theme) => ...` callback and no function-valued
    * key inside it. This component is a Server Component and hands the value

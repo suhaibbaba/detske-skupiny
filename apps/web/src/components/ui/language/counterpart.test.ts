@@ -113,11 +113,10 @@ describe("counterpartUrl", () => {
   });
 
   /**
-   * The bug this replaced: `buildUrl` returned the target origin plus a bare
-   * "/" for every page, so the switcher always landed on the home page while
-   * its own comment claimed it preserved "path, search params, and hash".
+   * The switcher carries the visitor's current page across, rather than
+   * returning the target origin plus a bare "/".
    */
-  it("no longer sends every page to the home page", () => {
+  it("does not send every page to the home page", () => {
     expect(counterpartUrl({ ...base, pathname: "/kontakt" })).not.toBe(
       `${EN}/`,
     );

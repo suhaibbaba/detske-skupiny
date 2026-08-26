@@ -27,16 +27,15 @@ const pill = {
 } satisfies SxProps<Theme>;
 
 /**
- * The two pills used to be spread onto `<Button>` as props -
- * `{...styles.button}` - which MUI v9 does not accept: system props are gone
- * from components, so every declaration landed on the DOM node as a bare
- * attribute (`padding="10px 20px"`, `bgcolor="..."`) and styled nothing. Both
- * pills rendered as plain contained buttons, and it typechecked the whole
- * time, because a JSX spread is not excess-property checked.
+ * The two pills share this half of their styling through `sx`, never through a
+ * JSX spread onto `<Button>`. MUI v9 has no system props on components, so a
+ * spread declaration lands on the DOM node as a bare attribute
+ * (`padding="10px 20px"`) and styles nothing - and it typechecks, because a
+ * JSX spread is not excess-property checked.
  *
- * `sx` takes an array and composes it with later entries winning, which is
- * what carries the shared half. BlogCategories.test.tsx asserts the
- * declarations reach CSS and that nothing lands on the DOM node again.
+ * `sx` takes an array and composes it with later entries winning, which is what
+ * carries the shared half. BlogCategories.test.tsx asserts the declarations
+ * reach CSS and that nothing lands on the DOM node.
  */
 const styles = {
   container: {

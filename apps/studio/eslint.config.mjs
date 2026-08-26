@@ -6,10 +6,9 @@ export default [
   prettier,
   {
     rules: {
-      // "@typescript-eslint/semi" used to sit next to this one, but the rule
-      // was moved out of typescript-eslint and the plugin is not registered
-      // here, so eslint refused to load this config at all. The core rule
-      // below is what was actually being enforced.
+      // The core `semi` rule, not "@typescript-eslint/semi": that rule is no
+      // longer part of typescript-eslint, and the plugin is not registered
+      // here, so naming it stops eslint loading this config at all.
       semi: ['error', 'always'],
     },
   },

@@ -15,18 +15,16 @@ import {
  * Where translation work is looked at, rather than done.
  *
  * The work itself happens in the language menu on each document; nothing here
- * creates or edits a translation. What was missing was any way to see the
- * state of it - which schools still have no English version, what was
- * translated this week, and which English documents are pointing at a Czech
- * original that no longer exists. Those three questions were previously
- * answered by scrolling a mixed list and comparing rows by eye.
+ * creates or edits a translation. What this section answers is the state of it
+ * - which schools still have no English version, what was translated this week,
+ * and which English documents point at a Czech original that no longer exists.
  *
- * All three are plain `documentList` filters, and no custom tool was built.
- * That is the whole point: a filter is one query the studio already knows how
+ * All three are plain `documentList` filters rather than a custom tool, and
+ * that is the whole point: a filter is one query the studio already knows how
  * to run, it re-subscribes live as documents change, and every row gets its
- * type's own preview, its own actions and its own edit route for free. A
- * custom tool pane would have to re-implement each of those to end up saying
- * the same three things.
+ * type's own preview, its own actions and its own edit route for free. A custom
+ * tool pane would have to re-implement each of those to say the same three
+ * things.
  *
  * The pairing lives in a separate `translation.metadata` document rather than
  * on the documents themselves - see structure/language.ts for the shape and

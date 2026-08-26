@@ -98,7 +98,7 @@ const PopupContent: React.FC<PopupContentProps> = ({ markerData, onClose }) => {
           sx={styles.closeButton}
           size="small"
           disableRipple
-          // Was the English literal "Close popup" on both domains.
+          // From the dictionary: this label is read out on both domains.
           aria-label={translate("closeMapPopup")}
         >
           <CloseIcon fontSize="small" />

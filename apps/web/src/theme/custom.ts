@@ -1,14 +1,10 @@
 /**
  * Design tokens that are not colours.
  *
- * These used to sit on `palette.gradients` and `palette.shadows`. The palette
- * is where MUI mints a CSS variable per leaf, so every call site reached for
- * one by string - `var(--mui-palette-shadows-ui1)` - which no compiler checks
- * and no rename can follow. As ordinary values they are read by name, so a
- * typo is a build error.
- *
- * The values are byte-identical to what `palette` held; only the names and the
- * way call sites reach them changed.
+ * Deliberately not on `palette`, which is where MUI mints a CSS variable per
+ * leaf: call sites would reach for one by string -
+ * `var(--mui-palette-shadows-ui1)` - which no compiler checks and no rename can
+ * follow. As ordinary values they are read by name, so a typo is a build error.
  *
  * **Import this module directly from a Server Component; do not reach them
  * through `sx={(theme) => ...}` there.** `createTheme` merges this object onto

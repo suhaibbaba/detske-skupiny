@@ -4,8 +4,8 @@ import type { SettingsQueryResult } from "@detske-skupiny/types";
  * The single `settings` document, exactly as `settingsQuery` projects it.
  *
  * Nullable: the query is `*[_type == "settings"][0]`, and a dataset without a
- * settings document returns null. The hand-written type this replaces was not
- * only non-nullable but wrong about `socialLinks`, which it declared as an
- * array of link fields while the schema has it as one object of named URLs.
+ * settings document returns null. Taken from the generated query result rather
+ * than written by hand, so `socialLinks` is the object of named URLs the schema
+ * actually defines.
  */
 export type Settings = SettingsQueryResult;

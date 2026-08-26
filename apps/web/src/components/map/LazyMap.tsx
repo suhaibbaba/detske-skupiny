@@ -10,11 +10,11 @@ import MapSkeleton from "@/components/ui/skeleton/MapSkeleton";
  *
  * MapLibre GL and the MapTiler SDK are 1.28 MB of JavaScript before
  * compression - by a wide margin the largest thing the site ships. Importing
- * `MapComponent` statically put all of it in the first-load bundle of every
- * page that could reach it, which was not only the catalog and the school
- * detail page but also the home page and the cooperation page: both render
- * `<Zone>`, and `sections/registry.ts` statically imports every section
- * component including `MapCollection`. Cooperation does not even show a map.
+ * `MapComponent` statically would put all of it in the first-load bundle of
+ * every page that can reach it: not only the catalog and the school detail
+ * page but the home and cooperation pages too, since both render `<Zone>` and
+ * `sections/registry.ts` statically imports every section component including
+ * `MapCollection`. Cooperation does not show a map at all.
  *
  * `ssr: false` is deliberate rather than incidental. The map is a canvas that
  * measures its own container and then talks to a tile server; it renders

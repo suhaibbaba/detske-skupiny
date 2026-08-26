@@ -36,9 +36,9 @@ const styles = {
 /**
  * The map section's shell: a heading, a paragraph, and the interactive part.
  *
- * The whole section used to be a Client Component because the region pills and
- * the map share a selected-region id. That state lives in `MapRegionFilter`
- * now, and everything above it renders on the server.
+ * The selected-region id the region pills and the map share lives in
+ * `MapRegionFilter`, which keeps the client boundary at that one leaf -
+ * everything above it renders on the server.
  */
 const MapCollection = ({ fields }: Props) => {
   return (

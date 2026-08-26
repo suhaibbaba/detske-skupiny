@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "description": "Directory of Czech state-registered childcare groups (detske skupiny) - Next.js 16 front end and Sanity v5 Studio in an npm workspaces monorepo, served in Czech and English from two domains.",
+  "description": "A public directory of Czech state-registered childcare groups: a searchable, filterable catalog with detailed group profiles and an interactive map, served in Czech and English.",
   "workspaces": [
     "apps/*",
     "packages/*"

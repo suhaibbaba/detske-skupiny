@@ -5,7 +5,7 @@ import { Box, Container, Typography } from "@mui/material";
  * This file is a Server Component, and `component={Link}` hands a client
  * component a *function* - React refuses to serialise it and throws
  * "Functions cannot be passed directly to Client Components". Next renders the
- * not-found boundary as part of every route's shell, so that error was being
+ * not-found boundary as part of every route's shell, so that error would be
  * logged on every page of the site, not just on a 404. The wrapper is itself a
  * Client Component and does the `next/link` composition on its own side of the
  * boundary.

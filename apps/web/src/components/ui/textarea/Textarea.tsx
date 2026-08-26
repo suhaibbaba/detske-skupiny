@@ -15,14 +15,12 @@ export default function Textarea(props: TextareaAutosizeProps) {
  * `"use client"` because `styled()` is Emotion, and Emotion's `styled` is a
  * client module - a server module that calls it throws. Its only call site,
  * `ContactForm`, is already a client component, so the directive states a fact
- * about this module rather than moving a boundary. See docs/client-surface.md.
+ * about this module rather than moving a boundary.
  *
- * This used to carry `&:focus-visible { outline: 0 }`, marked "firefox", which
- * removed the only visible focus indicator the control had: the `:focus` rule
- * below changes the border colour but not its width, so a keyboard user
- * landing here saw a 1px hairline shift from grey to purple and nothing else.
- * The ring comes from the `:focus-visible` rule in theme/components.ts now,
- * which every focusable element on the site shares.
+ * The focus ring comes from the shared `:focus-visible` rule in
+ * theme/components.ts. The `:focus` rule below only changes the border colour,
+ * so suppressing that ring here would leave a keyboard user with a 1px
+ * hairline as the only indicator.
  */
 const TextareaAutosize = styled(BaseTextareaAutosize)(
   ({ theme }) => `

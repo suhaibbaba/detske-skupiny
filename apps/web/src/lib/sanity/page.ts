@@ -29,7 +29,7 @@ export const pageByTypeQuery =
 /**
  * Tagged "schools" as well as the page itself: the mapCollection section
  * embeds every school as a marker, so publishing a school changes this
- * response even though no page document was touched.
+ * response even though no page document is touched.
  */
 export async function fetchPageByType(type: string, locale: string) {
   return sanityFetch<PageByTypeQueryResult>(pageByTypeQuery, { type, locale }, [

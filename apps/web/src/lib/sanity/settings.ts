@@ -10,10 +10,8 @@ export const settingsQuery = defineQuery(`*[_type == "settings"][0] {
 }`);
 
 /**
- * Settings are not language-scoped, so this query takes no $locale.
- *
- * `unstable_cache` used to wrap this; the "use cache" body of sanityFetch
- * replaces it, and the "settings" tag replaces the fixed cache key.
+ * Settings are not language-scoped, so this query takes no $locale. Caching is
+ * the "use cache" body of sanityFetch, keyed by the "settings" tag.
  */
 export const getSettings = cache(async (): Promise<SettingsQueryResult> => {
   return sanityFetch<SettingsQueryResult>(settingsQuery, {}, ["settings"]);
